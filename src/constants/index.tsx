@@ -1,0 +1,5 @@
+export const RECAPTCHA_KEY_CLIENT = process.env.NEXT_PUBLIC_KEY_RECAPTCHA_CLIENT;
+export const RECAPTCHA_KEY_SERVER = process.env.NEXT_PUBLIC_KEY_RECAPTCHA_SERVER;
+export const API_URL_GOOGLE_RECAPTCHA = process.env.NEXT_PUBLIC_API_URL_GOOGLE_RECAPTCHA || "";
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
+
