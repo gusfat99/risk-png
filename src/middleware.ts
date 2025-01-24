@@ -14,9 +14,11 @@ export function middleware(req: NextRequest) {
 
 	// Jika belum login, hanya boleh akses /login
 	if (!hasLoggedIn) {
-		if (url.pathname !== "/login") {
-			url.pathname = "/login" // Redirect ke /login
-			return NextResponse.redirect(url)
+		if (!url.pathname.startsWith("/api")) {
+			if (url.pathname !== "/login") {
+				url.pathname = "/login" // Redirect ke /login
+				return NextResponse.redirect(url)
+			}
 		}
 	} else {
 		// Jika sudah login, tidak boleh akses /login, redirect ke /dashboard
