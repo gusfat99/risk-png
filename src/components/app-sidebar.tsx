@@ -35,29 +35,28 @@ const data = {
 	navMain: [
 		{
 			title: "Dashboard",
-			url: "#",
+			url: "/dashboard",
 			icon: LayoutDashboard,
 			isActive: true,
 		},
-
 		{
 			title: "Risk Data Bank",
-			url: "#",
+			url: "/risk-data-bank",
 			icon: SquareChartGantt,
 		},
 		{
 			title: "Risk Analysis",
-			url: "#",
+			url: "/risk-analysis",
 			icon: LineChart,
 		},
 		{
 			title: "Response Safeguard",
-			url: "#",
+			url: "/response-safeguard",
 			icon: CopyCheck,
 		},
 		{
 			title: "Risk Monitoring",
-			url: "#",
+			url: "/risk-monitoring",
 			icon: SquareActivity,
 		},
 		{
@@ -67,13 +66,12 @@ const data = {
 			items: [
 				{
 					title: "Report Risk Data Bank",
-					url: "#",
+					url: "/report-risk-data-bank",
 				},
 				{
 					title: "Report Risk By Severity",
-					url: "#",
+					url: "/report-reisk-saverity",
 				},
-			
 			],
 		},
 		{
@@ -83,15 +81,15 @@ const data = {
 			items: [
 				{
 					title: "Node Data",
-					url: "#",
+					url: "/data-master-node-data",
 				},
 				{
 					title: "Safeguards Data",
-					url: "#",
+					url: "/data-master-safeguards-data",
 				},
 				{
 					title: "Setting Matrix",
-					url: "#",
+					url: "/data-master-setting-matrix",
 				},
 			],
 		},

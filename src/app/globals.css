@@ -6,6 +6,8 @@ body {
 	font-family: var(--font-poppins-sans), sans-serif;
 }
 
+
+
 @layer base {
 	:root {
 		--background: 0 0% 100%;
@@ -79,6 +81,9 @@ body {
 		--sidebar-accent-foreground: 240 5.9% 10%;
 		--sidebar-border: 220 13% 91%;
 		--sidebar-ring: 217.2 91.2% 59.8%;
+
+		animation: var(--animate-spin); /* spin 1s linear infinite */
+
 	}
 	.dark {
 		--background: 0 0% 3.9%;
@@ -114,6 +119,12 @@ body {
 		--sidebar-border: 240 3.7% 15.9%;
 		--sidebar-ring: 217.2 91.2% 59.8%;
 	}
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @layer base {
