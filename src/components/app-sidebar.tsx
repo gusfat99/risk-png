@@ -7,7 +7,8 @@ import {
 	LayoutDashboard,
 	LineChart,
 	SquareActivity,
-	SquareChartGantt,
+	SquareKanbanIcon,
+	UserCog2
 } from "lucide-react"
 import * as React from "react"
 
@@ -25,78 +26,8 @@ import {
 	SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import Image from "next/image"
+import routes from "@/data/routes"
 
-const data = {
-	user: {
-		name: "shadcn",
-		email: "m@example.com",
-		avatar: "/avatars/shadcn.jpg",
-	},
-	navMain: [
-		{
-			title: "Dashboard",
-			url: "/dashboard",
-			icon: LayoutDashboard,
-			isActive: true,
-		},
-		{
-			title: "Risk Data Bank",
-			url: "/risk-data-bank",
-			icon: SquareChartGantt,
-		},
-		{
-			title: "Risk Analysis",
-			url: "/risk-analysis",
-			icon: LineChart,
-		},
-		{
-			title: "Response Safeguard",
-			url: "/response-safeguard",
-			icon: CopyCheck,
-		},
-		{
-			title: "Risk Monitoring",
-			url: "/risk-monitoring",
-			icon: SquareActivity,
-		},
-		{
-			title: "Data Report",
-			url: "#",
-			icon: ClipboardList,
-			items: [
-				{
-					title: "Report Risk Data Bank",
-					url: "/report-risk-data-bank",
-				},
-				{
-					title: "Report Risk By Severity",
-					url: "/report-reisk-saverity",
-				},
-			],
-		},
-		{
-			title: "Data Master",
-			url: "#",
-			icon: Bolt,
-			items: [
-				{
-					title: "Node Data",
-					url: "/data-master-node-data",
-				},
-				{
-					title: "Safeguards Data",
-					url: "/data-master-safeguards-data",
-				},
-				{
-					title: "Setting Matrix",
-					url: "/data-master-setting-matrix",
-				},
-			],
-		},
-	],
-	navSecondary: [],
-	projects: [],
-}
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	return (
@@ -131,15 +62,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 					</SidebarMenu>
 				</SidebarHeader>
 				<SidebarContent className="px-5">
-					<NavMain items={data.navMain} />
-					{/* <NavProjects projects={data.projects} />
-					<NavSecondary
-						items={data.navSecondary}
-						className="mt-auto"
-					/> */}
+					<NavMain items={routes.navMain} />
 				</SidebarContent>
 				<SidebarFooter>
-					<NavUser user={data.user} />
+					<NavUser />
 				</SidebarFooter>
 			</>
 		</Sidebar>

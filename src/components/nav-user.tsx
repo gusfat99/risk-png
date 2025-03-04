@@ -14,17 +14,12 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from "@/components/ui/sidebar"
+import { destroyIsLoggedIn } from "@/services/cookies"
+import { useRouter } from "next/navigation"
 
-export function NavUser({
-	user,
-}: {
-	user: {
-		name: string
-		email: string
-		avatar: string
-	}
-}) {
+export function NavUser() {
 	const { isMobile } = useSidebar()
+	const router = useRouter();
 
 	return (
 		<SidebarMenu className="px-5">
@@ -32,16 +27,21 @@ export function NavUser({
 				<DropdownMenu>
 					<SidebarMenuButton
 						size="lg"
-						className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:text-primary"
+						className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:text-primary !gap-4"
 					>
-						<Settings />
+						<Settings className="!size-6" />
 						<span className="truncate font-normal">Setting</span>
 					</SidebarMenuButton>
 					<SidebarMenuButton
 						size="lg"
-						className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:text-primary"
+						className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:text-primary !gap-4"
+						onClick={() => { 
+							destroyIsLoggedIn().then(() => {
+								router.replace("/login");
+							})
+						}}
 					>
-						<LogOut />
+						<LogOut className="!size-6"  />
 						<span className="truncate font-normal">Logout</span>
 					</SidebarMenuButton>
 				</DropdownMenu>

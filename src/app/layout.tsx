@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins, Plus_Jakarta_Sans } from "next/font/google";
+import { Toaster } from "@/components/ui/toaster"
 import "./globals.css";
 
 const poppinsSans = Poppins({
@@ -30,6 +31,7 @@ export default function RootLayout({
         className={`${poppinsSans.variable} ${plusJktSans.variable}  antialiased`}
       >
         {children}
+        <Toaster />
       </body>
     </html>
   );

@@ -1,10 +1,12 @@
 import sanitizeHtml from "sanitize-html"
 import dayjs from "dayjs"
+import { AxiosError, AxiosResponse } from "axios"
+import axiosInterceptor, { ResErrorType } from "@/services/axiosInterceptor"
 
 export type ResponseApiType<T> = {
-	code: number
 	data: T | null
 	message?: string
+	errors?: string
 	meta: any
 }
 
@@ -102,4 +104,43 @@ export const isEmptyObject = (obj = {}) => {
 	}
 	return true
 }
-``
+
+export const handleApiResponse = <T>(
+	data: AxiosResponse<ResponseApiType<T>>,
+	resolve: (data: ResponseApiType<T>) => void,
+	reject: (data: ResErrorType) => void
+) => {
+	if (isRequestSuccessful(data.status)) {
+		if (!(data.data instanceof Blob)) {
+			return resolve(data.data)
+		} else {
+			return resolve(data.data as unknown as any)
+		}
+	} else {
+		return reject({
+			message: data.data.message || "",
+			errors: data.data.errors || "",
+		})
+	}
+}
+
+export const postData = <T>(
+	ep: string,
+	payload: object
+): Promise<ResponseApiType<T>> => {
+	return new Promise((resolve, reject) => {
+		axiosInterceptor
+			.post<ResponseApiType<T>>(ep, sanitizeData(payload))
+			.then((data) => {
+				return handleApiResponse<T>(data, resolve, reject)
+			})
+			.catch((err: AxiosError<ResponseApiType<null>>) => {
+				const errorResponse: ResponseApiType<null> | undefined =
+					err.response?.data
+				return reject(
+					errorResponse ?? { message: err.message || "Unknown error" }
+				)
+			})
+		return Promise.resolve()
+	})
+}

@@ -1,5 +1,6 @@
 import Image from "next/image"
 import React from "react"
+import ImageBackground from "@/assets/images/background-login.jpg";
 
 export default function AuthLayout({
 	children,
@@ -10,7 +11,7 @@ export default function AuthLayout({
 		<div className="flex items-center justify-items-center w-full h-screen font-[family-name:var(--font-poppins)]">
 			<main className="flex flex-col gap-8 row-start-2 items-center sm:items-start w-full h-full">
 				<Image
-					src="/background/background-login.jpg"
+					src={ImageBackground}
 					alt="bg-login-risk-pertamina-gas"
 					width={1440}
 					loading="lazy"

@@ -1,5 +1,4 @@
-
-import { API_URL, } from "@/constants"
+import { API_URL } from "@/constants"
 // import { alertConfirm } from "@/context/AppAlertProvider"
 // import { destroyToken, getToken } from "@/lib/actions"
 import axios, {
@@ -9,10 +8,10 @@ import axios, {
 	AxiosResponse,
 } from "axios"
 
-export const prefixApiV1 = "/api/v1"
+export const prefixApiV1 = "/api"
 
 export type ResErrorType = {
-	code: number
+	errors: string
 	message: string
 }
 
@@ -23,20 +22,19 @@ export type MetaResponseType = {
 }
 
 export type ResponseType<T> = {
-	code: number
 	data?: T | null
 	message: string
 	meta?: MetaResponseType | null
 }
 
 const onRequest = async (config: AxiosRequestConfig): Promise<any> => {
-   const token = "";
+	const token = ""
 	config.headers = config.headers ?? {}
 	config.headers["Cache-Control"] = "no-cache"
 
 	// Menentukan Content-Type berdasarkan apakah itu multipart/form-data atau tidak
 	if (config.headers["Content-Type"] !== "multipart/form-data") {
-		config.headers["Content-Type"] = "application/json";
+		config.headers["Content-Type"] = "application/json"
 	}
 
 	if (token) {
@@ -47,31 +45,33 @@ const onRequest = async (config: AxiosRequestConfig): Promise<any> => {
 }
 
 const onRequestError = (error: AxiosError): Promise<AxiosError> => {
+	console.log({ error })
 	return Promise.reject(error)
 }
 
 const onResponse = async (
 	response: AxiosResponse<ResponseType<any>>
 ): Promise<AxiosResponse> => {
-	if (response.data.code !== 200) {
-		// unauthorized redirect to sign
-		if (response.data.code === 401) {
-			// alertConfirm({
-			// 	title: "Sesi telah habis",
-			// 	description: "Silahkan masuk kembali!",
-			// 	applyTitle: "Ok",
-			// 	showDeny: false,
-			// }).then((isConfirmed) => {
-			// 	if (isConfirmed) {
-			// 		destroyToken().then(() => {
-			// 			if (typeof window !== "undefined") {
-			// 				window.location.href = "/sign"
-			// 			}
-			// 		})
-			// 	}
-			// })
-		}
-	}
+	console.log({ response });
+	// if (response.data.code !== 200) {
+	// 	// unauthorized redirect to sign
+	// 	if (response.data.code === 401) {
+	// 		// alertConfirm({
+	// 		// 	title: "Sesi telah habis",
+	// 		// 	description: "Silahkan masuk kembali!",
+	// 		// 	applyTitle: "Ok",
+	// 		// 	showDeny: false,
+	// 		// }).then((isConfirmed) => {
+	// 		// 	if (isConfirmed) {
+	// 		// 		destroyToken().then(() => {
+	// 		// 			if (typeof window !== "undefined") {
+	// 		// 				window.location.href = "/sign"
+	// 		// 			}
+	// 		// 		})
+	// 		// 	}
+	// 		// })
+	// 	}
+	// }
 	return response
 }
 
@@ -90,14 +90,13 @@ export function setupInterceptorsTo(
 }
 
 const axiosInterceptor = setupInterceptorsTo(
-   axios.create({
-      baseURL: API_URL + prefixApiV1,
-      headers: {
-         "Content-Type": "application/json",
-         "Access-Control-Allow-Origin": "*",
-      },
-   })
-);
+	axios.create({
+		baseURL: API_URL + prefixApiV1,
+		headers: {
+			"Content-Type": "application/json",
+			"Access-Control-Allow-Origin": "*",
+		},
+	})
+)
 
-
-export default axiosInterceptor;
+export default axiosInterceptor

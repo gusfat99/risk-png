@@ -15,13 +15,17 @@ import axios from "axios"
 import { useRouter } from "next/navigation"
 import Spinner from "@/components/ui/spinner"
 import { setIsLoggedIn } from "@/services/cookies"
+import useAuthStore from "@/store/authStore"
+import { toast, useToast } from "@/hooks/use-toast"
 
 const LoginMain = () => {
 	const [visibilityPassword, setVisibilityPassword] = useState<string>("off")
 	const recaptchaRef = useRef<ReCAPTCHA>(null)
 	const [isVerified, setIsVerified] = useState(false)
-	const [isLoading, setIsLoading] = useState(false)
+	const {toast } = useToast();
+
 	const route = useRouter()
+	const { loading, login } = useAuthStore()
 
 	const form = useForm<z.infer<typeof AuthSchema>>({
 		resolver: zodResolver(AuthSchema),
@@ -35,17 +39,26 @@ const LoginMain = () => {
 			email: "",
 		},
 	})
-	const handleSubmit = () => {
-		setIsLoading(true)
-		setTimeout(() => {
-			setIsLoggedIn()
-				.then(() => {
-					route.push("/dashboard")
+	const handleSubmit = (values: z.infer<typeof AuthSchema>) => {
+		login({
+			email: values.email,
+			password: values.password,
+			"g-recaptcha-response": "testdd",
+		})
+			.then((res) => {
+				console.log({ res })
+				
+				setIsLoggedIn().then(() => {
+					toast({
+						title: res.message,
+						
+					})
+					route.replace("/dashboard")
 				})
-				.finally(() => {
-					setIsLoading(false)
-				})
-		}, 500)
+			})
+			.catch((err) => {
+				console.log(err)
+			})
 	}
 
 	const handleChangeReCaptcha = (token: string | null) => {
@@ -53,6 +66,7 @@ const LoginMain = () => {
 		axios
 			.post("/api/recaptcha-google", { token })
 			.then((response) => {
+				console.log({ response })
 				if (response.status === 200) {
 					setIsVerified(true)
 				}
@@ -61,7 +75,6 @@ const LoginMain = () => {
 				console.log({ err })
 				setIsVerified(false)
 			})
-		console.log({ token })
 	}
 
 	function handleExpired() {
@@ -144,9 +157,9 @@ const LoginMain = () => {
 						<Button
 							size={"lg"}
 							className="w-full"
-							disabled={!isVerified || isLoading}
+							disabled={!isVerified || loading}
 						>
-							{isLoading && <Spinner className="w-4 h-4" />}
+							{loading && <Spinner className="w-4 h-4" />}
 							Masuk
 						</Button>
 					</form>
