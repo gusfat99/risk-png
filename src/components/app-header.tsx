@@ -9,6 +9,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select"
+import useGetTitleRoute from "@/hooks/use-title-route"
 import { generateYears } from "@/lib/utils"
 import useAuthStore from "@/store/authStore"
 import Image from "next/image"
@@ -16,11 +17,15 @@ import { SidebarTrigger } from "./ui/sidebar"
 import Title from "./ui/title"
 
 const AppHeader = () => {
+	const {
+		subtitle
+	} = useGetTitleRoute();
+
 	const { user, year_selected } = useAuthStore()
 	return (
 		<header className="flex h-16 shrink-0 items-center justify-between gap-2">
 			<div className="flex flex-col">
-				<Title>Dashboard</Title>
+				<Title>{ subtitle}</Title>
 				<div className="flex items-center gap-2">
 					<SidebarTrigger className="-ml-1" />
 					{/* <Separator orientation="vertical" className="mr-2 h-4" /> */}

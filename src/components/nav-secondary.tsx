@@ -1,40 +1,51 @@
-import * as React from "react"
-import { type LucideIcon } from "lucide-react"
+"use client"
 
 import {
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar"
+	LogOut,
+	Settings
+} from "lucide-react"
 
-export function NavSecondary({
-  items,
-  ...props
-}: {
-  items: {
-    title: string
-    url: string
-    icon: LucideIcon
-  }[]
-} & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
-  return (
-    <SidebarGroup {...props}>
-      <SidebarGroupContent>
-        <SidebarMenu>
-          {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild size="sm">
-                <a href={item.url}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </a>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
-      </SidebarGroupContent>
-    </SidebarGroup>
-  )
+import {
+	DropdownMenu
+} from "@/components/ui/dropdown-menu"
+import {
+	SidebarMenu,
+	SidebarMenuButton,
+	SidebarMenuItem,
+	useSidebar,
+} from "@/components/ui/sidebar"
+import { destroyIsLoggedIn } from "@/services/cookies"
+import { useRouter } from "next/navigation"
+
+export function NavSecondary() {
+	const { isMobile } = useSidebar()
+	const router = useRouter();
+
+	return (
+		<SidebarMenu className="px-5">
+			<SidebarMenuItem>
+				<DropdownMenu>
+					<SidebarMenuButton
+						size="lg"
+						className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground text-primary-100 hover:text-primary !gap-4"
+					>
+						<Settings className="!size-6" />
+						<span className="truncate font-normal">Setting</span>
+					</SidebarMenuButton>
+					<SidebarMenuButton
+						size="lg"
+						className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:text-primary text-primary-100 !gap-4"
+						onClick={() => { 
+							destroyIsLoggedIn().then(() => {
+								router.replace("/login");
+							})
+						}}
+					>
+						<LogOut className="!size-6"  />
+						<span className="truncate font-normal">Logout</span>
+					</SidebarMenuButton>
+				</DropdownMenu>
+			</SidebarMenuItem>
+		</SidebarMenu>
+	)
 }

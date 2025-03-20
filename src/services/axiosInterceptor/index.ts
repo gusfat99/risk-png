@@ -1,4 +1,5 @@
 import { API_URL } from "@/constants"
+import { getSSRSafeToken } from "@/lib/storage"
 // import { alertConfirm } from "@/context/AppAlertProvider"
 // import { destroyToken, getToken } from "@/lib/actions"
 import axios, {
@@ -28,7 +29,7 @@ export type ResponseType<T> = {
 }
 
 const onRequest = async (config: AxiosRequestConfig): Promise<any> => {
-	const token = ""
+	const token = getSSRSafeToken(); // <-- Gunakan fungsi aman SSR
 	config.headers = config.headers ?? {}
 	config.headers["Cache-Control"] = "no-cache"
 
@@ -52,7 +53,7 @@ const onRequestError = (error: AxiosError): Promise<AxiosError> => {
 const onResponse = async (
 	response: AxiosResponse<ResponseType<any>>
 ): Promise<AxiosResponse> => {
-	console.log({ response });
+	// console.log({ response });
 	// if (response.data.code !== 200) {
 	// 	// unauthorized redirect to sign
 	// 	if (response.data.code === 401) {

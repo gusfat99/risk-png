@@ -1,21 +1,11 @@
 "use client"
 
-import {
-	Bolt,
-	ClipboardList,
-	CopyCheck,
-	LayoutDashboard,
-	LineChart,
-	SquareActivity,
-	SquareKanbanIcon,
-	UserCog2
-} from "lucide-react"
 import * as React from "react"
 
 import BgCity from "@/assets/images/background-city.png"
-import PertaminaGas from "@/assets/images/pertamina-gas.png"
+import LogoMainWhite from "@/assets/images/logomain-white.png"
 import { NavMain } from "@/components/nav-main"
-import { NavUser } from "@/components/nav-user"
+// import { NavSocond } from "@/components/nav-user"
 import {
 	Sidebar,
 	SidebarContent,
@@ -25,8 +15,9 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import Image from "next/image"
 import routes from "@/data/routes"
+import Image from "next/image"
+import { NavSecondary } from "./nav-secondary"
 
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -39,6 +30,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 					width={180}
 					height={1200}
 					className="w-full h-full absolute left-0 top-0 -inset-0 z-0 object-cover"
+					draggable={false}
 				/>
 				<SidebarHeader className="py-6">
 					<SidebarMenu>
@@ -50,11 +42,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 							>
 								<div className="w-full h-[68px] ">
 									<Image
-										src={PertaminaGas}
-										alt="Pertamina Gas Negara"
-										width={190}
-										height={80}
+										src={LogoMainWhite}
+										alt={process.env.NEXT_PUBLIC_APP_NAME || "MAIN LOGO"}
+										width={157}
+										height={58}
 										className="h-full m-auto"
+										draggable={false}
 									/>
 								</div>
 							</SidebarMenuButton>
@@ -65,7 +58,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 					<NavMain items={routes.navMain} />
 				</SidebarContent>
 				<SidebarFooter>
-					<NavUser />
+					<NavSecondary />
 				</SidebarFooter>
 			</>
 		</Sidebar>

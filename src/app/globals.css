@@ -6,8 +6,6 @@ body {
 	font-family: var(--font-poppins-sans), sans-serif;
 }
 
-
-
 @layer base {
 	:root {
 		--background: 0 0% 100%;
@@ -16,39 +14,38 @@ body {
 		--card-foreground: 0 0% 3.9%;
 		--popover: 0 0% 100%;
 		--popover-foreground: 0 0% 3.9%;
-		--primary: 205 100% 35%;
-		--primary-50: 208 100% 97%;
-		--primary50: 208 100% 97%;
-		--primary-100: 208 100% 94%;
-		--primary-200: 204 97% 86%;
-		--primary-300: 202 98% 74%;
-		--primary-400: 202 97% 60%;
-		--primary-500: 202 92% 48%;
-		--primary-600: 205 100% 40%;
-		--primary-700: 205 100% 35%;
-		--primary-800: 204 93% 27%;
-		--primary-900: 206 84% 24%;
-		--primary-950: 208 83% 16%;
+		--primary: 357 85% 52%;
+		--primary-50: 60 100% 60%;
+		--primary-100: 357 100% 93%;
+		--primary-200: 357 100% 88%;
+		--primary-300: 357 100% 81%;
+		--primary-400: 357 100% 70%;
+		--primary-500: 357 99% 60%;
+		--primary-600: 357 85% 52%;
+		--primary-700: 357 87% 41%;
+		--primary-800: 357 82% 35%;
+		--primary-900: 356 73% 30%;
+		--primary-950: 356 87% 15%;
 		--primary-foreground: 0 0% 98%;
 
-		--secondary: 177 78% 100%;
-		--secondary-50: 169 100% 6.7%;
-		--secondary-100: 173 100% 22.4%;
-		--secondary-200: 173 100% 44.3%;
-		--secondary-300: 174 98.4% 69.3%;
-		--secondary-400: 176 91% 89.2%;
-		--secondary-500: 177 78% 100%;
-		--secondary-600: 179 64.3% 100%;
-		--secondary-700: 179 51.4% 98.5%;
-		--secondary-800: 180 40.4% 92.2%;
-		--secondary-900: 180 33.3% 85.9%;
-		--secondary-950: 182 20.4% 100%;
-
+		--secondary: 210 100% 37%;
+		--secondary-50: 210 100% 97%;
+		--secondary-100: 210 100% 94%;
+		--secondary-200: 210 78% 83%;
+		--secondary-300: 210 77% 74%;
+		--secondary-400: 205 79% 60%;
+		--secondary-500: 202 100% 49%;
+		--secondary-600: 202 100% 43%;
+		--secondary-700: 210 100% 37%;
+		--secondary-800: 210 57% 30%;
+		--secondary-900: 210 57% 25%;
+		--secondary-950: 210 56% 20%;
 		--secondary-foreground: 0 0% 9%;
+
 		--muted: 0 0% 96.1%;
 		--muted-foreground: 0 0% 45.1%;
 		--accent: 0 0% 96.1%;
-		--accent-foreground: 0 0% 9%;
+		--accent-foreground: 357 100% 70%;
 
 		--destructive: 356 95% 46%;
 		--destructive-foreground: 0 0% 98%;
@@ -64,6 +61,19 @@ body {
 		--destructive-900: 357 81% 31%;
 		--destructive-950: 357 95% 15%;
 
+		--success: 174 100% 42%;
+		--success-50: 174 100% 95%;
+		--success-100: 174 100% 92%;
+		--success-200: 174 100% 86%;
+		--success-300: 174 87% 74%;
+		--success-400: 174 81% 61%;
+		--success-500: 174 100% 50%;
+		--success-600: 174 100% 42%;
+		--success-700: 184 69% 34%;
+		--success-800: 184 53% 27%;
+		--success-900: 184 38% 20%;
+		--success-950: 184 58% 10%;
+
 		--border: 0 0% 89.8%;
 		--input: 0 0% 89.8%;
 		--ring: 202 97% 60%;
@@ -74,16 +84,15 @@ body {
 		--chart-5: 27 87% 67%;
 		--radius: 0.5rem;
 		--sidebar-background: 0 0% 98%;
-		--sidebar-foreground: 0 0% 98%;
-		--sidebar-primary: 205 100% 35%;
-		--sidebar-primary-foreground: 205 100% 15%;
+		--sidebar-foreground: 210 100% 37%;
+		--sidebar-primary: 357 85% 52%;
+		--sidebar-primary-foreground:358 79% 30%;
 		--sidebar-accent: 240 4.8% 95.9%;
-		--sidebar-accent-foreground: 205 100% 35%;
+		--sidebar-accent-foreground: 357 99% 60%;
 		--sidebar-border: 220 13% 91%;
 		--sidebar-ring: 217.2 91.2% 59.8%;
 
 		animation: var(--animate-spin); /* spin 1s linear infinite */
-
 	}
 	.dark {
 		--background: 0 0% 3.9%;
@@ -122,9 +131,9 @@ body {
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+	to {
+		transform: rotate(360deg);
+	}
 }
 
 @layer base {
@@ -133,9 +142,5 @@ body {
 	}
 	body {
 		@apply bg-background text-foreground;
-		
 	}
-	
 }
-
-

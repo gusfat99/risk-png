@@ -36,7 +36,7 @@ export function NavMain({
 }) {
 	const pathname = usePathname()
 	// const params = useLOC();
-	console.log({ pathname })
+
 	return (
 		<SidebarGroup className="backdrop-filter backdrop-blur-sm bg-opacity-20 bg-white rounded-xl">
 			{/* <SidebarGroupLabel>Platform</SidebarGroupLabel> */}
@@ -54,7 +54,7 @@ export function NavMain({
 								{item.items?.length ? (
 									<>
 										<CollapsibleTrigger
-											className="focus:active:shadow-md focus:active:text-primary hover:text-primary group-data-[state=open]/collapsible:focus:hover:text-primary active:focus:shadow-neutral-500 h-12"
+											className="focus:active:shadow-md focus:active:text-primary hover:text-primary group-data-[state=open]/collapsible:focus:hover:text-primary active:focus:shadow-neutral-500 h-12 text-primary-100"
 											asChild
 										>
 											<SidebarMenuButton
@@ -62,7 +62,7 @@ export function NavMain({
 											>
 												<Icon className="!size-6 mr-2" />
 												<span>{item.title}</span>
-												<ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+												<ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 " />
 											</SidebarMenuButton>
 										</CollapsibleTrigger>
 										<CollapsibleContent>
@@ -74,7 +74,7 @@ export function NavMain({
 														<SidebarMenuSubButton
 															asChild
 															className={cn(
-																"hover:text-primary h-12",
+																"hover:text-primary h-12 text-primary-100 active:text-primary-100",
 																{
 																	"text-primary":
 																		pathname.includes(

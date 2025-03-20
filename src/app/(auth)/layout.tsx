@@ -19,7 +19,7 @@ export default function AuthLayout({
 					className="absolute inset-0 w-full h-full object-cover"
 				/>
 				{/* <!-- Overlay Gradien --> */}
-				<div className="absolute inset-0 bg-gradient-to-r from-destructive-500/70 to-primary/70" />
+				<div className="absolute inset-0 bg-gradient-to-r from-primary/70 to-secondary/70" />
 			
 					{children}
 			</main>

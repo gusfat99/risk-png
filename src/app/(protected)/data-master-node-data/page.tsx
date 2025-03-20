@@ -1,4 +1,4 @@
-import NodeDataModule from '@/modules/masterData/NodeDataModule/page'
+import NodeDataModule from '@/modules/masterData/NodeDataModule'
 import React from 'react'
 
 const Page = () => <NodeDataModule/>

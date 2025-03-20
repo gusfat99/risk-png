@@ -1,22 +1,22 @@
 "use client"
-import PertaminGasColor from "@/assets/images/pertamina-gas-color.png"
+import MainLogo from "@/assets/images/logomain.png"
 import InputController from "@/components/inputs/InputController"
 import { Button } from "@/components/ui/button"
 import { Form, FormField } from "@/components/ui/form"
+import Spinner from "@/components/ui/spinner"
+import { RECAPTCHA_KEY_CLIENT } from "@/constants"
+import { useToast } from "@/hooks/use-toast"
 import { AuthSchema } from "@/schemas/AuthSchema"
+import { setIsLoggedIn } from "@/services/cookies"
+import useAuthStore from "@/store/authStore"
 import { zodResolver } from "@hookform/resolvers/zod"
+import axios from "axios"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import { useRef, useState } from "react"
 import ReCAPTCHA from "react-google-recaptcha"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { RECAPTCHA_KEY_CLIENT } from "@/constants"
-import axios from "axios"
-import { useRouter } from "next/navigation"
-import Spinner from "@/components/ui/spinner"
-import { setIsLoggedIn } from "@/services/cookies"
-import useAuthStore from "@/store/authStore"
-import { toast, useToast } from "@/hooks/use-toast"
 
 const LoginMain = () => {
 	const [visibilityPassword, setVisibilityPassword] = useState<string>("off")
@@ -46,12 +46,11 @@ const LoginMain = () => {
 			"g-recaptcha-response": "testdd",
 		})
 			.then((res) => {
-				console.log({ res })
 				
 				setIsLoggedIn().then(() => {
 					toast({
 						title: res.message,
-						
+						variant : "success"
 					})
 					route.replace("/dashboard")
 				})
@@ -66,7 +65,6 @@ const LoginMain = () => {
 		axios
 			.post("/api/recaptcha-google", { token })
 			.then((response) => {
-				console.log({ response })
 				if (response.status === 200) {
 					setIsVerified(true)
 				}
@@ -80,12 +78,13 @@ const LoginMain = () => {
 	function handleExpired() {
 		setIsVerified(false)
 	}
+	
 	return (
 		<div className="relative h-screen w-full flex justify-center items-center">
 			<div className="backdrop-blur-lg px-10 py-12 bg-white/40 rounded-lg w-[478px] flex flex-col gap-5">
 				<Image
 					alt="logo-pertamina-gas"
-					src={PertaminGasColor}
+					src={MainLogo}
 					width={280}
 					height={84}
 					className="mx-auto mb-5"

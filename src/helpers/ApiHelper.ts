@@ -1,6 +1,6 @@
 import sanitizeHtml from "sanitize-html"
 import dayjs from "dayjs"
-import { AxiosError, AxiosResponse } from "axios"
+import { AxiosError, AxiosResponse, ResponseType } from "axios"
 import axiosInterceptor, { ResErrorType } from "@/services/axiosInterceptor"
 
 export type ResponseApiType<T> = {
@@ -131,6 +131,34 @@ export const postData = <T>(
 	return new Promise((resolve, reject) => {
 		axiosInterceptor
 			.post<ResponseApiType<T>>(ep, sanitizeData(payload))
+			.then((data) => {
+				return handleApiResponse<T>(data, resolve, reject)
+			})
+			.catch((err: AxiosError<ResponseApiType<null>>) => {
+				const errorResponse: ResponseApiType<null> | undefined =
+					err.response?.data
+				return reject(
+					errorResponse ?? { message: err.message || "Unknown error" }
+				)
+			})
+		return Promise.resolve()
+	})
+}
+
+export const getDataApi = <T>(
+	url: string,
+	params = {}, 
+	withSenitize: boolean = true,
+	headers = {},
+	responseType: ResponseType = "json"
+): Promise<ResponseApiType<T>> => {
+	return new Promise<ResponseApiType<T>>((resolve, reject) => {
+		axiosInterceptor
+			.get<ResponseApiType<T>>(url, {
+				params: withSenitize ? sanitizeData(params) : params,
+				headers,
+				responseType: responseType,
+			})
 			.then((data) => {
 				return handleApiResponse<T>(data, resolve, reject)
 			})
