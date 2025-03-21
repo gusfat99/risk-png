@@ -3,11 +3,23 @@ import dayjs from "dayjs"
 import { AxiosError, AxiosResponse, ResponseType } from "axios"
 import axiosInterceptor, { ResErrorType } from "@/services/axiosInterceptor"
 
+export type MetaResponseType = {
+	current_page: number
+	from: number
+	last_page: number
+	next_page_url: string | null
+	per_page: number
+	prev_page_url: null | string
+	to: number
+	total: number
+}
+
+
 export type ResponseApiType<T> = {
 	data: T | null
 	message?: string
 	errors?: string
-	meta: any
+	meita: MetaResponseType
 }
 
 /**
@@ -147,7 +159,7 @@ export const postData = <T>(
 
 export const getDataApi = <T>(
 	url: string,
-	params = {}, 
+	params = {},
 	withSenitize: boolean = true,
 	headers = {},
 	responseType: ResponseType = "json"

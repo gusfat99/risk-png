@@ -12,12 +12,17 @@ import Link from "next/link"
 const NodeDataModule = () => {
 	const {
 		nodeItems,
-		actions: { fetchAllData },
+		actions: { fetchAllData, setPagination },
+		isFetching,
+		meta: { total },
+		pagination_tanstack,
+		
 	} = useNodeStore()
+	const { pageIndex, pageSize } = pagination_tanstack;
 
 	useEffect(() => {
 		fetchAllData()
-	}, [fetchAllData])
+	}, [fetchAllData, pageIndex, pageSize])
 
 	return (
 		<div className="w-full">
@@ -27,7 +32,7 @@ const NodeDataModule = () => {
 					isRequired={false}
 					placeholder="Search..."
 				/>
-				<Link href={"/data-master-node-data/add"} >
+				<Link href={"/data-master-node-data/add"}>
 					<Button variant="success">
 						<Plus /> Add Node
 					</Button>
@@ -37,9 +42,11 @@ const NodeDataModule = () => {
 				<DataTable<Node>
 					columns={columnNode(() => {})}
 					data={nodeItems}
-					loading={false}
-					rowCount={0}
-					manualPagination={false}
+					loading={isFetching}
+					rowCount={total}
+					manualPagination={true}
+					onPaginationChange={setPagination}
+					pagination={pagination_tanstack}
 				/>
 			</div>
 		</div>

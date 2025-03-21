@@ -1,30 +1,66 @@
 import { NODE_EP } from "@/constants/endpoints"
-import { getDataApi, ResponseApiType } from "@/helpers/ApiHelper"
+import { getDataApi, postData, ResponseApiType } from "@/helpers/ApiHelper"
 import { commonInitualState } from "@/types/common"
 import { Node, NodeState } from "@/types/node"
-import { createStore } from "./store"
+import { NodeSchema } from "@/schemas/NodeSchema"
+import { createStore, runUpdater } from "./store"
+import { z } from "zod"
+import { toast } from "@/hooks/use-toast"
 
 const initialState = {
 	...commonInitualState,
 	nodeItems: [],
-   nodeSelected: null,
-
+	nodeSelected: null,
 }
 
-const useNodeStore = createStore<NodeState>(
-   'node-data',
-   (set) => ({
-      ...initialState,
-      actions: {
-        fetchAllData: async () => {
+const useNodeStore = createStore<NodeState>("node-data", (set, get) => ({
+	...initialState,
+	actions: {
+		fetchAllData: async () => {
 			set({
 				isFetching: true,
 			})
 			return new Promise<ResponseApiType<Node[]>>((resolve, reject) => {
-				getDataApi<Node[]>(NODE_EP)
+				getDataApi<Node[]>(NODE_EP, {
+					page: get().pagination_tanstack.pageIndex,
+					per_page: get().pagination_tanstack.pageSize,
+				})
 					.then((data) => {
 						set({
 							nodeItems: data.data || [],
+							meta: data?.meita,
+						})
+						resolve(data)
+					})
+					.catch((err) => {
+						toast({
+							title: "ERROR",
+							description: err.message,
+							variant: "destructive",
+						})
+						reject(err)
+					})
+					.finally(() => {
+						set({
+							isFetching: false,
+						})
+					})
+			})
+		},
+		createData: async (payload: z.infer<typeof NodeSchema>) => {
+			set({
+				isSubmit: true,
+			})
+			return new Promise<ResponseApiType<Node>>((resolve, reject) => {
+				postData<Node>(NODE_EP, payload)
+					.then((data) => {
+						set((state) => {
+							return {
+								nodeItems: [
+									...state.nodeItems,
+									...(data.data ? [data.data] : []),
+								],
+							}
 						})
 						resolve(data)
 					})
@@ -33,14 +69,20 @@ const useNodeStore = createStore<NodeState>(
 					})
 					.finally(() => {
 						set({
-							isFetching: true,
+							isSubmit: false,
 						})
 					})
 			})
 		},
-     }
-  })
-)
-
+		setPagination: (updater) =>
+			set((state) => ({
+				pagination_tanstack: runUpdater(
+					updater,
+					state.pagination_tanstack
+				),
+			})),
+		// setPagination : ()
+	},
+}))
 
 export default useNodeStore

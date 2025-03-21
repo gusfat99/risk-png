@@ -26,6 +26,7 @@ import {
 } from "../ui/table"
 import { DataTablePagination } from "./DataTablePagination"
 import { cn } from "@/lib/utils"
+import Spinner from "../ui/spinner"
 
 interface AppDataTableProps<T> {
 	columns: ColumnDef<T>[]
@@ -115,7 +116,7 @@ const DataTable = <T,>({
 	if (pagination) {
 		options.state = {
 			...options.state,
-			pagination: pagination,
+			pagination
 		}
 	}
 
@@ -161,6 +162,7 @@ const DataTable = <T,>({
 									className="h-24 text-center relative"
 								>
 									{/* <AppLoader /> */}
+									<Spinner className="w-4 h-4" />
 								</TableCell>
 							</TableRow>
 						) : (

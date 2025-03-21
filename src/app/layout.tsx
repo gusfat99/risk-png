@@ -1,6 +1,6 @@
+import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
-import { Poppins, Plus_Jakarta_Sans } from "next/font/google";
-import { Toaster } from "@/components/ui/toaster"
+import { Plus_Jakarta_Sans, Poppins } from "next/font/google";
 import "./globals.css";
 
 const poppinsSans = Poppins({
@@ -16,8 +16,8 @@ const plusJktSans = Plus_Jakarta_Sans({
 
 
 export const metadata: Metadata = {
-  title: "Risk - Petamina GAS",
-  description: "Management Risiko Petamina Gas",
+  title: process.env.NEXT_PUBLIC_APP_NAME || "ALTON MANAGEMENT RISK",
+  description: process.env.NEXT_PUBLIC_APP_NAME || "ALTON MANAGEMENT RISK",
 };
 
 export default function RootLayout({
@@ -25,6 +25,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="en">
       <body

@@ -26,6 +26,22 @@ export const columnNode = (
 				/>
 			),
 		},
+		{
+			id: "node",
+			accessorFn: (row) => row.node,
+			meta: {
+				hiddenFilter: true,
+			},
+			header: ({column}) => {
+				return (
+					<DataTableColumnHeader
+						column={column}
+						title="Node"
+					/>
+				)
+			},
+			cell: ({ row }) => row.getValue('node')
+		},
 		
 
 		{

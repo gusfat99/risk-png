@@ -1,4 +1,5 @@
 import { API_URL } from "@/constants"
+import { toast } from "@/hooks/use-toast"
 import { getSSRSafeToken } from "@/lib/storage"
 // import { alertConfirm } from "@/context/AppAlertProvider"
 // import { destroyToken, getToken } from "@/lib/actions"
@@ -29,7 +30,7 @@ export type ResponseType<T> = {
 }
 
 const onRequest = async (config: AxiosRequestConfig): Promise<any> => {
-	const token = getSSRSafeToken(); // <-- Gunakan fungsi aman SSR
+	const token = getSSRSafeToken() // <-- Gunakan fungsi aman SSR
 	config.headers = config.headers ?? {}
 	config.headers["Cache-Control"] = "no-cache"
 
@@ -46,7 +47,7 @@ const onRequest = async (config: AxiosRequestConfig): Promise<any> => {
 }
 
 const onRequestError = (error: AxiosError): Promise<AxiosError> => {
-	console.log({ error })
+
 	return Promise.reject(error)
 }
 
@@ -79,6 +80,15 @@ const onResponse = async (
 const onResponseError = async (
 	error: AxiosError<ResErrorType>
 ): Promise<AxiosError<ResErrorType>> => {
+	console.log({ error })
+	if ((error.status === 401)) {
+		toast({
+			variant: "destructive",
+			title: "Session expired, please login again!",
+			isSessionExpired : true
+		})
+	
+	}
 	return Promise.reject(error)
 }
 

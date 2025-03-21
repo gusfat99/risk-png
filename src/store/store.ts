@@ -1,4 +1,5 @@
 // ✅ Implementasi Benar (Fixed)
+import { Updater } from '@tanstack/react-table';
 import { StateCreator, create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
@@ -16,4 +17,11 @@ export const createStore = <T extends State>(
       { name }
     )
   );
+};
+
+// Fungsi utilitas untuk handle updater tanstack
+export const runUpdater = <T>(updater: Updater<T>, prev: T): T => {
+  return typeof updater === 'function' 
+    ? (updater as (prev: T) => T)(prev)
+    : updater;
 };
