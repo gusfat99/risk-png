@@ -11,7 +11,7 @@ export interface CommonState {
 	message: string
 	errors: string
 	pagination_tanstack : PaginationType
-	meta: MetaResponseType
+	meta?: MetaResponseType
 }
 
 export const commonInitualState = {

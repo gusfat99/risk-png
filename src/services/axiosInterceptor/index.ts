@@ -80,13 +80,12 @@ const onResponse = async (
 const onResponseError = async (
 	error: AxiosError<ResErrorType>
 ): Promise<AxiosError<ResErrorType>> => {
-	console.log({ error })
 	if ((error.status === 401)) {
 		toast({
 			variant: "destructive",
 			title: "Session expired, please login again!",
-			isSessionExpired : true
-		})
+			isSessionExpired: true
+		});
 	
 	}
 	return Promise.reject(error)

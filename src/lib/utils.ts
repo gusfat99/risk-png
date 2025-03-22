@@ -19,3 +19,8 @@ export function generateYears(backward: number = 0, forward: number = 0 ): strin
 
 	return years
 }
+
+export function toSentenceCase(str : string) {
+	if (!str) return "";
+	return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}

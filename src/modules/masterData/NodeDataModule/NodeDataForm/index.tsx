@@ -9,17 +9,36 @@ import useNodeStore from "@/store/nodeStore"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Save } from "lucide-react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
+import React, { useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import { parseNodeDataToView } from "../parsingData"
 
-const NodeDataForm = () => {
+interface IProps {
+	isEdit?: boolean
+	isDetail?: boolean
+}
+
+const NodeDataForm: React.FC<IProps> = ({ isEdit, isDetail }) => {
 	const {
 		isSubmit,
-		actions: { createData },
+		actions: { createData, updateData },
+		nodeItems,
 	} = useNodeStore()
 	const { toast } = useToast()
 	const route = useRouter()
+	const params = useParams<{ id: any }>()
+
+	const nodeItemSelected = useMemo(
+		() =>
+			(isEdit || isDetail)
+				? nodeItems.find(
+						(x) => x.id?.toString() === params.id?.toString()
+				  )
+				: null,
+		[params?.id, isEdit, isDetail]
+	)
 
 	const form = useForm<z.infer<typeof NodeSchema>>({
 		resolver: zodResolver(NodeSchema),
@@ -28,15 +47,17 @@ const NodeDataForm = () => {
 		reValidateMode: "onSubmit",
 		shouldFocusError: true,
 		shouldUnregister: true,
-		defaultValues: initialValueNode,
+		defaultValues:
+			(isEdit || isDetail) && params?.id && nodeItemSelected
+				? parseNodeDataToView(nodeItemSelected)
+				: initialValueNode,
 	})
-
 
 	const handleSubmit = async (values: z.infer<typeof NodeSchema>) => {
 		try {
-			if (createData) {
+			if (createData && !params?.id && !isEdit) {
 				const result = await createData(values)
-		
+
 				if (result) {
 					toast({
 						title: result.message ?? "",
@@ -47,8 +68,19 @@ const NodeDataForm = () => {
 				} else {
 					throw new Error("Failed")
 				}
-			} else {
-				console.error("createData is undefined")
+			} else if (updateData && params.id && isEdit) {
+				const result = await updateData(params?.id, values)
+
+				if (result) {
+					toast({
+						title: result.message ?? "",
+						variant: "success",
+					})
+					form.reset(initialValueNode)
+					route.replace("/data-master-node-data")
+				} else {
+					throw new Error("Failed")
+				}
 			}
 		} catch (error) {
 			toast({
@@ -60,6 +92,7 @@ const NodeDataForm = () => {
 			})
 		}
 	}
+
 	return (
 		<Form {...form}>
 			<form
@@ -72,6 +105,7 @@ const NodeDataForm = () => {
 					render={({ field }) => (
 						<InputController
 							{...field}
+							readOnly={isDetail}
 							label="Node"
 							placeholder="Enter Node Name"
 							onChange={(e) => {
@@ -86,6 +120,7 @@ const NodeDataForm = () => {
 					render={({ field }) => (
 						<InputController
 							{...field}
+							readOnly={isDetail}
 							label="Node Description"
 							placeholder="Enter Node Description"
 							onChange={(e) => {
@@ -103,6 +138,7 @@ const NodeDataForm = () => {
 					render={({ field }) => (
 						<InputController
 							{...field}
+							readOnly={isDetail}
 							label="Node Location"
 							placeholder="Enter Node Location"
 							onChange={(e) => {
@@ -117,6 +153,7 @@ const NodeDataForm = () => {
 					render={({ field }) => (
 						<InputController
 							{...field}
+							readOnly={isDetail}
 							label="Drawing Reference"
 							placeholder="Enter Drawing Reference"
 							onChange={(e) => {
@@ -139,6 +176,7 @@ const NodeDataForm = () => {
 						render={({ field }) => (
 							<InputController
 								{...field}
+								readOnly={isDetail}
 								label="Inlet Pressure (Bar)"
 								placeholder="Enter Inlet Pressure"
 								onChange={(e) => {
@@ -157,6 +195,7 @@ const NodeDataForm = () => {
 							<InputController
 								{...field}
 								label="Outlet Pressure"
+								readOnly={isDetail}
 								placeholder="Enter Outlet Pressure"
 								onChange={(e) => {
 									form.setValue(
@@ -174,6 +213,7 @@ const NodeDataForm = () => {
 					render={({ field }) => (
 						<InputController
 							{...field}
+							readOnly={isDetail}
 							label="Notes Special Condition / Remarks"
 							placeholder="Enter Notes Special Condition"
 							onChange={(e) => {
@@ -182,18 +222,20 @@ const NodeDataForm = () => {
 						/>
 					)}
 				/>
-				<div className="flex justify-end gap-4">
-					<Link href={"/data-master-node-data"}>
-						{" "}
-						<Button variant={"outline"} disabled={isSubmit}>
-							Cancel
+				{!isDetail && (
+					<div className="flex justify-end gap-4">
+						<Link href={"/data-master-node-data"}>
+							{" "}
+							<Button variant={"outline"} disabled={isSubmit}>
+								Cancel
+							</Button>
+						</Link>
+						<Button disabled={isSubmit} variant={"secondary"}>
+							{isSubmit && <Spinner className="w-4 h-4" />}
+							<Save /> Save Data
 						</Button>
-					</Link>
-					<Button disabled={isSubmit} variant={"secondary"}>
-						{isSubmit && <Spinner className="w-4 h-4" />}
-						<Save /> Save Data
-					</Button>
-				</div>
+					</div>
+				)}
 			</form>
 		</Form>
 	)

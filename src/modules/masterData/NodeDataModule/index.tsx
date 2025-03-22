@@ -8,17 +8,27 @@ import useNodeStore from "@/store/nodeStore"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 const NodeDataModule = () => {
 	const {
 		nodeItems,
 		actions: { fetchAllData, setPagination },
 		isFetching,
-		meta: { total },
+		meta,
 		pagination_tanstack,
-		
 	} = useNodeStore()
-	const { pageIndex, pageSize } = pagination_tanstack;
+	const { pageIndex, pageSize } = pagination_tanstack
+	const total = meta?.total || 0
+	const router = useRouter()
+
+	const handleActionTable = (action: string, id: any) => {
+		if (action === "update") {
+			router.push("/data-master-node-data/update/" + id)
+		} else if (action === "detail") {
+			router.push("/data-master-node-data/detail/" + id)
+		}
+	}
 
 	useEffect(() => {
 		fetchAllData()
@@ -40,7 +50,7 @@ const NodeDataModule = () => {
 			</div>
 			<div className="mt-4">
 				<DataTable<Node>
-					columns={columnNode(() => {})}
+					columns={columnNode(handleActionTable)}
 					data={nodeItems}
 					loading={isFetching}
 					rowCount={total}

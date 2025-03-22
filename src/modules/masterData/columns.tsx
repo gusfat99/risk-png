@@ -10,6 +10,14 @@ export const columnNode = (
 ): ColumnDef<Node>[] => {
 	const column: ColumnDef<Node>[] = [
 		{
+			header: 'No',
+			cell: ({ row, table }) => {
+				const { pageIndex, pageSize } = table.getState().pagination;
+				console.log({pageIndex, pageSize, index : row.index})
+			   return (pageIndex - 1) * pageSize + row.index + 1;
+			},
+		 },
+		{
 			id: "id",
 			accessorFn: (row) => row.id,
 			meta: {
@@ -102,7 +110,6 @@ export const columnNode = (
 			},
 			cell: ({ row }) => <div className="text-center">{row.getValue("inlet_pressure")}</div>,
 		},
-
 		{
 			id: "outlet_pressure",
 			accessorFn: (row) => row.outlet_pressure,
@@ -116,7 +123,7 @@ export const columnNode = (
 			},
 			cell: ({ row }) => {
 				return (
-					<div className="text-center">{row.getValue("inlet_pressure")}</div>
+					<div className="text-center">{row.getValue("outlet_pressure")}</div>
 				)
 			}
 		},

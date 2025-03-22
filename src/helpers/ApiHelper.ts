@@ -157,6 +157,69 @@ export const postData = <T>(
 	})
 }
 
+export const putData = <T>(
+	ep: string,
+	payload: object
+): Promise<ResponseApiType<T>> => {
+	return new Promise((resolve, reject) => {
+		axiosInterceptor
+			.put<ResponseApiType<T>>(ep, sanitizeData(payload))
+			.then((data) => {
+				return handleApiResponse<T>(data, resolve, reject)
+			})
+			.catch((err: AxiosError<ResponseApiType<null>>) => {
+				const errorResponse: ResponseApiType<null> | undefined =
+					err.response?.data
+				return reject(
+					errorResponse ?? { message: err.message || "Unknown error" }
+				)
+			})
+		return Promise.resolve()
+	})
+}
+
+export const Data = <T>(
+	ep: string,
+	payload: object
+): Promise<ResponseApiType<T>> => {
+	return new Promise((resolve, reject) => {
+		axiosInterceptor
+			.post<ResponseApiType<T>>(ep, sanitizeData(payload))
+			.then((data) => {
+				return handleApiResponse<T>(data, resolve, reject)
+			})
+			.catch((err: AxiosError<ResponseApiType<null>>) => {
+				const errorResponse: ResponseApiType<null> | undefined =
+					err.response?.data
+				return reject(
+					errorResponse ?? { message: err.message || "Unknown error" }
+				)
+			})
+		return Promise.resolve()
+	})
+}
+
+export const deleteData = <T>(
+	ep: string,
+	payload: object
+): Promise<ResponseApiType<T>> => {
+	return new Promise((resolve, reject) => {
+		axiosInterceptor
+			.post<ResponseApiType<T>>(ep, sanitizeData(payload))
+			.then((data) => {
+				return handleApiResponse<T>(data, resolve, reject)
+			})
+			.catch((err: AxiosError<ResponseApiType<null>>) => {
+				const errorResponse: ResponseApiType<null> | undefined =
+					err.response?.data
+				return reject(
+					errorResponse ?? { message: err.message || "Unknown error" }
+				)
+			})
+		return Promise.resolve()
+	})
+}
+
 export const getDataApi = <T>(
 	url: string,
 	params = {},
@@ -175,6 +238,10 @@ export const getDataApi = <T>(
 				return handleApiResponse<T>(data, resolve, reject)
 			})
 			.catch((err: AxiosError<ResponseApiType<null>>) => {
+				
+				if (err.status === 401) {
+					return  resolve(err.response as unknown as any)
+				}
 				const errorResponse: ResponseApiType<null> | undefined =
 					err.response?.data
 				return reject(

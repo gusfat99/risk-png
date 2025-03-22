@@ -124,7 +124,7 @@ const DataTable = <T,>({
 
 	return (
 		<div className="w-full">
-			<div className="relative rounded-md md:max-h-[620px] max-h-[390px] border overflow-x-auto">
+			<div className="relative rounded-md md:max-h-[580px] max-h-[390px] border overflow-x-auto">
 				<Table>
 					<TableHeader>
 						{table.getHeaderGroups().map((headerGroup) => (
@@ -156,7 +156,7 @@ const DataTable = <T,>({
 					</TableHeader>
 					<TableBody>
 						{loading ? (
-							<TableRow>
+							<TableRow className="md:h-[520px] h-[180px]" >
 								<TableCell
 									colSpan={columns.length}
 									className="h-24 text-center relative"

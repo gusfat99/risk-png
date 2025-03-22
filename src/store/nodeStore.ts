@@ -1,5 +1,5 @@
 import { NODE_EP } from "@/constants/endpoints"
-import { getDataApi, postData, ResponseApiType } from "@/helpers/ApiHelper"
+import { getDataApi, postData, putData, ResponseApiType } from "@/helpers/ApiHelper"
 import { commonInitualState } from "@/types/common"
 import { Node, NodeState } from "@/types/node"
 import { NodeSchema } from "@/schemas/NodeSchema"
@@ -53,6 +53,33 @@ const useNodeStore = createStore<NodeState>("node-data", (set, get) => ({
 			})
 			return new Promise<ResponseApiType<Node>>((resolve, reject) => {
 				postData<Node>(NODE_EP, payload)
+					.then((data) => {
+						set((state) => {
+							return {
+								nodeItems: [
+									...state.nodeItems,
+									...(data.data ? [data.data] : []),
+								],
+							}
+						})
+						resolve(data)
+					})
+					.catch((err) => {
+						reject(err)
+					})
+					.finally(() => {
+						set({
+							isSubmit: false,
+						})
+					})
+			})
+		},
+		updateData: async (id: any, payload: z.infer<typeof NodeSchema>,) => {
+			set({
+				isSubmit: true,
+			})
+			return new Promise<ResponseApiType<Node>>((resolve, reject) => {
+				putData<Node>(`${NODE_EP}/${id}`, payload)
 					.then((data) => {
 						set((state) => {
 							return {
