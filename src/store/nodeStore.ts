@@ -1,5 +1,11 @@
 import { NODE_EP } from "@/constants/endpoints"
-import { getDataApi, postData, putData, ResponseApiType } from "@/helpers/ApiHelper"
+import {
+	deleteData,
+	getDataApi,
+	postData,
+	putData,
+	ResponseApiType,
+} from "@/helpers/ApiHelper"
 import { commonInitualState } from "@/types/common"
 import { Node, NodeState } from "@/types/node"
 import { NodeSchema } from "@/schemas/NodeSchema"
@@ -74,7 +80,7 @@ const useNodeStore = createStore<NodeState>("node-data", (set, get) => ({
 					})
 			})
 		},
-		updateData: async (id: any, payload: z.infer<typeof NodeSchema>,) => {
+		updateData: async (id: any, payload: z.infer<typeof NodeSchema>) => {
 			set({
 				isSubmit: true,
 			})
@@ -97,6 +103,33 @@ const useNodeStore = createStore<NodeState>("node-data", (set, get) => ({
 					.finally(() => {
 						set({
 							isSubmit: false,
+						})
+					})
+			})
+		},
+		deleteData: async (id) => {
+			return new Promise<ResponseApiType<null>>((resolve, reject) => {
+				deleteData<null>(NODE_EP + "/" + id)
+					.then((data) => {
+						const filterData = get().nodeItems.filter(
+							(x) => x.id?.toString() !== id.toString()
+						)
+						set({
+							nodeItems: filterData,
+						})
+						resolve(data)
+					})
+					.catch((err) => {
+						toast({
+							title: "ERROR",
+							description: err.message,
+							variant: "destructive",
+						})
+						reject(err)
+					})
+					.finally(() => {
+						set({
+							isFetching: false,
 						})
 					})
 			})

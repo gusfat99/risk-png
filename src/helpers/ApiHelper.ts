@@ -201,11 +201,10 @@ export const Data = <T>(
 
 export const deleteData = <T>(
 	ep: string,
-	payload: object
 ): Promise<ResponseApiType<T>> => {
 	return new Promise((resolve, reject) => {
 		axiosInterceptor
-			.post<ResponseApiType<T>>(ep, sanitizeData(payload))
+			.delete<ResponseApiType<T>>(ep)
 			.then((data) => {
 				return handleApiResponse<T>(data, resolve, reject)
 			})

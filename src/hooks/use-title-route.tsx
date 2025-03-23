@@ -35,7 +35,6 @@ const useGetTitleRoute = () => {
 			" - " + route.items.find((r) => pathname.includes(r.url))?.title ||
 			""
 	}
-	console.log({ pathname, lengthPathname, split: pathname.split("/") })
 	return {
 		icon: Icon,
 		title,

@@ -13,7 +13,7 @@ export const columnNode = (
 			header: 'No',
 			cell: ({ row, table }) => {
 				const { pageIndex, pageSize } = table.getState().pagination;
-				console.log({pageIndex, pageSize, index : row.index})
+			
 			   return (pageIndex - 1) * pageSize + row.index + 1;
 			},
 		 },
