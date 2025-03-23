@@ -1,22 +1,26 @@
-'use client'
+"use client"
 // import AppTableRowActions from "@/components/AppTableRowActions"
 import DataTableColumnHeader from "@/components/DataTable/DataTableColumnHeader"
 import TableRowActions from "@/components/TableRowActions"
+import { Button } from "@/components/ui/button"
 import { Node } from "@/types/node"
+import { Safeguard } from "@/types/safeguard"
 import { ColumnDef } from "@tanstack/react-table"
+import { Download } from "lucide-react"
+import Link from "next/link"
 
 export const columnNode = (
 	onAction: (actionName: string, id: any) => void
 ): ColumnDef<Node>[] => {
 	const column: ColumnDef<Node>[] = [
 		{
-			header: 'No',
+			header: "No",
 			cell: ({ row, table }) => {
-				const { pageIndex, pageSize } = table.getState().pagination;
-			
-			   return (pageIndex - 1) * pageSize + row.index + 1;
+				const { pageIndex, pageSize } = table.getState().pagination
+
+				return (pageIndex - 1) * pageSize + row.index + 1
 			},
-		 },
+		},
 		{
 			id: "id",
 			accessorFn: (row) => row.id,
@@ -40,17 +44,11 @@ export const columnNode = (
 			meta: {
 				hiddenFilter: true,
 			},
-			header: ({column}) => {
-				return (
-					<DataTableColumnHeader
-						column={column}
-						title="Node"
-					/>
-				)
+			header: ({ column }) => {
+				return <DataTableColumnHeader column={column} title="Node" />
 			},
-			cell: ({ row }) => row.getValue('node')
+			cell: ({ row }) => row.getValue("node"),
 		},
-		
 
 		{
 			id: "node_description",
@@ -64,13 +62,16 @@ export const columnNode = (
 				)
 			},
 			cell: ({ row }) => <div>{row.getValue("node_description")}</div>,
-      },
-      {
+		},
+		{
 			id: "node_location",
 			accessorFn: (row) => row.node_location,
 			header: ({ column }) => {
 				return (
-					<DataTableColumnHeader column={column} title="Node Location" />
+					<DataTableColumnHeader
+						column={column}
+						title="Node Location"
+					/>
 				)
 			},
 			cell: ({ row }) => (
@@ -80,7 +81,7 @@ export const columnNode = (
 		},
 		{
 			id: "drawing_reference",
-			
+
 			accessorFn: (row) => row.drawing_reference,
 			header: ({ column }) => {
 				return (
@@ -103,12 +104,15 @@ export const columnNode = (
 				return (
 					<DataTableColumnHeader
 						column={column}
-						
 						title="Inlet Pressure"
 					/>
 				)
 			},
-			cell: ({ row }) => <div className="text-center">{row.getValue("inlet_pressure")}</div>,
+			cell: ({ row }) => (
+				<div className="text-center">
+					{row.getValue("inlet_pressure")}
+				</div>
+			),
 		},
 		{
 			id: "outlet_pressure",
@@ -123,9 +127,11 @@ export const columnNode = (
 			},
 			cell: ({ row }) => {
 				return (
-					<div className="text-center">{row.getValue("outlet_pressure")}</div>
+					<div className="text-center">
+						{row.getValue("outlet_pressure")}
+					</div>
 				)
-			}
+			},
 		},
 		{
 			id: "remark_node",
@@ -142,6 +148,84 @@ Condition / Remarks"
 			cell: ({ row }) => {
 				return row.getValue("remark_node")
 			},
+		},
+	]
+
+	return column
+}
+
+export const columnSafeguard = (
+	onAction: (actionName: string, id: any) => void
+): ColumnDef<Safeguard>[] => {
+	const column: ColumnDef<Safeguard>[] = [
+		{
+			header: "No",
+			cell: ({ row, table }) => {
+				const { pageIndex, pageSize } = table.getState().pagination
+
+				return (pageIndex - 1) * pageSize + row.index + 1
+			},
+		},
+		{
+			id: "id",
+			accessorFn: (row) => row.id,
+			meta: {
+				hiddenFilter: true,
+			},
+			header: () => {
+				return <div className="flex justify-start">Action</div>
+			},
+			cell: ({ row }) => (
+				<TableRowActions
+					onAction={(actionName: string) => {
+						onAction(actionName, row.getValue("id"))
+					}}
+				/>
+			),
+		},
+		{
+			id: "safeguard",
+			accessorFn: (row) => row.safeguard,
+			meta: {
+				hiddenFilter: true,
+			},
+			header: ({ column }) => {
+				return (
+					<DataTableColumnHeader
+						column={column}
+						title="Safeguard Name"
+					/>
+				)
+			},
+			cell: ({ row }) => row.getValue("safeguard"),
+		},
+
+		{
+			id: "safeguard_title",
+			accessorFn: (row) => `${row.safeguard_title}`,
+			header: ({ column }) => {
+				return (
+					<DataTableColumnHeader
+						column={column}
+						title="Safeguard Document Title"
+					/>
+				)
+			},
+			cell: ({ row }) => <div>{row.getValue("safeguard_title")}</div>,
+		},
+
+		{
+			id: "file_path",
+
+			accessorFn: (row) => row.file_path,
+			header: "Document",
+			cell: ({ row }) => (
+				<Link href={row.getValue("file_path")}>
+					<Button size={"sm"} variant={"link"}>
+						<Download /> Download
+					</Button>
+				</Link>
+			),
 		},
 	]
 

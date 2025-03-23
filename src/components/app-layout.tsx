@@ -26,7 +26,7 @@ export default function AppLayout({ children }: IProps) {
 						{Icon && <Icon />} <span className="ml-2">{title}</span>
 					</div>
 				)}
-				<div className="flex flex-1 flex-col gap-4 p-4 shadow-lg rounded-lg mt-3">
+				<div className="flex flex-col gap-4 p-4 shadow-lg rounded-lg mt-3">
 					{lengthPathname > 2 && (
 						<div className="rounded-md bg-primary p-4 flex text-white mt-2">
 							{Icon && <Icon />}  <span className="ml-2">{title}</span>
