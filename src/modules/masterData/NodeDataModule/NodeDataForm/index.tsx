@@ -9,7 +9,7 @@ import useNodeStore from "@/store/nodeStore"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Save } from "lucide-react"
 import Link from "next/link"
-import { useParams, useRouter } from "next/navigation"
+import { useParams, usePathname, useRouter } from "next/navigation"
 import React, { useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -28,8 +28,11 @@ const NodeDataForm: React.FC<IProps> = ({ isEdit, isDetail }) => {
 	} = useNodeStore()
 	const { toast } = useToast()
 	const route = useRouter()
+	const pathname = usePathname();
 	const params = useParams<{ id: any }>()
-
+	const splitPathname = pathname.split("/");
+	const basePathname = "/".concat(splitPathname[1])
+	
 	const nodeItemSelected = useMemo(
 		() =>
 			(isEdit || isDetail)
@@ -64,7 +67,7 @@ const NodeDataForm: React.FC<IProps> = ({ isEdit, isDetail }) => {
 						variant: "success",
 					})
 					form.reset(initialValueNode)
-					route.replace("/data-master-node-data")
+					route.replace(basePathname)
 				} else {
 					throw new Error("Failed")
 				}
@@ -77,7 +80,7 @@ const NodeDataForm: React.FC<IProps> = ({ isEdit, isDetail }) => {
 						variant: "success",
 					})
 					form.reset(initialValueNode)
-					route.replace("/data-master-node-data")
+					route.replace(basePathname)
 				} else {
 					throw new Error("Failed")
 				}
@@ -224,7 +227,7 @@ const NodeDataForm: React.FC<IProps> = ({ isEdit, isDetail }) => {
 				/>
 				{!isDetail && (
 					<div className="flex justify-end gap-4">
-						<Link href={"/data-master-node-data"}>
+						<Link href={basePathname}>
 							{" "}
 							<Button variant={"outline"} disabled={isSubmit}>
 								Cancel

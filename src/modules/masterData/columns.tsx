@@ -3,6 +3,7 @@
 import DataTableColumnHeader from "@/components/DataTable/DataTableColumnHeader"
 import TableRowActions from "@/components/TableRowActions"
 import { Button } from "@/components/ui/button"
+import { API_URL } from "@/constants"
 import { Node } from "@/types/node"
 import { Safeguard } from "@/types/safeguard"
 import { ColumnDef } from "@tanstack/react-table"
@@ -220,7 +221,7 @@ export const columnSafeguard = (
 			accessorFn: (row) => row.file_path,
 			header: "Document",
 			cell: ({ row }) => (
-				<Link href={row.getValue("file_path")}>
+				<Link download={true} target="_blank" href={`${API_URL}/storage/safeguards/${row.getValue("file_path")}`}>
 					<Button size={"sm"} variant={"link"}>
 						<Download /> Download
 					</Button>

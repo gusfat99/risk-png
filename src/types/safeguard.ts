@@ -8,7 +8,7 @@ export interface Safeguard {
 	safeguard: string
 	safeguard_title: string
 	is_master: 1 | 0 | undefined
-	file_path: string
+	file_path: any
 }
 
 export interface SafeguardPayload {

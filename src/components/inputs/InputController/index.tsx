@@ -48,7 +48,7 @@ const InputController = React.forwardRef<
 			<FormItem className="w-full">
 				<FormLabel
 					className={cn(
-						"font-semibold tracking-wider",
+						"tracking-wider",
 						labelClassName
 					)}
 				>

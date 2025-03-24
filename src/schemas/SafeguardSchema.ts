@@ -17,35 +17,19 @@ export const SafeguardSchema = z.object({
 		})
 		.refine(
 			(file) => {
-				if (file) {
-					const allowedMimeTypes = [
-						"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
-						"application/vnd.ms-excel", // .xls
-					]
-					const maxSizeInBytes = 5 * 1024 * 1024 // 5MB
-
-					// Check file type
-					if (!allowedMimeTypes.includes(file.type)) {
-						return false
-					}
-
-					// Check file size
-					if (file.size > maxSizeInBytes) {
-						return false
-					}
-
-					return true
+				if (!file) {
+					return false
 				}
-				return false
+				return true
 			},
 			{
-				message: "The File must be excel and cannot more than 5 Mb",
+				message: "Please upload file",
 			}
 		),
 })
 
 export const initialSafeguard = {
-   safeguard: "",
-   safeguard_title: "",
-   file_path : ""
+	safeguard: "",
+	safeguard_title: "",
+	file_path: undefined,
 }

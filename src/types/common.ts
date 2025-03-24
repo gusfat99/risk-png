@@ -14,6 +14,8 @@ export interface CommonState {
 	meta?: MetaResponseType
 }
 
+export type MimeTypes = "pdf" | "xlsx" | "docx" | "png" | "jpg" | "jpg"
+
 export const commonInitualState = {
 	errors: "",
 	isFetching: false,

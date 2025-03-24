@@ -1,6 +1,6 @@
 import sanitizeHtml from "sanitize-html"
 import dayjs from "dayjs"
-import { AxiosError, AxiosResponse, ResponseType } from "axios"
+import { AxiosError, AxiosRequestConfig, AxiosResponse, ResponseType } from "axios"
 import axiosInterceptor, { ResErrorType } from "@/services/axiosInterceptor"
 
 export type MetaResponseType = {
@@ -138,11 +138,12 @@ export const handleApiResponse = <T>(
 
 export const postData = <T>(
 	ep: string,
-	payload: object
+	payload: object,
+	config?: AxiosRequestConfig<any>
 ): Promise<ResponseApiType<T>> => {
 	return new Promise((resolve, reject) => {
 		axiosInterceptor
-			.post<ResponseApiType<T>>(ep, sanitizeData(payload))
+			.post<ResponseApiType<T>>(ep, sanitizeData(payload), config)
 			.then((data) => {
 				return handleApiResponse<T>(data, resolve, reject)
 			})
@@ -159,11 +160,12 @@ export const postData = <T>(
 
 export const putData = <T>(
 	ep: string,
-	payload: object
+	payload: object,
+	config?: AxiosRequestConfig<any>
 ): Promise<ResponseApiType<T>> => {
 	return new Promise((resolve, reject) => {
 		axiosInterceptor
-			.put<ResponseApiType<T>>(ep, sanitizeData(payload))
+			.put<ResponseApiType<T>>(ep, sanitizeData(payload), config)
 			.then((data) => {
 				return handleApiResponse<T>(data, resolve, reject)
 			})

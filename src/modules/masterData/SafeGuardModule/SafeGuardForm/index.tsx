@@ -1,20 +1,21 @@
 "use client"
 import InputController from "@/components/inputs/InputController"
+import InputFileContoller from "@/components/inputs/InputFileController"
 import { Button } from "@/components/ui/button"
 import { Form, FormField } from "@/components/ui/form"
 import Spinner from "@/components/ui/spinner"
+import { API_URL } from "@/constants"
 import { useToast } from "@/hooks/use-toast"
 import { SafeguardSchema, initialSafeguard } from "@/schemas/SafeguardSchema"
 import useSafeguardStore from "@/store/safeguradStore"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Save } from "lucide-react"
 import Link from "next/link"
-import { useParams, useRouter } from "next/navigation"
+import { useParams, usePathname, useRouter } from "next/navigation"
 import React, { useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { parseSafeguardDataToView } from "../parsingData"
-import InputFileContoller from "@/components/inputs/InputFileController"
 
 interface IProps {
 	isEdit?: boolean
@@ -24,12 +25,16 @@ interface IProps {
 const SafeguardForm: React.FC<IProps> = ({ isEdit, isDetail }) => {
 	const {
 		isSubmit,
-		actions: { createData, updateData },
+		actions: { createData, updateData, deleteData },
 		safeguardItems,
 	} = useSafeguardStore()
 	const { toast } = useToast()
 	const route = useRouter()
 	const params = useParams<{ id: any }>()
+	const pathname = usePathname()
+	const splitPathname = pathname.split("/")
+
+	const basePathname = "/".concat(splitPathname[1])
 
 	const safeguardSelected = useMemo(
 		() =>
@@ -51,7 +56,7 @@ const SafeguardForm: React.FC<IProps> = ({ isEdit, isDetail }) => {
 		defaultValues:
 			(isEdit || isDetail) && params?.id && safeguardSelected
 				? parseSafeguardDataToView(safeguardSelected)
-				: initialSafeguard,
+				: { ...initialSafeguard},
 	})
 
 	const handleSubmit = async (values: z.infer<typeof SafeguardSchema>) => {
@@ -64,8 +69,8 @@ const SafeguardForm: React.FC<IProps> = ({ isEdit, isDetail }) => {
 						title: result.message ?? "",
 						variant: "success",
 					})
-					form.reset(initialSafeguard)
-					route.replace("/data-master-node-data")
+					form.reset({ ...initialSafeguard, file_path: undefined })
+					route.replace(basePathname)
 				} else {
 					throw new Error("Failed")
 				}
@@ -77,8 +82,8 @@ const SafeguardForm: React.FC<IProps> = ({ isEdit, isDetail }) => {
 						title: result.message ?? "",
 						variant: "success",
 					})
-					form.reset(initialSafeguard)
-					route.replace("/data-master-node-data")
+					form.reset({ ...initialSafeguard, file_path: undefined })
+					route.replace(basePathname)
 				} else {
 					throw new Error("Failed")
 				}
@@ -92,8 +97,8 @@ const SafeguardForm: React.FC<IProps> = ({ isEdit, isDetail }) => {
 				variant: "destructive",
 			})
 		}
-	}
-
+	} 
+	
 	return (
 		<Form {...form}>
 			<form
@@ -107,7 +112,7 @@ const SafeguardForm: React.FC<IProps> = ({ isEdit, isDetail }) => {
 						<InputController
 							{...field}
 							readOnly={isDetail}
-							label="Safeguard"
+							label="Safeguard Name"
 							placeholder="Enter Safeguard"
 							onChange={(e) => {
 								form.setValue("safeguard", e.target.value)
@@ -130,26 +135,34 @@ const SafeguardForm: React.FC<IProps> = ({ isEdit, isDetail }) => {
 						/>
 					)}
 				/>
+				
 				<FormField
 					control={form.control}
 					name={"file_path"}
 					render={({ field }) => (
 						<InputFileContoller
-                     label="Safeguard Document"
-                     isRequired
-							// onChange={(e) => {
-							// 	form.setValue(
-							// 		"safeguard_title",
-							// 		e.target.value
-							// 	)
-							// }}
+							fileUrl={safeguardSelected ? `${API_URL}/storage/safeguards/${safeguardSelected.file_path}` : undefined}
+							label="Safeguard Document"
+							isRequired
+							readOnly={isDetail}
+							fileValidations={{
+								maxSizeMb: 5,
+							}}
+							onChangeHandler={(file) => {
+								if (file) {
+									console.log({ file });
+									form.setValue("file_path", file)
+								} else {
+									form.setValue("file_path", undefined as any)
+								}
+							}}
 						/>
 					)}
 				/>
 
 				{!isDetail && (
 					<div className="flex justify-end gap-4">
-						<Link href={"/data-master-node-data"}>
+						<Link href={basePathname}>
 							{" "}
 							<Button variant={"outline"} disabled={isSubmit}>
 								Cancel
