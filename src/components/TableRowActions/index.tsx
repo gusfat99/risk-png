@@ -36,7 +36,7 @@ const TableRowActions: React.FC<TableRowActionsProps> = ({
 	// );
 
 	return (
-		<DropdownMenu>
+		<DropdownMenu >
 			<DropdownMenuTrigger asChild>
 				<Button aria-haspopup="true" size="icon" variant="ghost">
 					<MoreHorizontal className="h-4 w-4" />

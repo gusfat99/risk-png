@@ -1,4 +1,4 @@
-'use client'
+"use client"
 import { PaginationType } from "@/types/common"
 import {
 	ColumnDef,
@@ -10,6 +10,7 @@ import {
 	getSortedRowModel,
 	OnChangeFn,
 	PaginationState,
+	Row,
 	SortingState,
 	TableOptions,
 	useReactTable,
@@ -36,6 +37,10 @@ interface AppDataTableProps<T> {
 	rowCount?: number
 	onPaginationChange?: OnChangeFn<PaginationState>
 	pagination?: PaginationType
+	tbodyWithCell?: boolean
+	config?: {
+		getRowKey: (row: T, index: number) => string
+	}
 }
 
 export interface ColumnMetaDef {
@@ -50,13 +55,22 @@ const DataTable = <T,>({
 	manualPagination = false,
 	onPaginationChange,
 	pagination,
+	tbodyWithCell = true,
+	config = {
+		getRowKey: (row, index) => index.toString(),
+	},
 }: AppDataTableProps<T>) => {
 	const [sorting, setSorting] = useState<SortingState>([])
-	const [columnFilters, setColumnFilters] =
-		useState<ColumnFiltersState>([])
-	const [columnVisibility, setColumnVisibility] =
-		useState<VisibilityState>({})
+	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+		{}
+	)
 	const [rowSelection, setRowSelection] = useState({})
+
+	// Enhanced row key handling
+	const getRowKey = (row: Row<T>) => {
+		return config.getRowKey(row.original, row.index)
+	}
 
 	const handlePaginationChange: OnChangeFn<PaginationState> = (
 		updaterOrValue
@@ -116,7 +130,7 @@ const DataTable = <T,>({
 	if (pagination) {
 		options.state = {
 			...options.state,
-			pagination
+			pagination,
 		}
 	}
 
@@ -137,7 +151,10 @@ const DataTable = <T,>({
 										<React.Fragment key={header.id}>
 											<TableHead
 												key={header.id}
-												className={cn(meta?.className)}
+												className={cn(
+													"bg-gray-100 text-center",
+													meta?.className
+												)}
 											>
 												{header.isPlaceholder
 													? null
@@ -156,7 +173,7 @@ const DataTable = <T,>({
 					</TableHeader>
 					<TableBody>
 						{loading ? (
-							<TableRow className="md:h-[520px] h-[180px]" >
+							<TableRow className="md:h-[520px] h-[180px]">
 								<TableCell
 									colSpan={columns.length}
 									className="h-24 text-center relative"
@@ -170,7 +187,7 @@ const DataTable = <T,>({
 								{(table?.getRowModel()?.rows || []).length ? (
 									table?.getRowModel()?.rows.map((row) => (
 										<TableRow
-											key={row.id}
+											key={getRowKey(row)}
 											data-state={
 												row.getIsSelected() &&
 												"selected"
@@ -179,13 +196,29 @@ const DataTable = <T,>({
 											{row
 												.getVisibleCells()
 												.map((cell) => (
-													<TableCell key={cell.id}>
-														{flexRender(
-															cell.column
-																.columnDef.cell,
-															cell.getContext()
+													<React.Fragment
+														key={`${getRowKey(
+															row
+														)}_${cell.column.id}`}
+													>
+														{tbodyWithCell ? (
+															<TableCell>
+																{flexRender(
+																	cell.column
+																		.columnDef
+																		.cell,
+																	cell.getContext()
+																)}
+															</TableCell>
+														) : (
+															flexRender(
+																cell.column
+																	.columnDef
+																	.cell,
+																cell.getContext()
+															)
 														)}
-													</TableCell>
+													</React.Fragment>
 												))}
 										</TableRow>
 									))

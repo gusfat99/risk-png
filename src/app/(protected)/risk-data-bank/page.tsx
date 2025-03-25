@@ -1,5 +1,5 @@
-import DashboardMain from "@/modules/dashboardModule/DashboardMain"
+import RiskBankModule from "@/modules/RiskBankModule"
 
 export default function Page() {
-	return <DashboardMain />
+	return <RiskBankModule />
 }

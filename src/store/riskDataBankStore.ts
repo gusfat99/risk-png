@@ -1,4 +1,4 @@
-import { SAFEGUARD_EP } from "@/constants/endpoints"
+import { RISK_BANK_EP, SAFEGUARD_EP } from "@/constants/endpoints"
 import {
 	deleteData,
 	getDataApi,
@@ -9,18 +9,19 @@ import {
 import { toast } from "@/hooks/use-toast"
 import { SafeguardSchema } from "@/schemas/SafeguardSchema"
 import { commonInitualState } from "@/types/common"
-import { Safeguard, SafeguardState } from "@/types/safeguard"
+import { RiskBank, RiskBankFlat, RiskDataBankState } from "@/types/riskDataBank"
 import { z } from "zod"
 import { createStore, runUpdater } from "./store"
 
 const initialState = {
 	...commonInitualState,
-	safeguardItems: [],
-	safeguardSelected: null,
+	riskDataBankItems: [],
+	riskDataBankFlat: [],
+	riskDataBankSelected: null,
 }
 
-const useSafeguardStore = createStore<SafeguardState>(
-	"aafeguard-data",
+const useRiskDataBankStore = createStore<RiskDataBankState>(
+	"risk-data-bank",
 	(set, get) => ({
 		...initialState,
 		actions: {
@@ -28,18 +29,88 @@ const useSafeguardStore = createStore<SafeguardState>(
 				set({
 					isFetching: true,
 				})
-				return new Promise<ResponseApiType<Safeguard[]>>(
+				return new Promise<ResponseApiType<RiskBank[]>>(
 					(resolve, reject) => {
-						getDataApi<Safeguard[]>(SAFEGUARD_EP, {
+						getDataApi<RiskBank[]>(RISK_BANK_EP, {
 							page: get().pagination_tanstack.pageIndex,
 							per_page: get().pagination_tanstack.pageSize,
 						})
 							.then((data) => {
-								set({
-									safeguardItems: data.data || [],
-									meta: data?.meita,
-								})
-								resolve(data)
+								//parse data to flat
+
+								if (Array.isArray(data.data)) {
+									const flattenedData: RiskBankFlat[] = (
+										data?.data || []
+									).flatMap((mainEntry, mainIndex) => {
+										const consequences =
+											mainEntry.consequences || []
+										const totalSafeguards =
+											consequences.reduce(
+												(sum, cons) =>
+													sum +
+													(cons.safeguards?.length ||
+														0),
+												0
+											)
+
+										return consequences.flatMap(
+											(consequence, consIndex) => {
+												const safeguards =
+													consequence.safeguards || []
+												const consequenceRowspan =
+													safeguards.length
+
+												return safeguards.map(
+													(safeguard, sgIndex) => ({
+														// Data Utama
+														id: mainEntry.id,
+														uniqueKey: `${mainEntry.id}_${consequence.id}_${safeguard.id}`,
+														parameter:
+															mainEntry.parameter,
+														cause: mainEntry.cause,
+														deviation_id:
+															mainEntry.deviation_id,
+														deviations:
+															mainEntry.deviations,
+														deviation:
+															mainEntry.deviations
+																.name,
+
+														// Data Konsekuensi
+														consequences,
+														consequence:
+															consequence.consequence,
+
+														// Data Safeguard
+														safeguards,
+														safeguard:
+															safeguard.safeguard,
+														safeguard_link : safeguard.file_path,
+														safeguard_title:
+															safeguard.safeguard_title,
+
+														// Metadata untuk Rowspan
+														mainRowspan:
+															totalSafeguards,
+														consequenceRowspan:
+															consequenceRowspan,
+														isFirstMain:
+															sgIndex === 0 &&
+															consIndex === 0, // Baris pertama di grup utama
+														isFirstConsequence:
+															sgIndex === 0, // Baris pertama di grup konsekuensi
+													})
+												)
+											}
+										)
+									})
+									set({
+										riskDataBankItems: data.data || [],
+										riskDataBankFlat: flattenedData,
+										meta: data?.meta,
+									})
+									resolve(data)
+								}
 							})
 							.catch((err) => {
 								toast({
@@ -61,13 +132,13 @@ const useSafeguardStore = createStore<SafeguardState>(
 				set({
 					isSubmit: true,
 				})
-				return new Promise<ResponseApiType<Safeguard>>(
+				return new Promise<ResponseApiType<RiskBank>>(
 					(resolve, reject) => {
 						const formData = new FormData()
 						Object.entries(payload).forEach(([key, value]) => {
 							formData.append(key, value)
 						})
-						postData<Safeguard>(SAFEGUARD_EP, formData, {
+						postData<RiskBank>(SAFEGUARD_EP, formData, {
 							headers: {
 								"Content-Type": "multipart/form-data",
 							},
@@ -75,8 +146,8 @@ const useSafeguardStore = createStore<SafeguardState>(
 							.then((data) => {
 								set((state) => {
 									return {
-										safeguardItems: [
-											...state.safeguardItems,
+										riskDataBankItems: [
+											...state.riskDataBankItems,
 											...(data.data ? [data.data] : []),
 										],
 									}
@@ -101,13 +172,13 @@ const useSafeguardStore = createStore<SafeguardState>(
 				set({
 					isSubmit: true,
 				})
-				return new Promise<ResponseApiType<Safeguard>>(
+				return new Promise<ResponseApiType<RiskBank>>(
 					(resolve, reject) => {
 						const formData = new FormData()
 						Object.entries(payload).forEach(([key, value]) => {
 							formData.append(key, value)
 						})
-						putData<Safeguard>(`${SAFEGUARD_EP}/${id}`, formData, {
+						putData<RiskBank>(`${SAFEGUARD_EP}/${id}`, formData, {
 							headers: {
 								"Content-Type": "multipart/form-data",
 							},
@@ -115,8 +186,8 @@ const useSafeguardStore = createStore<SafeguardState>(
 							.then((data) => {
 								set((state) => {
 									return {
-										safeguardItems: [
-											...state.safeguardItems,
+										riskDataBankItems: [
+											...state.riskDataBankItems,
 											...(data.data ? [data.data] : []),
 										],
 									}
@@ -138,11 +209,11 @@ const useSafeguardStore = createStore<SafeguardState>(
 				return new Promise<ResponseApiType<null>>((resolve, reject) => {
 					deleteData<null>(SAFEGUARD_EP + "/" + id)
 						.then((data) => {
-							const filterData = get().safeguardItems.filter(
+							const filterData = get().riskDataBankItems.filter(
 								(x) => x.id?.toString() !== id.toString()
 							)
 							set({
-								safeguardItems: filterData,
+								riskDataBankItems: filterData,
 							})
 							resolve(data)
 						})
@@ -173,4 +244,4 @@ const useSafeguardStore = createStore<SafeguardState>(
 	})
 )
 
-export default useSafeguardStore
+export default useRiskDataBankStore

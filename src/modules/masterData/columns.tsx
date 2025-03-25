@@ -170,9 +170,7 @@ export const columnSafeguard = (
 		{
 			id: "id",
 			accessorFn: (row) => row.id,
-			meta: {
-				hiddenFilter: true,
-			},
+			
 			header: () => {
 				return <div className="flex justify-start">Action</div>
 			},
@@ -187,9 +185,7 @@ export const columnSafeguard = (
 		{
 			id: "safeguard",
 			accessorFn: (row) => row.safeguard,
-			meta: {
-				hiddenFilter: true,
-			},
+			
 			header: ({ column }) => {
 				return (
 					<DataTableColumnHeader

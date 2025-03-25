@@ -34,7 +34,7 @@ const useNodeStore = createStore<NodeState>("node-data", (set, get) => ({
 					.then((data) => {
 						set({
 							nodeItems: data.data || [],
-							meta: data?.meita,
+							meta: data?.meta,
 						})
 						resolve(data)
 					})
