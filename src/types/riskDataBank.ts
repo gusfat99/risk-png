@@ -61,7 +61,7 @@ export interface RiskDataBankState extends CommonState {
 			deviation: Deviations[] | null,
 			safeguard : Safeguard[] | null
 		}>
-		fetchSingleData?(): Promise<ResponseApiType<RiskBank>>
+		fetchSingleData?(id : any): Promise<ResponseApiType<RiskBank>>
 		createData?(payload: any): Promise<ResponseApiType<RiskBank>>
 		updateData?(id: any, paylaod: any): Promise<ResponseApiType<RiskBank>>
 		deleteData?(id: any): Promise<ResponseApiType<any>>

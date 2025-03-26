@@ -107,7 +107,7 @@ const useSafeguardStore = createStore<SafeguardState>(
 						Object.entries(payload).forEach(([key, value]) => {
 							formData.append(key, value)
 						})
-						putData<Safeguard>(`${SAFEGUARD_EP}/${id}`, formData, {
+						postData<Safeguard>(`${SAFEGUARD_EP}/${id}`, formData, {
 							headers: {
 								"Content-Type": "multipart/form-data",
 							},

@@ -140,6 +140,39 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 					}
 				)
 			},
+			fetchSingleData: async (id: any) => {
+				set({
+					isFetching: true,
+				})
+				return new Promise<ResponseApiType<RiskBank>>(
+					(resolve, reject) => {
+						getDataApi<RiskBank>(`${RISK_BANK_EP}/${id}`)
+							.then((data) => {
+								//parse data to flat
+
+								if (data.data) {
+									set({
+										riskDataBankSelected: data.data,
+									})
+									resolve(data)
+								}
+							})
+							.catch((err) => {
+								toast({
+									title: "ERROR",
+									description: err.message,
+									variant: "destructive",
+								})
+								reject(err)
+							})
+							.finally(() => {
+								set({
+									isFetching: false,
+								})
+							})
+					}
+				)
+			},
 			fetchAllSupportData: async () => {
 				set((prev) => ({
 					supportData: {
@@ -152,7 +185,6 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 					safeguard: Safeguard[] | null
 				}>(async (resolve, reject) => {
 					try {
-						
 						const [deviationResult, safeguardReusult] =
 							await Promise.all([
 								getDataApi<Deviations[]>(DEVIATION_EP, {
