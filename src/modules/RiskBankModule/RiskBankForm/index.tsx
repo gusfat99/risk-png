@@ -39,7 +39,7 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 	const splitPathname = pathname.split("/")
 
 	const basePathname = "/".concat(splitPathname[1])
-	
+
 	const handleSubmit = async (values: z.infer<typeof RiskBankSchema>) => {
 		try {
 			if (createData && !params?.id && !isEdit) {
@@ -124,7 +124,7 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 	useEffect(() => {
 		fetchAllSupportData()
 	}, [fetchAllSupportData])
-	console.log({error : form.formState.errors})
+
 	return (
 		<Form {...form}>
 			<form
@@ -168,6 +168,7 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 						<InputSelectController
 							field={field}
 							label="Deviation"
+							disabled={isDetail}
 							placeholder="Select Deviation"
 							loading={isFetchingSupportData}
 							items={diviationOptions}
@@ -177,7 +178,6 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 						/>
 					)}
 				/>
-			
 
 				{(consequences || []).map((consequence, idxConsequence) => {
 					return (
@@ -203,26 +203,29 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 									/>
 								)}
 							/>
-							<RemoveButton
-								disabled={consequences.length <= 1}
-								onClick={() => {
-									removeConsequence(idxConsequence)
-								}}
-							/>
+							{!isDetail && (
+								<RemoveButton
+									disabled={consequences.length <= 1}
+									onClick={() => {
+										removeConsequence(idxConsequence)
+									}}
+								/>
+							)}
 						</div>
 					)
 				})}
-
-				<Button
-					onClick={() => {
-						handleAddConsequence()
-					}}
-					variant={"success"}
-					type="button"
-				>
-					<Plus /> Add Consequence
-				</Button>
-				<SectionSafeguardRiskBank form={form} />
+				{!isDetail && (
+					<Button
+						onClick={() => {
+							handleAddConsequence()
+						}}
+						variant={"success"}
+						type="button"
+					>
+						<Plus /> Add Consequence
+					</Button>
+				)}
+				<SectionSafeguardRiskBank form={form} isDetail />
 				{!isDetail && (
 					<div className="flex justify-end gap-4">
 						<Link href={basePathname}>

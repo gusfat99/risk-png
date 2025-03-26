@@ -3,11 +3,9 @@ import {
 	deleteData,
 	getDataApi,
 	postData,
-	putData,
 	ResponseApiType,
 } from "@/helpers/ApiHelper"
 import { toast } from "@/hooks/use-toast"
-import { SafeguardSchema } from "@/schemas/SafeguardSchema"
 import { commonInitualState } from "@/types/common"
 import {
 	Deviations,
@@ -15,9 +13,9 @@ import {
 	RiskBankFlat,
 	RiskDataBankState,
 } from "@/types/riskDataBank"
-import { z } from "zod"
-import { createStore, runUpdater } from "./store"
 import { Safeguard } from "@/types/safeguard"
+import { createStore, runUpdater } from "./store"
+import { parseRiskBankToFlatted } from "@/modules/RiskBankModule/parseRiskBank"
 
 const initialState = {
 	...commonInitualState,
@@ -50,72 +48,9 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 								//parse data to flat
 
 								if (Array.isArray(data.data)) {
-									const flattenedData: RiskBankFlat[] = (
-										data?.data || []
-									).flatMap((mainEntry, mainIndex) => {
-										const consequences =
-											mainEntry.consequences || []
-										const totalSafeguards =
-											consequences.reduce(
-												(sum, cons) =>
-													sum +
-													(cons.safeguards?.length ||
-														0),
-												0
-											)
+									const flattenedData =
+										parseRiskBankToFlatted(data.data || [])
 
-										return consequences.flatMap(
-											(consequence, consIndex) => {
-												const safeguards =
-													consequence.safeguards || []
-												const consequenceRowspan =
-													safeguards.length
-
-												return safeguards.map(
-													(safeguard, sgIndex) => ({
-														// Data Utama
-														id: mainEntry.id,
-														uniqueKey: `${mainEntry.id}_${consequence.id}_${safeguard.id}`,
-														parameter:
-															mainEntry.parameter,
-														cause: mainEntry.cause,
-														deviation_id:
-															mainEntry.deviation_id,
-														deviations:
-															mainEntry.deviations,
-														deviation:
-															mainEntry.deviations
-																.name,
-
-														// Data Konsekuensi
-														consequences,
-														consequence:
-															consequence.consequence,
-
-														// Data Safeguard
-														safeguards,
-														safeguard:
-															safeguard.safeguard,
-														safeguard_link:
-															safeguard.file_path,
-														safeguard_title:
-															safeguard.safeguard_title,
-
-														// Metadata untuk Rowspan
-														mainRowspan:
-															totalSafeguards,
-														consequenceRowspan:
-															consequenceRowspan,
-														isFirstMain:
-															sgIndex === 0 &&
-															consIndex === 0, // Baris pertama di grup utama
-														isFirstConsequence:
-															sgIndex === 0, // Baris pertama di grup konsekuensi
-													})
-												)
-											}
-										)
-									})
 									set({
 										riskDataBankItems: data.data || [],
 										riskDataBankFlat: flattenedData,
@@ -270,20 +205,13 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 					}
 				)
 			},
-			updateData: async (
-				id: any,
-				payload: z.infer<typeof SafeguardSchema>
-			) => {
+			updateData: async (id: any, payload: File) => {
 				set({
 					isSubmit: true,
 				})
 				return new Promise<ResponseApiType<RiskBank>>(
 					(resolve, reject) => {
-						const formData = new FormData()
-						Object.entries(payload).forEach(([key, value]) => {
-							formData.append(key, value)
-						})
-						putData<RiskBank>(`${RISK_BANK_EP}/${id}`, formData, {
+						postData<RiskBank>(`${RISK_BANK_EP}/${id}`, payload, {
 							headers: {
 								"Content-Type": "multipart/form-data",
 							},
@@ -317,8 +245,13 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 							const filterData = get().riskDataBankItems.filter(
 								(x) => x.id?.toString() !== id.toString()
 							)
+							const filterDataFlat =
+								get().riskDataBankFlat.filter(
+									(x) => x.id?.toString() !== id.toString()
+								)
 							set({
 								riskDataBankItems: filterData,
+								riskDataBankFlat: filterDataFlat,
 							})
 							resolve(data)
 						})

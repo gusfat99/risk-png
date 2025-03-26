@@ -107,7 +107,6 @@ const InputFileContoller: React.FC<IProps> = ({
 	if (sizeInput === "sm") {
 		sizeIcon = 16
 	}
-	console.log(sizeInput)
 
 	return (
 		<FormItem>

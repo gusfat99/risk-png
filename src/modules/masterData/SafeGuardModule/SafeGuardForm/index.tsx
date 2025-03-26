@@ -151,7 +151,6 @@ const SafeguardForm: React.FC<IProps> = ({ isEdit, isDetail }) => {
 							sizeInput="md"
 							onChangeHandler={(file) => {
 								if (file) {
-									console.log({ file });
 									form.setValue("file_path", file)
 								} else {
 									form.setValue("file_path", undefined as any)

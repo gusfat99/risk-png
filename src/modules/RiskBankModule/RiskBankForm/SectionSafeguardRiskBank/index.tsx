@@ -56,7 +56,7 @@ const SectionSafeguardRiskBank: React.FC<IProps> = ({
 	) => {
 		const consequencesCopy = [...consequences]
 		let safeguard = consequencesCopy[idxConsequences].safeguards || []
-	
+
 		safeguard = safeguard.filter((_, i) => i !== idxSafeguard)
 		updateConsequence(idxConsequences, {
 			...consequencesCopy[idxConsequences],
@@ -70,7 +70,6 @@ const SectionSafeguardRiskBank: React.FC<IProps> = ({
 		idxConsequence: number,
 		idxsafeguard: number
 	) => {
-		
 		const regex = /^-?\d+$/
 		//check is number/id
 		if (regex.test(value)) {
@@ -124,12 +123,14 @@ const SectionSafeguardRiskBank: React.FC<IProps> = ({
 								<Label className="font-semibold">
 									Safeguards Data
 								</Label>
-								<AddButton
-									label="Add Safeguards"
-									onClick={() =>
-										handleAddSafeguard(idxConsequence)
-									}
-								/>
+								{!isDetail && (
+									<AddButton
+										label="Add Safeguards"
+										onClick={() =>
+											handleAddSafeguard(idxConsequence)
+										}
+									/>
+								)}
 							</div>
 							{(consequence?.safeguards || []).map(
 								(safeguard, idxsafeguard) => {
@@ -138,15 +139,17 @@ const SectionSafeguardRiskBank: React.FC<IProps> = ({
 											key={idxsafeguard}
 											className="border flex flex-col border-gray-300 rounded-md p-2"
 										>
-											<RemoveButton
-												className="w-fit self-end"
-												onClick={() => {
-													handleRemoveSafeguard(
-														idxConsequence,
-														idxsafeguard
-													)
-												}}
-											/>
+											{!isDetail && (
+												<RemoveButton
+													className="w-fit self-end"
+													onClick={() => {
+														handleRemoveSafeguard(
+															idxConsequence,
+															idxsafeguard
+														)
+													}}
+												/>
+											)}
 											<div className="grid md:grid-cols-3 grid-cols-1 gap-2">
 												<FormField
 													control={form.control}
@@ -165,7 +168,8 @@ const SectionSafeguardRiskBank: React.FC<IProps> = ({
 															field={field}
 															readOnly={isDetail}
 															disabled={
-																isFetchingSupportData
+																isFetchingSupportData ||
+																isDetail
 															}
 															label="Safeguard"
 															placeholder="Select Safeguard"
@@ -262,14 +266,16 @@ const SectionSafeguardRiskBank: React.FC<IProps> = ({
 									)
 								}
 							)}
-							<RemoveButton
-								size={"sm"}
-								className="absolute -top-4 right-0"
-								disabled={consequences.length === 1}
-								onClick={() => {
-									removeConsequence(idxConsequence)
-								}}
-							/>
+							{!isDetail && (
+								<RemoveButton
+									size={"sm"}
+									className="absolute -top-4 right-0"
+									disabled={consequences.length === 1}
+									onClick={() => {
+										removeConsequence(idxConsequence)
+									}}
+								/>
+							)}
 						</div>
 					)
 				})}

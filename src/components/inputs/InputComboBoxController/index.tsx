@@ -35,7 +35,6 @@ interface InputComboboxControllerProps extends InputProps {
 		secure?: boolean
 		type?: "number" | "text" | "password" | "email" | "url"
 		onClickShuffix?(): void
-		
 	}
 	selectConfig?: {
 		loading?: boolean
@@ -68,7 +67,7 @@ const InputComboboxController = React.forwardRef<
 		ref
 	) => {
 		const [mode, setMode] = useState<"text" | "select">(defaultMode)
-		console.log({ value: value });
+		
 		return (
 			<FormItem className="w-full">
 				<FormLabel className={cn("tracking-wider", labelClassName)}>
@@ -82,7 +81,6 @@ const InputComboboxController = React.forwardRef<
 							<Input
 								{...field}
 								disabled={disabled}
-								
 								ref={ref} // forward ref to Input component
 								onChange={(e) =>
 									handleChange(e.target.value, field.name)
@@ -119,8 +117,7 @@ const InputComboboxController = React.forwardRef<
 						<Select
 							defaultValue={value}
 							onValueChange={(val) =>
-								val &&
-								handleChange(val as any, field.name)
+								val && handleChange(val as any, field.name)
 							}
 							value={value}
 							disabled={disabled}
@@ -133,11 +130,16 @@ const InputComboboxController = React.forwardRef<
 								</SelectTrigger>
 							</FormControl>
 							<SelectContent>
-								{(selectConfig?.items || []).map((item, key) => (
-									<SelectItem key={key} value={item.value}>
-										{item.label}
-									</SelectItem>
-								))}
+								{(selectConfig?.items || []).map(
+									(item, key) => (
+										<SelectItem
+											key={key}
+											value={item.value}
+										>
+											{item.label}
+										</SelectItem>
+									)
+								)}
 							</SelectContent>
 						</Select>
 					</FormControl>
@@ -146,19 +148,20 @@ const InputComboboxController = React.forwardRef<
 					<FormDescription>{description}</FormDescription>
 				)}
 				<FormMessage />
-				<InputCheckbox
-					id="placeholderCheckbox"
-					label={placeholderCheckbox}
-					onCheckedChange={(checked) => {
-					 
-						if (checked) {
-							setMode("text")
-						} else {
-							setMode("select")
-						}
-					}}
-					checked={mode === "text"}
-				/>
+				{!disabled && (
+					<InputCheckbox
+						id="placeholderCheckbox"
+						label={placeholderCheckbox}
+						onCheckedChange={(checked) => {
+							if (checked) {
+								setMode("text")
+							} else {
+								setMode("select")
+							}
+						}}
+						checked={mode === "text"}
+					/>
+				)}
 			</FormItem>
 		)
 	}

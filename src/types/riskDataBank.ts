@@ -30,6 +30,7 @@ export interface RiskBank {
 
 export interface RiskBankFlat {
 	id: number
+	no: number
 	uniqueKey: string
 	deviation_id: number
 	parameter: string

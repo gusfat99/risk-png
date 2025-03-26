@@ -1,11 +1,10 @@
-import DataTableColumnHeader from "@/components/DataTable/DataTableColumnHeader"
 import TableRowActions from "@/components/TableRowActions"
 import { Button } from "@/components/ui/button"
 import { TableCell } from "@/components/ui/table"
 import { API_URL } from "@/constants"
-import { RiskBank, RiskBankFlat } from "@/types/riskDataBank"
+import { RiskBankFlat } from "@/types/riskDataBank"
 import { ColumnDef } from "@tanstack/react-table"
-import { File, FileBox, FileDown } from "lucide-react"
+import { FileDown } from "lucide-react"
 import Link from "next/link"
 
 export const columnRiskBank = (
@@ -21,7 +20,7 @@ export const columnRiskBank = (
 						className="border"
 						rowSpan={row.original.mainRowspan}
 					>
-						{row.original.id}
+						{row.original.no}
 					</TableCell>
 				) : null,
 		},
