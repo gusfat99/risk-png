@@ -148,6 +148,7 @@ const SafeguardForm: React.FC<IProps> = ({ isEdit, isDetail }) => {
 							fileValidations={{
 								maxSizeMb: 5,
 							}}
+							sizeInput="md"
 							onChangeHandler={(file) => {
 								if (file) {
 									console.log({ file });

@@ -1,4 +1,4 @@
-import { RISK_BANK_EP, SAFEGUARD_EP } from "@/constants/endpoints"
+import { DEVIATION_EP, RISK_BANK_EP, SAFEGUARD_EP } from "@/constants/endpoints"
 import {
 	deleteData,
 	getDataApi,
@@ -9,14 +9,25 @@ import {
 import { toast } from "@/hooks/use-toast"
 import { SafeguardSchema } from "@/schemas/SafeguardSchema"
 import { commonInitualState } from "@/types/common"
-import { RiskBank, RiskBankFlat, RiskDataBankState } from "@/types/riskDataBank"
+import {
+	Deviations,
+	RiskBank,
+	RiskBankFlat,
+	RiskDataBankState,
+} from "@/types/riskDataBank"
 import { z } from "zod"
 import { createStore, runUpdater } from "./store"
+import { Safeguard } from "@/types/safeguard"
 
 const initialState = {
 	...commonInitualState,
 	riskDataBankItems: [],
 	riskDataBankFlat: [],
+	supportData: {
+		isFetchingSupportData: false,
+		deviationItems: [],
+		safeguardItems: [],
+	},
 	riskDataBankSelected: null,
 }
 
@@ -85,7 +96,8 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 														safeguards,
 														safeguard:
 															safeguard.safeguard,
-														safeguard_link : safeguard.file_path,
+														safeguard_link:
+															safeguard.file_path,
 														safeguard_title:
 															safeguard.safeguard_title,
 
@@ -128,17 +140,78 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 					}
 				)
 			},
-			createData: async (payload: z.infer<typeof SafeguardSchema>) => {
+			fetchAllSupportData: async () => {
+				set((prev) => ({
+					supportData: {
+						...prev.supportData,
+						isFetchingSupportData: true,
+					},
+				}))
+				return new Promise<{
+					deviation: Deviations[] | null
+					safeguard: Safeguard[] | null
+				}>(async (resolve, reject) => {
+					try {
+						
+						const [deviationResult, safeguardReusult] =
+							await Promise.all([
+								getDataApi<Deviations[]>(DEVIATION_EP, {
+									page: 1,
+									per_page: 1000,
+								}),
+								getDataApi<Safeguard[]>(SAFEGUARD_EP, {
+									page: 1,
+									per_page: 1000,
+								}),
+							])
+
+						const result: {
+							deviation: Deviations[] | null
+							safeguard: Safeguard[] | null
+						} = {
+							deviation: null,
+							safeguard: null,
+						}
+
+						if (Array.isArray(deviationResult.data)) {
+							result.deviation = deviationResult.data
+						}
+						if (Array.isArray(safeguardReusult.data)) {
+							result.safeguard = safeguardReusult.data
+						}
+
+						resolve(result)
+						set((prev) => ({
+							supportData: {
+								...prev.supportData,
+								isFetchingSupportData: false,
+								safeguardItems: result.safeguard,
+								deviationItems: result.deviation,
+							},
+						}))
+					} catch (error: any) {
+						toast({
+							title: "ERROR",
+							description: error.message,
+							variant: "destructive",
+						})
+						set((prev) => ({
+							supportData: {
+								...prev.supportData,
+								isFetchingSupportData: false,
+							},
+						}))
+						reject(error)
+					}
+				})
+			},
+			createData: async (payload: FormData) => {
 				set({
 					isSubmit: true,
 				})
 				return new Promise<ResponseApiType<RiskBank>>(
 					(resolve, reject) => {
-						const formData = new FormData()
-						Object.entries(payload).forEach(([key, value]) => {
-							formData.append(key, value)
-						})
-						postData<RiskBank>(SAFEGUARD_EP, formData, {
+						postData<RiskBank>(RISK_BANK_EP, payload, {
 							headers: {
 								"Content-Type": "multipart/form-data",
 							},
@@ -178,7 +251,7 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 						Object.entries(payload).forEach(([key, value]) => {
 							formData.append(key, value)
 						})
-						putData<RiskBank>(`${SAFEGUARD_EP}/${id}`, formData, {
+						putData<RiskBank>(`${RISK_BANK_EP}/${id}`, formData, {
 							headers: {
 								"Content-Type": "multipart/form-data",
 							},
@@ -207,7 +280,7 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 			},
 			deleteData: async (id) => {
 				return new Promise<ResponseApiType<null>>((resolve, reject) => {
-					deleteData<null>(SAFEGUARD_EP + "/" + id)
+					deleteData<null>(RISK_BANK_EP + "/" + id)
 						.then((data) => {
 							const filterData = get().riskDataBankItems.filter(
 								(x) => x.id?.toString() !== id.toString()

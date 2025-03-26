@@ -50,8 +50,17 @@ export interface RiskDataBankState extends CommonState {
 	riskDataBankItems: RiskBank[]
 	riskDataBankFlat: RiskBankFlat[]
 	riskDataBankSelected: RiskBank | null
+	supportData: {
+		isFetchingSupportData: boolean;
+		deviationItems: Deviations[] | null;
+		safeguardItems : Safeguard[] | null,
+	},
 	actions: {
 		fetchAllData(): Promise<ResponseApiType<RiskBank[]>>
+		fetchAllSupportData(): Promise<{
+			deviation: Deviations[] | null,
+			safeguard : Safeguard[] | null
+		}>
 		fetchSingleData?(): Promise<ResponseApiType<RiskBank>>
 		createData?(payload: any): Promise<ResponseApiType<RiskBank>>
 		updateData?(id: any, paylaod: any): Promise<ResponseApiType<RiskBank>>

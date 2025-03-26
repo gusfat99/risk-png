@@ -12,12 +12,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Plus, Save } from "lucide-react"
 import Link from "next/link"
 import { useParams, usePathname, useRouter } from "next/navigation"
-import React from "react"
+import React, { useEffect } from "react"
 import { useFieldArray, useForm } from "react-hook-form"
 import { z } from "zod"
-import { parseRiskBanktoView } from "../parseRiskBank"
+import { parseRiskBankToPayload, parseRiskBanktoView } from "../parseRiskBank"
 import RemoveButton from "@/components/buttons/RemoveButton"
 import SectionSafeguardRiskBank from "./SectionSafeguardRiskBank"
+import InputSelectController from "@/components/inputs/InputSelectController"
 
 interface IProps {
 	isDetail?: boolean
@@ -27,7 +28,8 @@ interface IProps {
 const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 	const {
 		riskDataBankSelected,
-		actions: { createData },
+		actions: { createData, updateData, fetchAllSupportData },
+		supportData: { isFetchingSupportData, deviationItems },
 		isSubmit,
 	} = useRiskDataBankStore()
 	const { toast } = useToast()
@@ -37,8 +39,47 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 	const splitPathname = pathname.split("/")
 
 	const basePathname = "/".concat(splitPathname[1])
+	
+	const handleSubmit = async (values: z.infer<typeof RiskBankSchema>) => {
+		try {
+			if (createData && !params?.id && !isEdit) {
+				const formDataPayload = parseRiskBankToPayload(values)
+				const result = await createData(formDataPayload)
 
-	const handleSubmit = (values: z.infer<typeof RiskBankSchema>) => {}
+				if (result) {
+					toast({
+						title: result.message ?? "",
+						variant: "success",
+					})
+					form.reset({ ...initialRiskBank })
+					route.replace(basePathname)
+				} else {
+					throw new Error("Failed")
+				}
+			} else if (updateData && params.id && isEdit) {
+				const result = await updateData(params?.id, values)
+
+				if (result) {
+					toast({
+						title: result.message ?? "",
+						variant: "success",
+					})
+					form.reset({ ...initialRiskBank })
+					route.replace(basePathname)
+				} else {
+					throw new Error("Failed")
+				}
+			}
+		} catch (error: any) {
+			console.log({ error })
+			toast({
+				title: error?.message
+					? error.message
+					: "An unexpected error occurred",
+				variant: "destructive",
+			})
+		}
+	}
 
 	const form = useForm<z.infer<typeof RiskBankSchema>>({
 		resolver: zodResolver(RiskBankSchema),
@@ -65,7 +106,7 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 		name: "consequences",
 		keyName: "idx",
 	})
-	const { append: appendConsequence, remove: removeConsequence, update : updateConsequence } =
+	const { append: appendConsequence, remove: removeConsequence } =
 		fieldArrayConsequences
 
 	const handleAddConsequence = () => {
@@ -74,25 +115,16 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 			safeguards: [],
 		})
 	}
-	const handleAddSafeguard = (idxConsequences: number) => {
-		const consequencesCopy = [...consequences];
-		let safeguard = consequencesCopy[idxConsequences].safeguards;
-		safeguard = [
-			...safeguard,
-			{
-				safeguard: "",
-				safeguard_title: "",
-			},
-		]
-		updateConsequence(idxConsequences, {
-			...consequencesCopy[idxConsequences],
-			safeguards : safeguard
-		});
-		
-	}
 
-	console.log({ consequences })
+	const diviationOptions = (deviationItems || [])?.map((x) => ({
+		value: x.id?.toString(),
+		label: x.name,
+	}))
 
+	useEffect(() => {
+		fetchAllSupportData()
+	}, [fetchAllSupportData])
+	console.log({error : form.formState.errors})
 	return (
 		<Form {...form}>
 			<form
@@ -131,21 +163,23 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 				/>
 				<FormField
 					control={form.control}
-					name={"deviation"}
+					name={"deviation_id"}
 					render={({ field }) => (
-						<InputController
-							{...field}
-							readOnly={isDetail}
+						<InputSelectController
+							field={field}
 							label="Deviation"
-							placeholder="Enter Deviation"
-							onChange={(e) => {
-								form.setValue("deviation", e.target.value)
+							placeholder="Select Deviation"
+							loading={isFetchingSupportData}
+							items={diviationOptions}
+							onChange={(value) => {
+								form.setValue("deviation_id", value)
 							}}
 						/>
 					)}
 				/>
+			
 
-				{consequences.map((consequence, idxConsequence) => {
+				{(consequences || []).map((consequence, idxConsequence) => {
 					return (
 						<div
 							key={idxConsequence}

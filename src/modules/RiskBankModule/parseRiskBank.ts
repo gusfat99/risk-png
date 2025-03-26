@@ -1,4 +1,6 @@
+import { RiskBankSchema } from "@/schemas/RiskBankSchema"
 import { RiskBank } from "@/types/riskDataBank"
+import { z } from "zod"
 
 export const parseRiskBanktoView = (data: RiskBank) => {
 	return {
@@ -24,4 +26,50 @@ export const parseRiskBanktoView = (data: RiskBank) => {
 			}
 		}),
 	}
+}
+
+export const parseRiskBankToPayload = (
+	value: z.infer<typeof RiskBankSchema>
+): FormData => {
+	const formData = new FormData()
+	const regex = /^-?\d+$/
+	//check is number/id
+
+	formData.append("parameter", value.parameter)
+	formData.append("cause", value.cause)
+	if (value.deviation_id) {
+		formData.append("deviation_id", value.deviation_id)
+	} else if (value.deviation) {
+		formData.append("deviation", value.deviation)
+	}
+	value.consequences.forEach((consequence, idx) => {
+		formData.append(
+			`consequences[${idx}][consequence]`,
+			consequence.consequence
+		)
+		consequence.safeguards.forEach((safeguard, idxSafeguard) => {
+			let indexSafeguard = `consequences[${idx}][safeguards][${idxSafeguard}]`
+			//check jika safeguard isinya berupa id maka payload yg di kirim safeguard_id saja
+			if (regex.test(safeguard.safeguard || "")) {
+				formData.append(
+					`${indexSafeguard}[safeguard_id]`,
+					String(safeguard.safeguard ?? "")
+				)
+			} else {
+				formData.append(
+					`${indexSafeguard}[safeguard]`,
+					String(safeguard.safeguard ?? "")
+				)
+				formData.append(
+					`${indexSafeguard}[safeguard_title]`,
+					String(safeguard.safeguard_title ?? "")
+				)
+				formData.append(
+					`${indexSafeguard}[file_path]`,
+					safeguard.file_path ? safeguard.file_path : ""
+				)
+			}
+		})
+	})
+	return formData
 }

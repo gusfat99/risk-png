@@ -9,7 +9,6 @@ import { useToast } from "@/hooks/use-toast"
 import { cn, shortenFileName } from "@/lib/utils"
 import { MimeTypes } from "@/types/common"
 import { File, UploadIcon } from "lucide-react"
-import { title } from "process"
 import React, { useEffect, useState } from "react"
 
 interface IProps extends InputProps {
@@ -18,6 +17,7 @@ interface IProps extends InputProps {
 	label: string
 	isRequired?: boolean
 	readOnly?: boolean
+	sizeInput?: "sm" | "md"
 	fileValidations?: {
 		allowMimeTypes?: Array<MimeTypes>
 		maxSizeMb?: number //in Megabit
@@ -35,7 +35,7 @@ const InputFileContoller: React.FC<IProps> = ({
 	readOnly,
 	onChangeHandler,
 	fileValidations,
-
+	sizeInput = "md",
 	...restProps
 }) => {
 	const { toast } = useToast()
@@ -103,6 +103,12 @@ const InputFileContoller: React.FC<IProps> = ({
 		}
 	}, [fileUrl])
 
+	let sizeIcon = 24
+	if (sizeInput === "sm") {
+		sizeIcon = 16
+	}
+	console.log(sizeInput)
+
 	return (
 		<FormItem>
 			<FormLabel className={cn("tracking-wider", labelClassName)}>
@@ -110,46 +116,112 @@ const InputFileContoller: React.FC<IProps> = ({
 				{isRequired && <span className="text-destructive">*</span>}
 			</FormLabel>
 			<FormControl>
-				<div className="bg-white rounded-xl border-2  border-gray-300 flex flex-row gap-4 py-3 px-4 items-center w-fit">
-					<div className="border-2 border-gray-300 rounded-full text-gray-700 p-4">
+				<div className="bg-white rounded-xl border-2 border-gray-300 flex flex-row gap-4 py-3 px-4 items-center w-fit xl:min-w-[340px]">
+					<div
+						className={cn(
+							"border-2 border-gray-300 rounded-full text-gray-700",
+							{
+								"p-4": sizeInput === "md" ? true : false,
+								"p-2": sizeInput === "sm" ? true : false,
+							}
+						)}
+					>
 						{readOnly && (
-							<File className="text-gray-400 font-medium" />
+							<File
+								className={cn("text-gray-400 font-medium")}
+								size={sizeIcon}
+							/>
 						)}
 						{!readOnly && (
-							<UploadIcon className="text-gray-400 font-medium" />
+							<UploadIcon
+								className={cn("text-gray-400 font-medium")}
+								size={sizeIcon}
+							/>
 						)}
 					</div>
-					<div>
-						<h3 className="font-medium  mb-2">Upload File</h3>
-						{/* Existing file preview */}
-						{existingFile && (
-							<div className="mb-4">
-								<p className="text-sm text-gray-600">
-									Current file:
-								</p>
-								<a
-									href={existingFile}
-									target="_blank"
-									rel="noopener noreferrer"
-									className="text-blue-600 hover:underline"
-								>
-									{shortenFileName(
-										existingFile
-											.split("/")
-											.pop()
-											?.split("_")
-											?.join(" ") || ""
+					<div className="flex flex-col w-full ">
+						<div className="flex flex-row gap-4 items-center justify-between">
+							<h3 className="font-medium  mb-1">Upload File</h3>
+							{!readOnly && (
+								<label
+									className={cn(
+										"inline-block border-gray-300 rounded-lg hover:bg-secondary cursor-pointer border text-sm hover:text-white transition-colors self-end",
+										{
+											"p-4": sizeInput === "md",
+											"p-2": sizeInput === "sm",
+										}
 									)}
-								</a>
-							</div>
-						)}
-						<p className="text-sm text-gray-500">
-							(Only {allowMimeTypes.join(", ").toUpperCase()}{" "}
-							files are allowed)
-						</p>
-						<p className="text-sm text-gray-500 ">
-							(Max. File size: {maxSizeMb} Mb)
-						</p>
+								>
+									{existingFile ? "Update " : "Choose "} File
+									<Input
+										type="file"
+										className="hidden"
+										accept={allowMimeTypes
+											.map((x) => `.${x}`)
+											.join(",")}
+										onChange={(e) => {
+											const file = e.target.files?.[0]
+											if (file) {
+												const error = handleFileChange(
+													file,
+													onChangeHandler ||
+														(() => {})
+												)
+												if (error) {
+													// Handle error
+													toast({
+														title: "Warning",
+														description: error,
+														variant: "warning",
+													})
+												}
+											} else {
+												setSelectedFile(null)
+												onChangeHandler &&
+													onChangeHandler(null)
+											}
+										}}
+										{...restProps}
+									/>
+								</label>
+							)}
+						</div>
+						<div>
+							{/* Existing file preview */}
+							{existingFile && (
+								<div className="mb-2">
+									{sizeInput === "md" && (
+										<p className="text-sm text-gray-600">
+											Current file:
+										</p>
+									)}
+									<a
+										href={existingFile}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="text-blue-600 hover:underline text-sm"
+									>
+										{shortenFileName(
+											existingFile
+												.split("/")
+												.pop()
+												?.split("_")
+												?.join(" ") || ""
+										)}
+									</a>
+								</div>
+							)}
+							{sizeInput !== "sm" && (
+								<p className="text-sm text-gray-500">
+									(Only{" "}
+									{allowMimeTypes.join(", ").toUpperCase()}{" "}
+									files are allowed)
+								</p>
+							)}
+							<p className="text-sm text-gray-500 ">
+								(Max. File size: {maxSizeMb} Mb)
+							</p>
+						</div>
 						{selectedFile && (
 							<p className="text-sm text-gray-600">
 								Selected file:{" "}
@@ -159,39 +231,6 @@ const InputFileContoller: React.FC<IProps> = ({
 							</p>
 						)}
 					</div>
-					{!readOnly && (
-						<label className="inline-block p-4  border-gray-300 rounded-lg hover:bg-secondary cursor-pointer border hover:text-white  transition-colors">
-							{existingFile ? "Update " : "Choose "} File
-							<Input
-								type="file"
-								className="hidden"
-								accept={allowMimeTypes
-									.map((x) => `.${x}`)
-									.join(",")}
-								onChange={(e) => {
-									const file = e.target.files?.[0]
-									if (file) {
-										const error = handleFileChange(
-											file,
-											onChangeHandler || (() => {})
-										)
-										if (error) {
-											// Handle error
-											toast({
-												title: "Warning",
-												description: error,
-												variant: "warning",
-											})
-										}
-									} else {
-										setSelectedFile(null)
-										onChangeHandler && onChangeHandler(null)
-									}
-								}}
-								{...restProps}
-							/>
-						</label>
-					)}
 				</div>
 			</FormControl>
 			<FormMessage />

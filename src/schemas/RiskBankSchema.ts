@@ -3,31 +3,24 @@ import { z } from "zod"
 export const   RiskBankSchema = z.object({
 	parameter: z.string({
 		message: "Parameter is required",
-	}),
+	}).min(1, { message: "Parameter is required",}),
 	deviation: z.string().optional(),
-	deviation_id: z.string().optional(),
+	deviation_id: z.string().min(1, { message: "deviation is required",}),
 	cause: z.string({
 		message: "Cause is required",
-	}),
+	}).min(1, { message: "Cause is required",}),
 	consequences: z
 		.array(
 			z.object({
 				consequence: z.string({
 					message: "Consequence is required",
-				}),
+				}).min(1, { message: "Consequence is required",}),
 				safeguards: z.array(
 					z.object({
-						safeguard_id: z.number().optional(),
-						safeguard: z.string().optional(),
-						safeguard_title: z.string().optional(),
-						file_path: z.instanceof(File).refine(
-							(file) => {
-								return true
-							},
-							{
-								message: "Please upload file",
-							}
-						).optional(),
+						// safeguard_id: z.number().optional(),
+						safeguard: z.string().min(1, { message: "safeguard is required",}),
+						safeguard_title: z.string().min(1, { message: "safeguard title is required",}),
+						file_path: z.any(),
 					})
 				),
 			})

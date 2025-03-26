@@ -16,6 +16,12 @@ export interface CommonState {
 
 export type MimeTypes = "pdf" | "xlsx" | "docx" | "png" | "jpg" | "jpg"
 
+export type SelectDataType = {
+	label: string
+	value: any
+	[x: string]: any
+}
+
 export const commonInitualState = {
 	errors: "",
 	isFetching: false,

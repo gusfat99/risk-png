@@ -14,11 +14,12 @@ import { columnRiskBank } from "./columns"
 
 const RiskBankModule = () => {
 	const {
-      riskDataBankFlat,
+		riskDataBankFlat,
 		actions: { fetchAllData, setPagination, deleteData },
 		isFetching,
 		meta,
 		pagination_tanstack,
+		
 	} = useRiskDataBankStore()
 	const { pageIndex, pageSize } = pagination_tanstack
 	const [shownAlertDel, setShownAlertDel] = useState({
@@ -28,16 +29,16 @@ const RiskBankModule = () => {
 	const { toast } = useToast()
 	const total = meta?.total || 0
 	const router = useRouter()
-		const pathname = usePathname()
-		const splitPathname = pathname.split("/")
-	
-		const basePathname = "/".concat(splitPathname[1])
+	const pathname = usePathname()
+	const splitPathname = pathname.split("/")
+
+	const basePathname = "/".concat(splitPathname[1])
 
 	const handleActionTable = (action: string, id: any) => {
 		if (action === "update") {
-			router.push(basePathname+"/update/" + id)
+			router.push(basePathname + "/update/" + id)
 		} else if (action === "detail") {
-			router.push(basePathname+"/detail/" + id)
+			router.push(basePathname + "/detail/" + id)
 		} else if (action === "delete") {
 			//
 			setShownAlertDel({
@@ -48,7 +49,6 @@ const RiskBankModule = () => {
 	}
 
 	const handleDeleteAction = (confirmType: string) => {
-	
 		if (confirmType === "deny") {
 			setShownAlertDel({
 				id: null,
@@ -82,7 +82,7 @@ const RiskBankModule = () => {
 					isRequired={false}
 					placeholder="Search..."
 				/>
-				<Link href={basePathname+"/add"}>
+				<Link href={basePathname + "/add"}>
 					<Button variant="success">
 						<Plus /> Add Risk Bank
 					</Button>
@@ -99,8 +99,7 @@ const RiskBankModule = () => {
 					pagination={pagination_tanstack}
 					tbodyWithCell={false}
 					config={{
-						getRowKey: (row) => row.uniqueKey
-
+						getRowKey: (row) => row.uniqueKey,
 					}}
 				/>
 				<AlertConfirmDialog
