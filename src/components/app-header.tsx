@@ -9,39 +9,63 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select"
-import useGetTitleRoute from "@/hooks/use-title-route"
-import { generateYears } from "@/lib/utils"
+import { useRouteGetTitle, useRouteNavigate } from "@/hooks/use-route-navigate"
+import { cn, generateYears } from "@/lib/utils"
 import useAuthStore from "@/store/authStore"
 import Image from "next/image"
+import Link from "next/link"
+import React from "react"
+import {
+	Breadcrumb,
+	BreadcrumbItem,
+	BreadcrumbList,
+	BreadcrumbPage,
+	BreadcrumbSeparator
+} from "./ui/breadcrumb"
+import { Separator } from "./ui/separator"
 import { SidebarTrigger } from "./ui/sidebar"
 import Title from "./ui/title"
 
 const AppHeader = () => {
-	const {
-		subtitle
-	} = useGetTitleRoute();
-
+	const { subtitle } = useRouteGetTitle()
+	const { breadcrumbs } = useRouteNavigate()
 	const { user, year_selected } = useAuthStore()
+	// console.log({ length_pathname })
 	return (
 		<header className="flex h-16 shrink-0 items-center justify-between gap-2">
 			<div className="flex flex-col">
-				<Title>{ subtitle}</Title>
+				<Title>{subtitle}</Title>
 				<div className="flex items-center gap-2">
 					<SidebarTrigger className="-ml-1" />
-					{/* <Separator orientation="vertical" className="mr-2 h-4" /> */}
-					{/* <Breadcrumb>
+					<Separator orientation="vertical" className="mr-2 h-4" />
+					<Breadcrumb>
 						<BreadcrumbList>
-							<BreadcrumbItem className="hidden md:block">
-								<BreadcrumbLink href="#">
-									Building Your Application
-								</BreadcrumbLink>
-							</BreadcrumbItem>
-							<BreadcrumbSeparator className="hidden md:block" />
-							<BreadcrumbItem>
-								<BreadcrumbPage>Data Fetching</BreadcrumbPage>
-							</BreadcrumbItem>
+							{(breadcrumbs || []).map((breadcumb, idx) => {
+								return idx === breadcrumbs.length - 1 ? (
+									<BreadcrumbItem key={idx} >
+										<BreadcrumbPage className="text-warning-foreground" >
+											{breadcumb.title}
+										</BreadcrumbPage>
+									</BreadcrumbItem>
+								) : (
+									<React.Fragment key={idx}>
+										<BreadcrumbItem className="hidden md:block">
+											<Link
+												className={cn(
+													"transition-colors hover:text-foreground"
+												)}
+												href={breadcumb.path}
+											>
+												{breadcumb.title}
+											</Link>
+										
+										</BreadcrumbItem>
+										<BreadcrumbSeparator className="hidden md:block" />
+									</React.Fragment>
+								)
+							})}
 						</BreadcrumbList>
-					</Breadcrumb> */}
+					</Breadcrumb>
 				</div>
 			</div>
 			<div className="flex gap-2">
@@ -49,7 +73,6 @@ const AppHeader = () => {
 					<Image src={Bell} width={82} height={82} alt="bell-notif" />
 				</button>
 				<Select value={year_selected}>
-					
 					<SelectTrigger className="w-[98px]">
 						<SelectValue placeholder="Tahun" />
 					</SelectTrigger>
