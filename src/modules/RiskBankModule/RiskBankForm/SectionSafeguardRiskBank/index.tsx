@@ -101,7 +101,7 @@ const SectionSafeguardRiskBank: React.FC<IProps> = ({
 			<Label className="font-semibold">Safeguards :</Label>
 			<div className="mt-2 space-y-4">
 				{(consequences || []).map((consequence, idxConsequence) => {
-					// console.log({ safeguard: consequence?.safeguards })
+		
 					return (
 						<div
 							key={idxConsequence}

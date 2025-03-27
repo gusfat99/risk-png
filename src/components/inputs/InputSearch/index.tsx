@@ -27,7 +27,7 @@ const InputSearch = React.forwardRef<HTMLInputElement, IPropsInputSearch>(
 		ref
 	) => {
 		return (
-			<div className="grid w-full max-w-sm items-center gap-1.5">
+			<div className="grid max-w-sm items-center gap-1.5">
 				{label && (
 					<div className="flex gap-2">
 						<Label>{label}</Label>

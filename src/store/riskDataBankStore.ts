@@ -277,7 +277,6 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 						state.pagination_tanstack
 					),
 				})),
-			// setPagination : ()
 		},
 	})
 )

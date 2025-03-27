@@ -19,6 +19,7 @@ import {
 import { SelectProps } from "@radix-ui/react-select"
 import { SelectDataType } from "@/types/common"
 import { cn } from "@/lib/utils"
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface FormSelectInputProps extends SelectProps {
 	label: string
@@ -54,28 +55,35 @@ function InputSelectController(props: FormSelectInputProps) {
 				{label}{" "}
 				{isRequired && <span className="text-destructive">*</span>}
 			</FormLabel>
-			<Select
-				defaultValue={field.value}
-				onValueChange={(val) => val && onChange(val)}
-				value={field.value}
-				disabled={disabled}
-				{...restProps}
-			>
-				<FormControl>
-					<SelectTrigger>
-						<SelectValue placeholder={placeholder} />
-					</SelectTrigger>
-				</FormControl>
-				<SelectContent>
-					{items.map((item, key) => (
-						<SelectItem key={key} value={item.value}>
-							{item.label}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
-			{description && <FormDescription>{description}</FormDescription>}
-			<FormMessage />
+			{loading && <Skeleton className="h-10 w-full" />}
+			{!loading && (
+				<>
+					<Select
+						defaultValue={field.value}
+						onValueChange={(val) => val && onChange(val)}
+						value={field.value}
+						disabled={disabled}
+						{...restProps}
+					>
+						<FormControl>
+							<SelectTrigger>
+								<SelectValue placeholder={placeholder} />
+							</SelectTrigger>
+						</FormControl>
+						<SelectContent>
+							{items.map((item, key) => (
+								<SelectItem key={key} value={item.value}>
+									{item.label}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+					{description && (
+						<FormDescription>{description}</FormDescription>
+					)}
+					<FormMessage />
+				</>
+			)}
 		</FormItem>
 	)
 }

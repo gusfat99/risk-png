@@ -18,7 +18,7 @@ export const parseRiskBanktoView = (data: RiskBank) => {
 					return {
 						id: safeguard.id,
 						consequence_id: safeguard.consequence_id,
-						safeguard: safeguard.safeguard,
+						safeguard: safeguard.id?.toString() as unknown as string,
 						safeguard_title: safeguard.safeguard_title,
 						file_path: safeguard.file_path,
 					}

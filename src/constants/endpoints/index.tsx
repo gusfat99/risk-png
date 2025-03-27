@@ -1,5 +1,9 @@
 export const AUTH_EP = "/auth/login";
 export const NODE_EP = "/node-data";
 export const SAFEGUARD_EP = "/safeguard";
+export const SAFEGUARD_EXIST_EP = "/existing-safeguard";
 export const RISK_BANK_EP = "/risk-data-bank";
+export const RISK_ANALYST_EP = "/risk-analyst/node";
 export const DEVIATION_EP = "/deviations";
+export const CAUSE_EP = "/cause";
+export const CONSEQUENCE_EP = "/consequence";

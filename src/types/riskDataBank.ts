@@ -18,6 +18,13 @@ export interface Consequences {
 	safeguards: Safeguard[]
 }
 
+export interface Cause {
+	id: number;
+	deviation_id: number;
+	parameter: string;
+	cause: string;
+}
+
 // Type untuk Objek Utama
 export interface RiskBank {
 	id: number

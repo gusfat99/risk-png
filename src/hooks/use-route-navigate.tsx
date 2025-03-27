@@ -93,9 +93,7 @@ export const useRouteNavigate = () => {
 			})
 		}
 	})
-
-	console.log({ pathNameArr, route, breadcrumbs })
-
+	
 	return {
 		breadcrumbs,
 	}

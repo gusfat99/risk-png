@@ -20,7 +20,7 @@ import {
 	BreadcrumbItem,
 	BreadcrumbList,
 	BreadcrumbPage,
-	BreadcrumbSeparator
+	BreadcrumbSeparator,
 } from "./ui/breadcrumb"
 import { Separator } from "./ui/separator"
 import { SidebarTrigger } from "./ui/sidebar"
@@ -30,7 +30,7 @@ const AppHeader = () => {
 	const { subtitle } = useRouteGetTitle()
 	const { breadcrumbs } = useRouteNavigate()
 	const { user, year_selected } = useAuthStore()
-	// console.log({ length_pathname })
+
 	return (
 		<header className="flex h-16 shrink-0 items-center justify-between gap-2">
 			<div className="flex flex-col">
@@ -42,8 +42,8 @@ const AppHeader = () => {
 						<BreadcrumbList>
 							{(breadcrumbs || []).map((breadcumb, idx) => {
 								return idx === breadcrumbs.length - 1 ? (
-									<BreadcrumbItem key={idx} >
-										<BreadcrumbPage className="text-warning-foreground" >
+									<BreadcrumbItem key={idx}>
+										<BreadcrumbPage className="text-warning-foreground">
 											{breadcumb.title}
 										</BreadcrumbPage>
 									</BreadcrumbItem>
@@ -58,7 +58,6 @@ const AppHeader = () => {
 											>
 												{breadcumb.title}
 											</Link>
-										
 										</BreadcrumbItem>
 										<BreadcrumbSeparator className="hidden md:block" />
 									</React.Fragment>
