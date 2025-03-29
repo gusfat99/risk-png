@@ -1,15 +1,15 @@
 "use client"
 import NodeDataCard from "@/components/cards/NodeDataCard"
+import InputController from "@/components/inputs/InputController"
 import { Button } from "@/components/ui/button"
-import { Form } from "@/components/ui/form"
+import { Form, FormField } from "@/components/ui/form"
 import Spinner from "@/components/ui/spinner"
 import { useToast } from "@/hooks/use-toast"
 import {
 	initialRiskAnalyst,
 	RiskAnalysisSchema,
 } from "@/schemas/RiskAnalystSchema"
-import { initialRiskBank } from "@/schemas/RiskBankSchema"
-import useRiskAnalysStore from "@/store/riksAnalysStore"
+import useRiskAnalysStore from "@/store/risksAnalystStore"
 import useRiskDataBankStore from "@/store/riskDataBankStore"
 import { RiskAnalysisForm } from "@/types/riksAnalys"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -28,14 +28,13 @@ interface IProps {
 
 const RiskAnalystForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 	const {
-		actions: { createData, updateData },
+		actions: {  updateData },
 
 		isSubmit,
 	} = useRiskDataBankStore()
-	const {
-		nodeSelected,
-		
-	} = useRiskAnalysStore()
+	const { nodeSelected, actions: {
+		createData
+	} } = useRiskAnalysStore()
 
 	const { toast } = useToast()
 	const route = useRouter()
@@ -48,18 +47,23 @@ const RiskAnalystForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 	const handleSubmit = async (values: RiskAnalysisForm) => {
 		try {
 			if (createData && !params?.id && !isEdit) {
-				// const formDataPayload = parseRiskBankToPayload(values)
-				const result = await createData(values)
-
-				if (result) {
-					toast({
-						title: result.message ?? "",
-						variant: "success",
-					})
-					form.reset({ ...initialRiskBank })
-					route.replace(basePathname)
+		
+				if (nodeSelected?.id) {
+					const result = await createData(values, nodeSelected?.id)
+	
+					if (result) {
+						toast({
+							title: result.message ?? "",
+							variant: "success",
+						})
+						form.reset({ ...initialRiskAnalyst })
+						route.replace(basePathname)
+					} else {
+						throw new Error("Failed")
+					}
 				} else {
-					throw new Error("Failed")
+					throw new Error("Please Select Node before!")
+
 				}
 			} else if (updateData && params.id && isEdit) {
 				const result = await updateData(params?.id, values)
@@ -69,7 +73,7 @@ const RiskAnalystForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 						title: result.message ?? "",
 						variant: "success",
 					})
-					form.reset({ ...initialRiskBank })
+					form.reset({ ...initialRiskAnalyst })
 					route.replace(basePathname)
 				} else {
 					throw new Error("Failed")
@@ -110,9 +114,26 @@ const RiskAnalystForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 					isDetail={isDetail}
 				/>
 				<RiskRankSection
-						form={form}
-						isEdit={isEdit}
-						isDetail={isDetail}
+					form={form}
+					isEdit={isEdit}
+					isDetail={isDetail}
+				/>
+
+				<FormField
+					control={form.control}
+					name={'remark_analyst'}
+					render={({ field }) => (
+						<InputController
+							{...field}
+							readOnly={isDetail}
+							label={"Notes Special Condition / Remarks"}
+							placeholder={"Enter Notes Special Condition / Remarks"}
+							onChange={(e) => {
+								const value = e.target.value
+								form.setValue('remark_analyst', value)
+							}}
+						/>
+					)}
 				/>
 
 				{!isDetail && (

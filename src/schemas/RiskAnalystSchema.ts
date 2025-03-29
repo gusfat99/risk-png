@@ -1,53 +1,82 @@
-import { RiskAnalysisForm } from "@/types/riksAnalys"
+import {
+	RiskAnalysisForm,
+	RiskAnalysisSevertyMultipleForm,
+} from "@/types/riksAnalys"
 import { z } from "zod"
 
 // Schema yang telah didefinisikan
 export const RiskAnalysisSchema = z.object({
 	deviation_id: z
-		.string({ required_error: "Deviation is required" })
-		.refine(
-			(val) => !isNaN(parseInt(val)),
-			"Deviation must be a number"
-		),
+		.string({ message: "Deviation is required" })
+		.min(1, "Deviation Data is required"),
 	risk_bank_id: z
-		.string({ required_error: "Risk Bank Data is required" })
-		.refine(
-			(val) => !isNaN(parseInt(val)),
-			"Risk Bank Data must be a number"
-		),
+		.string({ message: "Cause is required" })
+		.min(1, "Cause is required"),
 	consequence_id: z
-		.string({ required_error: "Consequence is required" })
-		.refine(
-			(val) => !isNaN(parseInt(val)),
-			"Consequence must be a number"
-		),
-	sp_current: z
-		.string({ required_error: "SP is required" })
-		.refine((val) => !isNaN(parseInt(val)), "SP must be a number"),
-	sf_current: z
-		.string({ required_error: "SF is required" })
-		.refine((val) => !isNaN(parseInt(val)), "SF must be a number"),
-	se_current: z
-		.string({ required_error: "SE is required" })
-		.refine((val) => !isNaN(parseInt(val)), "SE must be a number"),
-	srl_current: z
-		.string({ required_error: "SRL is required" })
-		.refine((val) => !isNaN(parseInt(val)), "SRL must be a number"),
-	sa_current: z
-		.string({ required_error: "SA is required" })
-		.refine((val) => !isNaN(parseInt(val)), "SA must be a number"),
-	spn_current: z
-		.string({ required_error: "SPN is required" })
-		.refine((val) => !isNaN(parseInt(val)), "SPN must be a number"),
-	l_frequency_current: z
-		.string({ required_error: "Likelihood Frequency Kejadian (L) is required" })
-		.refine(
-			(val) => !isNaN(parseInt(val)),
-			"Likelihood Frequency Kejadian (L) must be a number"
-		),
-	remark_analyst: z.string({ required_error: "Notes Special Condition / Remarks is required" }),
+		.string({ message: "Consequence is required" })
+		.min(1, "Consequence is required"),
+	sp_current: toValidatedNumber("SP"),
+	sf_current: toValidatedNumber("SF"),
+	se_current: toValidatedNumber("SE"),
+	srl_current: toValidatedNumber("SRL"),
+	sa_current: toValidatedNumber("SA"),
+	spn_current: toValidatedNumber("SPN"),
+	l_frequency_current: toValidatedNumber("k"),
+	remark_analyst: z
+		.string({
+			message: "Likelihood Frequency kejadian is required",
+		})
+		.min(1, "Notes Special Condition / Remarks is required"),
 	risk_rank: z.string().optional(),
 })
+
+export const RiskAnalysisSeveritySchema = z.object({
+	risk_analyst_id: z.string(),
+	sp_current: toValidatedNumberActual("SP"),
+	sf_current: toValidatedNumberActual("SF"),
+	se_current: toValidatedNumberActual("SE"),
+	srl_current: toValidatedNumberActual("SRL"),
+	sa_current: toValidatedNumberActual("SA"),
+	spn_current: toValidatedNumberActual("SPN"),
+	l_frequency_current: toValidatedNumberActual("Likelihood Frequency kejadian"),
+})
+
+export const RiskAnalysisSeverityMultpleSchema = z.object({
+	risks : z.array(RiskAnalysisSeveritySchema)
+})
+
+function toValidatedNumber(name: string) {
+	const numberSchema = z
+		.string()
+		.min(1, name + " is required")
+		.refine((val) => !isNaN(Number(val)), {
+			message: name + " Must be a number",
+		}) // Pastikan angka valid
+		.refine((val) => Number(val) > 0, {
+			message: name + " must be more than 0",
+		}) // Harus positif
+
+		.refine((val) => Number(val) <= 5, {
+			message: name + " must be less than or equal 5",
+		}) // Maksimum 5
+	return numberSchema
+}
+function toValidatedNumberActual(name: string) {
+	const numberSchema = z
+		.number()
+		.min(1, name + " is required")
+		.refine((val) => !isNaN(Number(val)), {
+			message: name + " Must be a number",
+		}) // Pastikan angka valid
+		.refine((val) => Number(val) > 0, {
+			message: name + " must be more than 0",
+		}) // Harus positif
+
+		.refine((val) => Number(val) <= 5, {
+			message: name + " must be less than or equal 5",
+		}) // Maksimum 5
+	return numberSchema
+}
 
 export const initialRiskAnalyst: RiskAnalysisForm = {
 	consequence_id: "",
@@ -61,5 +90,9 @@ export const initialRiskAnalyst: RiskAnalysisForm = {
 	sa_current: "",
 	risk_bank_id: "",
 	remark_analyst: "",
-	l_frequency_current : ""
+	l_frequency_current: "",
+}
+
+export const intitalRiskAnalystSavertyMultiple: RiskAnalysisSevertyMultipleForm = {
+	risks : []
 }

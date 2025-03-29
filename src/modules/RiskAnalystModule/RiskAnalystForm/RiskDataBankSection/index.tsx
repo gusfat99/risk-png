@@ -4,7 +4,7 @@ import { FormField } from "@/components/ui/form"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
-import useRiskAnalysStore from "@/store/riksAnalysStore"
+import useRiskAnalysStore from "@/store/risksAnalystStore"
 import { RiskAnalysisForm } from "@/types/riksAnalys"
 import React from "react"
 import { UseFormReturn } from "react-hook-form"
@@ -34,7 +34,7 @@ export const RiskDataBankSection: React.FC<IProps> = ({
 	} = useRiskAnalysStore()
 
 	const deviationOptions = deviationItems.map((deviation) => ({
-		label: deviation.name,
+		label: deviation.name || "", // Provide a fallback value
 		value: deviation.id?.toString(),
 	}))
 	const causeOptions = causeItems.map((cause) => ({

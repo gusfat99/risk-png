@@ -6,7 +6,8 @@ import { PaginationState, Updater } from "@tanstack/react-table"
 // Type untuk Deviations
 export interface Deviations {
 	id: number
-	name: string
+	name?: string //sama dengan deviation
+	deviation?: string //sama dengan name
 	is_default: number
 }
 

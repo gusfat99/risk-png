@@ -118,7 +118,7 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 
 	const diviationOptions = (deviationItems || [])?.map((x) => ({
 		value: x.id?.toString(),
-		label: x.name,
+		label: x.name || x.deviation || "",
 	}))
 
 	useEffect(() => {

@@ -11,14 +11,14 @@ import { Eye, EyeOff } from "lucide-react"
 import React from "react"
 
 interface InputControllerProps extends InputProps {
-	label: string
+	label?: string
 	description?: string
 	placeholder: string
 	children?: React.ReactNode
 	isRequired?: boolean
 	passwordVisible?: boolean
 	secure?: boolean
-	type?: "number" | "text" | "password" | "email" | "url"
+	type?: "number" | "text" | "password" | "email" | "url" | "hidden"
 	value?: any
 	labelClassName?: string
 	onClickShuffix?(): void
@@ -46,15 +46,14 @@ const InputController = React.forwardRef<
 	) => {
 		return (
 			<FormItem className="w-full">
-				<FormLabel
-					className={cn(
-						"tracking-wider",
-						labelClassName
-					)}
-				>
-					{label}{" "}
-					{isRequired && <span className="text-destructive">*</span>}
-				</FormLabel>
+				{label && (
+					<FormLabel className={cn("tracking-wider", labelClassName)}>
+						{label}{" "}
+						{isRequired && (
+							<span className="text-destructive">*</span>
+						)}
+					</FormLabel>
+				)}
 				<FormControl>
 					<div className="relative">
 						{children ? (

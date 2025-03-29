@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect } from "react"
 import RiskAnalystForm from "../RiskAnalystForm"
-import useRiskAnalysStore from "@/store/riksAnalysStore"
+import useRiskAnalysStore from "@/store/risksAnalystStore"
 
 const RiskAnalystAdd = () => {
 	const {

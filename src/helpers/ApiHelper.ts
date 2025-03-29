@@ -17,9 +17,11 @@ export type MetaResponseType = {
 
 export type ResponseApiType<T> = {
 	data: T | null
+	meta: MetaResponseType
 	message?: string
 	errors?: string
-	meta: MetaResponseType
+} & {
+	[x: string]: T | null
 }
 
 /**
@@ -240,7 +242,7 @@ export const getDataApi = <T>(
 			})
 			.catch((err: AxiosError<ResponseApiType<null>>) => {
 				console.log(err.status)
-				if (err.status === 401) {
+				if (err.status === 401 || err.status === 404) {
 					return  resolve(err.response as unknown as any)
 				}
 				const errorResponse: ResponseApiType<null> | undefined =

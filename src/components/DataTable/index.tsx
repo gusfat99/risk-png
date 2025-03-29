@@ -137,9 +137,9 @@ const DataTable = <T,>({
 	const table = useReactTable(options)
 
 	return (
-		<div className="w-full">
-			<div className="relative rounded-md md:max-h-[580px] max-h-[390px] border overflow-x-auto">
-				<Table>
+		<div className="w-full overflow-x-auto min-w-[800px]">
+			<div className="relative rounded-md md:max-h-[580px] max-h-[390px] border overflow-x-auto min-w-[800px]">
+				<Table className={cn("min-w-[800px] caption-bottom text-sm")}>
 					<TableHeader>
 						{table.getHeaderGroups().map((headerGroup) => (
 							<TableRow key={headerGroup.id}>

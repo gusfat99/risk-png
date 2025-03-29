@@ -4,7 +4,11 @@ import { PaginationState, Updater } from "@tanstack/react-table"
 import { Node } from "./node"
 import { Cause, Consequences, Deviations } from "./riskDataBank"
 import { z } from "zod"
-import { RiskAnalysisSchema } from "@/schemas/RiskAnalystSchema"
+import {
+	RiskAnalysisSchema,
+	RiskAnalysisSeverityMultpleSchema,
+	RiskAnalysisSeveritySchema,
+} from "@/schemas/RiskAnalystSchema"
 import { Safeguard } from "./safeguard"
 
 export type RiskAnalysis = {
@@ -13,19 +17,20 @@ export type RiskAnalysis = {
 	risk_bank_id: string
 	consequence_id: string
 	existing_safeguard: string
-	sp_current: string
-	sf_current: string
-	se_current: string
-	srl_current: string
-	sa_current: string
-	spn_current: string
-	l_frequency_current: string
+	sp_current: any
+	sf_current: any
+	se_current: any
+	srl_current: any
+	sa_current: any
+	spn_current: any
+	l_frequency_current: any
 	risk_ranking_current: number
 	remark_analyst: string
 	id: number
 	nodes: Node
 	deviations: Deviations
 	consequences: Consequences
+	causes: Cause
 }
 
 export interface RiskAnalysState extends CommonState {
@@ -48,22 +53,31 @@ export interface RiskAnalysState extends CommonState {
 		consiquence: {
 			consiquenceItems: Consequences[]
 			isFetching: boolean
-      },
-      safeguard: {
-         safeguardItems : Safeguard[]
-         isFetching: boolean
-      }
+		}
+		safeguard: {
+			safeguardItems: Safeguard[]
+			isFetching: boolean
+		}
 	}
 	actions: {
-		fetchAllData(nodeId: any): Promise<ResponseApiType<RiskAnalysis[]>>
+		fetchAllData(
+			nodeId: any
+		): Promise<ResponseApiType<{ risk_analyst: RiskAnalysis[] }>>
 		fetchSingleData?(id: any): Promise<ResponseApiType<RiskAnalysis>>
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>
 		fetchDeviationData(): Promise<ResponseApiType<Deviations[]>>
-		createData?(payload: any): Promise<ResponseApiType<RiskAnalysis>>
+		createData?(
+			payload: RiskAnalysisForm,
+			nodeId: any
+		): Promise<ResponseApiType<RiskAnalysis>>
 		updateData?(
 			id: any,
 			paylaod: any
 		): Promise<ResponseApiType<RiskAnalysis>>
+		updateSavertyMultiple?(
+			nodeId : any,
+			payload: RiskAnalysisSevertyMultipleForm
+		): Promise<ResponseApiType<RiskAnalysis[]>>
 		deleteData?(id: any): Promise<ResponseApiType<any>>
 		setPagination?: (updater: Updater<PaginationState>) => void
 		setNodeSelected: (nodeId: number) => void
@@ -75,3 +89,7 @@ export interface RiskAnalysState extends CommonState {
 }
 
 export type RiskAnalysisForm = z.infer<typeof RiskAnalysisSchema>
+export type RiskAnalysisSevertyMultipleForm = z.infer<
+	typeof RiskAnalysisSeverityMultpleSchema
+>
+export type RiskAnalysisSevertyForm = z.infer<typeof RiskAnalysisSeveritySchema>

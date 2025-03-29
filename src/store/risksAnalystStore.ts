@@ -1,20 +1,25 @@
 import {
-   CAUSE_EP,
-   CONSEQUENCE_EP,
-   DEVIATION_EP,
-   NODE_EP,
-   RISK_ANALYST_EP,
-   SAFEGUARD_EXIST_EP
+	CAUSE_EP,
+	CONSEQUENCE_EP,
+	DEVIATION_EP,
+	NODE_EP,
+	RISK_ANALYST_EP,
+	SAFEGUARD_EXIST_EP,
 } from "@/constants/endpoints"
 import {
-   deleteData,
-   getDataApi,
-   postData,
-   ResponseApiType,
+	deleteData,
+	getDataApi,
+	postData,
+	ResponseApiType,
 } from "@/helpers/ApiHelper"
 import { toast } from "@/hooks/use-toast"
 import { commonInitualState } from "@/types/common"
-import { RiskAnalysis, RiskAnalysState } from "@/types/riksAnalys"
+import {
+	RiskAnalysis,
+	RiskAnalysisForm,
+	RiskAnalysisSevertyMultipleForm,
+	RiskAnalysState
+} from "@/types/riksAnalys"
 
 import { Node } from "@/types/node"
 import { Cause, Consequences, Deviations } from "@/types/riskDataBank"
@@ -50,7 +55,7 @@ const initialState = {
 	},
 }
 
-const useRiskAnalysStore = createStore<RiskAnalysState>(
+const useRiskAnalystStore = createStore<RiskAnalysState>(
 	"risk-analyst",
 	(set, get) => ({
 		...initialState,
@@ -59,41 +64,45 @@ const useRiskAnalysStore = createStore<RiskAnalysState>(
 				set({
 					isFetching: true,
 				})
-				return new Promise<ResponseApiType<RiskAnalysis[]>>(
-					(resolve, reject) => {
-						getDataApi<RiskAnalysis[]>(
-							`${RISK_ANALYST_EP}/${nodeId}`,
-							{
-								page: get().pagination_tanstack.pageIndex,
-								per_page: get().pagination_tanstack.pageSize,
-							}
-						)
-							.then((data) => {
-								//parse data to flat
-								if (Array.isArray(data.data)) {
-									set({
-										riskAnalysItems: data.data || [],
-
-										meta: data?.meta,
-									})
-									resolve(data)
-								}
-							})
-							.catch((err) => {
-								toast({
-									title: "ERROR",
-									description: err.message,
-									variant: "destructive",
-								})
-								reject(err)
-							})
-							.finally(() => {
+				return new Promise<
+					ResponseApiType<{ risk_analyst: RiskAnalysis[] }>
+				>((resolve, reject) => {
+					getDataApi<{ risk_analyst: RiskAnalysis[] }>(
+						`${RISK_ANALYST_EP}/${nodeId}`,
+						{
+							page: get().pagination_tanstack.pageIndex,
+							per_page: get().pagination_tanstack.pageSize,
+						}
+					)
+						.then((data) => {
+							if (data.data) {
 								set({
-									isFetching: false,
+									riskAnalysItems:
+										data.data.risk_analyst || [],
+									meta: data?.meta,
 								})
+							} else {
+								set({
+									riskAnalysItems: [],
+									meta: data?.meta,
+								})
+							}
+							resolve(data)
+						})
+						.catch((err) => {
+							toast({
+								title: "ERROR",
+								description: err.message,
+								variant: "destructive",
 							})
-					}
-				)
+							reject(err)
+						})
+						.finally(() => {
+							set({
+								isFetching: false,
+							})
+						})
+				})
 			},
 			fetchNodeData: async () => {
 				set((prev) => ({
@@ -231,17 +240,25 @@ const useRiskAnalysStore = createStore<RiskAnalysState>(
 					}
 				)
 			},
-			createData: async (payload: FormData) => {
+			createData: async (payload: RiskAnalysisForm, nodeId: any) => {
 				set({
 					isSubmit: true,
 				})
 				return new Promise<ResponseApiType<RiskAnalysis>>(
 					(resolve, reject) => {
-						postData<RiskAnalysis>(RISK_ANALYST_EP, payload, {
-							headers: {
-								"Content-Type": "multipart/form-data",
-							},
+						const formData = new FormData()
+						Object.entries(payload).forEach(([key, value]) => {
+							formData.append(key, value)
 						})
+						postData<RiskAnalysis>(
+							RISK_ANALYST_EP + "/" + nodeId,
+							payload,
+							{
+								headers: {
+									"Content-Type": "multipart/form-data",
+								},
+							}
+						)
 							.then((data) => {
 								set((state) => {
 									return {
@@ -288,6 +305,41 @@ const useRiskAnalysStore = createStore<RiskAnalysState>(
 										],
 									}
 								})
+								resolve(data)
+							})
+							.catch((err) => {
+								reject(err)
+							})
+							.finally(() => {
+								set({
+									isSubmit: false,
+								})
+							})
+					}
+				)
+			},
+			updateSavertyMultiple: async (
+				nodeId: any,
+				payload: RiskAnalysisSevertyMultipleForm
+			) => {
+				set({
+					isSubmit: true,
+				})
+				return new Promise<ResponseApiType<RiskAnalysis[]>>(
+					(resolve, reject) => {
+						postData<RiskAnalysis[]>(
+							`${RISK_ANALYST_EP}/${nodeId}/severity-multi`,
+							payload
+						)
+							.then((data) => {
+								// set((state) => {
+								// 	return {
+								// 		riskAnalysItems: [
+								// 			...state.riskAnalysItems,
+								// 			...(data.data ? [data.data] : []),
+								// 		],
+								// 	}
+								// })
 								resolve(data)
 							})
 							.catch((err) => {
@@ -504,4 +556,4 @@ const useRiskAnalysStore = createStore<RiskAnalysState>(
 	})
 )
 
-export default useRiskAnalysStore
+export default useRiskAnalystStore
