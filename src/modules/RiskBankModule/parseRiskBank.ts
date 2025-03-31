@@ -48,7 +48,7 @@ export const parseRiskBankToPayload = (
 			consequence.consequence
 		)
 		consequence.safeguards.forEach((safeguard, idxSafeguard) => {
-			let indexSafeguard = `consequences[${idx}][safeguards][${idxSafeguard}]`
+			const indexSafeguard = `consequences[${idx}][safeguards][${idxSafeguard}]`
 			//check jika safeguard isinya berupa id maka payload yg di kirim safeguard_id saja
 			if (regex.test(safeguard.safeguard || "")) {
 				formData.append(

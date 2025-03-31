@@ -83,7 +83,7 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 			maxValue * Number(form.getValues("l_frequency_current"))
 		// form.setValue('risk_rank', riskRankValue?.toString());
 		return riskRankValue
-	}, valuesRank)
+	}, [ form])
 
 	return (
 		<div className="border-2 border-gray-200  rounded-lg p-4 space-y-4">

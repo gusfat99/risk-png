@@ -49,7 +49,7 @@ export function shortenFileName(
 		}
 		return shortenedName + ext
 	} else if (maxLength > 0) {
-		let shortenedName = words.slice(0, maxLength) + "...."
+		const shortenedName = words.slice(0, maxLength) + "...."
 		return shortenedName + ext
 	} else {
 		return filename

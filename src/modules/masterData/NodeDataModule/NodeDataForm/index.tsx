@@ -40,7 +40,7 @@ const NodeDataForm: React.FC<IProps> = ({ isEdit, isDetail }) => {
 						(x) => x.id?.toString() === params.id?.toString()
 				  )
 				: null,
-		[params?.id, isEdit, isDetail]
+		[params?.id, isEdit, isDetail, nodeItems]
 	)
 
 	const form = useForm<z.infer<typeof NodeSchema>>({

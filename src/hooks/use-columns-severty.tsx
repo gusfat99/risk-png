@@ -823,7 +823,7 @@ export const useColumnsRiskResponse = ({
 			},
 		]
 		return cols
-	}, [form])
+	}, [form, onAction])
 
 	return {
 		column,
@@ -1081,7 +1081,7 @@ export const useColumnsMonitoring = ({
 			
 		]
 		return cols
-	}, [form])
+	}, [form, onAction])
 
 	return {
 		column,

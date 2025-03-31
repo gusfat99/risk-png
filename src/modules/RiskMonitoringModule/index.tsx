@@ -26,7 +26,7 @@ const RiskAnalystModule = () => {
 			fetchNodeData()
 		}
 		
-	}, [fetchNodeData, fetchAllData])
+	}, [fetchNodeData, fetchAllData, nodeItems])
 
 	return (
 		<div className=" space-y-4">

@@ -78,7 +78,7 @@ export const useRouteNavigate = () => {
 		pathNameArr.splice(pathNameArr.length - 1, 1)
 	}
 
-	let breadcrumbs: { title: string; path: string }[] = []
+	const breadcrumbs: { title: string; path: string }[] = []
 
 	pathNameArr.forEach((pathname, index) => {
 		if (index === 0) {
