@@ -99,7 +99,7 @@ export const parseRiskBankToFlatted = (datas: RiskBank[]): RiskBankFlat[] => {
 					cause: mainEntry.cause,
 					deviation_id: mainEntry.deviation_id,
 					deviations: mainEntry.deviations,
-					deviation: mainEntry.deviations.name,
+					deviation: mainEntry.deviations.name || mainEntry.deviations.deviation || "",
 
 					// Data Konsekuensi
 					consequences,
