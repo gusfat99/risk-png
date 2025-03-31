@@ -4,7 +4,7 @@ import InputSelect from "@/components/inputs/InputSelect"
 import useRiskAnalysStore from "@/store/risksAnalystStore"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect } from "react"
-import RiskAnalystFormMultiple from "./RiskBankFormMultiple"
+import RiskAnalystFormMultiple from "./RiskAnalystFormMultiple"
 import { RiskAnalystListTableSkeleton } from "@/components/skeletons/RiskAnalystListTableSkeleton"
 
 const RiskAnalystModule = () => {

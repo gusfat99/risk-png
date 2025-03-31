@@ -1,7 +1,7 @@
 import {
 	RiskAnalysisForm,
 	RiskAnalysisSevertyMultipleForm,
-} from "@/types/riksAnalys"
+} from "@/types/riksAnalyst"
 import { z } from "zod"
 
 // Schema yang telah didefinisikan
@@ -21,7 +21,7 @@ export const RiskAnalysisSchema = z.object({
 	srl_current: toValidatedNumber("SRL"),
 	sa_current: toValidatedNumber("SA"),
 	spn_current: toValidatedNumber("SPN"),
-	l_frequency_current: toValidatedNumber("k"),
+	l_frequency_current: toValidatedNumber("Likelihood Frequency kejadian"),
 	remark_analyst: z
 		.string({
 			message: "Likelihood Frequency kejadian is required",
@@ -45,7 +45,7 @@ export const RiskAnalysisSeverityMultpleSchema = z.object({
 	risks : z.array(RiskAnalysisSeveritySchema)
 })
 
-function toValidatedNumber(name: string) {
+export function toValidatedNumber(name: string) {
 	const numberSchema = z
 		.string()
 		.min(1, name + " is required")
@@ -61,7 +61,8 @@ function toValidatedNumber(name: string) {
 		}) // Maksimum 5
 	return numberSchema
 }
-function toValidatedNumberActual(name: string) {
+
+export function toValidatedNumberActual(name: string) {
 	const numberSchema = z
 		.number()
 		.min(1, name + " is required")

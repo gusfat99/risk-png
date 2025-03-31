@@ -1,18 +1,17 @@
 "use client"
-import AddButton from "@/components/buttons/AddButton"
 import NodeDataCard from "@/components/cards/NodeDataCard"
-import InputSearch from "@/components/inputs/InputSearch"
 import InputSelect from "@/components/inputs/InputSelect"
+import { RiskAnalystListTableSkeleton } from "@/components/skeletons/RiskAnalystListTableSkeleton"
 import useRiskResponseStore from "@/store/riskResponseStore"
-import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect } from "react"
+import RiskResponseFormMultiple from "./RiskResponseFormMultiple"
 
 const RiskResponseModule = () => {
 	const pathname = usePathname()
 	const {
 		nodeSelected,
-		riskResponseItems,
+		isFetching,
 		actions: { setNodeSelected, fetchNodeData, fetchAllData },
 		supportData: {
 			node: { isFetching: isFetchingNode, nodeItems },
@@ -33,8 +32,8 @@ const RiskResponseModule = () => {
 		if (nodeSelected?.id) {
 			fetchAllData(nodeSelected.id)
 		}
-   }, [fetchNodeData, fetchAllData, nodeSelected?.id, nodeItems])
-   
+	}, [fetchNodeData, fetchAllData, nodeSelected?.id, nodeItems])
+
 	return (
 		<div className="w-full space-y-4">
 			<div className="flex flex-row justify-between items-end w-full">
@@ -50,18 +49,9 @@ const RiskResponseModule = () => {
 				/>
 			</div>
 			{nodeSelected && <NodeDataCard nodeSelected={nodeSelected} />}
-			{nodeSelected && (
-				<div className="flex flex-row justify-between items-end">
-					<InputSearch
-						label="Filter Data"
-						isRequired={false}
-						placeholder="Search..."
-						// className="max-w-sm"
-					/>
-					{/* <Link href={basePathnam e + "/add"}>
-						<AddButton label="Add Risk Analysis" />
-					</Link> */}
-				</div>
+			{isFetching && <RiskAnalystListTableSkeleton />}
+			{!isFetching && nodeSelected && (
+				<RiskResponseFormMultiple basePathname={basePathname} />
 			)}
 		</div>
 	)

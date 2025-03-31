@@ -33,7 +33,7 @@ export type RiskAnalysis = {
 	causes: Cause
 }
 
-export interface RiskAnalysState extends CommonState {
+export interface RiskAnalystState extends CommonState {
 	riskAnalysItems: RiskAnalysis[]
 	riskAnalysSelected: RiskAnalysis | null
 	nodeSelected: Node | null

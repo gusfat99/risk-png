@@ -37,11 +37,11 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 					isFetching: true,
 				})
 				return new Promise<ResponseApiType<{
-					risk_response : RiskResponseParent[],
+					risk_analyst : RiskResponseParent[],
 				}>>(
 					(resolve, reject) => {
 						getDataApi<{
-							risk_response : RiskResponseParent[],
+							risk_analyst : RiskResponseParent[],
 						}>(
 							`${RISK_RESPONSE_EP}/${nodeId}`,
 							{
@@ -52,7 +52,7 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 							.then((data) => {
 								if ((data.data)) {
 									set({
-										riskResponseItems: data.data.risk_response || [],
+										riskResponseItems: data.data.risk_analyst || [],
 										meta: data?.meta,
 									})
 									resolve(data)

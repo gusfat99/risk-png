@@ -12,21 +12,21 @@ export function middleware(req: NextRequest) {
 		return NextResponse.next() // Lanjutkan ke halaman jika tidak perlu redirect
 	}
 
-	// Jika belum login, hanya boleh akses /login
-	if (!hasLoggedIn) {
-		if (!url.pathname.startsWith("/api")) {
-			if (url.pathname !== "/login") {
-				url.pathname = "/login" // Redirect ke /login
-				return NextResponse.redirect(url)
-			}
-		}
-	} else {
-		// Jika sudah login, tidak boleh akses /login, redirect ke /dashboard
-		if (url.pathname === "/login") {
-			url.pathname = "/dashboard" // Redirect ke /dashboard
-			return NextResponse.redirect(url)
-		}
-	}
+	// // Jika belum login, hanya boleh akses /login
+	// if (!hasLoggedIn) {
+	// 	if (!url.pathname.startsWith("/api")) {
+	// 		if (url.pathname !== "/login") {
+	// 			url.pathname = "/login" // Redirect ke /login
+	// 			return NextResponse.redirect(url)
+	// 		}
+	// 	}
+	// } else {
+	// 	// Jika sudah login, tidak boleh akses /login, redirect ke /dashboard
+	// 	if (url.pathname === "/login") {
+	// 		url.pathname = "/dashboard" // Redirect ke /dashboard
+	// 		return NextResponse.redirect(url)
+	// 	}
+	// }
 
 	return NextResponse.next() // Lanjutkan ke halaman jika tidak perlu redirect
 }

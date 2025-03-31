@@ -1,24 +1,20 @@
 "use client"
-import NodeDataCard from "@/components/cards/NodeDataCard"
-import InputController from "@/components/inputs/InputController"
 import { Button } from "@/components/ui/button"
-import { Form, FormField } from "@/components/ui/form"
+import { Form } from "@/components/ui/form"
 import Spinner from "@/components/ui/spinner"
 import { useToast } from "@/hooks/use-toast"
-import {
-	initialRiskAnalyst,
-	RiskAnalysisSchema,
-} from "@/schemas/RiskAnalystSchema"
-import useRiskAnalysStore from "@/store/risksAnalystStore"
+import { initialRiskAnalyst } from "@/schemas/RiskAnalystSchema"
+import { RiskMonitoringSchema } from "@/schemas/RiskMonitoringSchema"
 import useRiskDataBankStore from "@/store/riskDataBankStore"
-import { RiskAnalysisForm } from "@/types/riksAnalyst"
+import useRiskMonitoringStore from "@/store/riskMonitoringStore"
+import { RiskMonitoringForm as RiskMonitoringFormType } from "@/types/riskMonitoring"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Save } from "lucide-react"
 import Link from "next/link"
 import { useParams, usePathname, useRouter } from "next/navigation"
 import React from "react"
 import { useForm } from "react-hook-form"
-import { RiskDataBankSection } from "./RiskDataBankSection"
+import RiskDataBankSection from "./RiskDataBankSection"
 import RiskRankSection from "./RiskRankSection"
 
 interface IProps {
@@ -26,15 +22,15 @@ interface IProps {
 	isEdit?: boolean
 }
 
-const RiskAnalystForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
+const RiskMonitoringForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 	const {
-		actions: {  updateData },
+		actions: { updateData },
 
 		isSubmit,
 	} = useRiskDataBankStore()
-	const { nodeSelected, actions: {
-		createData
-	} } = useRiskAnalysStore()
+	const {
+		actions: { createData },
+	} = useRiskMonitoringStore()
 
 	const { toast } = useToast()
 	const route = useRouter()
@@ -44,26 +40,20 @@ const RiskAnalystForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 
 	const basePathname = "/".concat(splitPathname[1])
 
-	const handleSubmit = async (values: RiskAnalysisForm) => {
+	const handleSubmit = async (values: RiskMonitoringFormType) => {
 		try {
 			if (createData && !params?.id && !isEdit) {
-		
-				if (nodeSelected?.id) {
-					const result = await createData(values, nodeSelected?.id)
-	
-					if (result) {
-						toast({
-							title: result.message ?? "",
-							variant: "success",
-						})
-						form.reset({ ...initialRiskAnalyst })
-						route.replace(basePathname)
-					} else {
-						throw new Error("Failed")
-					}
-				} else {
-					throw new Error("Please Select Node before!")
+				const result = await createData(values)
 
+				if (result) {
+					toast({
+						title: result.message ?? "",
+						variant: "success",
+					})
+					form.reset({ ...initialRiskAnalyst })
+					route.replace(basePathname)
+				} else {
+					throw new Error("Failed")
 				}
 			} else if (updateData && params.id && isEdit) {
 				const result = await updateData(params?.id, values)
@@ -90,8 +80,8 @@ const RiskAnalystForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 		}
 	}
 
-	const form = useForm<RiskAnalysisForm>({
-		resolver: zodResolver(RiskAnalysisSchema),
+	const form = useForm<RiskMonitoringFormType>({
+		resolver: zodResolver(RiskMonitoringSchema),
 		progressive: false,
 		mode: "onSubmit",
 		reValidateMode: "onSubmit",
@@ -106,8 +96,6 @@ const RiskAnalystForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 				onSubmit={form.handleSubmit(handleSubmit)}
 				className="space-y-4"
 			>
-				{nodeSelected && <NodeDataCard nodeSelected={nodeSelected} />}
-
 				<RiskDataBankSection
 					form={form}
 					isEdit={isEdit}
@@ -117,23 +105,6 @@ const RiskAnalystForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 					form={form}
 					isEdit={isEdit}
 					isDetail={isDetail}
-				/>
-
-				<FormField
-					control={form.control}
-					name={'remark_analyst'}
-					render={({ field }) => (
-						<InputController
-							{...field}
-							readOnly={isDetail}
-							label={"Notes Special Condition / Remarks"}
-							placeholder={"Enter Notes Special Condition / Remarks"}
-							onChange={(e) => {
-								const value = e.target.value
-								form.setValue('remark_analyst', value)
-							}}
-						/>
-					)}
 				/>
 
 				{!isDetail && (
@@ -155,4 +126,4 @@ const RiskAnalystForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 	)
 }
 
-export default RiskAnalystForm
+export default RiskMonitoringForm

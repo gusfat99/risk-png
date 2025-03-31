@@ -1,9 +1,5 @@
-import React from 'react'
+import RiskMonitoringModule from "@/modules/RiskMonitoringModule"
 
-const Page = () => {
-  return (
-    <div>Page</div>
-  )
+export default function Page() {
+	return <RiskMonitoringModule />
 }
-
-export default Page

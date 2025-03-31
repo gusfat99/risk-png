@@ -1,36 +1,32 @@
 import {
-	CAUSE_EP,
-	CONSEQUENCE_EP,
-	DEVIATION_EP,
-	NODE_EP,
-	RISK_ANALYST_EP,
-	SAFEGUARD_EXIST_EP,
+   CAUSE_EP,
+   DEVIATION_EP,
+   NODE_EP,
+   RISK_ANALYST_EP,
+   RISK_MONITROING_EP
 } from "@/constants/endpoints"
 import {
-	deleteData,
-	getDataApi,
-	postData,
-	ResponseApiType,
+   deleteData,
+   getDataApi,
+   postData,
+   ResponseApiType,
 } from "@/helpers/ApiHelper"
 import { toast } from "@/hooks/use-toast"
 import { commonInitualState } from "@/types/common"
-import {
-	RiskAnalysis,
-	RiskAnalysisForm,
-	RiskAnalysisSevertyMultipleForm,
-	RiskAnalystState
-} from "@/types/riksAnalyst"
 
 import { Node } from "@/types/node"
-import { Cause, Consequences, Deviations } from "@/types/riskDataBank"
-import { Safeguard } from "@/types/safeguard"
+import { Cause, Deviations } from "@/types/riskDataBank"
+import {
+   RiskMonitoring,
+   RiskMonitoringForm,
+   RiskMonitoringState,
+} from "@/types/riskMonitoring"
 import { createStore, runUpdater } from "./store"
 
 const initialState = {
 	...commonInitualState,
-	riskAnalysItems: [],
-	riskAnalysSelected: null,
-	nodeSelected: null,
+	riskMonitoringItems: [],
+	riskMonitoringSelected: null,
 	supportData: {
 		node: {
 			isFetching: false,
@@ -44,65 +40,53 @@ const initialState = {
 			causeItems: [],
 			isFetching: false,
 		},
-		consiquence: {
-			consiquenceItems: [],
-			isFetching: false,
-		},
-		safeguard: {
-			safeguardItems: [],
-			isFetching: false,
-		},
 	},
 }
 
-const useRiskAnalystStore = createStore<RiskAnalystState>(
-	"risk-analyst",
+const useRiskMonitoringStore = createStore<RiskMonitoringState>(
+	"risk-monitoring",
 	(set, get) => ({
 		...initialState,
 		actions: {
-			fetchAllData: async (nodeId: any) => {
+			fetchAllData: async () => {
 				set({
 					isFetching: true,
 				})
-				return new Promise<
-					ResponseApiType<{ risk_analyst: RiskAnalysis[] }>
-				>((resolve, reject) => {
-					getDataApi<{ risk_analyst: RiskAnalysis[] }>(
-						`${RISK_ANALYST_EP}/${nodeId}`,
-						{
+				return new Promise<ResponseApiType<RiskMonitoring[]>>(
+					(resolve, reject) => {
+						getDataApi<RiskMonitoring[]>(`${RISK_MONITROING_EP}`, {
 							page: get().pagination_tanstack.pageIndex,
 							per_page: get().pagination_tanstack.pageSize,
-						}
-					)
-						.then((data) => {
-							if (data.data) {
-								set({
-									riskAnalysItems:
-										data.data.risk_analyst || [],
-									meta: data?.meta,
-								})
-							} else {
-								set({
-									riskAnalysItems: [],
-									meta: data?.meta,
-								})
-							}
-							resolve(data)
 						})
-						.catch((err) => {
-							toast({
-								title: "ERROR",
-								description: err.message,
-								variant: "destructive",
+							.then((data) => {
+								if (data.data) {
+									set({
+										riskMonitoringItems: data.data || [],
+										meta: data?.meta,
+									})
+								} else {
+									set({
+										riskMonitoringItems: [],
+										meta: data?.meta,
+									})
+								}
+								resolve(data)
 							})
-							reject(err)
-						})
-						.finally(() => {
-							set({
-								isFetching: false,
+							.catch((err) => {
+								toast({
+									title: "ERROR",
+									description: err.message,
+									variant: "destructive",
+								})
+								reject(err)
 							})
-						})
-				})
+							.finally(() => {
+								set({
+									isFetching: false,
+								})
+							})
+					}
+				)
 			},
 			fetchNodeData: async () => {
 				set((prev) => ({
@@ -211,15 +195,17 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 				set({
 					isFetching: true,
 				})
-				return new Promise<ResponseApiType<RiskAnalysis>>(
+				return new Promise<ResponseApiType<RiskMonitoring>>(
 					(resolve, reject) => {
-						getDataApi<RiskAnalysis>(`${RISK_ANALYST_EP}/${id}`)
+						getDataApi<RiskMonitoring>(
+							`${RISK_MONITROING_EP}/${id}`
+						)
 							.then((data) => {
 								//parse data to flat
 
 								if (data.data) {
 									set({
-										riskAnalysSelected: data.data,
+										riskMonitoringSelected: data.data,
 									})
 									resolve(data)
 								}
@@ -240,30 +226,26 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 					}
 				)
 			},
-			createData: async (payload: RiskAnalysisForm, nodeId: any) => {
+			createData: async (payload: RiskMonitoringForm) => {
 				set({
 					isSubmit: true,
 				})
-				return new Promise<ResponseApiType<RiskAnalysis>>(
+				return new Promise<ResponseApiType<RiskMonitoring>>(
 					(resolve, reject) => {
 						const formData = new FormData()
 						Object.entries(payload).forEach(([key, value]) => {
 							formData.append(key, value)
 						})
-						postData<RiskAnalysis>(
-							RISK_ANALYST_EP + "/" + nodeId,
-							payload,
-							{
-								headers: {
-									"Content-Type": "multipart/form-data",
-								},
-							}
-						)
+						postData<RiskMonitoring>(RISK_MONITROING_EP, payload, {
+							headers: {
+								"Content-Type": "multipart/form-data",
+							},
+						})
 							.then((data) => {
 								set((state) => {
 									return {
-										riskAnalysItems: [
-											...state.riskAnalysItems,
+										riskMonitoringItems: [
+											...state.riskMonitoringItems,
 											...(data.data ? [data.data] : []),
 										],
 									}
@@ -281,14 +263,14 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 					}
 				)
 			},
-			updateData: async (id: any, payload: File) => {
+			updateData: async (id: any, payload: RiskMonitoringForm) => {
 				set({
 					isSubmit: true,
 				})
-				return new Promise<ResponseApiType<RiskAnalysis>>(
+				return new Promise<ResponseApiType<RiskMonitoring>>(
 					(resolve, reject) => {
-						postData<RiskAnalysis>(
-							`${RISK_ANALYST_EP}/${id}`,
+						postData<RiskMonitoring>(
+							`${RISK_MONITROING_EP}/${id}`,
 							payload,
 							{
 								headers: {
@@ -299,8 +281,8 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 							.then((data) => {
 								set((state) => {
 									return {
-										riskAnalysItems: [
-											...state.riskAnalysItems,
+										riskMonitoringItems: [
+											...state.riskMonitoringItems,
 											...(data.data ? [data.data] : []),
 										],
 									}
@@ -318,51 +300,17 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 					}
 				)
 			},
-			updateSavertyMultiple: async (
-				nodeId: any,
-				payload: RiskAnalysisSevertyMultipleForm
-			) => {
-				set({
-					isSubmit: true,
-				})
-				return new Promise<ResponseApiType<RiskAnalysis[]>>(
-					(resolve, reject) => {
-						postData<RiskAnalysis[]>(
-							`${RISK_ANALYST_EP}/${nodeId}/severity-multi`,
-							payload
-						)
-							.then((data) => {
-								// set((state) => {
-								// 	return {
-								// 		riskAnalysItems: [
-								// 			...state.riskAnalysItems,
-								// 			...(data.data ? [data.data] : []),
-								// 		],
-								// 	}
-								// })
-								resolve(data)
-							})
-							.catch((err) => {
-								reject(err)
-							})
-							.finally(() => {
-								set({
-									isSubmit: false,
-								})
-							})
-					}
-				)
-			},
+
 			deleteData: async (id) => {
 				return new Promise<ResponseApiType<null>>((resolve, reject) => {
 					deleteData<null>(RISK_ANALYST_EP + "/" + id)
 						.then((data) => {
-							const filterData = get().riskAnalysItems.filter(
+							const filterData = get().riskMonitoringItems.filter(
 								(x) => x.id?.toString() !== id.toString()
 							)
 
 							set({
-								riskAnalysItems: filterData,
+								riskMonitoringItems: filterData,
 							})
 							resolve(data)
 						})
@@ -388,19 +336,9 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 						state.pagination_tanstack
 					),
 				})),
-			setNodeSelected: (nodeId) => {
-				const nodeItems = get().supportData.node.nodeItems
-				const nodeSelected = nodeItems.find(
-					(node) => node.id === nodeId
-				)
-				if (nodeSelected) {
-					set({
-						nodeSelected,
-					})
-				}
-			},
+
 			//this function for handle select data risk bank, leveling data
-			handleChangeRiskBankData: (name, id) => {
+			handleChangeRiskMonitoringData: (name, id) => {
 				//Get Cause Data
 				if (name === "deviation_id") {
 					set((prevState) => ({
@@ -409,14 +347,6 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 							cause: {
 								...prevState.supportData.cause,
 								isFetching: true,
-							},
-							consiquence: {
-								...prevState.supportData.consiquence,
-								consiquenceItems: [],
-							},
-							safeguard: {
-								...prevState.supportData.safeguard,
-								safeguardItems: [],
 							},
 						},
 					}))
@@ -456,104 +386,9 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 						})
 				}
 				//Get Consequence Data
-				if (name === "risk_bank_id") {
-					set((prevState) => ({
-						supportData: {
-							...prevState.supportData,
-							consiquence: {
-								...prevState.supportData.consiquence,
-								isFetching: true,
-							},
-							safeguard: {
-								...prevState.supportData.safeguard,
-								safeguardItems: [],
-							},
-						},
-					}))
-
-					getDataApi<Consequences[]>(`/${id}${CONSEQUENCE_EP}`)
-						.then((data) => {
-							//parse data to flat
-							if (Array.isArray(data.data)) {
-								set((prevState) => ({
-									supportData: {
-										...prevState.supportData,
-										consiquence: {
-											consiquenceItems: data.data || [],
-											isFetching: false,
-										},
-									},
-								}))
-							}
-						})
-						.catch((err) => {
-							toast({
-								title: "ERROR",
-								description: err.message,
-								variant: "destructive",
-							})
-						})
-						.finally(() => {
-							set((prevState) => ({
-								supportData: {
-									...prevState.supportData,
-									consiquence: {
-										...prevState.supportData.consiquence,
-										isFetching: false,
-									},
-								},
-							}))
-						})
-				}
-				//Get Safeguard Data
-				if (name === "consequence_id") {
-					set((prevState) => ({
-						supportData: {
-							...prevState.supportData,
-							safeguard: {
-								...prevState.supportData.safeguard,
-								isFetching: true,
-							},
-						},
-					}))
-
-					getDataApi<Safeguard[]>(`/${id}${SAFEGUARD_EXIST_EP}`)
-						.then((data) => {
-							//parse data to flat
-							if (Array.isArray(data.data)) {
-								set((prevState) => ({
-									supportData: {
-										...prevState.supportData,
-										safeguard: {
-											safeguardItems: data.data || [],
-											isFetching: false,
-										},
-									},
-								}))
-							}
-						})
-						.catch((err) => {
-							toast({
-								title: "ERROR",
-								description: err.message,
-								variant: "destructive",
-							})
-						})
-						.finally(() => {
-							set((prevState) => ({
-								supportData: {
-									...prevState.supportData,
-									safeguard: {
-										...prevState.supportData.safeguard,
-										isFetching: false,
-									},
-								},
-							}))
-						})
-				}
 			},
 		},
 	})
 )
 
-export default useRiskAnalystStore
+export default useRiskMonitoringStore

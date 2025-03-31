@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import useRiskAnalysStore from "@/store/risksAnalystStore"
-import { RiskAnalysisForm } from "@/types/riksAnalys"
+import { RiskAnalysisForm } from "@/types/riksAnalyst"
 import React from "react"
 import { UseFormReturn } from "react-hook-form"
 

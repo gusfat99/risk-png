@@ -5,14 +5,14 @@ import InputSearch from "@/components/inputs/InputSearch"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import Spinner from "@/components/ui/spinner"
+import { useColumnsRiskAnalyst } from "@/hooks/use-columns-severty"
 import { useToast } from "@/hooks/use-toast"
-import useColumnsRiskAnalyst from "@/modules/RiskAnalystModule/columns"
 import { RiskAnalysisSeverityMultpleSchema } from "@/schemas/RiskAnalystSchema"
 import useRiskAnalystStore from "@/store/risksAnalystStore"
 import {
 	RiskAnalysis,
 	RiskAnalysisSevertyMultipleForm,
-} from "@/types/riksAnalys"
+} from "@/types/riksAnalyst"
 // import { RiskAnalysisSevertyMultipleForm } from "@/schemas/RiskAnalystSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Save } from "lucide-react"

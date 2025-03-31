@@ -1,6 +1,6 @@
 import InputController from "@/components/inputs/InputController"
 import { FormField } from "@/components/ui/form"
-import { RiskAnalysisForm } from "@/types/riksAnalys"
+import { RiskAnalysisForm } from "@/types/riksAnalyst"
 import { Separator } from "@radix-ui/react-select"
 import React, { useMemo } from "react"
 import { UseFormReturn } from "react-hook-form"

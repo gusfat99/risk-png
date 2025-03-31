@@ -1,8 +1,10 @@
 import { ResponseApiType } from "@/helpers/ApiHelper"
-import { CommonState } from "./common"
-import { Cause, Consequences, Deviations } from "./riskDataBank"
+import { RiskResponseHazopMultipleSchema, RiskResponseHazopSchema, RiskResponseSevertyExpectMultipleSchema, RiskResponseSevertyExpectSchema } from "@/schemas/RiskResponseSchema"
 import { PaginationState, Updater } from "@tanstack/react-table"
+import { z } from "zod"
+import { CommonState } from "./common"
 import { Node } from "./node"
+import { Cause, Consequences, Deviations } from "./riskDataBank"
 
 export type RiskResponse = {
 	id: number
@@ -61,10 +63,13 @@ export interface RiskResponseState extends CommonState {
 	actions: {
 		fetchAllData(
 			nodeId: any
-		): Promise<ResponseApiType<{ risk_response: RiskResponseParent[] }>>
+		): Promise<ResponseApiType<{ risk_analyst: RiskResponseParent[] }>>
 		fetchSingleData?(id: any): Promise<ResponseApiType<RiskResponseParent>>
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>
-
+		updateSavertyExpectMultiple?(
+			nodeId : any,
+			payload: RiskResponseSevertyExpectMultipleSchemaForm
+		): Promise<ResponseApiType<RiskResponseParent[]>>
 		createData?(
 			payload: any,
 			nodeId: any
@@ -78,3 +83,11 @@ export interface RiskResponseState extends CommonState {
 		setNodeSelected: (nodeId: number) => void
 	}
 }
+
+
+export type RiskResponseHazopSchemaForm = z.infer<typeof RiskResponseHazopSchema>
+export type RiskResponseHazopMultipleSchemaForm = z.infer<typeof RiskResponseHazopMultipleSchema>
+export type RiskResponseSevertyExpectMultipleSchemaForm = z.infer<
+	typeof RiskResponseSevertyExpectMultipleSchema
+>
+export type RiskResponseSevertyExpectSchemaForm = z.infer<typeof RiskResponseSevertyExpectSchema>
