@@ -1,3 +1,9 @@
+import { z } from "zod"
+import { CommonState } from "./common"
+import { UserManagementSchema } from "@/schemas/UserManagementSchema"
+import { ResponseApiType } from "@/helpers/ApiHelper"
+import { PaginationState, Updater } from "@tanstack/react-table"
+
 export interface UserRole {
 	id: number
 	name: string
@@ -16,3 +22,19 @@ export interface User {
 	token: string
 	roles: UserRole[]
 }
+
+export interface UserState extends CommonState {
+	userItems: User[]
+	userSelected: User | null
+	userRoleItems: UserRole[]
+	actions: {
+		fetchAllData(): Promise<ResponseApiType<User[]>>
+		fetchSingleData?(): Promise<ResponseApiType<User>>
+		createData?(paylaod: UserManagementForm): Promise<ResponseApiType<User>>
+		updateData?(id: any, paylaod: any): Promise<ResponseApiType<User>>
+		deleteData?(id: any): Promise<ResponseApiType<any>>
+		setPagination?: (updater: Updater<PaginationState>) => void
+	}
+}
+
+export type UserManagementForm = z.infer<typeof UserManagementSchema>
