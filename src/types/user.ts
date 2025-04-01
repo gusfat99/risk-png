@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { CommonState } from "./common"
-import { UserManagementSchema } from "@/schemas/UserManagementSchema"
+import { ChangePasswordSchema, PersonalInfoSchema, UserManagementSchema } from "@/schemas/UserManagementSchema"
 import { ResponseApiType } from "@/helpers/ApiHelper"
 import { PaginationState, Updater } from "@tanstack/react-table"
 
@@ -38,3 +38,5 @@ export interface UserState extends CommonState {
 }
 
 export type UserManagementForm = z.infer<typeof UserManagementSchema>
+export type PersonalInfoForm = z.infer<typeof PersonalInfoSchema>
+export type ChangePasswordForm = z.infer<typeof ChangePasswordSchema>

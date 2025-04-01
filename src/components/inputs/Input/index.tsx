@@ -26,7 +26,7 @@ const InputWithLabel = React.forwardRef<HTMLInputElement, IPropsInputWithLabel>(
 		ref
 	) => {
 		return (
-			<div className="grid w-full max-w-sm items-center gap-1.5">
+			<div className="grid w-full items-center gap-1.5">
 				<div className="flex gap-2">
 					<Label htmlFor="email">{label}</Label>
 					{isRequired && <span className="text-destructive">*</span>}

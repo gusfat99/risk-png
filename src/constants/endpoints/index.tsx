@@ -10,3 +10,4 @@ export const DEVIATION_EP = "/deviations";
 export const CAUSE_EP = "/cause";
 export const CONSEQUENCE_EP = "/consequence";
 export const MANAGEMENT_USER_EP = "/management-user/role";
+export const PERSONAL_INFO_EP = "/setting-profil/personal-info";

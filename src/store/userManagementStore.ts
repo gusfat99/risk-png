@@ -1,4 +1,4 @@
-import { MANAGEMENT_USER_EP } from "@/constants/endpoints"
+import { MANAGEMENT_USER_EP, PERSONAL_INFO_EP } from "@/constants/endpoints"
 import {
 	deleteData,
 	getDataApi,
@@ -8,7 +8,13 @@ import {
 } from "@/helpers/ApiHelper"
 import { toast } from "@/hooks/use-toast"
 import { commonInitualState } from "@/types/common"
-import { User, UserManagementForm, UserRole, UserState } from "@/types/user"
+import {
+	PersonalInfoForm,
+	User,
+	UserManagementForm,
+	UserRole,
+	UserState,
+} from "@/types/user"
 import { createStore, runUpdater } from "./store"
 
 const initialState = {
@@ -177,6 +183,31 @@ const useUserManagementStore = createStore<UserState>(
 						state.pagination_tanstack
 					),
 				})),
+			updateMyPersonalInfo: async (payload: PersonalInfoForm) => {
+				set({
+					isSubmit: true,
+				})
+				return new Promise<ResponseApiType<User>>((resolve, reject) => {
+					const formData = new FormData();
+					formData.append("name", payload.name)
+					formData.append("email", payload.email)
+					if (payload.profile_picture) {
+						formData.append("profile_picture", payload.profile_picture)
+					}
+					postData<User>(`${PERSONAL_INFO_EP}`, formData)
+						.then((data) => {
+							resolve(data)
+						})
+						.catch((err) => {
+							reject(err)
+						})
+						.finally(() => {
+							set({
+								isSubmit: false,
+							})
+						})
+				})
+			},
 			// setPagination : ()
 		},
 	})

@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronRight, type LucideIcon } from "lucide-react"
+import { ChevronRight } from "lucide-react"
 
 import {
 	Collapsible,
@@ -16,6 +16,7 @@ import {
 	SidebarMenuSubButton,
 	SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
+import { RouteType } from "@/data/routes"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -23,16 +24,7 @@ import { usePathname } from "next/navigation"
 export function NavMain({
 	items,
 }: {
-	items: {
-		title: string
-		url: string
-		icon: LucideIcon
-		isActive?: boolean
-		items?: {
-			title: string
-			url: string
-		}[]
-	}[]
+	items: RouteType[]
 }) {
 	const pathname = usePathname()
 	// const params = useLOC();

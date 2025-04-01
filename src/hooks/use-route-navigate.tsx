@@ -7,17 +7,25 @@ import { useMemo } from "react"
 export const useRouteGetTitle = () => {
 	const pathname = usePathname()
 
-	const route = useMemo(
-		() =>
-			routes.navMain.find((x) => {
+	const route = useMemo(() => {
+		let routeAvailable = routes.navMain.find((x) => {
+			if ((x.items || [])?.length > 0) {
+				return x.items?.some((y) => pathname.includes(y.url))
+			} else {
+				return pathname.includes(x.url)
+			}
+		})
+		if (!routeAvailable) {
+			routeAvailable = routes.navSecondary.find((x) => {
 				if ((x.items || [])?.length > 0) {
 					return x.items?.some((y) => pathname.includes(y.url))
 				} else {
 					return pathname.includes(x.url)
 				}
-			}),
-		[pathname]
-	)
+			})
+		}
+		return routeAvailable
+	}, [pathname])
 
 	const Icon = route?.icon
 	let title = route?.title ?? ""
@@ -55,25 +63,34 @@ export const useRouteGetTitle = () => {
 export const useRouteNavigate = () => {
 	const pathname = usePathname()
 
-	const route = useMemo(
-		() =>
-			routes.navMain.find((x) => {
+	const route = useMemo(() => {
+		let availableRoute = routes.navMain.find((x) => {
+			if ((x.items || [])?.length > 0) {
+				return x.items?.some((y) => pathname.includes(y.url))
+			} else {
+				return pathname.includes(x.url)
+			}
+		})
+		if (!availableRoute) {
+			availableRoute = routes.navSecondary.find((x) => {
 				if ((x.items || [])?.length > 0) {
 					return x.items?.some((y) => pathname.includes(y.url))
 				} else {
 					return pathname.includes(x.url)
 				}
-			}),
-		[pathname]
-	)
+			})
+		}
+		return availableRoute
+	}, [pathname])
 
 	const pathNameArr = pathname.split("/")
 
-	const regexIsID = /^(?:\d+|[a-zA-Z0-9]{5,}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i;
+	const regexIsID =
+		/^(?:\d+|[a-zA-Z0-9]{5,}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i
 
 	pathNameArr.splice(0, 1)
-	const lastPathname = pathNameArr[pathNameArr.length - 1];
-	
+	const lastPathname = pathNameArr[pathNameArr.length - 1]
+
 	if (regexIsID.test(lastPathname)) {
 		pathNameArr.splice(pathNameArr.length - 1, 1)
 	}
@@ -93,7 +110,7 @@ export const useRouteNavigate = () => {
 			})
 		}
 	})
-	
+
 	return {
 		breadcrumbs,
 	}

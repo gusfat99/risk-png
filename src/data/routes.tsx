@@ -4,12 +4,29 @@ import {
 	CopyCheck,
 	LayoutDashboard,
 	LineChart,
+	LogOut,
+	LucideIcon,
+	Settings,
 	SquareActivity,
 	SquareKanbanIcon,
 	UserCog2,
 } from "lucide-react"
 
-const routes = {
+export type RouteType = {
+	title: string
+	url: string
+	icon: LucideIcon
+	isActive?: boolean
+	items?: {
+		title: string
+		url: string
+	}[]
+}
+
+const routes: {
+	navMain: RouteType[]
+	navSecondary: RouteType[]
+} = {
 	navMain: [
 		{
 			title: "Dashboard",
@@ -77,8 +94,18 @@ const routes = {
 			icon: UserCog2,
 		},
 	],
-	navSecondary: [],
-	projects: [],
+	navSecondary: [
+		{
+			title: "Setting Profile",
+			url: "/setting-profile",
+			icon: Settings,
+		},
+		{
+			title: "Logout",
+			url: "",
+			icon: LogOut,
+		},
+	]
 }
 
-export default routes;
+export default routes

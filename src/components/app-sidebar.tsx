@@ -19,7 +19,6 @@ import routes from "@/data/routes"
 import Image from "next/image"
 import { NavSecondary } from "./nav-secondary"
 
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	return (
 		<Sidebar variant="inset" {...props}>
@@ -43,7 +42,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 								<div className="w-full h-[68px] ">
 									<Image
 										src={LogoMainWhite}
-										alt={process.env.NEXT_PUBLIC_APP_NAME || "MAIN LOGO"}
+										alt={
+											process.env.NEXT_PUBLIC_APP_NAME ||
+											"MAIN LOGO"
+										}
 										width={157}
 										height={58}
 										className="h-full m-auto"
@@ -58,7 +60,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 					<NavMain items={routes.navMain} />
 				</SidebarContent>
 				<SidebarFooter>
-					<NavSecondary />
+					<NavSecondary items={routes.navSecondary} />
 				</SidebarFooter>
 			</>
 		</Sidebar>
