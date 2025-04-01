@@ -200,12 +200,12 @@ const ManagementUserForm: React.FC<IProps> = ({ isEdit, isDetail }) => {
 									)
 										setVisibilityPwd((prev) => ({
 											...prev,
-											password_confirmation: "off",
+											confirm_password: "off",
 										}))
 									else
 										setVisibilityPwd((prev) => ({
 											...prev,
-											password_confirmation: "show",
+											confirm_password: "show",
 										}))
 								}}
 								secure

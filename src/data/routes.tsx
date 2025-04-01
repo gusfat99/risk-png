@@ -39,7 +39,7 @@ const routes = {
 		},
 		{
 			title: "Data Report",
-			url: "/report-reisk",
+			url: "/report-risk",
 			icon: ClipboardList,
 			items: [
 				{
@@ -48,7 +48,7 @@ const routes = {
 				},
 				{
 					title: "Report Risk By Severity",
-					url: "/report-reisk-saverity",
+					url: "/report-risk-severity",
 				},
 			],
 		},
