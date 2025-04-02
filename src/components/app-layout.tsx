@@ -21,8 +21,8 @@ export default function AppLayout({ children }: IProps) {
 			<AppSidebar />
 			<SidebarInset className="p-5">
 				<AppHeader />
-				{title?.toLowerCase() === "dashboard" && children}
-				{title?.toLowerCase() !== "dashboard" && (
+				{(title?.toLowerCase() === "dashboard" || subtitle?.toLowerCase()?.includes("setting matrix")) && children}
+				{title?.toLowerCase() !== "dashboard" && !subtitle?.toLowerCase()?.includes("setting matrix") && (
 					<>
 						{lengthPathname <= 2 && (
 							<div className="rounded-md max-w-full lg:max-w-screen-2xl bg-primary p-4 flex text-white mt-2">

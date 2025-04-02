@@ -10,13 +10,15 @@ import {
 	useSidebar,
 } from "@/components/ui/sidebar"
 import { destroyIsLoggedIn } from "@/services/cookies"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import Link from "next/link"
 import { RouteType } from "@/data/routes"
+import { cn } from "@/lib/utils"
 
 export function NavSecondary({ items }: { items: RouteType[] }) {
 	const { isMobile } = useSidebar()
 	const router = useRouter()
+	const pathname = usePathname()
 
 	return (
 		<SidebarMenu className="px-5">
@@ -26,7 +28,10 @@ export function NavSecondary({ items }: { items: RouteType[] }) {
 						<DropdownMenu key={route.title}>
 							<SidebarMenuButton
 								size="lg"
-								className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:text-primary text-primary-100 !gap-4"
+								className={cn(
+									"data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:text-primary text-primary-100 !gap-4"
+									
+								)}
 								onClick={() => {
 									destroyIsLoggedIn().then(() => {
 										router.replace("/login")
@@ -43,7 +48,17 @@ export function NavSecondary({ items }: { items: RouteType[] }) {
 						<Link href={route.url} key={route.title}>
 							<SidebarMenuButton
 								size="lg"
-								className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground text-primary-100 hover:text-primary !gap-4"
+								className={cn(
+									"data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground text-primary-100 hover:text-primary !gap-4",
+									{
+										"text-primary": pathname.includes(
+											route.url
+										),
+										"bg-white": pathname.includes(
+											route.url
+										),
+									}
+								)}
 							>
 								<Settings className="!size-6" />
 								<span className="truncate font-normal">

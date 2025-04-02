@@ -9,7 +9,7 @@ export const DashbaordRiskMatrixCard = () => {
 	return (
 		<div className="shadow-md p-3 rounded-lg space-y-4">
 			<div className="flex flex-row justify-between" >
-				<div className="bg-primary-100 rounded-md p-2 text-center text-primary font-semibold max-w-[254px] m-auto">
+				<div className="bg-primary-100 rounded-md p-2 text-center text-primary font-semibold max-w-[254px] w-full m-auto">
 					HEAT MAP
             </div>
             <Button variant={"ghost"} size={"sm"}  >
