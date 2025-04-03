@@ -20,9 +20,16 @@ import { Save } from "lucide-react"
 import React, { useCallback } from "react"
 import { useForm } from "react-hook-form"
 import HazopRecomendationsForm from "../HazopRecomendationsForm"
+// import Datepicker from "react-tailwindcss-datepicker"
 
 interface IProps {
 	basePathname: string
+}
+
+export type HazopStatusDialog = {
+	hazop_id: any | null
+	risk_analyst_id: any | null
+	open: boolean
 }
 
 const RiskResponseFormMultiple: React.FC<IProps> = ({ basePathname }) => {
@@ -37,13 +44,9 @@ const RiskResponseFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 		nodeSelected,
 	} = useRiskResponseStore()
 	const total = meta?.total || 0
-	const [hazopOpen, setHazopOpen] = React.useState<{
-		hazop_id: any | null
-		rysk_analyst_id: any | null
-		open: boolean
-	}>({
+	const [hazopOpen, setHazopOpen] = React.useState<HazopStatusDialog>({
 		hazop_id: null,
-		rysk_analyst_id: null,
+		risk_analyst_id: null,
 		open: false,
 	})
 
@@ -76,13 +79,12 @@ const RiskResponseFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 
 	const handleAction = useCallback(
 		(actionName: string, row: RiskResponse) => {
-			
 			if (actionName === "hazop") {
 				// setSelectedId(id)
 				setHazopOpen((prev) => ({
 					...prev,
 					hazop_id: row.id,
-					rysk_analyst_id: row.risk_analyst.id,
+					risk_analyst_id: row.risk_analyst.id,
 					open: true,
 				}))
 			}
@@ -170,7 +172,19 @@ const RiskResponseFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 				title="Hazop Recomendation"
 				size="7xl"
 			>
-				<HazopRecomendationsForm/>
+				<HazopRecomendationsForm
+					params={{
+						risk_analyst_id: hazopOpen.risk_analyst_id,
+						hazop_id: hazopOpen.hazop_id,
+					}}
+					afterSaveSuccesfull={() => {
+						setHazopOpen((prev) => ({
+							risk_analyst_id: null,
+							hazop_id: null,
+							open: false,
+						}))
+					}}
+				/>
 			</DialogMain>
 		</React.Fragment>
 	)

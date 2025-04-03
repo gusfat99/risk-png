@@ -3,12 +3,18 @@ import {
 	RISK_ANALYST_EP,
 	RISK_RESPONSE_EP,
 } from "@/constants/endpoints"
-import { deleteData, getDataApi, postData, ResponseApiType } from "@/helpers/ApiHelper"
+import {
+	deleteData,
+	getDataApi,
+	postData,
+	ResponseApiType,
+} from "@/helpers/ApiHelper"
 import { toast } from "@/hooks/use-toast"
 import { commonInitualState } from "@/types/common"
 import { Node } from "@/types/node"
 import {
 	RiskResponse,
+	RiskResponseHazopMultipleSchemaForm,
 	RiskResponseSevertyExpectMultipleSchemaForm,
 	RiskResponseState,
 } from "@/types/riskResponse"
@@ -24,6 +30,7 @@ const initialState = {
 			isFetching: false,
 			nodeItems: [],
 		},
+		isSubmitHazop: false,
 	},
 }
 
@@ -160,6 +167,60 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 								set({
 									isFetching: false,
 								})
+							})
+					}
+				)
+			},
+			createHazop: async (
+				nodeId: any,
+				riskId: any,
+				payload: FormData
+			) => {
+				set((prev) => ({
+					supportData: {
+						...prev.supportData,
+						isSubmitHazop: true,
+					},
+				}))
+
+				return new Promise<ResponseApiType<RiskResponse[]>>(
+					(resolve, reject) => {
+						postData<RiskResponse[]>(
+							`${RISK_RESPONSE_EP}/${nodeId}/create-hazop/${riskId}`,
+							payload,
+							{
+								headers: {
+									"Content-Type": "multipart/form-data",
+								},
+							}
+						)
+							.then((data) => {
+								// set((state) => {
+								// 	return {
+								// 		riskAnalysItems: [
+								// 			...state.riskAnalysItems,
+								// 			...(data.data ? [data.data] : []),
+								// 		],
+								// 	}
+								// })
+
+								resolve(data)
+							})
+							.catch((err) => {
+								reject(err)
+								toast({
+									title: "ERROR",
+									description: err.message,
+									variant: "destructive",
+								})
+							})
+							.finally(() => {
+								set((prev) => ({
+									supportData: {
+										...prev.supportData,
+										isSubmitHazop: false,
+									},
+								}))
 							})
 					}
 				)

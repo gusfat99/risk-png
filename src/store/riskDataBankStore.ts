@@ -6,16 +6,15 @@ import {
 	ResponseApiType,
 } from "@/helpers/ApiHelper"
 import { toast } from "@/hooks/use-toast"
+import { parseRiskBankToFlatted } from "@/modules/RiskBankModule/parseRiskBank"
 import { commonInitualState } from "@/types/common"
 import {
 	Deviations,
 	RiskBank,
-	RiskBankFlat,
-	RiskDataBankState,
+	RiskDataBankState
 } from "@/types/riskDataBank"
 import { Safeguard } from "@/types/safeguard"
 import { createStore, runUpdater } from "./store"
-import { parseRiskBankToFlatted } from "@/modules/RiskBankModule/parseRiskBank"
 
 const initialState = {
 	...commonInitualState,

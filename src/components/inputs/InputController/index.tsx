@@ -18,7 +18,7 @@ interface InputControllerProps extends InputProps {
 	isRequired?: boolean
 	passwordVisible?: boolean
 	secure?: boolean
-	type?: "number" | "text" | "password" | "email" | "url" | "hidden"
+	type?: "number" | "text" | "password" | "email" | "url" | "hidden" | "date"
 	value?: any
 	labelClassName?: string
 	onClickShuffix?(): void

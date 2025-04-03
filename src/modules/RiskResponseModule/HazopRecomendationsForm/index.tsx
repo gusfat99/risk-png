@@ -1,19 +1,39 @@
 import AddButton from "@/components/buttons/AddButton"
 import InputController from "@/components/inputs/InputController"
-import InputDatepickerController from "@/components/inputs/InputDatepickerController"
 import InputFileOriginController from "@/components/inputs/InputFileOriginController"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Form, FormField } from "@/components/ui/form"
+import Spinner from "@/components/ui/spinner"
 import { useDebounce } from "@/hooks/use-debounce"
 import { RiskResponseHazopMultipleSchema } from "@/schemas/RiskResponseSchema"
+import useRiskResponseStore from "@/store/riskResponseStore"
 import { RiskResponseHazopMultipleSchemaForm } from "@/types/riskResponse"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Save } from "lucide-react"
 import React from "react"
 import { useFieldArray, useForm } from "react-hook-form"
+import { parseViewToPayload } from "../parsingRiskResponse"
+import { useToast } from "@/hooks/use-toast"
 
-const HazopRecomendationsForm = () => {
+interface IProps {
+	params: {
+		risk_analyst_id: any | null
+		hazop_id?: any
+	}
+	afterSaveSuccesfull?: () => void
+}
+
+const HazopRecomendationsForm: React.FC<IProps> = ({
+	params: { risk_analyst_id, hazop_id },
+	afterSaveSuccesfull,
+}) => {
+	const { toast } = useToast();
+	const {
+		actions: { createHazop },
+		nodeSelected,
+		supportData: { isSubmitHazop },
+	} = useRiskResponseStore()
 	const form = useForm<RiskResponseHazopMultipleSchemaForm>({
 		resolver: zodResolver(RiskResponseHazopMultipleSchema),
 		progressive: false,
@@ -46,7 +66,32 @@ const HazopRecomendationsForm = () => {
 		})
 	}
 
-	const handleSubmit = async (data: RiskResponseHazopMultipleSchemaForm) => {}
+	const handleSubmit = async (data: RiskResponseHazopMultipleSchemaForm) => {
+		try {
+			if (createHazop) {
+				if (nodeSelected?.id) {
+					const payload = parseViewToPayload(data)
+					const result = await createHazop(
+						nodeSelected?.id,
+						risk_analyst_id,
+						payload,
+						
+					)
+					if (result) {
+						toast({
+							title: result.message ?? "",
+							variant: "success",
+						})
+						afterSaveSuccesfull && afterSaveSuccesfull()
+					}
+				} else {
+					throw new Error("Node not Selected yet")
+				}
+			} else {
+				throw new Error("Function not founded")
+			}
+		} catch (error) {}
+	}
 
 	const hazopRecomendationsWatch = form.watch("items")
 
@@ -101,30 +146,16 @@ const HazopRecomendationsForm = () => {
 											control={form.control}
 											name={`items.${index}.due_date`}
 											render={({ field }) => (
-												<InputDatepickerController
-													useRange={false}
+												<InputController
 													label="Due Date"
+													type="date"
 													placeholder="Enter Due Date"
-													onChange={(value) => {
+													onChange={(e) => {
 														handleChange(
-															value,
+															e.target.value,
 															`items.${index}.due_date`
 														)
 													}}
-													value={
-														field.value
-															? {
-																	startDate:
-																		new Date(
-																			field.value
-																		),
-																	endDate:
-																		new Date(
-																			field.value
-																		),
-															  }
-															: null
-													}
 												/>
 											)}
 										/>
@@ -138,10 +169,13 @@ const HazopRecomendationsForm = () => {
 													placeholder="Document Report"
 													accept=".pdf, .xls, .xlsx, .doc, .docx"
 													onChange={(e) => {
-														handleChange(
-															e.target.value,
-															`items.${index}.document_report`
-														)
+														if (e.target.files) {
+															handleChange(
+																e.target
+																	.files[0],
+																`items.${index}.document_report`
+															)
+														}
 													}}
 												/>
 											)}
@@ -162,9 +196,13 @@ const HazopRecomendationsForm = () => {
 					</CardContent>
 				</Card>
 				<div className="col-span-5 flex justify-end">
-					<Button variant={"secondary"}>
-						{" "}
-						<Save /> Save
+					<Button disabled={isSubmitHazop} variant={"secondary"}>
+						{isSubmitHazop ? (
+							<Spinner className="w-4 h-4" />
+						) : (
+							<Save />
+						)}
+						Save
 					</Button>
 				</div>
 			</form>

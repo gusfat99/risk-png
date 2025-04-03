@@ -1,5 +1,10 @@
 import { ResponseApiType } from "@/helpers/ApiHelper"
-import { RiskResponseHazopMultipleSchema, RiskResponseHazopSchema, RiskResponseSevertyExpectMultipleSchema, RiskResponseSevertyExpectSchema } from "@/schemas/RiskResponseSchema"
+import {
+	RiskResponseHazopMultipleSchema,
+	RiskResponseHazopSchema,
+	RiskResponseSevertyExpectMultipleSchema,
+	RiskResponseSevertyExpectSchema,
+} from "@/schemas/RiskResponseSchema"
 import { PaginationState, Updater } from "@tanstack/react-table"
 import { z } from "zod"
 import { CommonState } from "./common"
@@ -58,7 +63,8 @@ export interface RiskResponseState extends CommonState {
 		node: {
 			nodeItems: Node[]
 			isFetching: boolean
-		}
+		},
+		isSubmitHazop?: boolean;
 	}
 	actions: {
 		fetchAllData(
@@ -66,8 +72,13 @@ export interface RiskResponseState extends CommonState {
 		): Promise<ResponseApiType<{ risk_response: RiskResponse[] }>>
 		fetchSingleData?(id: any): Promise<ResponseApiType<RiskResponse>>
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>
+		createHazop?(
+			nodeId: any,
+			riskId: any,
+			payload: FormData
+		): Promise<ResponseApiType<any>>
 		updateSavertyExpectMultiple?(
-			nodeId : any,
+			nodeId: any,
 			payload: RiskResponseSevertyExpectMultipleSchemaForm
 		): Promise<ResponseApiType<RiskResponse[]>>
 		createData?(
@@ -84,10 +95,15 @@ export interface RiskResponseState extends CommonState {
 	}
 }
 
-
-export type RiskResponseHazopSchemaForm = z.infer<typeof RiskResponseHazopSchema>
-export type RiskResponseHazopMultipleSchemaForm = z.infer<typeof RiskResponseHazopMultipleSchema>
+export type RiskResponseHazopSchemaForm = z.infer<
+	typeof RiskResponseHazopSchema
+>
+export type RiskResponseHazopMultipleSchemaForm = z.infer<
+	typeof RiskResponseHazopMultipleSchema
+>
 export type RiskResponseSevertyExpectMultipleSchemaForm = z.infer<
 	typeof RiskResponseSevertyExpectMultipleSchema
 >
-export type RiskResponseSevertyExpectSchemaForm = z.infer<typeof RiskResponseSevertyExpectSchema>
+export type RiskResponseSevertyExpectSchemaForm = z.infer<
+	typeof RiskResponseSevertyExpectSchema
+>
