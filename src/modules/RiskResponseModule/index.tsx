@@ -22,7 +22,7 @@ const RiskResponseModule = () => {
 
 	const nodeOptions = nodeItems.map((node) => ({
 		label: node.node,
-		value: node.id,
+		value: node.id?.toString() ?? "",
 	}))
 
 	useEffect(() => {
@@ -43,6 +43,7 @@ const RiskResponseModule = () => {
 					items={nodeOptions}
 					loading={isFetchingNode}
 					className="w-full"
+					value={nodeSelected?.id?.toString() ?? ""}
 					onValueChange={(value) => {
 						setNodeSelected(parseInt(value))
 					}}

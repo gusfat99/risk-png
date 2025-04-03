@@ -9,6 +9,7 @@ import { Cause, Consequences, Deviations } from "./riskDataBank"
 export type RiskResponse = {
 	id: number
 	risk_analyst_id: number
+	risk_analyst: RiskAnalystResponse
 	sp_expected: number
 	se_expected: number
 	sf_expected: number
@@ -27,7 +28,7 @@ export type HazopStatus = {
 
 export type HazopStatusValue = "pending" | "in_progress" | "done"
 
-export type RiskResponseParent = {
+export type RiskAnalystResponse = {
 	id: number
 	node_id: number
 	deviation_id: number
@@ -46,13 +47,12 @@ export type RiskResponseParent = {
 	deviations: Deviations
 	causes: Cause
 	consequences: Consequences
-	risk_response: RiskResponse
 	hazop_status: HazopStatus
 }
 
 export interface RiskResponseState extends CommonState {
-	riskResponseItems: RiskResponseParent[]
-	riskResponseSelected: RiskResponseParent | null
+	riskResponseItems: RiskResponse[]
+	riskResponseSelected: RiskResponse | null
 	nodeSelected: Node | null
 	supportData: {
 		node: {
@@ -63,21 +63,21 @@ export interface RiskResponseState extends CommonState {
 	actions: {
 		fetchAllData(
 			nodeId: any
-		): Promise<ResponseApiType<{ risk_analyst: RiskResponseParent[] }>>
-		fetchSingleData?(id: any): Promise<ResponseApiType<RiskResponseParent>>
+		): Promise<ResponseApiType<{ risk_response: RiskResponse[] }>>
+		fetchSingleData?(id: any): Promise<ResponseApiType<RiskResponse>>
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>
 		updateSavertyExpectMultiple?(
 			nodeId : any,
 			payload: RiskResponseSevertyExpectMultipleSchemaForm
-		): Promise<ResponseApiType<RiskResponseParent[]>>
+		): Promise<ResponseApiType<RiskResponse[]>>
 		createData?(
 			payload: any,
 			nodeId: any
-		): Promise<ResponseApiType<RiskResponseParent>>
+		): Promise<ResponseApiType<RiskResponse>>
 		updateData?(
 			id: any,
 			paylaod: any
-		): Promise<ResponseApiType<RiskResponseParent>>
+		): Promise<ResponseApiType<RiskResponse>>
 		deleteData?(id: any): Promise<ResponseApiType<any>>
 		setPagination?: (updater: Updater<PaginationState>) => void
 		setNodeSelected: (nodeId: number) => void

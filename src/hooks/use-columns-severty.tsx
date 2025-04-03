@@ -8,9 +8,12 @@ import {
 	RiskAnalysis,
 	RiskAnalysisSevertyMultipleForm,
 } from "@/types/riksAnalyst"
-import { RiskMonitoring, RiskMonitoringSevertyMultipleForm } from "@/types/riskMonitoring"
 import {
-	RiskResponseParent,
+	RiskMonitoring,
+	RiskMonitoringSevertyMultipleForm,
+} from "@/types/riskMonitoring"
+import {
+	RiskResponse,
 	RiskResponseSevertyExpectMultipleSchemaForm,
 } from "@/types/riskResponse"
 import { ColumnDef } from "@tanstack/react-table"
@@ -375,10 +378,10 @@ export const useColumnsRiskResponse = ({
 	onAction,
 	form,
 }: UseColumnsRiskResponseProps): {
-	column: ColumnDef<RiskResponseParent>[]
+	column: ColumnDef<RiskResponse>[]
 } => {
-	const column: ColumnDef<RiskResponseParent>[] = useMemo(() => {
-		const cols: ColumnDef<RiskResponseParent>[] = [
+	const column: ColumnDef<RiskResponse>[] = useMemo(() => {
+		const cols: ColumnDef<RiskResponse>[] = [
 			{
 				header: "No",
 				cell: ({ row, table }) => {
@@ -401,12 +404,20 @@ export const useColumnsRiskResponse = ({
 					)
 				},
 				cell: ({ row }) => (
-					<Button variant={"secondary_300"}>Hazop</Button>
+					<Button
+						variant={"secondary_100"}
+						onClick={() =>
+							onAction && onAction("hazop", row.original)
+						}
+						type="button"
+					>
+						Hazop
+					</Button>
 				),
 			},
 			{
 				id: "deviation",
-				accessorFn: (row) => row.deviations.name ?? "",
+				accessorFn: (row) => row.risk_analyst.deviations.name ?? "",
 				meta: {
 					hiddenFilter: true,
 				},
@@ -422,7 +433,7 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "cause",
-				accessorFn: (row) => `${row.causes.cause}`,
+				accessorFn: (row) => `${row.risk_analyst.causes.cause}`,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader column={column} title="Cause" />
@@ -432,7 +443,7 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "consequence",
-				accessorFn: (row) => row.consequences.consequence,
+				accessorFn: (row) => row.risk_analyst.consequences.consequence,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -448,7 +459,7 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "existing_safeguard",
-				accessorFn: (row) => row.existing_safeguard,
+				accessorFn: (row) => row.risk_analyst.existing_safeguard,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -463,7 +474,7 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "sp_current",
-				accessorFn: (row) => row.sp_current,
+				accessorFn: (row) => row.risk_analyst.sp_current,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -483,7 +494,7 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "se_current",
-				accessorFn: (row) => row.se_current,
+				accessorFn: (row) => row.risk_analyst.se_current,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -503,7 +514,7 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "sf_current",
-				accessorFn: (row) => row.sf_current,
+				accessorFn: (row) => row.risk_analyst.sf_current,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -523,7 +534,7 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "srl_current",
-				accessorFn: (row) => row.srl_current,
+				accessorFn: (row) => row.risk_analyst.srl_current,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -545,7 +556,7 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "sa_current",
-				accessorFn: (row) => row.sa_current,
+				accessorFn: (row) => row.risk_analyst.sa_current,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -565,7 +576,7 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "spn_current",
-				accessorFn: (row) => row.spn_current,
+				accessorFn: (row) => row.risk_analyst.spn_current,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -586,7 +597,7 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "l_frequency_current",
-				accessorFn: (row) => row.l_frequency_current,
+				accessorFn: (row) => row.risk_analyst.l_frequency_current,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -605,7 +616,7 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "risk_ranking_current",
-				accessorFn: (row) => row.risk_ranking_current,
+				accessorFn: (row) => row.risk_analyst.risk_ranking_current,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -652,7 +663,7 @@ export const useColumnsRiskResponse = ({
 							<MemoizedCellInput
 								row={row}
 								form={form}
-								name="sp_expect"
+								name="sp_expected"
 							/>
 						</React.Fragment>
 					)
@@ -674,7 +685,7 @@ export const useColumnsRiskResponse = ({
 						<MemoizedCellInput
 							row={row}
 							form={form}
-							name="se_expect"
+							name="se_expected"
 						/>
 					)
 				},
@@ -695,7 +706,7 @@ export const useColumnsRiskResponse = ({
 						<MemoizedCellInput
 							row={row}
 							form={form}
-							name="sf_expect"
+							name="sf_expected"
 						/>
 					)
 				},
@@ -718,7 +729,7 @@ export const useColumnsRiskResponse = ({
 						<MemoizedCellInput
 							row={row}
 							form={form}
-							name="srl_expect"
+							name="srl_expected"
 						/>
 					)
 				},
@@ -739,7 +750,7 @@ export const useColumnsRiskResponse = ({
 						<MemoizedCellInput
 							row={row}
 							form={form}
-							name="sa_expect"
+							name="sa_expected"
 						/>
 					)
 				},
@@ -762,7 +773,7 @@ export const useColumnsRiskResponse = ({
 						<MemoizedCellInput
 							row={row}
 							form={form}
-							name="spn_expect"
+							name="spn_expected"
 						/>
 					)
 				},
@@ -783,14 +794,14 @@ export const useColumnsRiskResponse = ({
 						<MemoizedCellInput
 							row={row}
 							form={form}
-							name="l_frequency_expect"
+							name="l_frequency_expected"
 						/>
 					)
 				},
 			},
 			{
 				id: "risk_ranking_expected",
-				accessorFn: (row) => row.risk_response.risk_ranking_expected,
+				accessorFn: (row) => row.risk_ranking_expected,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -810,7 +821,7 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "remark_analyst",
-				accessorFn: (row) => row.remark_analyst,
+				accessorFn: (row) => row.risk_analyst.remark_analyst,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -830,7 +841,7 @@ export const useColumnsRiskResponse = ({
 	}
 }
 
-export const useColumnsMonitoring = ({ 
+export const useColumnsMonitoring = ({
 	onAction,
 	form,
 }: UseColumnsRiskMonitoringProps): {
@@ -1020,7 +1031,9 @@ export const useColumnsMonitoring = ({
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Saverty to Reputation & Ilegal (SRL) Affected"}
+							title={
+								"Saverty to Reputation & Ilegal (SRL) Affected"
+							}
 						/>
 					)
 				},
@@ -1062,7 +1075,9 @@ export const useColumnsMonitoring = ({
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Saverty to Public Notification (SPN) Affected"}
+							title={
+								"Saverty to Public Notification (SPN) Affected"
+							}
 						/>
 					)
 				},
@@ -1076,9 +1091,6 @@ export const useColumnsMonitoring = ({
 					)
 				},
 			},
-		
-		
-			
 		]
 		return cols
 	}, [form, onAction])
