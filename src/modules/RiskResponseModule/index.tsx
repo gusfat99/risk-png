@@ -12,7 +12,12 @@ const RiskResponseModule = () => {
 	const {
 		nodeSelected,
 		isFetching,
-		actions: { setNodeSelected, fetchNodeData, fetchAllData },
+		actions: {
+			setNodeSelected,
+			fetchNodeData,
+			fetchAllData,
+			setHazopByRiskAnalyst,
+		},
 		supportData: {
 			node: { isFetching: isFetchingNode, nodeItems },
 		},
@@ -32,7 +37,16 @@ const RiskResponseModule = () => {
 		if (nodeSelected?.id) {
 			fetchAllData(nodeSelected.id)
 		}
-	}, [fetchNodeData, fetchAllData, nodeSelected?.id, nodeItems])
+		return () => {
+			setHazopByRiskAnalyst && setHazopByRiskAnalyst(null)
+		}
+	}, [
+		fetchNodeData,
+		fetchAllData,
+		setHazopByRiskAnalyst,
+		nodeSelected?.id,
+		nodeItems,
+	])
 
 	return (
 		<div className="w-full space-y-4">

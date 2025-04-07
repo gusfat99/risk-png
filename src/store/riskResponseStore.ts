@@ -13,18 +13,23 @@ import { toast } from "@/hooks/use-toast"
 import { commonInitualState } from "@/types/common"
 import { Node } from "@/types/node"
 import {
+	Hazop,
 	RiskResponse,
-	RiskResponseHazopMultipleSchemaForm,
 	RiskResponseSevertyExpectMultipleSchemaForm,
 	RiskResponseState,
 } from "@/types/riskResponse"
 import { createStore, runUpdater } from "./store"
+import fetchFileAsFile from "@/services/fetchFileAsFile"
+import { API_URL } from "@/constants"
+import fetchFileViaProxy from "@/services/fetchFileAsFile"
 
 const initialState = {
 	...commonInitualState,
 	riskResponseItems: [],
 	riskResponseSelected: null,
 	nodeSelected: null,
+	hazopItemsSelected: null,
+	isFetchingHazopItems: false,
 	supportData: {
 		node: {
 			isFetching: false,
@@ -171,6 +176,74 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 					}
 				)
 			},
+			fetchHazopByRiskAnalyst: async (
+				nodeId: any,
+				riskAnalystId: any
+			) => {
+				set({
+					isFetchingHazopItems: true,
+				})
+				return new Promise<ResponseApiType<Hazop[]>>(
+					(resolve, reject) => {
+						getDataApi<Hazop[]>(
+							`${RISK_RESPONSE_EP}/${nodeId}/${riskAnalystId}`
+						)
+							.then(async (data) => {
+								//parse data to flat
+								const hazopItems = data.data
+								console.log({ hazopItems, data })
+								if (hazopItems) {
+									for (
+										let i = 0;
+										i < hazopItems.length;
+										i++
+									) {
+										if (hazopItems[i].document_report) {
+											const file =
+												await fetchFileViaProxy(
+													`${API_URL}/storage/hazops/${hazopItems[i].document_report}`,
+
+													hazopItems[i]
+														.document_report
+												)
+											hazopItems[i].document_report = file
+											console.log({ file });
+										}
+									}
+									
+									set({
+										isFetchingHazopItems: false,
+										hazopItemsSelected: hazopItems,
+									})
+									resolve(data)
+								} else {
+									set({
+										hazopItemsSelected:  null,
+										isFetchingHazopItems: false,
+									})
+								}
+							})
+							.catch((err) => {
+								toast({
+									title: "ERROR",
+									description: err.message,
+									variant: "destructive",
+								})
+								set({
+									isFetchingHazopItems: false,
+									hazopItemsSelected:  null,
+								})
+								reject(err)
+							})
+
+					}
+				)
+			},
+			setHazopByRiskAnalyst: (data: Hazop[] | null) => {
+				set({
+					hazopItemsSelected: data,
+				})
+			},
 			createHazop: async (
 				nodeId: any,
 				riskId: any,
@@ -187,6 +260,60 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 					(resolve, reject) => {
 						postData<RiskResponse[]>(
 							`${RISK_RESPONSE_EP}/${nodeId}/create-hazop/${riskId}`,
+							payload,
+							{
+								headers: {
+									"Content-Type": "multipart/form-data",
+								},
+							}
+						)
+							.then((data) => {
+								// set((state) => {
+								// 	return {
+								// 		riskAnalysItems: [
+								// 			...state.riskAnalysItems,
+								// 			...(data.data ? [data.data] : []),
+								// 		],
+								// 	}
+								// })
+
+								resolve(data)
+							})
+							.catch((err) => {
+								reject(err)
+								toast({
+									title: "ERROR",
+									description: err.message,
+									variant: "destructive",
+								})
+							})
+							.finally(() => {
+								set((prev) => ({
+									supportData: {
+										...prev.supportData,
+										isSubmitHazop: false,
+									},
+								}))
+							})
+					}
+				)
+			},
+			updateHazop: async (
+				nodeId: any,
+				riskId: any,
+				payload: FormData
+			) => {
+				set((prev) => ({
+					supportData: {
+						...prev.supportData,
+						isSubmitHazop: true,
+					},
+				}))
+
+				return new Promise<ResponseApiType<RiskResponse[]>>(
+					(resolve, reject) => {
+						postData<RiskResponse[]>(
+							`${RISK_RESPONSE_EP}/${nodeId}/update-hazop/${riskId}`,
 							payload,
 							{
 								headers: {

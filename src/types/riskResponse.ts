@@ -25,6 +25,14 @@ export type RiskResponse = {
 	risk_ranking_expected: number
 }
 
+export type Hazop = {
+	id?: number
+	hazop_recom: string
+	responsibility: string
+	due_date: string
+	document_report: any | null
+}
+
 export type HazopStatus = {
 	risk_analyst_id: number
 	hazop_completed: string
@@ -59,12 +67,14 @@ export interface RiskResponseState extends CommonState {
 	riskResponseItems: RiskResponse[]
 	riskResponseSelected: RiskResponse | null
 	nodeSelected: Node | null
+	hazopItemsSelected: Hazop[] | null
+	isFetchingHazopItems: boolean
 	supportData: {
 		node: {
 			nodeItems: Node[]
 			isFetching: boolean
-		},
-		isSubmitHazop?: boolean;
+		}
+		isSubmitHazop?: boolean
 	}
 	actions: {
 		fetchAllData(
@@ -72,7 +82,17 @@ export interface RiskResponseState extends CommonState {
 		): Promise<ResponseApiType<{ risk_response: RiskResponse[] }>>
 		fetchSingleData?(id: any): Promise<ResponseApiType<RiskResponse>>
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>
+		fetchHazopByRiskAnalyst?(
+			nodeId: any,
+			riskAnalystId: any
+		): Promise<ResponseApiType<Hazop[]>>
+		setHazopByRiskAnalyst?(data: Hazop[] | null): void
 		createHazop?(
+			nodeId: any,
+			riskId: any,
+			payload: FormData
+		): Promise<ResponseApiType<any>>
+		updateHazop?(
 			nodeId: any,
 			riskId: any,
 			payload: FormData
@@ -92,7 +112,7 @@ export interface RiskResponseState extends CommonState {
 		deleteData?(id: any): Promise<ResponseApiType<any>>
 		setPagination?: (updater: Updater<PaginationState>) => void
 		setNodeSelected: (nodeId: number) => void
-	}
+	},
 }
 
 export type RiskResponseHazopSchemaForm = z.infer<

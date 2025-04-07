@@ -14,6 +14,12 @@ export const parseViewToPayload = (
 				item.document_report
 			)
 		}
+		if (item.id) {
+			formData.append(
+				`hazops[${index}][id]`,
+				item.id
+			)
+		}
 	})
 	return formData
 }

@@ -15,7 +15,7 @@ interface InputFileOriginProps extends InputProps {
 	placeholder: string
 	children?: React.ReactNode
 	textarea?: boolean
-	fileUrl?: string | null
+	file?: File | null
 	onResetFile?: () => void
 	onProgresUpload?: boolean
 	multiple?: boolean
@@ -29,7 +29,7 @@ const InputFileOriginController: React.FC<InputFileOriginProps> = ({
 	placeholder,
 	children,
 	textarea,
-	fileUrl,
+	file,
 	onResetFile,
 	onProgresUpload,
 	isShowPreview = true,
@@ -44,31 +44,19 @@ const InputFileOriginController: React.FC<InputFileOriginProps> = ({
 	return (
 		<FormItem>
 			<FormLabel>
-				{label}{" "}
+				{label}
 				{isRequired && <span className="text-destructive">*</span>}
 			</FormLabel>
-			{fileUrl && !onProgresUpload && isShowPreview && (
+			{isShowPreview && file && (
 				<div className="flex gap-2">
-					<br />
 					<a
 						rel="noopener"
 						target="_blank"
 						className="text-blue-400 text-sm hover:underline"
-						href={fileUrl}
+						href={URL.createObjectURL(file)}
 					>
-						{fileUrl.split("/").pop()}
+						Preview Downloaded File
 					</a>
-
-					{!restProps.disabled && (
-						<RemoveButton
-							onClick={() => {
-								if (onResetFile) {
-									onResetFile()
-									resetFile()
-								}
-							}}
-						/>
-					)}
 				</div>
 			)}
 
@@ -86,7 +74,11 @@ const InputFileOriginController: React.FC<InputFileOriginProps> = ({
 					/>
 				)}
 			</FormControl>
-			{description && <FormDescription className="font-light text-xs" >{description}</FormDescription>}
+			{description && (
+				<FormDescription className="font-light text-xs">
+					{description}
+				</FormDescription>
+			)}
 			<FormMessage />
 		</FormItem>
 	)

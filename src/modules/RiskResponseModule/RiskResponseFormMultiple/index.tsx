@@ -35,7 +35,14 @@ export type HazopStatusDialog = {
 const RiskResponseFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 	const { toast } = useToast()
 	const {
-		actions: { setPagination, updateSavertyExpectMultiple },
+		actions: {
+			setPagination,
+			updateSavertyExpectMultiple,
+			fetchHazopByRiskAnalyst,
+			setHazopByRiskAnalyst,
+		},
+		isFetchingHazopItems,
+		hazopItemsSelected,
 		isFetching,
 		riskResponseItems,
 		meta,
@@ -81,6 +88,11 @@ const RiskResponseFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 		(actionName: string, row: RiskResponse) => {
 			if (actionName === "hazop") {
 				// setSelectedId(id)
+				fetchHazopByRiskAnalyst &&
+					fetchHazopByRiskAnalyst(
+						nodeSelected?.id,
+						row.risk_analyst.id
+					)
 				setHazopOpen((prev) => ({
 					...prev,
 					hazop_id: row.id,
@@ -128,7 +140,7 @@ const RiskResponseFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 		onAction: handleAction,
 		form,
 	})
-
+	console.log({ hazopItemsSelected });
 	return (
 		<React.Fragment>
 			<Form {...form}>
@@ -168,23 +180,32 @@ const RiskResponseFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 						...prev,
 						open: value,
 					}))
+					setHazopByRiskAnalyst && setHazopByRiskAnalyst(null)
 				}}
 				title="Hazop Recomendation"
 				size="7xl"
 			>
-				<HazopRecomendationsForm
-					params={{
-						risk_analyst_id: hazopOpen.risk_analyst_id,
-						hazop_id: hazopOpen.hazop_id,
-					}}
-					afterSaveSuccesfull={() => {
-						setHazopOpen((prev) => ({
-							risk_analyst_id: null,
-							hazop_id: null,
-							open: false,
-						}))
-					}}
-				/>
+				{isFetchingHazopItems && (
+					<div className="flex justify-center items-center w-full h-full">
+						<Spinner className="w-10 h-10" />
+					</div>
+				)}
+				{!isFetchingHazopItems && hazopItemsSelected && (
+					<HazopRecomendationsForm
+						params={{
+							risk_analyst_id: hazopOpen.risk_analyst_id,
+							hazop_id: hazopOpen.hazop_id,
+						}}
+						afterSaveSuccesfull={() => {
+							setHazopOpen((prev) => ({
+								risk_analyst_id: null,
+								hazop_id: null,
+								open: false,
+							}))
+							setHazopByRiskAnalyst && setHazopByRiskAnalyst(null)
+						}}
+					/>
+				)}
 			</DialogMain>
 		</React.Fragment>
 	)

@@ -28,10 +28,11 @@ const HazopRecomendationsForm: React.FC<IProps> = ({
 	params: { risk_analyst_id, hazop_id },
 	afterSaveSuccesfull,
 }) => {
-	const { toast } = useToast();
+	const { toast } = useToast()
 	const {
-		actions: { createHazop },
+		actions: { createHazop, updateHazop },
 		nodeSelected,
+		hazopItemsSelected,
 		supportData: { isSubmitHazop },
 	} = useRiskResponseStore()
 	const form = useForm<RiskResponseHazopMultipleSchemaForm>({
@@ -42,7 +43,15 @@ const HazopRecomendationsForm: React.FC<IProps> = ({
 		shouldFocusError: true,
 		shouldUnregister: true,
 		defaultValues: {
-			items: [],
+			items: hazopItemsSelected
+				? hazopItemsSelected.map((hazop) => ({
+						...hazop,
+						id: hazop.id ? String(hazop.id) : undefined,
+						document_report:
+							hazop.document_report ||
+							(null as unknown as File | null),
+				  }))
+				: [],
 		},
 	})
 
@@ -56,7 +65,7 @@ const HazopRecomendationsForm: React.FC<IProps> = ({
 	const handleChange = useDebounce((value: any, name: any) => {
 		form.setValue(name, value)
 	})
-
+	console.log({ hazopItemsSelected })
 	const handleAddHazop = () => {
 		append({
 			responsibility: "",
@@ -68,15 +77,23 @@ const HazopRecomendationsForm: React.FC<IProps> = ({
 
 	const handleSubmit = async (data: RiskResponseHazopMultipleSchemaForm) => {
 		try {
-			if (createHazop) {
+			if (createHazop && updateHazop) {
 				if (nodeSelected?.id) {
 					const payload = parseViewToPayload(data)
-					const result = await createHazop(
-						nodeSelected?.id,
-						risk_analyst_id,
-						payload,
-						
-					)
+					let result
+					if ((hazopItemsSelected?.length ?? 0) > 0) {
+						result = await updateHazop(
+							nodeSelected?.id,
+							risk_analyst_id,
+							payload
+						)
+					} else {
+						result = await createHazop(
+							nodeSelected?.id,
+							risk_analyst_id,
+							payload
+						)
+					}
 					if (result) {
 						toast({
 							title: result.message ?? "",
@@ -94,20 +111,31 @@ const HazopRecomendationsForm: React.FC<IProps> = ({
 	}
 
 	const hazopRecomendationsWatch = form.watch("items")
+	console.log({ hazopRecomendationsWatch })
 
 	return (
 		<Form {...form}>
 			<form
-				className="space-y-4 max-w-full "
+				className="space-y-4 max-w-full  "
 				onSubmit={form.handleSubmit(handleSubmit)}
 			>
-				<Card>
+				<Card className="md:max-h-[620px]  max-h-[410px] overflow-y-auto">
 					<CardContent className="!p-2 grid grid-cols-2 md:grid-cols-5 gap-4">
 						{(hazopRecomendationsWatch || []).map(
 							(hazop, index) => {
 								return (
 									<React.Fragment key={index}>
 										<div className="col-span-2">
+											<FormField
+												control={form.control}
+												name={`items.${index}.id`}
+												render={({ field }) => (
+													<input
+														type="hidden"
+														value={field.value}
+													/>
+												)}
+											/>
 											<FormField
 												control={form.control}
 												name={`items.${index}.hazop_recom`}
@@ -122,6 +150,9 @@ const HazopRecomendationsForm: React.FC<IProps> = ({
 																`items.${index}.hazop_recom`
 															)
 														}}
+														defaultValue={
+															field.value
+														}
 													/>
 												)}
 											/>
@@ -133,6 +164,7 @@ const HazopRecomendationsForm: React.FC<IProps> = ({
 												<InputController
 													label="Responsibility"
 													placeholder="Enter Responsibility"
+													defaultValue={field.value}
 													onChange={(e) => {
 														handleChange(
 															e.target.value,
@@ -149,6 +181,7 @@ const HazopRecomendationsForm: React.FC<IProps> = ({
 												<InputController
 													label="Due Date"
 													type="date"
+													defaultValue={field.value}
 													placeholder="Enter Due Date"
 													onChange={(e) => {
 														handleChange(
@@ -168,6 +201,8 @@ const HazopRecomendationsForm: React.FC<IProps> = ({
 													description="Only xlsx, pdf, doc files, Max. File size: 5 Mb"
 													placeholder="Document Report"
 													accept=".pdf, .xls, .xlsx, .doc, .docx"
+													file={field.value}
+													isShowPreview={true}
 													onChange={(e) => {
 														if (e.target.files) {
 															handleChange(

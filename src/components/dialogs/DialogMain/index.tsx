@@ -30,7 +30,7 @@ export default function DialogMain(props: IProps) {
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent
-				className={cn(`w-full`, [
+				className={cn(`w-full overflow-auto`, [
 					{
 						"max-w-md": size === "md",
 						"max-w-lg": size === "lg",
