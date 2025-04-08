@@ -120,7 +120,7 @@ const RiskAnalystFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 					</div>
 					<Button disabled={isSubmit} variant={"secondary"}>
 						{isSubmit && <Spinner className="w-4 h-4" />}
-						<Save /> Save Changes Saverty
+						<Save /> Save Changes Severity
 					</Button>
 				</div>
 				<DataTable<RiskAnalysis>

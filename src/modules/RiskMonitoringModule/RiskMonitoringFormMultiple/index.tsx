@@ -9,11 +9,15 @@ import { useColumnsMonitoring } from "@/hooks/use-columns-severty"
 import { useToast } from "@/hooks/use-toast"
 import { RiskMonitoringSeverityMultpleSchema } from "@/schemas/RiskMonitoringSchema"
 import useRiskMonitoringStore from "@/store/riskMonitoringStore"
-import { RiskMonitoring, RiskMonitoringSevertyMultipleForm } from "@/types/riskMonitoring"
+import {
+	RiskMonitoring,
+	RiskMonitoringSevertyMultipleForm,
+} from "@/types/riskMonitoring"
 // import { RiskAnalysisSevertyMultipleForm } from "@/schemas/RiskAnalystSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Save } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import React, { useCallback } from "react"
 import { useForm } from "react-hook-form"
 
@@ -23,6 +27,8 @@ interface IProps {
 
 const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 	const { toast } = useToast()
+	const router = useRouter()
+
 	const {
 		actions: { setPagination },
 		isFetching,
@@ -32,21 +38,22 @@ const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 		pagination_tanstack,
 	} = useRiskMonitoringStore()
 	const total = meta?.total || 0
-	console.log({riskMonitoringItems})
-	const defaultValues: RiskMonitoringSevertyMultipleForm = React.useMemo(() => {
-		// console.log
-		return {
-			risks: riskMonitoringItems.map((item) => ({
-				sp_affected: item.sp_affected, // Assuming sp_affected is a numeric property of item
-				sf_affected: item.sf_affected,
-				se_affected: item.se_affected,
-				srl_affected: item.srl_affected,
-				sa_affected: item.sa_affected,
-				spn_affected: item.spn_affected,
-				risk_monitoring_id: item.id.toString(),
-			})),
-		}
-	}, [riskMonitoringItems])
+
+	const defaultValues: RiskMonitoringSevertyMultipleForm =
+		React.useMemo(() => {
+			// console.log
+			return {
+				risks: riskMonitoringItems.map((item) => ({
+					sp_affected: item.sp_affected, // Assuming sp_affected is a numeric property of item
+					sf_affected: item.sf_affected,
+					se_affected: item.se_affected,
+					srl_affected: item.srl_affected,
+					sa_affected: item.sa_affected,
+					spn_affected: item.spn_affected,
+					risk_monitoring_id: item.id.toString(),
+				})),
+			}
+		}, [riskMonitoringItems])
 
 	const form = useForm<RiskMonitoringSevertyMultipleForm>({
 		resolver: zodResolver(RiskMonitoringSeverityMultpleSchema),
@@ -58,7 +65,20 @@ const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 		defaultValues: defaultValues,
 	})
 
-	const handleAction = useCallback((actionName: string, id: any) => {}, []); 
+	const handleAction = useCallback((actionName: string, id: any) => {
+	
+		if (actionName === "update") {
+			router.push(basePathname + "/update/" + id)
+		} else if (actionName === "detail") {
+			router.push(basePathname + "/detail/" + id)
+		} else if (actionName === "delete") {
+			//
+			// setShownAlertDel({
+			// 	id,
+			// 	shown: true,
+			// })
+		}
+	}, [basePathname])
 
 	// const handleSubmit = async (values: RiskMonitoringSevertyMultipleForm) => {
 	// 	try {
@@ -88,12 +108,8 @@ const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 	// 		})
 	// 	}
 	// }
-	
-	
-   
-	const handleSubmit = useCallback(() => {
-		
-	}, []);
+
+	const handleSubmit = useCallback(() => {}, [])
 
 	const { column } = useColumnsMonitoring({
 		onAction: handleAction,
@@ -108,8 +124,6 @@ const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 			>
 				<div className="flex flex-row justify-between items-end">
 					<div className="flex flex-row gap-2 items-end">
-						
-
 						<InputSearch
 							label="Filter Data"
 							isRequired={false}
@@ -122,7 +136,7 @@ const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 					</div>
 					<Button disabled={isSubmit} variant={"secondary"}>
 						{isSubmit && <Spinner className="w-4 h-4" />}
-						<Save /> Save Changes Severty
+						<Save /> Save Changes Severity
 					</Button>
 				</div>
 				<DataTable<RiskMonitoring>

@@ -23,6 +23,7 @@ export type RiskResponse = {
 	spn_expected: number
 	l_frequency_expected: number
 	risk_ranking_expected: number
+	hazop_status: HazopStatus
 }
 
 export type Hazop = {
@@ -60,7 +61,6 @@ export type RiskAnalystResponse = {
 	deviations: Deviations
 	causes: Cause
 	consequences: Consequences
-	hazop_status: HazopStatus
 }
 
 export interface RiskResponseState extends CommonState {
@@ -97,6 +97,11 @@ export interface RiskResponseState extends CommonState {
 			riskId: any,
 			payload: FormData
 		): Promise<ResponseApiType<any>>
+		setHazopStatus?(prams: {
+			nodeId: any
+			riskId: any
+			status: any
+		}): Promise<ResponseApiType<any>>
 		updateSavertyExpectMultiple?(
 			nodeId: any,
 			payload: RiskResponseSevertyExpectMultipleSchemaForm
@@ -112,7 +117,7 @@ export interface RiskResponseState extends CommonState {
 		deleteData?(id: any): Promise<ResponseApiType<any>>
 		setPagination?: (updater: Updater<PaginationState>) => void
 		setNodeSelected: (nodeId: number) => void
-	},
+	}
 }
 
 export type RiskResponseHazopSchemaForm = z.infer<

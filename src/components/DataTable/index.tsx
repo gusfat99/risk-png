@@ -139,7 +139,7 @@ const DataTable = <T,>({
 	return (
 		<div className="w-full overflow-x-auto min-w-[800px]">
 			<div className="relative rounded-md md:max-h-[580px] max-h-[390px] border overflow-x-auto min-w-[800px]">
-				<Table className={cn("min-w-[800px] caption-bottom text-sm")}>
+				<Table className={cn("min-w-[800px] caption-bottom text-sm table-fixed")}>
 					<TableHeader>
 						{table.getHeaderGroups().map((headerGroup) => (
 							<TableRow key={headerGroup.id}>
@@ -152,9 +152,12 @@ const DataTable = <T,>({
 											<TableHead
 												key={header.id}
 												className={cn(
-													"bg-gray-100 text-center",
+													"bg-gray-100 text-center text-wrap font-semibold overflow-hidden text-ellipsis whitespace-nowrap",
 													meta?.className
 												)}
+												style={{
+													width: header.getSize(), // <-- Ini penting!!
+												 }}
 											>
 												{header.isPlaceholder
 													? null
@@ -164,6 +167,8 @@ const DataTable = <T,>({
 																.header,
 															header.getContext()
 													  )}
+											
+												
 											</TableHead>
 										</React.Fragment>
 									)

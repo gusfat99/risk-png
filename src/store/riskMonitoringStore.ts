@@ -1,15 +1,15 @@
 import {
-   CAUSE_EP,
-   DEVIATION_EP,
-   NODE_EP,
-   RISK_ANALYST_EP,
-   RISK_MONITROING_EP
+	CAUSE_EP,
+	DEVIATION_EP,
+	NODE_EP,
+	RISK_ANALYST_EP,
+	RISK_MONITROING_EP,
 } from "@/constants/endpoints"
 import {
-   deleteData,
-   getDataApi,
-   postData,
-   ResponseApiType,
+	deleteData,
+	getDataApi,
+	postData,
+	ResponseApiType,
 } from "@/helpers/ApiHelper"
 import { toast } from "@/hooks/use-toast"
 import { commonInitualState } from "@/types/common"
@@ -17,9 +17,9 @@ import { commonInitualState } from "@/types/common"
 import { Node } from "@/types/node"
 import { Cause, Deviations } from "@/types/riskDataBank"
 import {
-   RiskMonitoring,
-   RiskMonitoringSchemaForm,
-   RiskMonitoringState,
+	RiskMonitoring,
+	RiskMonitoringSchemaForm,
+	RiskMonitoringState,
 } from "@/types/riskMonitoring"
 import { createStore, runUpdater } from "./store"
 
@@ -59,7 +59,6 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 							per_page: get().pagination_tanstack.pageSize,
 						})
 							.then((data) => {
-								
 								if (data.data && Array.isArray(data.data)) {
 									set({
 										riskMonitoringItems: data.data || [],
@@ -197,33 +196,114 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 					isFetching: true,
 				})
 				return new Promise<ResponseApiType<RiskMonitoring>>(
-					(resolve, reject) => {
+					async (resolve, reject) => {
+						try {
+							const data = await getDataApi<RiskMonitoring>(
+								`${RISK_MONITROING_EP}/${id}`
+							)
+							//parse data to flat
+							if (data.data) {
+								set((prevState) => ({
+									isFetching: false,
+									riskMonitoringSelected: data.data,
+									supportData: {
+										...prevState.supportData,
+										cause: {
+											...prevState.supportData.cause,
+											isFetching: true,
+										},
+									},
+								}))
+								const restCause = await getDataApi<Cause[]>(
+									`/${data.data.deviation_id}${CAUSE_EP}`
+								)
+								if (Array.isArray(restCause.data)) {
+									set((prevState) => ({
+										supportData: {
+											...prevState.supportData,
+											cause: {
+												causeItems:
+													restCause.data || [],
+												isFetching: false,
+											},
+										},
+									}))
+								} else {
+									throw new Error(data.message)
+								}
+							}
+							set({
+								isFetching: false,
+							})
+						} catch (error: any) {
+							toast({
+								title: "ERROR",
+								description: error.message,
+								variant: "destructive",
+							})
+							reject(error)
+							set((prevState) => ({
+								isFetching: false,
+								supportData: {
+									...prevState.supportData,
+									cause: {
+										...prevState.supportData.cause,
+										isFetching: false,
+									},
+								},
+							}))
+						}
 						getDataApi<RiskMonitoring>(
 							`${RISK_MONITROING_EP}/${id}`
-						)
-							.then((data) => {
-								//parse data to flat
+						).then((data) => {
+							//parse data to flat
 
-								if (data.data) {
-									set({
-										riskMonitoringSelected: data.data,
+							if (data.data && Array.isArray(data.data)) {
+								getDataApi<Cause[]>(
+									`/${data.data.deviation_id}${CAUSE_EP}`
+								)
+									.then((restCause) => {
+										//parse data to flat
+										if (Array.isArray(restCause.data)) {
+											set((prevState) => ({
+												supportData: {
+													...prevState.supportData,
+													cause: {
+														causeItems:
+															restCause.data ||
+															[],
+														isFetching: false,
+													},
+												},
+											}))
+										}
 									})
-									resolve(data)
-								}
-							})
-							.catch((err) => {
-								toast({
-									title: "ERROR",
-									description: err.message,
-									variant: "destructive",
-								})
-								reject(err)
-							})
-							.finally(() => {
+									.catch((err) => {
+										toast({
+											title: "ERROR",
+											description: err.message,
+											variant: "destructive",
+										})
+									})
+									.finally(() => {
+										set((prevState) => ({
+											supportData: {
+												...prevState.supportData,
+												cause: {
+													...prevState.supportData
+														.cause,
+													isFetching: false,
+												},
+											},
+										}))
+									})
+
 								set({
-									isFetching: false,
+									riskMonitoringSelected: data.data,
 								})
-							})
+								resolve(data)
+							}
+						})
 					}
 				)
 			},
@@ -301,7 +381,6 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 					}
 				)
 			},
-
 			deleteData: async (id) => {
 				return new Promise<ResponseApiType<null>>((resolve, reject) => {
 					deleteData<null>(RISK_ANALYST_EP + "/" + id)

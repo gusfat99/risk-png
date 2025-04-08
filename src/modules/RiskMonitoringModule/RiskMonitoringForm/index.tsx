@@ -22,9 +22,9 @@ interface IProps {
 }
 
 const RiskMonitoringForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
-
 	const {
 		isSubmit,
+		riskMonitoringSelected,
 		actions: { createData, updateData },
 	} = useRiskMonitoringStore()
 
@@ -35,6 +35,29 @@ const RiskMonitoringForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 	const splitPathname = pathname.split("/")
 
 	const basePathname = "/".concat(splitPathname[1])
+
+	const form = useForm<RiskMonitoringSchemaForm>({
+		resolver: zodResolver(RiskMonitoringSchema),
+		progressive: false,
+		mode: "onSubmit",
+		reValidateMode: "onSubmit",
+		shouldFocusError: true,
+		shouldUnregister: true,
+		defaultValues: isEdit && riskMonitoringSelected
+			? {
+					...riskMonitoringSelected,
+					node_id: String(riskMonitoringSelected.node_id),
+					deviation_id: String(riskMonitoringSelected.deviation_id),
+					risk_bank_id: String(riskMonitoringSelected.risk_bank_id),
+					sp_affected: String(riskMonitoringSelected.sp_affected),
+					sf_affected: String(riskMonitoringSelected.sf_affected),
+					se_affected: String(riskMonitoringSelected.se_affected),
+					srl_affected: String(riskMonitoringSelected.srl_affected),
+					sa_affected: String(riskMonitoringSelected.sa_affected),
+					spn_affected: String(riskMonitoringSelected.spn_affected),
+			  }
+			: initialRiskAnalyst,
+	})
 
 	const handleSubmit = async (values: RiskMonitoringSchemaForm) => {
 		try {
@@ -75,16 +98,6 @@ const RiskMonitoringForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 			})
 		}
 	}
-
-	const form = useForm<RiskMonitoringSchemaForm>({
-		resolver: zodResolver(RiskMonitoringSchema),
-		progressive: false,
-		mode: "onSubmit",
-		reValidateMode: "onSubmit",
-		shouldFocusError: true,
-		shouldUnregister: true,
-		defaultValues: initialRiskAnalyst,
-	})
 
 	return (
 		<Form {...form}>

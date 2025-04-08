@@ -2,8 +2,17 @@ import DataTableColumnHeader from "@/components/DataTable/DataTableColumnHeader"
 import InputController from "@/components/inputs/InputController"
 import TableRowActions from "@/components/TableRowActions"
 import { Button } from "@/components/ui/button"
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { FormField } from "@/components/ui/form"
+import { hazopStatus } from "@/data/enumetions"
 import { useDebounce } from "@/hooks/use-debounce"
+import { cn } from "@/lib/utils"
 import {
 	RiskAnalysis,
 	RiskAnalysisSevertyMultipleForm,
@@ -17,11 +26,12 @@ import {
 	RiskResponseSevertyExpectMultipleSchemaForm,
 } from "@/types/riskResponse"
 import { ColumnDef } from "@tanstack/react-table"
+import { format } from "date-fns"
 import React, { useMemo } from "react"
 import { UseFormReturn } from "react-hook-form"
 
 interface UseColumnsProps {
-	onAction?: (actionName: string, id: any) => void
+	onAction?: (actionName: string, value: any, value2?: any) => void
 }
 
 interface UseColumnsRiskAnalystProps extends UseColumnsProps {
@@ -84,6 +94,8 @@ export const useColumnsRiskAnalyst = ({
 
 					return (pageIndex - 1) * pageSize + row.index + 1
 				},
+				size: 60,
+				enableSorting: false,
 			},
 			{
 				id: "id",
@@ -166,7 +178,7 @@ export const useColumnsRiskAnalyst = ({
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Saverty to Personel (SP)"}
+							title={"Severity to Personel (SP)"}
 						/>
 					)
 				},
@@ -202,7 +214,7 @@ export const useColumnsRiskAnalyst = ({
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Saverty to Environment (EP)"}
+							title={"Severity to Environment (EP)"}
 						/>
 					)
 				},
@@ -223,7 +235,7 @@ export const useColumnsRiskAnalyst = ({
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Saverty to Finance (SF)"}
+							title={"Severity to Finance (SF)"}
 						/>
 					)
 				},
@@ -244,7 +256,7 @@ export const useColumnsRiskAnalyst = ({
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Saverty to Reputation & Ilegal (SRL)"}
+							title={"Severity to Reputation & Ilegal (SRL)"}
 						/>
 					)
 				},
@@ -265,7 +277,7 @@ export const useColumnsRiskAnalyst = ({
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Saverty to Asset (SA)"}
+							title={"Severity to Asset (SA)"}
 						/>
 					)
 				},
@@ -286,7 +298,7 @@ export const useColumnsRiskAnalyst = ({
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Saverty to Public Notification (SPN)"}
+							title={"Severity to Public Notification (SPN)"}
 						/>
 					)
 				},
@@ -389,6 +401,8 @@ export const useColumnsRiskResponse = ({
 
 					return (pageIndex - 1) * pageSize + row.index + 1
 				},
+				size: 60,
+				enableSorting: false,
 			},
 			{
 				id: "id",
@@ -439,6 +453,8 @@ export const useColumnsRiskResponse = ({
 						<DataTableColumnHeader column={column} title="Cause" />
 					)
 				},
+				size: 280,
+				enableSorting: false,
 				cell: ({ row }) => <div>{row.getValue("cause")}</div>,
 			},
 			{
@@ -452,6 +468,8 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
+				size: 280,
+				enableSorting: false,
 				cell: ({ row }) => (
 					<div>{row.getValue("consequence")}</div>
 					// <></>
@@ -479,7 +497,7 @@ export const useColumnsRiskResponse = ({
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Saverty to Personel (SP) Current"}
+							title={"Severity to Personel (SP) Current"}
 						/>
 					)
 				},
@@ -499,10 +517,12 @@ export const useColumnsRiskResponse = ({
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Saverty to Environment (EP) Current"}
+							title={"Severity to Environment (EP) Current"}
 						/>
 					)
 				},
+				size: 180,
+				enableSorting: false,
 				cell: ({ row }) => {
 					return (
 						<div className="text-center">
@@ -519,14 +539,15 @@ export const useColumnsRiskResponse = ({
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Saverty to Finance (SF) Current"}
+							title={"Severity to Finance (SF) Current"}
 						/>
 					)
 				},
+				size: 180,
+				enableSorting: false,
 				cell: ({ row }) => {
 					return (
 						<div className="text-center">
-							{" "}
 							{row.getValue("sf_current")}
 						</div>
 					)
@@ -540,15 +561,16 @@ export const useColumnsRiskResponse = ({
 						<DataTableColumnHeader
 							column={column}
 							title={
-								"Saverty to Reputation & Ilegal (SRL) Current"
+								"Severity to Reputation & Ilegal (SRL) Current"
 							}
 						/>
 					)
 				},
+				size: 180,
+				enableSorting: false,
 				cell: ({ row }) => {
 					return (
 						<div className="text-center">
-							{" "}
 							{row.getValue("srl_current")}
 						</div>
 					)
@@ -557,11 +579,13 @@ export const useColumnsRiskResponse = ({
 			{
 				id: "sa_current",
 				accessorFn: (row) => row.risk_analyst.sa_current,
+				size: 180,
+				enableSorting: false,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Saverty to Asset (SA) Current"}
+							title={"Severity to Asset (SA) Current"}
 						/>
 					)
 				},
@@ -577,12 +601,14 @@ export const useColumnsRiskResponse = ({
 			{
 				id: "spn_current",
 				accessorFn: (row) => row.risk_analyst.spn_current,
+				size: 180,
+				enableSorting: false,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
 							column={column}
 							title={
-								"Saverty to Public Notification (SPN) Current"
+								"Severity to Public Notification (SPN) Current"
 							}
 						/>
 					)
@@ -598,6 +624,8 @@ export const useColumnsRiskResponse = ({
 			{
 				id: "l_frequency_current",
 				accessorFn: (row) => row.risk_analyst.l_frequency_current,
+				size: 180,
+				enableSorting: false,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -616,6 +644,8 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "risk_ranking_current",
+				size: 180,
+				enableSorting: false,
 				accessorFn: (row) => row.risk_analyst.risk_ranking_current,
 				header: ({ column }) => {
 					return (
@@ -635,12 +665,14 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "sp_expect_risk_analyst_id",
+				size: 180,
+				enableSorting: false,
 				accessorFn: (row) => row.id,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Saverty to Personel (SP) Expected"}
+							title={"Severity to Personel (SP) Expected"}
 						/>
 					)
 				},
@@ -672,11 +704,13 @@ export const useColumnsRiskResponse = ({
 			{
 				id: "se_expect_risk_analyst_id",
 				accessorFn: (row) => row.id,
+				size: 180,
+				enableSorting: false,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Saverty to Environment (EP) Expected"}
+							title={"Severity to Environment (EP) Expected"}
 						/>
 					)
 				},
@@ -693,11 +727,13 @@ export const useColumnsRiskResponse = ({
 			{
 				id: "sf_expect_risk_analyst_id",
 				accessorFn: (row) => row.id,
+				size: 180,
+				enableSorting: false,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Saverty to Finance (SF) Expected"}
+							title={"Severity to Finance (SF) Expected"}
 						/>
 					)
 				},
@@ -713,13 +749,15 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "srl_expect_risk_analyst_id",
+				size: 180,
+				enableSorting: false,
 				accessorFn: (row) => row.id,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
 							column={column}
 							title={
-								"Saverty to Reputation & Ilegal (SRL) Expected"
+								"Severity to Reputation & Ilegal (SRL) Expected"
 							}
 						/>
 					)
@@ -737,11 +775,13 @@ export const useColumnsRiskResponse = ({
 			{
 				id: "sa_expect_risk_analyst_id",
 				accessorFn: (row) => row.id,
+				size: 180,
+				enableSorting: false,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Saverty to Asset (SA) Expected"}
+							title={"Severity to Asset (SA) Expected"}
 						/>
 					)
 				},
@@ -758,12 +798,14 @@ export const useColumnsRiskResponse = ({
 			{
 				id: "spn_expect_risk_analyst_id",
 				accessorFn: (row) => row.id,
+				size: 180,
+				enableSorting: false,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
 							column={column}
 							title={
-								"Saverty to Public Notification (SPN) Expected"
+								"Severity to Public Notification (SPN) Expected"
 							}
 						/>
 					)
@@ -780,6 +822,8 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "l_frequency_expect_risk_analyst_id",
+				size: 180,
+				enableSorting: false,
 				accessorFn: (row) => row.id,
 				header: ({ column }) => {
 					return (
@@ -802,6 +846,8 @@ export const useColumnsRiskResponse = ({
 			{
 				id: "risk_ranking_expected",
 				accessorFn: (row) => row.risk_ranking_expected,
+				size: 180,
+				enableSorting: false,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -820,7 +866,94 @@ export const useColumnsRiskResponse = ({
 				},
 			},
 			{
+				id: "hazop_status",
+				accessorFn: (row) => row.hazop_status.hazop_completed,
+				size: 120,
+				enableSorting: false,
+				header: "Hazop Status",
+				cell: ({ row }) => {
+					let hazop_status =
+						row.original.hazop_status.hazop_completed.toLowerCase()
+					hazop_status = hazopStatus.find(
+						(x) => x.value === hazop_status
+					)?.label || "-";
+					let textColor = "text-gray-500"
+					if (hazop_status?.toLowerCase() === "done") {
+						textColor = "text-success"
+					} else if (hazop_status?.toLowerCase() === "on progress") {
+						textColor = "text-warning-700"
+					}
+
+					return (
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button
+									className={cn(textColor)}
+									variant="outline"
+								>
+									{hazop_status}
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent className="w-52">
+								{hazopStatus.map((status) => (
+									<DropdownMenuItem
+										onClick={() => {
+											onAction &&
+												onAction(
+													"hazop_status",
+													row.original,
+													status.value
+												)
+										}}
+										className={cn("font-light", {
+											"focus:text-gray-500":
+												status.color ===
+												"text-gray-500",
+											"focus:text-warning-700":
+												status.color ===
+												"text-warning-600",
+											"focus:text-success":
+												status.color === "text-success",
+										})}
+										key={status.value}
+									>
+										{status.label}
+									</DropdownMenuItem>
+								))}
+
+								{/* <DropdownMenuLabel>Change Hazop Status</DropdownMenuLabel> */}
+							</DropdownMenuContent>
+						</DropdownMenu>
+						// <></>
+					)
+				},
+			},
+			{
+				id: "date_finished",
+				enableSorting: false,
+				accessorFn: (row) => row.hazop_status.date_finished,
+				header: ({ column }) => {
+					return (
+						<DataTableColumnHeader
+							column={column}
+							title="Date Finished"
+						/>
+					)
+				},
+				cell: ({ row }) => (
+					<div className="text-center">
+						{row.getValue("date_finished")
+							? format(
+									row.getValue("date_finished"),
+									"dd/MM/yyyy"
+							  )
+							: "-"}
+					</div>
+				),
+			},
+			{
 				id: "remark_analyst",
+				enableSorting: false,
 				accessorFn: (row) => row.risk_analyst.remark_analyst,
 				header: ({ column }) => {
 					return (
@@ -856,6 +989,8 @@ export const useColumnsMonitoring = ({
 
 					return (pageIndex - 1) * pageSize + row.index + 1
 				},
+				size: 60,
+				enableSorting: false,
 			},
 			{
 				id: "id",
@@ -876,10 +1011,8 @@ export const useColumnsMonitoring = ({
 			},
 			{
 				id: "deviation",
-				accessorFn: (row) => row.deviations.deviation ?? "",
-				meta: {
-					hiddenFilter: true,
-				},
+				accessorFn: (row) => row.deviations.name ?? "",
+				enableSorting: false,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -892,6 +1025,8 @@ export const useColumnsMonitoring = ({
 			},
 			{
 				id: "cause",
+				minSize: 250,
+				enableSorting: false,
 				accessorFn: (row) => `${row.causes?.cause}`,
 				header: ({ column }) => {
 					return (
@@ -902,6 +1037,8 @@ export const useColumnsMonitoring = ({
 			},
 			{
 				id: "incident_name",
+				enableSorting: false,
+				minSize: 250,
 				accessorFn: (row) => row.incident_name,
 				header: ({ column }) => {
 					return (
@@ -918,6 +1055,8 @@ export const useColumnsMonitoring = ({
 			},
 			{
 				id: "incident_location",
+
+				enableSorting: false,
 				accessorFn: (row) => row.incident_location,
 				header: ({ column }) => {
 					return (
@@ -934,6 +1073,8 @@ export const useColumnsMonitoring = ({
 			{
 				id: "incident_trigger",
 				accessorFn: (row) => row.incident_trigger,
+				minSize: 250,
+				enableSorting: false,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -953,10 +1094,17 @@ export const useColumnsMonitoring = ({
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Saverty to Personel (SP) Affected"}
+							title={"Severity to Personel (SP) Affected"}
 						/>
 					)
 				},
+				// meta: {
+				// 	className : "max-w-[130px]",
+				// },
+				enableSorting: false,
+				enableResizing: false,
+				// size: 180,
+				size: 180,
 				cell: ({ row }) => {
 					return (
 						<React.Fragment>
@@ -985,14 +1133,16 @@ export const useColumnsMonitoring = ({
 			{
 				id: "se_affected_monitoring_id",
 				accessorFn: (row) => row.id,
+				enableSorting: false,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Saverty to Environment (EP) Affected"}
+							title={"Severity to Environment (EP) Affected"}
 						/>
 					)
 				},
+				size: 180,
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
@@ -1006,14 +1156,16 @@ export const useColumnsMonitoring = ({
 			{
 				id: "sf_affected_monitoring_id",
 				accessorFn: (row) => row.id,
+				enableSorting: false,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Saverty to Finance (SF) Affected"}
+							title={"Severity to Finance (SF) Affected"}
 						/>
 					)
 				},
+				size: 180,
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
@@ -1027,12 +1179,14 @@ export const useColumnsMonitoring = ({
 			{
 				id: "srl_affected_monitoring_id",
 				accessorFn: (row) => row.id,
+				enableSorting: false,
+				size: 180,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
 							column={column}
 							title={
-								"Saverty to Reputation & Ilegal (SRL) Affected"
+								"Severity to Reputation & Ilegal (SRL) Affected"
 							}
 						/>
 					)
@@ -1050,14 +1204,16 @@ export const useColumnsMonitoring = ({
 			{
 				id: "sa_affected_monitoring_id",
 				accessorFn: (row) => row.id,
+				enableSorting: false,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Saverty to Asset (SA) Affected"}
+							title={"Severity to Asset (SA) Affected"}
 						/>
 					)
 				},
+				size: 180,
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
@@ -1071,16 +1227,9 @@ export const useColumnsMonitoring = ({
 			{
 				id: "spn_affected_monitoring_id",
 				accessorFn: (row) => row.id,
-				header: ({ column }) => {
-					return (
-						<DataTableColumnHeader
-							column={column}
-							title={
-								"Saverty to Public Notification (SPN) Affected"
-							}
-						/>
-					)
-				},
+				enableSorting: false,
+				header: "Severity to Public Notification (SPN) Affected",
+				size: 180,
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput

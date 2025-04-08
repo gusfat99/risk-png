@@ -36,6 +36,7 @@ const RiskResponseFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 	const { toast } = useToast()
 	const {
 		actions: {
+			setHazopStatus,
 			setPagination,
 			updateSavertyExpectMultiple,
 			fetchHazopByRiskAnalyst,
@@ -85,13 +86,13 @@ const RiskResponseFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 	})
 
 	const handleAction = useCallback(
-		(actionName: string, row: RiskResponse) => {
+		(actionName: string, row: RiskResponse, value2: any) => {
 			if (actionName === "hazop") {
 				// setSelectedId(id)
 				fetchHazopByRiskAnalyst &&
 					fetchHazopByRiskAnalyst(
 						nodeSelected?.id,
-						row.risk_analyst.id
+						row.risk_analyst_id
 					)
 				setHazopOpen((prev) => ({
 					...prev,
@@ -99,6 +100,14 @@ const RiskResponseFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 					risk_analyst_id: row.risk_analyst.id,
 					open: true,
 				}))
+			}
+			if (actionName === "hazop_status") {
+				setHazopStatus &&
+					setHazopStatus({
+						nodeId: nodeSelected?.id,
+						riskId: row.risk_analyst_id,
+						status: value2,
+					})
 			}
 		},
 		[]
@@ -140,7 +149,7 @@ const RiskResponseFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 		onAction: handleAction,
 		form,
 	})
-	
+
 	return (
 		<React.Fragment>
 			<Form {...form}>

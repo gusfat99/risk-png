@@ -1,3 +1,4 @@
+import { API_URL } from "@/constants"
 import {
 	NODE_EP,
 	RISK_ANALYST_EP,
@@ -10,18 +11,17 @@ import {
 	ResponseApiType,
 } from "@/helpers/ApiHelper"
 import { toast } from "@/hooks/use-toast"
+import fetchFileViaProxy from "@/services/fetchFileAsFile"
 import { commonInitualState } from "@/types/common"
 import { Node } from "@/types/node"
 import {
 	Hazop,
+	HazopStatus,
 	RiskResponse,
 	RiskResponseSevertyExpectMultipleSchemaForm,
 	RiskResponseState,
 } from "@/types/riskResponse"
 import { createStore, runUpdater } from "./store"
-import fetchFileAsFile from "@/services/fetchFileAsFile"
-import { API_URL } from "@/constants"
-import fetchFileViaProxy from "@/services/fetchFileAsFile"
 
 const initialState = {
 	...commonInitualState,
@@ -207,10 +207,9 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 														.document_report
 												)
 											hazopItems[i].document_report = file
-											
 										}
 									}
-									
+
 									set({
 										isFetchingHazopItems: false,
 										hazopItemsSelected: hazopItems,
@@ -218,7 +217,7 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 									resolve(data)
 								} else {
 									set({
-										hazopItemsSelected:  null,
+										hazopItemsSelected: null,
 										isFetchingHazopItems: false,
 									})
 								}
@@ -231,11 +230,10 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 								})
 								set({
 									isFetchingHazopItems: false,
-									hazopItemsSelected:  null,
+									hazopItemsSelected: null,
 								})
 								reject(err)
 							})
-
 					}
 				)
 			},
@@ -351,6 +349,71 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 							})
 					}
 				)
+			},
+			setHazopStatus: async ({ nodeId, riskId, status }) => {
+				return new Promise<ResponseApiType<any>>((resolve, reject) => {
+					postData<HazopStatus>(
+						`${RISK_RESPONSE_EP}/${nodeId}/hazop-status/${riskId}`,
+						{
+							hazop_completed: status,
+						},
+						{
+							headers: {
+								"Content-Type": "multipart/form-data",
+							},
+						}
+					)
+						.then((data) => {
+							toast({
+								title: "Successfull",
+								description: data.message,
+								variant: "success",
+							})
+							if (data.data) {
+								const riskResponseItems = [
+									...get().riskResponseItems,
+								]
+								const hazopItemsSelected =
+									riskResponseItems.findIndex(
+										(item) =>
+											item.risk_analyst_id?.toString() === data.data?.risk_analyst_id?.toString() &&
+											item.risk_analyst.node_id?.toString() === nodeId.toString()
+									)
+								if (hazopItemsSelected > -1) {
+									riskResponseItems[
+										hazopItemsSelected
+									].hazop_status.hazop_completed =
+										data.data.hazop_completed
+
+									riskResponseItems[
+										hazopItemsSelected
+									].hazop_status.date_finished =
+										data.data.date_finished
+
+									set({
+										riskResponseItems: riskResponseItems,
+									})
+								}
+								resolve(data)
+							}
+						})
+						.catch((err) => {
+							reject(err)
+							toast({
+								title: "ERROR",
+								description: err.message,
+								variant: "destructive",
+							})
+						})
+						.finally(() => {
+							set((prev) => ({
+								supportData: {
+									...prev.supportData,
+									isSubmitHazop: false,
+								},
+							}))
+						})
+				})
 			},
 			updateSavertyExpectMultiple: async (
 				nodeId: any,

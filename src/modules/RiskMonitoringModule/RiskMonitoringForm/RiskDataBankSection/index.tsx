@@ -41,9 +41,6 @@ const RiskDataBankSection: React.FC<IProps> = ({ form, isEdit, isDetail }) => {
 	const handleChange = useDebounce((value: any, name: any) => {
 		form.setValue(name, value)
 	})
-	console.log({
-		errors: form.formState.errors,
-	})
 
 	return (
 		<div className="border-2 border-gray-200  rounded-lg p-4 space-y-4">

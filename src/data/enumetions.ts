@@ -8,14 +8,17 @@ export type NodeOptionType = {
 export const hazopStatus: SelectDataType[] = [
    {
       label: "Pending",
-      value : "pending",
+      value: "pending",
+      color: "text-gray-500"
    },
    {
       label: "On Progress",
-      value : "In Progress",
+      value: "in_progress",
+      color: "text-warning-600"
    },
    {
       label: "Done",
       value : "done",
+      color : "text-success"
    },
 ];
