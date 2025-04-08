@@ -14,7 +14,7 @@ import { RiskMonitoring, RiskMonitoringSevertyMultipleForm } from "@/types/riskM
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Save } from "lucide-react"
 import Link from "next/link"
-import React from "react"
+import React, { useCallback } from "react"
 import { useForm } from "react-hook-form"
 
 interface IProps {
@@ -32,7 +32,7 @@ const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 		pagination_tanstack,
 	} = useRiskMonitoringStore()
 	const total = meta?.total || 0
-
+	console.log({riskMonitoringItems})
 	const defaultValues: RiskMonitoringSevertyMultipleForm = React.useMemo(() => {
 		// console.log
 		return {
@@ -58,7 +58,7 @@ const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 		defaultValues: defaultValues,
 	})
 
-	const handleAction = (actionName: string, id: any) => {}
+	const handleAction = useCallback((actionName: string, id: any) => {}, []); 
 
 	// const handleSubmit = async (values: RiskMonitoringSevertyMultipleForm) => {
 	// 	try {
@@ -87,9 +87,13 @@ const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 	// 			variant: "destructive",
 	// 		})
 	// 	}
-   // }
+	// }
+	
+	
    
-   const handleSubmit = () => {}
+	const handleSubmit = useCallback(() => {
+		
+	}, []);
 
 	const { column } = useColumnsMonitoring({
 		onAction: handleAction,

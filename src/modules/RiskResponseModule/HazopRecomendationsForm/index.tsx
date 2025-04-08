@@ -65,7 +65,7 @@ const HazopRecomendationsForm: React.FC<IProps> = ({
 	const handleChange = useDebounce((value: any, name: any) => {
 		form.setValue(name, value)
 	})
-	console.log({ hazopItemsSelected })
+
 	const handleAddHazop = () => {
 		append({
 			responsibility: "",
@@ -111,8 +111,6 @@ const HazopRecomendationsForm: React.FC<IProps> = ({
 	}
 
 	const hazopRecomendationsWatch = form.watch("items")
-	console.log({ hazopRecomendationsWatch })
-
 	return (
 		<Form {...form}>
 			<form

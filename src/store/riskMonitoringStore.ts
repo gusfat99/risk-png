@@ -18,7 +18,7 @@ import { Node } from "@/types/node"
 import { Cause, Deviations } from "@/types/riskDataBank"
 import {
    RiskMonitoring,
-   RiskMonitoringForm,
+   RiskMonitoringSchemaForm,
    RiskMonitoringState,
 } from "@/types/riskMonitoring"
 import { createStore, runUpdater } from "./store"
@@ -59,7 +59,8 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 							per_page: get().pagination_tanstack.pageSize,
 						})
 							.then((data) => {
-								if (data.data) {
+								
+								if (data.data && Array.isArray(data.data)) {
 									set({
 										riskMonitoringItems: data.data || [],
 										meta: data?.meta,
@@ -226,7 +227,7 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 					}
 				)
 			},
-			createData: async (payload: RiskMonitoringForm) => {
+			createData: async (payload: RiskMonitoringSchemaForm) => {
 				set({
 					isSubmit: true,
 				})
@@ -263,7 +264,7 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 					}
 				)
 			},
-			updateData: async (id: any, payload: RiskMonitoringForm) => {
+			updateData: async (id: any, payload: RiskMonitoringSchemaForm) => {
 				set({
 					isSubmit: true,
 				})

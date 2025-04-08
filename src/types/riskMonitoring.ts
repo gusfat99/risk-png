@@ -22,7 +22,7 @@ export type RiskMonitoring = {
 	spn_affected: number
 	nodes: Node
 	deviations: Deviations
-	causes: Cause
+	causes: Cause | null
 }
 
 export interface RiskMonitoringState extends CommonState {
@@ -43,12 +43,12 @@ export interface RiskMonitoringState extends CommonState {
 		}
 	}
 	actions: {
-		fetchAllData(nodeId: any): Promise<ResponseApiType<RiskMonitoring[]>>
+		fetchAllData(): Promise<ResponseApiType<RiskMonitoring[]>>
 		fetchSingleData?(id: any): Promise<ResponseApiType<RiskMonitoring>>
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>
 		fetchDeviationData(): Promise<ResponseApiType<Deviations[]>>
 		createData?(
-			payload: RiskMonitoringForm
+			payload: RiskMonitoringSchemaForm
 		): Promise<ResponseApiType<RiskMonitoring>>
 		updateData?(
 			id: any,
@@ -57,11 +57,11 @@ export interface RiskMonitoringState extends CommonState {
 		deleteData?(id: any): Promise<ResponseApiType<any>>
 		setPagination?: (updater: Updater<PaginationState>) => void
 		handleChangeRiskMonitoringData: (
-			name: keyof RiskMonitoringForm,
+			name: keyof RiskMonitoringSchemaForm,
 			id: any
 		) => void
 	}
 }
 
-export type RiskMonitoringForm = z.infer<typeof RiskMonitoringSchema>
+export type RiskMonitoringSchemaForm = z.infer<typeof RiskMonitoringSchema>
 export type RiskMonitoringSevertyMultipleForm = z.infer<typeof RiskMonitoringSeverityMultpleSchema>

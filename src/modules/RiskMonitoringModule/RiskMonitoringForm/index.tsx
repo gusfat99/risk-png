@@ -5,9 +5,8 @@ import Spinner from "@/components/ui/spinner"
 import { useToast } from "@/hooks/use-toast"
 import { initialRiskAnalyst } from "@/schemas/RiskAnalystSchema"
 import { RiskMonitoringSchema } from "@/schemas/RiskMonitoringSchema"
-import useRiskDataBankStore from "@/store/riskDataBankStore"
 import useRiskMonitoringStore from "@/store/riskMonitoringStore"
-import { RiskMonitoringForm as RiskMonitoringFormType } from "@/types/riskMonitoring"
+import { RiskMonitoringSchemaForm } from "@/types/riskMonitoring"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Save } from "lucide-react"
 import Link from "next/link"
@@ -23,13 +22,10 @@ interface IProps {
 }
 
 const RiskMonitoringForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
-	const {
-		actions: { updateData },
 
-		isSubmit,
-	} = useRiskDataBankStore()
 	const {
-		actions: { createData },
+		isSubmit,
+		actions: { createData, updateData },
 	} = useRiskMonitoringStore()
 
 	const { toast } = useToast()
@@ -40,7 +36,7 @@ const RiskMonitoringForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 
 	const basePathname = "/".concat(splitPathname[1])
 
-	const handleSubmit = async (values: RiskMonitoringFormType) => {
+	const handleSubmit = async (values: RiskMonitoringSchemaForm) => {
 		try {
 			if (createData && !params?.id && !isEdit) {
 				const result = await createData(values)
@@ -80,7 +76,7 @@ const RiskMonitoringForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 		}
 	}
 
-	const form = useForm<RiskMonitoringFormType>({
+	const form = useForm<RiskMonitoringSchemaForm>({
 		resolver: zodResolver(RiskMonitoringSchema),
 		progressive: false,
 		mode: "onSubmit",

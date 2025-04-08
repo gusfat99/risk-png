@@ -140,7 +140,7 @@ const RiskResponseFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 		onAction: handleAction,
 		form,
 	})
-	console.log({ hazopItemsSelected });
+	
 	return (
 		<React.Fragment>
 			<Form {...form}>

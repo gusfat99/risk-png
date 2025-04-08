@@ -191,8 +191,8 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 							.then(async (data) => {
 								//parse data to flat
 								const hazopItems = data.data
-								console.log({ hazopItems, data })
-								if (hazopItems) {
+
+								if (hazopItems && Array.isArray(hazopItems)) {
 									for (
 										let i = 0;
 										i < hazopItems.length;
@@ -207,7 +207,7 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 														.document_report
 												)
 											hazopItems[i].document_report = file
-											console.log({ file });
+											
 										}
 									}
 									

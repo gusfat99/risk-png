@@ -892,7 +892,7 @@ export const useColumnsMonitoring = ({
 			},
 			{
 				id: "cause",
-				accessorFn: (row) => `${row.causes.cause}`,
+				accessorFn: (row) => `${row.causes?.cause}`,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader column={column} title="Cause" />

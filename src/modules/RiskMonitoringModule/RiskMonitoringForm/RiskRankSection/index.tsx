@@ -1,19 +1,19 @@
 import InputController from "@/components/inputs/InputController"
 import { FormField } from "@/components/ui/form"
 import { useDebounce } from "@/hooks/use-debounce"
-import { RiskMonitoringForm } from "@/types/riskMonitoring"
+import { RiskMonitoringSchemaForm } from "@/types/riskMonitoring"
 import React from "react"
 import { UseFormReturn } from "react-hook-form"
 
 interface IProps {
 	isDetail?: boolean
 	isEdit?: boolean
-	form: UseFormReturn<RiskMonitoringForm>
+	form: UseFormReturn<RiskMonitoringSchemaForm>
 }
 
 type fieldInputType = {
 	label: string
-	field: keyof RiskMonitoringForm
+	field: keyof RiskMonitoringSchemaForm
 	group: number
 }
 
@@ -80,7 +80,8 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 								name={fieldInput.field}
 								render={({ field }) => (
 									<InputController
-										{...field}
+									
+										defaultValue={field.value}
 										type="number"
 										disabled={isDetail}
 										label={fieldInput.label}
@@ -109,7 +110,7 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 								name={fieldInput.field}
 								render={({ field }) => (
 									<InputController
-										{...field}
+										defaultValue={field.value}
 										type="number"
 										disabled={isDetail}
 										label={fieldInput.label}

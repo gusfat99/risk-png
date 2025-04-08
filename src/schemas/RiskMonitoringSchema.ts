@@ -26,13 +26,7 @@ export const RiskMonitoringSchema = z.object({
 	srl_affected: toValidatedNumber("SRL"),
 	sa_affected: toValidatedNumber("SA"),
 	spn_affected: toValidatedNumber("SPN"),
-	l_frequency_affected: toValidatedNumber("k"),
-	remark_analyst: z
-		.string({
-			message: "Likelihood Frequency kejadian is required",
-		})
-		.min(1, "Notes Special Condition / Remarks is required"),
-	risk_rank: z.string().optional(),
+	
 })
 
 export const RiskMonitoringSeveritySchema = z.object({

@@ -25,6 +25,7 @@ const RiskAnalystModule = () => {
 		if (nodeItems.length === 0) {
 			fetchNodeData()
 		}
+		fetchAllData();
 		
 	}, [fetchNodeData, fetchAllData, nodeItems])
 
