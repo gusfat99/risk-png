@@ -12,7 +12,6 @@ const RiskAnalystModule = () => {
 		actions: { fetchNodeData, setNodeSelected, fetchAllData },
 		nodeSelected,
 		isFetching,
-		riskAnalysItems,
 		supportData: {
 			node: { nodeItems, isFetching: isFetchingNode },
 		},

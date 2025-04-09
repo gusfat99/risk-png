@@ -63,7 +63,7 @@ export interface RiskAnalystState extends CommonState {
 		fetchAllData(
 			nodeId: any
 		): Promise<ResponseApiType<{ risk_analyst: RiskAnalysis[] }>>
-		fetchSingleData?(id: any): Promise<ResponseApiType<RiskAnalysis>>
+		fetchSingleData?(nodeId : any, id: any): Promise<ResponseApiType<RiskAnalysis>>
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>
 		fetchDeviationData(): Promise<ResponseApiType<Deviations[]>>
 		createData?(
@@ -72,6 +72,7 @@ export interface RiskAnalystState extends CommonState {
 		): Promise<ResponseApiType<RiskAnalysis>>
 		updateData?(
 			id: any,
+			nodeId: any,
 			paylaod: any
 		): Promise<ResponseApiType<RiskAnalysis>>
 		updateSavertyMultiple?(

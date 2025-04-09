@@ -152,7 +152,7 @@ const DataTable = <T,>({
 											<TableHead
 												key={header.id}
 												className={cn(
-													"bg-gray-100 text-center text-wrap font-semibold overflow-hidden text-ellipsis whitespace-nowrap",
+													"bg-gray-100  text-wrap font-semibold overflow-hidden text-ellipsis whitespace-nowrap",
 													meta?.className
 												)}
 												style={{
@@ -207,7 +207,7 @@ const DataTable = <T,>({
 														)}_${cell.column.id}`}
 													>
 														{tbodyWithCell ? (
-															<TableCell>
+															<TableCell  >
 																{flexRender(
 																	cell.column
 																		.columnDef

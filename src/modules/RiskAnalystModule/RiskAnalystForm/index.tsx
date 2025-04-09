@@ -10,7 +10,6 @@ import {
 	RiskAnalysisSchema,
 } from "@/schemas/RiskAnalystSchema"
 import useRiskAnalysStore from "@/store/risksAnalystStore"
-import useRiskDataBankStore from "@/store/riskDataBankStore"
 import { RiskAnalysisForm } from "@/types/riksAnalyst"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Save } from "lucide-react"
@@ -28,13 +27,11 @@ interface IProps {
 
 const RiskAnalystForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 	const {
-		actions: {  updateData },
-
+		nodeSelected,
+		riskAnalysSelected,
 		isSubmit,
-	} = useRiskDataBankStore()
-	const { nodeSelected, actions: {
-		createData
-	} } = useRiskAnalysStore()
+		actions: { updateData, createData },
+	} = useRiskAnalysStore()
 
 	const { toast } = useToast()
 	const route = useRouter()
@@ -47,10 +44,9 @@ const RiskAnalystForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 	const handleSubmit = async (values: RiskAnalysisForm) => {
 		try {
 			if (createData && !params?.id && !isEdit) {
-		
 				if (nodeSelected?.id) {
 					const result = await createData(values, nodeSelected?.id)
-	
+
 					if (result) {
 						toast({
 							title: result.message ?? "",
@@ -63,10 +59,9 @@ const RiskAnalystForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 					}
 				} else {
 					throw new Error("Please Select Node before!")
-
 				}
 			} else if (updateData && params.id && isEdit) {
-				const result = await updateData(params?.id, values)
+				const result = await updateData(params?.id, nodeSelected?.id, values)
 
 				if (result) {
 					toast({
@@ -97,7 +92,28 @@ const RiskAnalystForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 		reValidateMode: "onSubmit",
 		shouldFocusError: true,
 		shouldUnregister: true,
-		defaultValues: initialRiskAnalyst,
+		defaultValues:
+			riskAnalysSelected && isEdit
+				? {
+						...riskAnalysSelected,
+						deviation_id:
+							riskAnalysSelected.deviation_id.toString(),
+						consequence_id:
+							riskAnalysSelected.consequence_id.toString(),
+						risk_bank_id:
+							riskAnalysSelected.risk_bank_id.toString(),
+						l_frequency_current:
+							riskAnalysSelected.l_frequency_current.toString(),
+						risk_rank:
+							riskAnalysSelected.risk_ranking_current.toString(),
+						spn_current: riskAnalysSelected.spn_current.toString(),
+						sa_current: riskAnalysSelected.sa_current.toString(),
+						srl_current: riskAnalysSelected.srl_current.toString(),
+						se_current: riskAnalysSelected.se_current.toString(),
+						sf_current: riskAnalysSelected.sf_current.toString(),
+						sp_current: riskAnalysSelected.sp_current.toString(),
+				  }
+				: initialRiskAnalyst,
 	})
 
 	return (
@@ -107,7 +123,6 @@ const RiskAnalystForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 				className="space-y-4"
 			>
 				{nodeSelected && <NodeDataCard nodeSelected={nodeSelected} />}
-
 				<RiskDataBankSection
 					form={form}
 					isEdit={isEdit}
@@ -118,24 +133,24 @@ const RiskAnalystForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 					isEdit={isEdit}
 					isDetail={isDetail}
 				/>
-
 				<FormField
 					control={form.control}
-					name={'remark_analyst'}
+					name={"remark_analyst"}
 					render={({ field }) => (
 						<InputController
 							{...field}
 							readOnly={isDetail}
 							label={"Notes Special Condition / Remarks"}
-							placeholder={"Enter Notes Special Condition / Remarks"}
+							placeholder={
+								"Enter Notes Special Condition / Remarks"
+							}
 							onChange={(e) => {
 								const value = e.target.value
-								form.setValue('remark_analyst', value)
+								form.setValue("remark_analyst", value)
 							}}
 						/>
 					)}
 				/>
-
 				{!isDetail && (
 					<div className="flex justify-end gap-4">
 						<Link href={basePathname}>

@@ -100,9 +100,7 @@ export const useColumnsRiskAnalyst = ({
 			{
 				id: "id",
 				accessorFn: (row) => row.id,
-				meta: {
-					hiddenFilter: true,
-				},
+
 				header: () => {
 					return <div className="flex justify-start">Action</div>
 				},
@@ -116,10 +114,9 @@ export const useColumnsRiskAnalyst = ({
 			},
 			{
 				id: "deviation",
-				accessorFn: (row) => row.deviations.deviation ?? "",
-				meta: {
-					hiddenFilter: true,
-				},
+				accessorFn: (row) => row.deviations.name ?? "",
+				size: 120,
+				enableSorting: false,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -133,11 +130,9 @@ export const useColumnsRiskAnalyst = ({
 			{
 				id: "cause",
 				accessorFn: (row) => `${row.causes.cause}`,
-				header: ({ column }) => {
-					return (
-						<DataTableColumnHeader column={column} title="Cause" />
-					)
-				},
+				header: "Cause",
+				size: 280,
+				enableSorting: false,
 				cell: ({ row }) => <div>{row.getValue("cause")}</div>,
 			},
 			{
@@ -151,6 +146,8 @@ export const useColumnsRiskAnalyst = ({
 						/>
 					)
 				},
+				size: 280,
+				enableSorting: false,
 				cell: ({ row }) => (
 					<div>{row.getValue("consequence")}</div>
 					// <></>
@@ -167,6 +164,8 @@ export const useColumnsRiskAnalyst = ({
 						/>
 					)
 				},
+				size: 280,
+				enableSorting: false,
 				cell: ({ row }) => (
 					<div>{row.getValue("existing_safeguard")}</div>
 				),
@@ -174,6 +173,8 @@ export const useColumnsRiskAnalyst = ({
 			{
 				id: "sp_current_risk_analyst_id",
 				accessorFn: (row) => row.id,
+				size: 180,
+				enableSorting: false,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -181,6 +182,9 @@ export const useColumnsRiskAnalyst = ({
 							title={"Severity to Personel (SP)"}
 						/>
 					)
+				},
+				meta : {
+					className : "text-center"
 				},
 				cell: ({ row }) => {
 					return (
@@ -218,6 +222,11 @@ export const useColumnsRiskAnalyst = ({
 						/>
 					)
 				},
+				meta : {
+					className : "text-center"
+				},
+				size: 180,
+				enableSorting: false,
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
@@ -239,6 +248,11 @@ export const useColumnsRiskAnalyst = ({
 						/>
 					)
 				},
+				meta : {
+					className : "text-center"
+				},
+				size: 180,
+				enableSorting: false,
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
@@ -260,6 +274,9 @@ export const useColumnsRiskAnalyst = ({
 						/>
 					)
 				},
+				meta : {
+					className : "text-center"
+				},
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
@@ -269,6 +286,8 @@ export const useColumnsRiskAnalyst = ({
 						/>
 					)
 				},
+				size: 180,
+				enableSorting: false,
 			},
 			{
 				id: "sa_current_risk_analyst_id",
@@ -281,6 +300,11 @@ export const useColumnsRiskAnalyst = ({
 						/>
 					)
 				},
+				meta : {
+					className : "text-center"
+				},
+				size: 180,
+				enableSorting: false,
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
@@ -302,6 +326,11 @@ export const useColumnsRiskAnalyst = ({
 						/>
 					)
 				},
+				meta : {
+					className : "text-center"
+				},
+				size: 180,
+				enableSorting: false,
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
@@ -323,6 +352,11 @@ export const useColumnsRiskAnalyst = ({
 						/>
 					)
 				},
+				meta : {
+					className : "text-center"
+				},
+				size: 180,
+				enableSorting: false,
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
@@ -344,8 +378,13 @@ export const useColumnsRiskAnalyst = ({
 						/>
 					)
 				},
+				meta : {
+					className : "text-center"
+				},
+				size: 120,
+				enableSorting: false,
 				cell: ({ row }) => {
-					const severty = form.watch("risks")[row.index]
+					const severty = form.watch("risks") [row.index]
 					const severties = [
 						severty["sa_current"],
 						severty["sp_current"],
@@ -375,6 +414,8 @@ export const useColumnsRiskAnalyst = ({
 						/>
 					)
 				},
+				size: 280,
+				enableSorting: false,
 				cell: ({ row }) => <div>{row.getValue("remark_analyst")}</div>,
 			},
 		]
@@ -432,9 +473,7 @@ export const useColumnsRiskResponse = ({
 			{
 				id: "deviation",
 				accessorFn: (row) => row.risk_analyst.deviations.name ?? "",
-				meta: {
-					hiddenFilter: true,
-				},
+
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -443,6 +482,8 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
+				size: 180,
+				enableSorting: false,
 				cell: ({ row }) => row.getValue("deviation"),
 			},
 			{
@@ -501,6 +542,9 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
+				meta : {
+					className : "text-center"
+				},
 				cell: ({ row }) => {
 					return (
 						<div className="text-center">
@@ -520,6 +564,9 @@ export const useColumnsRiskResponse = ({
 							title={"Severity to Environment (EP) Current"}
 						/>
 					)
+				},
+				meta : {
+					className : "text-center"
 				},
 				size: 180,
 				enableSorting: false,
@@ -542,6 +589,9 @@ export const useColumnsRiskResponse = ({
 							title={"Severity to Finance (SF) Current"}
 						/>
 					)
+				},
+				meta : {
+					className : "text-center"
 				},
 				size: 180,
 				enableSorting: false,
@@ -589,6 +639,9 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
+				meta : {
+					className : "text-center"
+				},
 				cell: ({ row }) => {
 					return (
 						<div className="text-center">
@@ -634,6 +687,9 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
+				meta : {
+					className : "text-center"
+				},
 				cell: ({ row }) => {
 					return (
 						<div className="text-center">
@@ -676,6 +732,9 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
+				meta : {
+					className : "text-center"
+				},
 				cell: ({ row }) => {
 					return (
 						<React.Fragment>
@@ -714,6 +773,9 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
+				meta : {
+					className : "text-center"
+				},
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
@@ -736,6 +798,9 @@ export const useColumnsRiskResponse = ({
 							title={"Severity to Finance (SF) Expected"}
 						/>
 					)
+				},
+				meta : {
+					className : "text-center"
 				},
 				cell: ({ row }) => {
 					return (
@@ -785,6 +850,9 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
+				meta : {
+					className : "text-center"
+				},
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
@@ -833,6 +901,9 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
+				meta : {
+					className : "text-center"
+				},
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
@@ -856,6 +927,9 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
+				meta : {
+					className : "text-center"
+				},
 				cell: ({ row }) => {
 					return (
 						<div className="font-semibold text-center">
@@ -874,9 +948,9 @@ export const useColumnsRiskResponse = ({
 				cell: ({ row }) => {
 					let hazop_status =
 						row.original.hazop_status.hazop_completed.toLowerCase()
-					hazop_status = hazopStatus.find(
-						(x) => x.value === hazop_status
-					)?.label || "-";
+					hazop_status =
+						hazopStatus.find((x) => x.value === hazop_status)
+							?.label || "-"
 					let textColor = "text-gray-500"
 					if (hazop_status?.toLowerCase() === "done") {
 						textColor = "text-success"
@@ -1098,6 +1172,9 @@ export const useColumnsMonitoring = ({
 						/>
 					)
 				},
+				meta : {
+					className : "text-center"
+				},
 				// meta: {
 				// 	className : "max-w-[130px]",
 				// },
@@ -1142,6 +1219,9 @@ export const useColumnsMonitoring = ({
 						/>
 					)
 				},
+				meta : {
+					className : "text-center"
+				},
 				size: 180,
 				cell: ({ row }) => {
 					return (
@@ -1164,6 +1244,9 @@ export const useColumnsMonitoring = ({
 							title={"Severity to Finance (SF) Affected"}
 						/>
 					)
+				},
+				meta : {
+					className : "text-center"
 				},
 				size: 180,
 				cell: ({ row }) => {
@@ -1212,6 +1295,9 @@ export const useColumnsMonitoring = ({
 							title={"Severity to Asset (SA) Affected"}
 						/>
 					)
+				},
+				meta : {
+					className : "text-center"
 				},
 				size: 180,
 				cell: ({ row }) => {

@@ -55,11 +55,11 @@ const NodeDataCard : React.FC<IProps> = ({nodeSelected}) => {
 				<TableBody>
 					{filedsNode.map((fieldNode) => (
 						<TableRow className="border-0" key={fieldNode.field}>
-							<TableCell className="text-gray-400">
+							<TableCell className="text-gray-400 p-1 max-w-10">
 								{fieldNode.title}
 							</TableCell>
-							<TableCell>:</TableCell>
-							<TableCell>
+							<TableCell className="max-w-1 p-1" >:</TableCell>
+							<TableCell className="p-1" >
 								{nodeSelected?.[fieldNode.field]}
 							</TableCell>
 						</TableRow>

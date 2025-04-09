@@ -17,6 +17,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Save } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import React from "react"
 import { useForm } from "react-hook-form"
 
@@ -26,6 +27,7 @@ interface IProps {
 
 const RiskAnalystFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 	const { toast } = useToast()
+	const router = useRouter();
 	const {
 		actions: { setPagination, updateSavertyMultiple },
 		isFetching,
@@ -48,7 +50,7 @@ const RiskAnalystFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 				sa_current: item.sa_current,
 				spn_current: item.spn_current,
 				l_frequency_current: item.l_frequency_current,
-				risk_analyst_id: item.id.toString(),
+				risk_analyst_id: item?.id?.toString(),
 			})),
 		}
 	}, [riskAnalysItems])
@@ -63,7 +65,11 @@ const RiskAnalystFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 		defaultValues: defaultValues,
 	})
 
-	const handleAction = (actionName: string, id: any) => {}
+	const handleAction = (actionName: string, id: any) => {
+		if (actionName === "update") {
+			router.push(`${basePathname}/update/${id}`)
+		}
+	}
 
 	const handleSubmit = async (values: RiskAnalysisSevertyMultipleForm) => {
 		try {
@@ -107,16 +113,17 @@ const RiskAnalystFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 			>
 				<div className="flex flex-row justify-between items-end">
 					<div className="flex flex-row gap-2 items-end">
-						<Link href={basePathname + "/add"}>
-							<AddButton label="Add Risk Analysis" />
-						</Link>
-
+						
 						<InputSearch
 							label="Filter Data"
 							isRequired={false}
 							placeholder="Search..."
 							// className="max-w-sm"
 						/>
+						<Link href={basePathname + "/add"}>
+							<AddButton label="Add Risk Analysis" />
+						</Link>
+
 					</div>
 					<Button disabled={isSubmit} variant={"secondary"}>
 						{isSubmit && <Spinner className="w-4 h-4" />}
