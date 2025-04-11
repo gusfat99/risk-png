@@ -21,13 +21,6 @@ const LikelyhoodFrequencyTable: React.FC<LikelyhoodFrequencyTableProps> = ({
 	data,
 	onClick,
 }) => {
-	const columns = Object.entries(data.column)
-		.filter(([key]) => key !== "id")
-		.map(([key, value]) => ({
-			id: key.split("_")[1],
-			value,
-		}))
-
 	return (
 		<div className="w-full overflow-x-auto">
 			<Table>
@@ -45,14 +38,11 @@ const LikelyhoodFrequencyTable: React.FC<LikelyhoodFrequencyTableProps> = ({
 						<TableCell colSpan={5} className="border-2 text-center">
 							Frequency
 						</TableCell>
-
-						{/* Kolom Likelyhood Frequency */}
-
-						{/* Kolom Deviation */}
+						
 					</TableRow>
 
 					<TableRow className="border-2 text-center hover:bg-transparent">
-						{columns.map((col) => (
+						{data.column.map((col) => (
 							<TableCell
 								key={col.id}
 								className="border-2 text-center"
@@ -62,12 +52,21 @@ const LikelyhoodFrequencyTable: React.FC<LikelyhoodFrequencyTableProps> = ({
 						))}
 					</TableRow>
 					<TableRow className="border-2 text-center hover:bg-transparent">
-						{columns.map((col) => (
+						{data.column.map((col) => (
 							<TableCell
 								key={col.id}
 								className="border-2 text-center hover:bg-muted  hover:cursor-pointer bg-secondary-200"
+								onClick={() => {
+									onClick &&
+										onClick({
+											field: "frequency_name",
+											inputLabel: `Frequency`,
+											col_id: col.id,
+											value: col.frequency_name,
+										})
+								}}
 							>
-								{col.value}
+								{col.frequency_name}
 							</TableCell>
 						))}
 					</TableRow>
@@ -79,46 +78,58 @@ const LikelyhoodFrequencyTable: React.FC<LikelyhoodFrequencyTableProps> = ({
 							rowSpan={6}
 							className="border-2 text-center [writing-mode:vertical-rl]"
 						>
-							Frequency Level
+							Explanation
 						</TableCell>
 					</TableRow>
 					{data.row.map((row, key) => {
-						const cols = Object.entries(row)
-
 						return (
 							<TableRow
 								key={key}
 								className="border-2 text-center hover:bg-transparent"
 							>
-								{cols.map(([key_col, col_val]) => (
+								<TableCell
+									className={cn("border-2 text-center")}
+								>
+									{row.id}
+								</TableCell>
+								<TableCell
+									className={cn(
+										"border-2 text-center  hover:bg-muted  hover:cursor-pointer bg-secondary-200"
+									)}
+									onClick={() => {
+										onClick &&
+											onClick({
+												field: "explanation_name",
+												inputLabel: `Explanation`,
+												row_id: row.id,
+												value:
+													row.explanation_name || "",
+											})
+									}}
+								>
+									{row.explanation_name}
+								</TableCell>
+								{row.cells.map((cell, colIdx) => (
 									<TableCell
-										key={key_col}
-										className={cn("border-2 text-center ", {
-											"hover:cursor-pointer":
-												key_col !== "id",
-											"hover:bg-muted": key_col !== "id",
-											"bg-secondary-200 ":
-												key_col !== "id",
-											"font-light":
-												key_col !== "id" &&
-												!key_col.includes("name"),
-											"font-medium":
-												key_col === "id" ||
-												key_col.includes("name"),
-										})}
+										key={cell.column_id + colIdx + key}
+										className={cn(
+											"border-2 text-center hover:bg-muted  hover:cursor-pointer bg-secondary-200"
+										)}
 										onClick={() => {
 											onClick &&
 												onClick({
-													isRow: true,
-													field: key_col,
-													inputLabel: `Frequency x Explantion (${key_col}x${row.id})`,
+													field: "matrix",
+													inputLabel: `Frequency x Explantion (${cell.column_id}x${row.id})`,
 													row_id: row.id,
+													col_id: cell.column_id,
+													value: cell.value || "",
 												})
 										}}
 									>
-										{col_val}
+										{cell.value}
 									</TableCell>
 								))}
+								
 							</TableRow>
 						)
 					})}

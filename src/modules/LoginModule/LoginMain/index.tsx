@@ -39,6 +39,7 @@ const LoginMain = () => {
 			email: "",
 		},
 	})
+	
 	const handleSubmit = (values: z.infer<typeof AuthSchema>) => {
 		login({
 			email: values.email,
@@ -105,7 +106,7 @@ const LoginMain = () => {
 									type="email"
 									autoComplete={"off"}
 									label="Email"
-									placeholder="Masukan Email Anda"
+									placeholder="Enter your Email"
 									onChange={(e) => {
 										form.setValue("email", e.target.value)
 									}}
@@ -134,8 +135,8 @@ const LoginMain = () => {
 									}}
 									secure
 									autoComplete={"off"}
-									label="Kata Sandi"
-									placeholder="Masukan Kata Sandi Anda"
+									label="Password"
+									placeholder="Enter your Password"
 									onChange={(value) => {
 										form.setValue(
 											"password",
@@ -159,7 +160,7 @@ const LoginMain = () => {
 							disabled={!isVerified || loading}
 						>
 							{loading && <Spinner className="w-4 h-4" />}
-							Masuk
+							Login
 						</Button>
 					</form>
 				</Form>

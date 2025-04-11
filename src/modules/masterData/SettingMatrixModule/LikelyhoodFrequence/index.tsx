@@ -1,25 +1,69 @@
 import DialogMain from "@/components/dialogs/DialogMain"
-import InputWithLabel from "@/components/inputs/Input"
 import LikelyhoodFrequencyTable from "@/components/tables/LikelyHoodFrequencyTable"
-import RiskMatrixTable from "@/components/tables/RiskMatrixTable"
 import { Button } from "@/components/ui/button"
-import { useDebounce } from "@/hooks/use-debounce"
 import useSettingMatrixStore from "@/store/settingMatrixStore"
-import { MatrixSelectedRowCol } from "@/types/settingMatrix"
-import { Plus, Save } from "lucide-react"
-import React, { useState } from "react"
+import { MatrixSchemaForm, MatrixSelectedRowCol } from "@/types/settingMatrix"
+import { Minus, Plus } from "lucide-react"
+import { useState } from "react"
 import FormInputMatrix from "../FormInputMatrix"
+import { useToast } from "@/hooks/use-toast"
 
 const LikelyhoodFrequency = () => {
-	const { likelyhood_frequency } = useSettingMatrixStore()
-	const [valueInput, setValueInput] = useState("")
+	const {
+		likelyhood_frequency,
+		isSubmitMatrixCell,
+		isProcessAddRowLikelyhood,
+		actions: {
+			updateColumnCell,
+			updateRowCell,
+			updateRowColCell,
+			addRowLikelyhoodFrequency,
+			deleteLastRowLikelyhoodFrequency,
+		},
+	} = useSettingMatrixStore()
 	const [likelyhoodSelected, setLikelyhoodSelected] =
 		useState<MatrixSelectedRowCol | null>(null)
+	const { toast } = useToast()
 
-	const handleChange = useDebounce((value: string) => {
-		setValueInput(value)
-	})
-	console.log({ likelyhood_frequency });
+	const handleSubmitCell = async (value: MatrixSchemaForm) => {
+		try {
+			if (likelyhoodSelected?.field === "frequency_name") {
+				await updateColumnCell(
+					likelyhoodSelected?.col_id,
+					likelyhoodSelected?.field ?? "",
+					value.value
+				)
+			} else if (likelyhoodSelected?.field === "explanation_name") {
+				await updateRowCell(
+					likelyhoodSelected.row_id,
+					likelyhoodSelected?.field ?? "",
+					value.value
+				)
+			} else if (likelyhoodSelected?.field === "matrix") {
+				await updateRowColCell(
+					likelyhoodSelected.col_id,
+					likelyhoodSelected.row_id,
+					value.value,
+					"likelyhood"
+				)
+			}
+			setLikelyhoodSelected(null)
+		} catch (error: any) {
+			setLikelyhoodSelected(null)
+			toast({
+				title: error.message ?? "",
+				variant: "destructive",
+			})
+		}
+	}
+
+	const handleAddRow = () => {
+		addRowLikelyhoodFrequency && addRowLikelyhoodFrequency()
+	}
+	const handleDeleteLastRow = () => {
+		deleteLastRowLikelyhoodFrequency && deleteLastRowLikelyhoodFrequency()
+	}
+
 	return (
 		<div className="rounded-md shadow-lg p-4 space-y-4">
 			<h5 className="text-secondary font-semibold">
@@ -33,9 +77,25 @@ const LikelyhoodFrequency = () => {
 					}}
 				/>
 			)}
-			<div className="flex justify-center">
-				<Button color="bg-warning">
-					<Plus /> Add
+			<div className="flex justify-center gap-2">
+				<Button
+					variant={"default"}
+					disabled={isProcessAddRowLikelyhood}
+					className="bg-secondary-300 hover:bg-secondary-400"
+					onClick={() => {
+						handleAddRow()
+					}}
+				>
+					<Plus /> Add Row
+				</Button>
+				<Button
+					variant={"outline"}
+					disabled={isProcessAddRowLikelyhood}
+					onClick={() => {
+						handleDeleteLastRow()
+					}}
+				>
+					<Minus /> Delete Row
 				</Button>
 			</div>
 			<DialogMain
@@ -45,12 +105,16 @@ const LikelyhoodFrequency = () => {
 					setLikelyhoodSelected(null)
 				}}
 				size="md"
+				className="space-y-4"
 			>
 				<FormInputMatrix
 					label={likelyhoodSelected?.inputLabel || ""}
+					defaultValue={likelyhoodSelected?.value}
 					onCancel={() => {
 						setLikelyhoodSelected(null)
 					}}
+					onSubmit={handleSubmitCell}
+					isSubmitProcess={isSubmitMatrixCell}
 				/>
 			</DialogMain>
 		</div>

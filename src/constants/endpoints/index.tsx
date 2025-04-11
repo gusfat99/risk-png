@@ -12,4 +12,4 @@ export const CONSEQUENCE_EP = "/consequence";
 export const MANAGEMENT_USER_EP = "/management-user/role";
 export const PERSONAL_INFO_EP = "/setting-profil/personal-info";
 export const LIKELYHOOD_FREQUENCY_EP = "/setting-matrix/likelyhood-frequency";
-export const SEVERITY_MAP_EP = "/setting-matrix/likelyhood-frequency";
+export const SEVERITY_MAP_EP = "/setting-matrix/severity-map";

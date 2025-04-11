@@ -140,7 +140,7 @@ export const handleApiResponse = <T>(
 
 export const postData = <T>(
 	ep: string,
-	payload: object,
+	payload?: object,
 	config?: AxiosRequestConfig<any>
 ): Promise<ResponseApiType<T>> => {
 	return new Promise((resolve, reject) => {

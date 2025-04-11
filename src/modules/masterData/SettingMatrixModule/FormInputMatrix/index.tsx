@@ -1,23 +1,31 @@
 import InputController from "@/components/inputs/InputController"
 import { Button } from "@/components/ui/button"
-import { FormField } from "@/components/ui/form"
+import { Form, FormField } from "@/components/ui/form"
+import Spinner from "@/components/ui/spinner"
 import { MatrixSchema } from "@/schemas/SettingMatrixSchemat"
 import { MatrixSchemaForm } from "@/types/settingMatrix"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Save } from "lucide-react"
 import React from "react"
-import { Form, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 
 interface FormInputMatrixProps {
 	label: string
+	defaultValue?: string
 	onCancel(): void
+	onSubmit(value: MatrixSchemaForm): void
+	isSubmitProcess : boolean
 }
 
 const FormInputMatrix: React.FC<FormInputMatrixProps> = ({
+	defaultValue,
 	label,
 	onCancel,
+	onSubmit,
+	isSubmitProcess
 }) => {
-	const form = useForm({
+	
+	const form = useForm<MatrixSchemaForm>({
 		resolver: zodResolver(MatrixSchema),
 		progressive: false,
 		mode: "onSubmit",
@@ -25,23 +33,19 @@ const FormInputMatrix: React.FC<FormInputMatrixProps> = ({
 		shouldFocusError: true,
 		shouldUnregister: true,
 		defaultValues: {
-			value: "",
+			value: defaultValue || "",
 		},
 	})
 
-	const handleSubmit = (value: MatrixSchemaForm) => {}
-
 	return (
 		<Form {...form}>
-			<form
-				onSubmit={form.handleSubmit(handleSubmit)}
-				className="space-y-4"
-			>
+			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 				<FormField
 					control={form.control}
 					name={"value"}
-					render={() => (
+					render={({ field }) => (
 						<InputController
+							defaultValue={field.value}
 							label={label}
 							placeholder={label}
 							onChange={(e) => {
@@ -55,13 +59,20 @@ const FormInputMatrix: React.FC<FormInputMatrixProps> = ({
 					<Button
 						type="button"
 						variant={"outline"}
+						disabled={isSubmitProcess}
 						onClick={() => {
 							onCancel()
 						}}
+						className="w-full"
 					>
 						Cancel
 					</Button>
-					<Button variant={"secondary"}>
+					<Button
+						disabled={isSubmitProcess}
+						className="w-full"
+						variant={"secondary"}
+					>
+						{isSubmitProcess && <Spinner className="w-4 h-4" />}
 						<Save /> Save Data
 					</Button>
 				</div>
