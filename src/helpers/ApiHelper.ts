@@ -241,7 +241,7 @@ export const getDataApi = <T>(
 				return handleApiResponse<T>(data, resolve, reject)
 			})
 			.catch((err: AxiosError<ResponseApiType<null>>) => {
-				console.log(err.status)
+				// console.log(err.status)
 				if (err.status === 401 || err.status === 404) {
 					return  resolve(err.response as unknown as any)
 				}

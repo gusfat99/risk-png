@@ -21,26 +21,33 @@ export default function AppLayout({ children }: IProps) {
 			<AppSidebar />
 			<SidebarInset className="p-5">
 				<AppHeader />
-				{(title?.toLowerCase() === "dashboard" || subtitle?.toLowerCase()?.includes("setting matrix")) && children}
-				{title?.toLowerCase() !== "dashboard" && !subtitle?.toLowerCase()?.includes("setting matrix") && (
-					<>
-						{lengthPathname <= 2 && (
-							<div className="rounded-md max-w-full lg:max-w-screen-2xl bg-primary p-4 flex text-white mt-2">
-								{Icon && <Icon />}{" "}
-								<span className="ml-2">{title}</span>
-							</div>
-						)}
-						<div className="flex flex-col gap-4 p-4 shadow-lg rounded-lg mt-3 max-w-full lg:max-w-screen-2xl">
-							{lengthPathname > 2 && (
-								<div className="rounded-md bg-primary p-4 flex text-white mt-2">
+				{(title?.toLowerCase() === "dashboard" ||
+					subtitle?.toLowerCase()?.includes("setting matrix")) &&
+					children}
+				{title?.toLowerCase() !== "dashboard" &&
+					!subtitle?.toLowerCase()?.includes("setting matrix") && (
+						<>
+							{lengthPathname <= 2 && (
+								<div className="rounded-md w-full bg-primary p-4 flex text-white mt-2">
 									{Icon && <Icon />}{" "}
 									<span className="ml-2">{title}</span>
 								</div>
-							)}
-							{children}
+						)}
+						<div className="flex flex-shrink-0" >
+
+							<div className="flex flex-col gap-4 p-4 shadow-lg rounded-lg mt-3  w-full max-w-full ">
+								{lengthPathname > 2 && (
+								<div className="rounded-md bg-primary p-4 flex w-full
+									 text-white mt-2 ">
+										{Icon && <Icon />}{" "}
+										<span className="ml-2">{title}</span>
+									</div>
+								)}
+								{children}
+							</div>
 						</div>
-					</>
-				)}
+						</>
+					)}
 			</SidebarInset>
 		</>
 	)

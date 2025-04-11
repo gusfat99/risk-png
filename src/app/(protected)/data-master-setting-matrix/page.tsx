@@ -1,8 +1,9 @@
+import SettingMatrixModule from '@/modules/masterData/SettingMatrixModule'
 import React from 'react'
 
 const Page = () => {
   return (
-    <div>Page</div>
+    <SettingMatrixModule/>
   )
 }
 
