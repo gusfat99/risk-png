@@ -142,10 +142,10 @@ const DataTable = <T,>({
 
 	return (
 		<div className="w-full overflow-auto">
-			<div className="relative rounded-md md:max-h-[580px] max-h-[390px] border overflow-auto w-full max-w-screen-md lg:max-w-screen-2xl md:max-w-screen-md">
+			<div className="relative rounded-md md:max-h-[580px] max-h-[390px] border overflow-auto w-full max-w-[calc(100vw-62px)] md:max-w-[calc(100vw-386px)] overflow-x-auto">
 				<Table
 					className={cn(
-						"min-w-full max-w-screen-xl table-auto caption-bottom text-sm",
+						" table-fixed caption-bottom text-sm",
 						tableClassName
 					)}
 				>

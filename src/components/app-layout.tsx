@@ -35,7 +35,7 @@ export default function AppLayout({ children }: IProps) {
 						)}
 						<div className="flex flex-shrink-0" >
 
-							<div className="flex flex-col gap-4 p-4 shadow-lg rounded-lg mt-3  w-full max-w-full ">
+							<div className="flex flex-col gap-4 p-4 shadow-lg rounded-lg mt-3 w-full max-w-full overflow-hidden">
 								{lengthPathname > 2 && (
 								<div className="rounded-md bg-primary p-4 flex w-full
 									 text-white mt-2 ">

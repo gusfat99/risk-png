@@ -108,7 +108,7 @@ const RiskAnalystFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 	return (
 		<Form {...form}>
 			<form
-				className="space-y-4 max-w-full "
+				className="space-y-4 max-w-full  "
 				onSubmit={form.handleSubmit(handleSubmit)}
 			>
 				<div className="flex flex-row justify-between items-end">
@@ -130,6 +130,8 @@ const RiskAnalystFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 						<Save /> Save Changes Severity
 					</Button>
 				</div>
+				
+
 				<DataTable<RiskAnalysis>
 					columns={column}
 					data={riskAnalysItems}

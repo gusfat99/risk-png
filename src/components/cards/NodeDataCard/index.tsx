@@ -10,11 +10,10 @@ export type filedsNodeType = {
 }
 
 interface IProps {
-   nodeSelected : Node
+	nodeSelected: Node
 }
 
-const NodeDataCard : React.FC<IProps> = ({nodeSelected}) => {
-   
+const NodeDataCard: React.FC<IProps> = ({ nodeSelected }) => {
 	const filedsNode: filedsNodeType[] = [
 		{
 			title: "Node Description",
@@ -40,8 +39,8 @@ const NodeDataCard : React.FC<IProps> = ({nodeSelected}) => {
 			title: "Remaks",
 			field: "remark_node",
 		},
-   ]
-   
+	]
+
 	return (
 		<div className="border-2 border-gray-200 rounded-lg py-4 px-6">
 			<div className="space-y-2">
@@ -55,11 +54,11 @@ const NodeDataCard : React.FC<IProps> = ({nodeSelected}) => {
 				<TableBody>
 					{filedsNode.map((fieldNode) => (
 						<TableRow className="border-0" key={fieldNode.field}>
-							<TableCell className="text-gray-400 p-1 max-w-10">
+							<TableCell className="text-gray-400 p-1">
 								{fieldNode.title}
 							</TableCell>
-							<TableCell className="max-w-1 p-1" >:</TableCell>
-							<TableCell className="p-1" >
+							<TableCell className=" p-1">:</TableCell>
+							<TableCell className="p-1">
 								{nodeSelected?.[fieldNode.field]}
 							</TableCell>
 						</TableRow>

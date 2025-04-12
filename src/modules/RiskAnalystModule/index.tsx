@@ -38,7 +38,7 @@ const RiskAnalystModule = () => {
 	}, [fetchNodeData, fetchAllData, nodeSelected?.id, nodeItems.length])
 
 	return (
-		<div className=" space-y-4">
+		<div className=" space-y-4 w-full max-w-full">
 			<div className="flex flex-row justify-between items-end w-full">
 				<InputSelect
 					label="Node"
