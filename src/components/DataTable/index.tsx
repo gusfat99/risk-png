@@ -30,6 +30,8 @@ import { cn } from "@/lib/utils"
 import Spinner from "../ui/spinner"
 
 interface AppDataTableProps<T> {
+	tableClassName?: string
+	enableOnHoverIndicator?: boolean
 	columns: ColumnDef<T>[]
 	data: T[]
 	loading: boolean
@@ -48,6 +50,8 @@ export interface ColumnMetaDef {
 }
 
 const DataTable = <T,>({
+	enableOnHoverIndicator = true,
+	tableClassName,
 	columns,
 	data,
 	loading,
@@ -139,10 +143,21 @@ const DataTable = <T,>({
 	return (
 		<div className="w-full overflow-auto">
 			<div className="relative rounded-md md:max-h-[580px] max-h-[390px] border overflow-auto w-full max-w-screen-md lg:max-w-screen-2xl md:max-w-screen-md">
-				<Table className={cn("min-w-full max-w-screen-xl table-auto caption-bottom text-sm")}>
+				<Table
+					className={cn(
+						"min-w-full max-w-screen-xl table-auto caption-bottom text-sm",
+						tableClassName
+					)}
+				>
 					<TableHeader>
 						{table.getHeaderGroups().map((headerGroup) => (
-							<TableRow key={headerGroup.id}>
+							<TableRow
+								className={cn({
+									"hover:bg-transparent":
+										!enableOnHoverIndicator,
+								})}
+								key={headerGroup.id}
+							>
 								{headerGroup.headers.map((header) => {
 									const meta = header.column.columnDef
 										.meta as ColumnMetaDef
@@ -157,7 +172,7 @@ const DataTable = <T,>({
 												)}
 												style={{
 													width: header.getSize(), // <-- Ini penting!!
-												 }}
+												}}
 											>
 												{header.isPlaceholder
 													? null
@@ -167,8 +182,6 @@ const DataTable = <T,>({
 																.header,
 															header.getContext()
 													  )}
-											
-												
 											</TableHead>
 										</React.Fragment>
 									)
@@ -178,7 +191,12 @@ const DataTable = <T,>({
 					</TableHeader>
 					<TableBody>
 						{loading ? (
-							<TableRow className="md:h-[520px] h-[180px]">
+							<TableRow
+								className={cn("md:h-[520px] h-[180px]", {
+									"hover:bg-transparent":
+										!enableOnHoverIndicator,
+								})}
+							>
 								<TableCell
 									colSpan={columns.length}
 									className="h-24 text-center relative"
@@ -197,6 +215,10 @@ const DataTable = <T,>({
 												row.getIsSelected() &&
 												"selected"
 											}
+											className={cn({
+												"hover:bg-transparent":
+													!enableOnHoverIndicator,
+											})}
 										>
 											{row
 												.getVisibleCells()
@@ -207,7 +229,7 @@ const DataTable = <T,>({
 														)}_${cell.column.id}`}
 													>
 														{tbodyWithCell ? (
-															<TableCell  >
+															<TableCell>
 																{flexRender(
 																	cell.column
 																		.columnDef

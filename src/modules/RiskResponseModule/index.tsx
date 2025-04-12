@@ -45,7 +45,7 @@ const RiskResponseModule = () => {
 		fetchAllData,
 		setHazopByRiskAnalyst,
 		nodeSelected?.id,
-		nodeItems,
+		nodeItems.length,
 	])
 
 	return (

@@ -49,7 +49,7 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 								if (Array.isArray(data.data)) {
 									const flattenedData =
 										parseRiskBankToFlatted(data.data || [])
-
+										
 									set({
 										riskDataBankItems: data.data || [],
 										riskDataBankFlat: flattenedData,

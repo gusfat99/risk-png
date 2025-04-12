@@ -46,8 +46,9 @@ export const parseRiskBankToPayload = (
 		formData.append(
 			`consequences[${idx}][consequence]`,
 			consequence.consequence
-		)
-		consequence.safeguards.forEach((safeguard, idxSafeguard) => {
+		);
+
+		(consequence.safeguards || []).forEach((safeguard, idxSafeguard) => {
 			const indexSafeguard = `consequences[${idx}][safeguards][${idxSafeguard}]`
 			//check jika safeguard isinya berupa id maka payload yg di kirim safeguard_id saja
 			if (regex.test(safeguard.safeguard || "")) {
@@ -62,7 +63,7 @@ export const parseRiskBankToPayload = (
 				)
 				formData.append(
 					`${indexSafeguard}[safeguard_title]`,
-					String(safeguard.safeguard_title ?? "")
+					String(safeguard.safeguard ?? "")
 				)
 				formData.append(
 					`${indexSafeguard}[file_path]`,
@@ -75,25 +76,59 @@ export const parseRiskBankToPayload = (
 }
 
 export const parseRiskBankToFlatted = (datas: RiskBank[]): RiskBankFlat[] => {
-	let no = -1
+	let no = 0;
 	const flattenedData: RiskBankFlat[] = (datas || []).flatMap(
-		(mainEntry) => {
+		(mainEntry, mainIndex) => {
 			const consequences = mainEntry.consequences || []
+			  // If no safeguards, we still want one row for the consequence
 			const totalSafeguards = consequences.reduce(
-				(sum, cons) => sum + (cons.safeguards?.length || 0),
-				0
-			)
+            (sum, cons) => sum + Math.max(1, cons.safeguards?.length || 0),
+            0
+			);
+			no++;
 			
-			no++
+			// Increment nomor hanya untuk entri utama pertama
+			const currentNo = no;
 
 			return consequences.flatMap((consequence, consIndex) => {
 				const safeguards = consequence.safeguards || []
 				const consequenceRowspan = safeguards.length
 
+				 // If no safeguards, create one "empty" entry
+				 if (safeguards.length === 0) {
+					return [{
+						 // Main Data
+						 id: mainEntry.id,
+						 no : currentNo,
+						 uniqueKey: `${mainEntry.id}_${consequence.id}_0`,
+						 parameter: mainEntry.parameter,
+						 cause: mainEntry.cause,
+						 deviation_id: mainEntry.deviation_id,
+						 deviations: mainEntry.deviations,
+						 deviation: mainEntry.deviations.name || mainEntry.deviations.deviation || "",
+
+						 // Consequence Data
+						 consequences,
+						 consequence: consequence.consequence,
+
+						 // Safeguard Data (empty)
+						 safeguards,
+						 safeguard: "",
+						 safeguard_link: "",
+						 safeguard_title: "",
+
+						 // Metadata for Rowspan
+						 mainRowspan: totalSafeguards,
+						 consequenceRowspan: 1,
+						 isFirstMain: consIndex === 0, // First row in main group
+						 isFirstConsequence: true, // Only row for this consequence
+					}];
+			  }
+
 				return safeguards.map((safeguard, sgIndex) => ({
 					// Data Utama
 					id: mainEntry.id,
-					no,
+					no : currentNo,
 					uniqueKey: `${mainEntry.id}_${consequence.id}_${safeguard.id}`,
 					parameter: mainEntry.parameter,
 					cause: mainEntry.cause,

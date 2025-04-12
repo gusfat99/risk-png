@@ -19,7 +19,6 @@ const RiskBankModule = () => {
 		isFetching,
 		meta,
 		pagination_tanstack,
-		
 	} = useRiskDataBankStore()
 	const { pageIndex, pageSize } = pagination_tanstack
 	const [shownAlertDel, setShownAlertDel] = useState({
@@ -101,6 +100,7 @@ const RiskBankModule = () => {
 					config={{
 						getRowKey: (row) => row.uniqueKey,
 					}}
+					enableOnHoverIndicator={false}
 				/>
 				<AlertConfirmDialog
 					open={

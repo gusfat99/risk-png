@@ -100,6 +100,7 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 				: { ...initialRiskBank },
 	})
 
+
 	const consequences = form.watch("consequences")
 	const fieldArrayConsequences = useFieldArray({
 		control: form.control,
@@ -225,7 +226,7 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 						<Plus /> Add Consequence
 					</Button>
 				)}
-				<SectionSafeguardRiskBank form={form} isDetail />
+				<SectionSafeguardRiskBank form={form} isDetail={isDetail} />
 				{!isDetail && (
 					<div className="flex justify-end gap-4">
 						<Link href={basePathname}>

@@ -1,5 +1,5 @@
 import { ResponseApiType } from "@/helpers/ApiHelper"
-import { CommonState } from "./common"
+import { CommonState, SelectDataType } from "./common"
 import { z } from "zod"
 import { MatrixSchema } from "@/schemas/SettingMatrixSchemat"
 
@@ -28,6 +28,7 @@ export type SeverityMap = {
 	severity_map_value: string
 	row_value: string
 	row_severity: string
+	[x: string]: any
 }
 
 export type RiskMap = {
@@ -64,6 +65,8 @@ export interface SettingMatrixState extends CommonState {
 		isFetching: boolean
 		item: LikelyhoodFrequency | null
 	}
+	severity_map_options: SelectDataType[]
+	likelyhood_options: SelectDataType[]
 	severity_map: {
 		isFetching: boolean
 		item: SeverityMap[] | null
@@ -73,6 +76,8 @@ export interface SettingMatrixState extends CommonState {
 	actions: {
 		fetchLikelyhood(): Promise<ResponseApiType<LikelyhoodFrequency>>
 		fetchSeverityMap(): Promise<ResponseApiType<SeverityMap[]>>
+		fetchOptionsSeverityMap(): void
+		fetchOptionsLikelyhood(): void
 		updateColumnCell(
 			columnId: any,
 			columnName: string,

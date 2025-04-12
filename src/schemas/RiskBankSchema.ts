@@ -22,7 +22,7 @@ export const   RiskBankSchema = z.object({
 						safeguard_title: z.string().min(1, { message: "safeguard title is required",}),
 						file_path: z.any(),
 					})
-				),
+				).optional(),
 			})
 		)
 		.min(1, {

@@ -35,7 +35,7 @@ const RiskAnalystModule = () => {
 		if (nodeSelected) {
 			fetchAllData(nodeSelected.id)
 		}
-	}, [fetchNodeData, fetchAllData, nodeSelected?.id, nodeItems])
+	}, [fetchNodeData, fetchAllData, nodeSelected?.id, nodeItems.length])
 
 	return (
 		<div className=" space-y-4">

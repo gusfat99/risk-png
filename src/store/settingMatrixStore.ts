@@ -6,7 +6,7 @@ import {
 	ResponseApiType,
 } from "@/helpers/ApiHelper"
 import { toast } from "@/hooks/use-toast"
-import { commonInitualState } from "@/types/common"
+import { commonInitualState, SelectDataType } from "@/types/common"
 import {
 	LikelyhoodFrequency,
 	RowLikelyhoodFrequency,
@@ -25,6 +25,8 @@ const initialState = {
 		isFetching: false,
 		item: null,
 	},
+	severity_map_options: [],
+	likelyhood_options: [],
 	isSubmitMatrixCell: false,
 	isProcessAddRowLikelyhood: false,
 }
@@ -118,6 +120,90 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 							})
 					}
 				)
+			},
+			async fetchOptionsLikelyhood() {
+				set((prevState) => ({
+					likelyhood_frequency: {
+						...prevState.likelyhood_frequency,
+						isFetching: true,
+					},
+				}))
+				getDataApi<LikelyhoodFrequency>(LIKELYHOOD_FREQUENCY_EP)
+					.then((data) => {
+						if (
+							data &&
+							!data.data?.message?.includes("Unauthorized")
+						) {
+							const options: SelectDataType[] = (
+								data.data?.column || []
+							).map((column) => ({
+								label: `(${column.id}) ${column.frequency_name}`,
+								value: column.id,
+							}))
+
+							set((prevState) => ({
+								likelyhood_options: options,
+								likelyhood_frequency: {
+									...prevState.likelyhood_frequency,
+									isFetching: false,
+								},
+							}))
+						}
+					})
+					.catch((err) => {
+						set((prevState) => ({
+							likelyhood_frequency: {
+								...prevState.likelyhood_frequency,
+								isFetching: false,
+							},
+						}))
+						toast({
+							title: "ERROR",
+							description: err.message,
+							variant: "destructive",
+						})
+					})
+			},
+
+			async fetchOptionsSeverityMap() {
+				set((prevState) => ({
+					likelyhood_frequency: {
+						...prevState.likelyhood_frequency,
+						isFetching: true,
+					},
+				}))
+				getDataApi<SeverityMap[]>(SEVERITY_MAP_EP)
+					.then((data) => {
+						if (data && Array.isArray(data.data)) {
+							const options: SelectDataType[] = (
+								data.data || []
+							).map((cell) => ({
+								label: `(${cell.column_value}) ${cell.column_deviation}: ${cell.severity_map_value}`,
+								value: cell.column_value,
+							}))
+
+							set((prevState) => ({
+								severity_map_options: options,
+								severity_map: {
+									...prevState.severity_map,
+									isFetching: false,
+								},
+							}))
+						}
+					})
+					.catch((err) => {
+						set((prevState) => ({
+							severity_map: {
+								...prevState.severity_map,
+								isFetching: false,
+							},
+						}))
+						toast({
+							title: "ERROR",
+							description: err.message,
+							variant: "destructive",
+						})
+					})
 			},
 			async updateColumnCell(columnId, columnName, columnValue) {
 				set({
