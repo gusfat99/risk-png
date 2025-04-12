@@ -22,7 +22,6 @@ const SeverityMapTable: React.FC<SeverityMapTableProps> = ({
 	onClick,
 }) => {
 	// Group data by row_value (1-6)
-
 	const columns = Object.entries(groupBy(data, "column_deviation"))
 	const rows = Object.entries(groupBy(data, "row_severity"))
 
@@ -38,7 +37,7 @@ const SeverityMapTable: React.FC<SeverityMapTableProps> = ({
 							colSpan={3}
 							className="border-2 text-center"
 						>
-							Risk MAP
+							Severity MAP
 						</TableCell>
 						<TableCell colSpan={5} className="border-2 text-center">
 							Deviation
@@ -66,7 +65,7 @@ const SeverityMapTable: React.FC<SeverityMapTableProps> = ({
 											field: "deviation",
 											inputLabel: `Devation`,
 											col_id: valueCol[0].column_value,
-											value: "",
+											value: colName,
 										})
 								}}
 							>
@@ -113,8 +112,8 @@ const SeverityMapTable: React.FC<SeverityMapTableProps> = ({
 							{severityValue.map((severity) => (
 								<TableCell
 									key={
-										severityValue[0].row_value +
-										severity.severity_map_value
+										severity.column_value +
+										severity.column_value
 									}
 									className={cn(
 										"border-2 text-center hover:bg-muted  hover:cursor-pointer bg-secondary-200"

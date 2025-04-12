@@ -1,39 +1,30 @@
 import DialogMain from "@/components/dialogs/DialogMain"
-import LikelyhoodFrequencyTable from "@/components/tables/LikelyHoodFrequencyTable"
-import { Button } from "@/components/ui/button"
+import SeverityMapTable from "@/components/tables/SeverityMapTable"
+import { useToast } from "@/hooks/use-toast"
 import useSettingMatrixStore from "@/store/settingMatrixStore"
 import { MatrixSchemaForm, MatrixSelectedRowCol } from "@/types/settingMatrix"
-import { Minus, Plus } from "lucide-react"
 import { useState } from "react"
 import FormInputMatrix from "../FormInputMatrix"
-import { useToast } from "@/hooks/use-toast"
-import RiskMapTable from "@/components/tables/RiskMapTable"
-import SeverityMapTable from "@/components/tables/SeverityMapTable"
 
 const SeverityMap = () => {
 	const {
-    severity_map,
+		severity_map,
 		isSubmitMatrixCell,
-		actions: {
-			updateColumnCell,
-			updateRowCell,
-			updateRowColCell,
-		
-		},
+		actions: { updateColumnCell, updateRowCell, updateRowColCell },
 	} = useSettingMatrixStore()
 	const [severityMapSelected, setSeverityMapSelected] =
 		useState<MatrixSelectedRowCol | null>(null)
 	const { toast } = useToast()
-	
+
 	const handleSubmitCell = async (value: MatrixSchemaForm) => {
 		try {
-			if (severityMapSelected?.field === "frequency_name") {
+			if (severityMapSelected?.field === "deviation") {
 				await updateColumnCell(
 					severityMapSelected?.col_id,
 					severityMapSelected?.field ?? "",
 					value.value
 				)
-			} else if (severityMapSelected?.field === "explanation_name") {
+			} else if (severityMapSelected?.field === "severity") {
 				await updateRowCell(
 					severityMapSelected.row_id,
 					severityMapSelected?.field ?? "",
@@ -44,7 +35,7 @@ const SeverityMap = () => {
 					severityMapSelected.col_id,
 					severityMapSelected.row_id,
 					value.value,
-					"likelyhood"
+					"severity"
 				)
 			}
 			setSeverityMapSelected(null)
@@ -57,12 +48,9 @@ const SeverityMap = () => {
 		}
 	}
 
-
 	return (
 		<div className="rounded-md shadow-lg p-4 space-y-4">
-			<h5 className="text-secondary font-semibold">
-				Severity MAP
-			</h5>
+			<h5 className="text-secondary font-semibold">Severity MAP</h5>
 			{severity_map.item && (
 				<SeverityMapTable
 					data={severity_map.item}
@@ -71,7 +59,7 @@ const SeverityMap = () => {
 					}}
 				/>
 			)}
-		
+
 			<DialogMain
 				open={severityMapSelected !== null}
 				title="Value Matrix Severity Map"

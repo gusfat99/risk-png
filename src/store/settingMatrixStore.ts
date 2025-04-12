@@ -1,5 +1,10 @@
 import { LIKELYHOOD_FREQUENCY_EP, SEVERITY_MAP_EP } from "@/constants/endpoints"
-import { deleteData, getDataApi, postData, ResponseApiType } from "@/helpers/ApiHelper"
+import {
+	deleteData,
+	getDataApi,
+	postData,
+	ResponseApiType,
+} from "@/helpers/ApiHelper"
 import { toast } from "@/hooks/use-toast"
 import { commonInitualState } from "@/types/common"
 import {
@@ -165,6 +170,30 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 										},
 									}))
 								} else if (columnName.includes("deviation")) {
+									const severity_map =
+										get().severity_map.item || []
+									const severityMap = severity_map.map(
+										(severity) => {
+											let deviation =
+												severity.column_deviation
+											if (
+												severity.column_value?.toString() ===
+												columnId?.toString()
+											) {
+												deviation = columnValue
+											}
+											return {
+												...severity,
+												column_deviation: deviation,
+											}
+										}
+									)
+									set((prevState) => ({
+										severity_map: {
+											...prevState.severity_map,
+											item: severityMap,
+										},
+									}))
 								}
 							}
 							resolve(data)
@@ -232,7 +261,30 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 											},
 										},
 									}))
-								} else if (rowName.includes("deviation")) {
+								} else if (rowName.includes("severity")) {
+									const severity_map =
+										get().severity_map.item || []
+									const severityMap = severity_map.map(
+										(item) => {
+											let severity = item.row_severity
+											if (
+												item.row_value?.toString() ===
+												rowId?.toString()
+											) {
+												severity = rowValue
+											}
+											return {
+												...item,
+												row_severity: severity,
+											}
+										}
+									)
+									set((prevState) => ({
+										severity_map: {
+											...prevState.severity_map,
+											item: severityMap,
+										},
+									}))
 								}
 							}
 							resolve(data)
@@ -272,40 +324,68 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 					})
 						.then((data) => {
 							if (data.data) {
-								const rows =
-									get().likelyhood_frequency.item?.row || []
-								const findIndexRow = rows.findIndex(
-									(row) =>
-										row.id?.toString() === rowId.toString()
-								)
-
-								if (findIndexRow > -1) {
-									const cols = rows[findIndexRow].cells
-									const findIndexCol = cols.findIndex(
-										(col) =>
-											col.column_id?.toString() ===
-											columnId?.toString()
+								if (matrixField === "likelyhood") {
+									const rows =
+										get().likelyhood_frequency.item?.row ||
+										[]
+									const findIndexRow = rows.findIndex(
+										(row) =>
+											row.id?.toString() ===
+											rowId.toString()
 									)
-									cols[findIndexCol].value = value
-								}
-								set((prevState) => ({
-									likelyhood_frequency: {
-										...prevState.likelyhood_frequency,
-										item: {
-											row: rows,
-											column:
-												prevState.likelyhood_frequency
-													.item?.column || [],
+
+									if (findIndexRow > -1) {
+										const cols = rows[findIndexRow].cells
+										const findIndexCol = cols.findIndex(
+											(col) =>
+												col.column_id?.toString() ===
+												columnId?.toString()
+										)
+										cols[findIndexCol].value = value
+									}
+									set((prevState) => ({
+										likelyhood_frequency: {
+											...prevState.likelyhood_frequency,
+											item: {
+												row: rows,
+												column:
+													prevState
+														.likelyhood_frequency
+														.item?.column || [],
+											},
 										},
-									},
-								}))
+									}))
+								} else if (matrixField === "severity") {
+									const severityMap =
+										get().severity_map.item || []
+									const findIndexCell = severityMap.findIndex(
+										(row) =>
+											row.row_value?.toString() ===
+												rowId.toString() &&
+											row.column_value?.toString() ===
+												columnId?.toString()
+									)
+
+									if (findIndexCell > -1) {
+										severityMap[
+											findIndexCell
+										].severity_map_value = value
+										// cell.severity_map_value = value
+
+										set((prevState) => ({
+											isSubmitMatrixCell: false,
+											severity_map: {
+												...prevState.severity_map,
+												item: severityMap,
+											},
+										}))
+									}
+								}
 							}
 							resolve(data)
 						})
 						.catch((err) => {
 							reject(err)
-						})
-						.finally(() => {
 							set({
 								isSubmitMatrixCell: false,
 							})
@@ -354,38 +434,31 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 				set({
 					isProcessAddRowLikelyhood: true,
 				})
-				return new Promise<ResponseApiType<any>>(
-					(resolve, reject) => {
-						deleteData<any>(
-							LIKELYHOOD_FREQUENCY_EP + "/delete-row"
-						)
-							.then((data) => {
-							
-								const rows =
-									get().likelyhood_frequency.item?.row ||
-									[]
-								rows.pop();
+				return new Promise<ResponseApiType<any>>((resolve, reject) => {
+					deleteData<any>(LIKELYHOOD_FREQUENCY_EP + "/delete-row")
+						.then((data) => {
+							const rows =
+								get().likelyhood_frequency.item?.row || []
+							rows.pop()
 
-								set((prevState) => ({
-									isProcessAddRowLikelyhood: false,
-									likelyhood_frequency: {
-										...prevState.likelyhood_frequency,
-										item: {
-											row: rows,
-											column:
-												prevState
-													.likelyhood_frequency
-													.item?.column || [],
-										},
+							set((prevState) => ({
+								isProcessAddRowLikelyhood: false,
+								likelyhood_frequency: {
+									...prevState.likelyhood_frequency,
+									item: {
+										row: rows,
+										column:
+											prevState.likelyhood_frequency.item
+												?.column || [],
 									},
-								}))
-								resolve(data)
-							})
-							.catch((err) => {
-								reject(err)
-							})
-					}
-				)
+								},
+							}))
+							resolve(data)
+						})
+						.catch((err) => {
+							reject(err)
+						})
+				})
 			},
 		},
 	})
