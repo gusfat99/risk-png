@@ -41,7 +41,6 @@ export function shortenFileName(
 
 	const words = name.split(/[ \-_]+/)
 
-
 	if (words.length > maxWords) {
 		let shortenedName = words.slice(0, maxWords).join(" ") + "...."
 		if (maxLength > 0) {
@@ -54,4 +53,25 @@ export function shortenFileName(
 	} else {
 		return filename
 	}
+}
+
+/**
+ * Mengelompokkan array of objects berdasarkan properti tertentu
+ * @param array Array input yang akan dikelompokkan
+ * @param key Nama properti yang digunakan untuk pengelompokan
+ * @returns Objek dengan key sebagai nilai properti dan value sebagai array of objects yang sesuai
+ */
+
+export function groupBy<T extends Record<string, any>, K extends keyof T>(
+	array: T[],
+	key: K
+): Record<T[K] extends string | number | symbol ? T[K] : string, T[]> {
+	return array.reduce((acc, obj) => {
+		const groupKey = obj[key]
+		if (!acc[groupKey]) {
+			acc[groupKey] = []
+		}
+		acc[groupKey].push(obj)
+		return acc
+	}, {} as Record<any, T[]>)
 }

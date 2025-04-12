@@ -23,24 +23,11 @@ export type LikelyhoodFrequency = {
 }
 
 export type SeverityMap = {
-	column: {
-		id: any
-		deviation_1: string | null
-		deviation_2: string | null
-		deviation_3: string | null
-		deviation_4: string | null
-		deviation_5: string | null
-	}
-	row: Array<{
-		id: any
-		explanation_1: string | null
-		explanation_2: string | null
-		explanation_3: string | null
-		explanation_4: string | null
-		explanation_5: string | null
-		explanation_6: string | null
-	}>
-	[x: string]: any
+	column_value: any
+	column_deviation: string
+	severity_map_value: string
+	row_value: string
+	row_severity: string
 }
 
 export type RiskMap = {
@@ -79,13 +66,13 @@ export interface SettingMatrixState extends CommonState {
 	}
 	severity_map: {
 		isFetching: boolean
-		item: SeverityMap | null
+		item: SeverityMap[] | null
 	}
 	isSubmitMatrixCell: boolean
-	isProcessAddRowLikelyhood : boolean
+	isProcessAddRowLikelyhood: boolean
 	actions: {
 		fetchLikelyhood(): Promise<ResponseApiType<LikelyhoodFrequency>>
-		fetchSeverityMap(): Promise<ResponseApiType<SeverityMap>>
+		fetchSeverityMap(): Promise<ResponseApiType<SeverityMap[]>>
 		updateColumnCell(
 			columnId: any,
 			columnName: string,
@@ -105,9 +92,7 @@ export interface SettingMatrixState extends CommonState {
 		addRowLikelyhoodFrequency?(): Promise<
 			ResponseApiType<RowLikelyhoodFrequency>
 		>
-		deleteLastRowLikelyhoodFrequency?(): Promise<
-			ResponseApiType<any>
-		>
+		deleteLastRowLikelyhoodFrequency?(): Promise<ResponseApiType<any>>
 	}
 }
 

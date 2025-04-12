@@ -75,7 +75,7 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 				)
 			},
 			async fetchSeverityMap() {
-				return new Promise<ResponseApiType<SeverityMap>>(
+				return new Promise<ResponseApiType<SeverityMap[]>>(
 					(resolve, reject) => {
 						set((prevState) => ({
 							severity_map: {
@@ -83,12 +83,12 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 								isFetching: true,
 							},
 						}))
-						getDataApi<SeverityMap>(SEVERITY_MAP_EP)
+						getDataApi<SeverityMap[]>(SEVERITY_MAP_EP)
 							.then((data) => {
-								if (data.data) {
+								if (Array.isArray(data.data)) {
 									set(() => ({
 										severity_map: {
-											item: data.data || null,
+											item: data.data || [],
 											isFetching: false,
 										},
 									}))

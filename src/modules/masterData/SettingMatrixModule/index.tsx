@@ -9,12 +9,14 @@ import useSettingMatrixStore from "@/store/settingMatrixStore"
 const SettingMatrixModule = () => {
 	const { icon: Icon, title } = useRouteGetTitle()
 	const { actions: {
-		fetchLikelyhood
+		fetchLikelyhood,
+		fetchSeverityMap
 	} } = useSettingMatrixStore();
 
 	useEffect(() => {
 		fetchLikelyhood()
-	}, [fetchLikelyhood]);
+		fetchSeverityMap()
+	}, [fetchLikelyhood, fetchSeverityMap]);
 
 	return (
 		<div
