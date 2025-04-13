@@ -16,19 +16,21 @@ import React from "react"
 
 interface RiskMapTableProps {
    data: RiskMap[]
-   columns: SeverityMap,
+   columns: SeverityMap[],
    rowsMain : LikelyhoodFrequency,
    onClick?(data: MatrixSelectedRowCol): void
 }
 
 const RiskMapTable: React.FC<RiskMapTableProps> = ({
+   columns,
+   rowsMain,
    data,
    onClick,
 }) => {
    return (
       <div className="w-full overflow-x-auto">
          <Table>
-            {/* Header */}
+            {/* Header */} 
             <TableHeader>
                <TableRow className="hover:bg-transparent">
                   {/* Kolom Frequency Level */}
@@ -46,7 +48,7 @@ const RiskMapTable: React.FC<RiskMapTableProps> = ({
                </TableRow>
 
                <TableRow className="border-2 text-center hover:bg-transparent">
-                  {data.column.map((col) => (
+                  {columns.map((col) => (
                      <TableCell
                         key={col.id}
                         className="border-2 text-center"
@@ -56,7 +58,7 @@ const RiskMapTable: React.FC<RiskMapTableProps> = ({
                   ))}
                </TableRow>
                <TableRow className="border-2 text-center hover:bg-transparent">
-                  {data.column.map((col) => (
+                  {/* {data.map((col) => (
                      <TableCell
                         key={col.id}
                         className="border-2 text-center hover:bg-muted  hover:cursor-pointer bg-secondary-200"
@@ -72,7 +74,7 @@ const RiskMapTable: React.FC<RiskMapTableProps> = ({
                      >
                         {col.frequency_name}
                      </TableCell>
-                  ))}
+                  ))} */}
                </TableRow>
             </TableHeader>
             <TableBody>
@@ -85,7 +87,7 @@ const RiskMapTable: React.FC<RiskMapTableProps> = ({
                      Frequency
                   </TableCell>
                </TableRow>
-               {data.row.map((row, key) => {
+               {/* {data.row.map((row, key) => {
                   return (
                      <TableRow
                         key={key}
@@ -136,7 +138,7 @@ const RiskMapTable: React.FC<RiskMapTableProps> = ({
                         
                      </TableRow>
                   )
-               })}
+               })} */}
             </TableBody>
          </Table>
       </div>

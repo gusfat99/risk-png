@@ -27,7 +27,7 @@ const SettingMatrixModule = () => {
 			</div>
 			<LikelyhoodFrequency />
 			<SeverityMap />
-			<RiskMap />
+			{/* <RiskMap /> */}
 		</div>
 	)
 }
