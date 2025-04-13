@@ -32,23 +32,11 @@ export type SeverityMap = {
 }
 
 export type RiskMap = {
-	column: {
-		id: any
-		deviation_1: string | null
-		deviation_2: string | null
-		deviation_3: string | null
-		deviation_4: string | null
-		deviation_5: string | null
-	}
-	row: Array<{
-		id: any
-		explanation_1: string | null
-		explanation_2: string | null
-		explanation_3: string | null
-		explanation_4: string | null
-		explanation_5: string | null
-		explanation_6: string | null
-	}>
+	id: any
+	frequency: any
+	deviation: any
+	value: any
+	color: string
 	[x: string]: any
 }
 

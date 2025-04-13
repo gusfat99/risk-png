@@ -431,6 +431,7 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 										cols[findIndexCol].value = value
 									}
 									set((prevState) => ({
+										isSubmitMatrixCell: false,
 										likelyhood_frequency: {
 											...prevState.likelyhood_frequency,
 											item: {

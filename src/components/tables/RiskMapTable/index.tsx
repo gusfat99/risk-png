@@ -9,11 +9,15 @@ import { cn } from "@/lib/utils"
 import {
    LikelyhoodFrequency,
    MatrixSelectedRowCol,
+   RiskMap,
+   SeverityMap,
 } from "@/types/settingMatrix"
 import React from "react"
 
 interface RiskMapTableProps {
-   data: LikelyhoodFrequency
+   data: RiskMap[]
+   columns: SeverityMap,
+   rowsMain : LikelyhoodFrequency,
    onClick?(data: MatrixSelectedRowCol): void
 }
 
@@ -33,10 +37,10 @@ const RiskMapTable: React.FC<RiskMapTableProps> = ({
                      colSpan={3}
                      className="border-2 text-center"
                   >
-                     Likelyhood Frequency
+                     Risk MAP
                   </TableCell>
                   <TableCell colSpan={5} className="border-2 text-center">
-                     Frequency
+                     Deviation
                   </TableCell>
                   
                </TableRow>
@@ -78,7 +82,7 @@ const RiskMapTable: React.FC<RiskMapTableProps> = ({
                      rowSpan={6}
                      className="border-2 text-center [writing-mode:vertical-rl]"
                   >
-                     Explanation
+                     Frequency
                   </TableCell>
                </TableRow>
                {data.row.map((row, key) => {

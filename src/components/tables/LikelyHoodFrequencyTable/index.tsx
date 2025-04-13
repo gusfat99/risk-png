@@ -119,7 +119,7 @@ const LikelyhoodFrequencyTable: React.FC<LikelyhoodFrequencyTableProps> = ({
 											onClick &&
 												onClick({
 													field: "matrix",
-													inputLabel: `Frequency x Explantion (${cell.column_id}x${row.id})`,
+													inputLabel: `Frequency x Explantion (${cell.column_id}x${key+1})`,
 													row_id: row.id,
 													col_id: cell.column_id,
 													value: cell.value || "",
