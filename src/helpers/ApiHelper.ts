@@ -150,6 +150,10 @@ export const postData = <T>(
 				return handleApiResponse<T>(data, resolve, reject)
 			})
 			.catch((err: AxiosError<ResponseApiType<null>>) => {
+				// console.log(err.status)
+				if (err.status === 401 || err.status === 404) {
+					return  resolve(err.response as unknown as any)
+				}
 				const errorResponse: ResponseApiType<null> | undefined =
 					err.response?.data
 				return reject(
@@ -172,6 +176,10 @@ export const putData = <T>(
 				return handleApiResponse<T>(data, resolve, reject)
 			})
 			.catch((err: AxiosError<ResponseApiType<null>>) => {
+				// console.log(err.status)
+				if (err.status === 401 || err.status === 404) {
+					return  resolve(err.response as unknown as any)
+				}
 				const errorResponse: ResponseApiType<null> | undefined =
 					err.response?.data
 				return reject(
@@ -182,26 +190,6 @@ export const putData = <T>(
 	})
 }
 
-export const Data = <T>(
-	ep: string,
-	payload: object
-): Promise<ResponseApiType<T>> => {
-	return new Promise((resolve, reject) => {
-		axiosInterceptor
-			.post<ResponseApiType<T>>(ep, sanitizeData(payload))
-			.then((data) => {
-				return handleApiResponse<T>(data, resolve, reject)
-			})
-			.catch((err: AxiosError<ResponseApiType<null>>) => {
-				const errorResponse: ResponseApiType<null> | undefined =
-					err.response?.data
-				return reject(
-					errorResponse ?? { message: err.message || "Unknown error" }
-				)
-			})
-		return Promise.resolve()
-	})
-}
 
 export const deleteData = <T>(
 	ep: string,
@@ -213,6 +201,10 @@ export const deleteData = <T>(
 				return handleApiResponse<T>(data, resolve, reject)
 			})
 			.catch((err: AxiosError<ResponseApiType<null>>) => {
+				// console.log(err.status)
+				if (err.status === 401 || err.status === 404) {
+					return  resolve(err.response as unknown as any)
+				}
 				const errorResponse: ResponseApiType<null> | undefined =
 					err.response?.data
 				return reject(

@@ -1,4 +1,8 @@
-import { LIKELYHOOD_FREQUENCY_EP, SEVERITY_MAP_EP } from "@/constants/endpoints"
+import {
+	LIKELYHOOD_FREQUENCY_EP,
+	RISK_MAP_EP,
+	SEVERITY_MAP_EP,
+} from "@/constants/endpoints"
 import {
 	deleteData,
 	getDataApi,
@@ -9,6 +13,7 @@ import { toast } from "@/hooks/use-toast"
 import { commonInitualState, SelectDataType } from "@/types/common"
 import {
 	LikelyhoodFrequency,
+	RiskMap,
 	RowLikelyhoodFrequency,
 	SettingMatrixState,
 	SeverityMap,
@@ -22,6 +27,10 @@ const initialState = {
 		item: null,
 	},
 	severity_map: {
+		isFetching: false,
+		item: null,
+	},
+	risk_map: {
 		isFetching: false,
 		item: null,
 	},
@@ -121,6 +130,46 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 					}
 				)
 			},
+			async fetchRiskMap() {
+				return new Promise<ResponseApiType<RiskMap[]>>(
+					(resolve, reject) => {
+						set((prevState) => ({
+							risk_map: {
+								...prevState.risk_map,
+								isFetching: true,
+							},
+						}))
+						getDataApi<RiskMap[]>(RISK_MAP_EP)
+							.then((data) => {
+								if (Array.isArray(data.data)) {
+									set(() => ({
+										risk_map: {
+											item: data.data || [],
+											isFetching: false,
+										},
+									}))
+								}
+								resolve(data)
+							})
+							.catch((err) => {
+								toast({
+									title: "ERROR",
+									description: err.message,
+									variant: "destructive",
+								})
+								reject(err)
+							})
+							.finally(() => {
+								set((prevState) => ({
+									risk_map: {
+										...prevState.risk_map,
+										isFetching: false,
+									},
+								}))
+							})
+					}
+				)
+			},
 			async fetchOptionsLikelyhood() {
 				set((prevState) => ({
 					likelyhood_frequency: {
@@ -164,7 +213,6 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 						})
 					})
 			},
-
 			async fetchOptionsSeverityMap() {
 				set((prevState) => ({
 					likelyhood_frequency: {
@@ -180,7 +228,7 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 							).map((cell) => ({
 								label: `(${cell.column_value}) ${cell.column_deviation}: ${cell.severity_map_value}`,
 								value: cell.column_value?.toString(),
-								saverity_row_id : cell.row_value
+								saverity_row_id: cell.row_value,
 							}))
 
 							set((prevState) => ({
@@ -386,23 +434,39 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 						})
 				})
 			},
-			async updateRowColCell(columnId, rowId, value, matrixField) {
+			async updateRowColCell(
+				columnId,
+				rowId,
+				value,
+				matrixField,
+				color?: string
+			) {
 				set({
 					isSubmitMatrixCell: true,
 				})
 				return new Promise<ResponseApiType<any>>((resolve, reject) => {
 					const formData = new FormData()
-
-					formData.append(`column_${matrixField}_id`, columnId)
-					formData.append(`row_${matrixField}_id`, rowId)
-					formData.append(`value`, value)
+					if (matrixField === "risk-map") {
+						formData.append(`value`, value)
+						formData.append(`color`, color || "")
+					} else {
+						formData.append(`column_${matrixField}_id`, columnId)
+						formData.append(`row_${matrixField}_id`, rowId)
+						formData.append(`value`, value)
+					}
 					let EP = ""
 					if (matrixField === "likelyhood") {
 						EP += LIKELYHOOD_FREQUENCY_EP
 					} else if (matrixField === "severity") {
 						EP += SEVERITY_MAP_EP
+					} else if (matrixField === "risk-map") {
+						//rowId = frequency
+						//colmnId = deviation
+						EP += `${RISK_MAP_EP}/${rowId}/${columnId}`
 					}
-					EP += "/value-cell"
+					if (matrixField !== "risk-map") {
+						EP += "/value-cell"
+					}
 
 					postData<any>(EP, formData, {
 						headers: {
@@ -468,6 +532,37 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 											},
 										}))
 									}
+								} else if (matrixField === "risk-map") {
+									const riskMap = get().risk_map.item || []
+									const findIndexCell = riskMap.findIndex(
+										(row) =>
+											row.frequency?.toString() ===
+												rowId.toString() &&
+											row.deviation?.toString() ===
+												columnId?.toString()
+									)
+
+									if (findIndexCell > -1) {
+										riskMap[findIndexCell].value = value
+										riskMap[findIndexCell].color =
+											color || ""
+										// cell.severity_map_value = value
+									} else {
+										riskMap.push({
+											color: color || "",
+											deviation: columnId,
+											value,
+											frequency: rowId,
+											id: data.data.id,
+										})
+									}
+									set((prevState) => ({
+										isSubmitMatrixCell: false,
+										risk_map: {
+											...prevState.risk_map,
+											item: riskMap,
+										},
+									}))
 								}
 							}
 							resolve(data)

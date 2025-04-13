@@ -1,50 +1,41 @@
 import DialogMain from "@/components/dialogs/DialogMain"
-import LikelyhoodFrequencyTable from "@/components/tables/LikelyHoodFrequencyTable"
-import { Button } from "@/components/ui/button"
-import useSettingMatrixStore from "@/store/settingMatrixStore"
-import { MatrixSchemaForm, MatrixSelectedRowCol } from "@/types/settingMatrix"
-import { Minus, Plus } from "lucide-react"
-import { useState } from "react"
-import FormInputMatrix from "../FormInputMatrix"
-import { useToast } from "@/hooks/use-toast"
 import RiskMapTable from "@/components/tables/RiskMapTable"
-import SeverityMapTable from "@/components/tables/SeverityMapTable"
+import { useToast } from "@/hooks/use-toast"
+import { groupBy } from "@/lib/utils"
+import useSettingMatrixStore from "@/store/settingMatrixStore"
+import {
+	MatrixRiskMapSchemaForm,
+	MatrixSelectedRowCol,
+} from "@/types/settingMatrix"
+import { useState } from "react"
+import FormInputMatrixRiskMap from "../FormInputMatrixRiskMap"
 
 const RiskMap = () => {
 	const {
 		severity_map,
+		likelyhood_frequency,
 		isSubmitMatrixCell,
-		actions: { updateColumnCell, updateRowCell, updateRowColCell },
+		risk_map,
+		actions: { updateRowColCell },
 	} = useSettingMatrixStore()
-	const [severityMapSelected, setSeverityMapSelected] =
+	const [riskMapCellSelected, setRiskMapCellSelected] =
 		useState<MatrixSelectedRowCol | null>(null)
 	const { toast } = useToast()
 
-	const handleSubmitCell = async (value: MatrixSchemaForm) => {
+	const handleSubmitCell = async (value: MatrixRiskMapSchemaForm) => {
 		try {
-			if (severityMapSelected?.field === "frequency_name") {
-				await updateColumnCell(
-					severityMapSelected?.col_id,
-					severityMapSelected?.field ?? "",
-					value.value
-				)
-			} else if (severityMapSelected?.field === "explanation_name") {
-				await updateRowCell(
-					severityMapSelected.row_id,
-					severityMapSelected?.field ?? "",
-					value.value
-				)
-			} else if (severityMapSelected?.field === "matrix") {
+			if (riskMapCellSelected?.field === "matrix") {
 				await updateRowColCell(
-					severityMapSelected.col_id,
-					severityMapSelected.row_id,
+					riskMapCellSelected.col_id,
+					riskMapCellSelected.row_id,
 					value.value,
-					"likelyhood"
+					"risk-map",
+					value.color
 				)
 			}
-			setSeverityMapSelected(null)
+			setRiskMapCellSelected(null)
 		} catch (error: any) {
-			setSeverityMapSelected(null)
+			setRiskMapCellSelected(null)
 			toast({
 				title: error.message ?? "",
 				variant: "destructive",
@@ -52,27 +43,39 @@ const RiskMap = () => {
 		}
 	}
 
+	const severityMapGrouped = groupBy(severity_map.item || [], "column_value")
+
 	return (
 		<div className="rounded-md shadow-lg p-4 space-y-4">
-			<h5 className="text-secondary font-semibold">
-				Likelyhood Frequency
-			</h5>
-			{severity_map.item && <SeverityMapTable data={severity_map.item} />}
+			<h5 className="text-secondary font-semibold">Risk Map</h5>
+			{severity_map.item &&
+				severity_map.item &&
+				likelyhood_frequency.item && (
+					<RiskMapTable
+						data={risk_map.item || []}
+						columns={Object.entries(severityMapGrouped)}
+						rowsMain={likelyhood_frequency.item}
+						onClick={setRiskMapCellSelected}
+					/>
+				)}
 
 			<DialogMain
-				open={severityMapSelected !== null}
-				title="Value Matrix Severity Map"
+				open={riskMapCellSelected !== null}
+				title="Value Matrix HEATMAP"
 				onOpenChange={(_) => {
-					setSeverityMapSelected(null)
+					setRiskMapCellSelected(null)
 				}}
 				size="md"
 				className="space-y-4"
 			>
-				<FormInputMatrix
-					label={severityMapSelected?.inputLabel || ""}
-					defaultValue={severityMapSelected?.value}
+				<FormInputMatrixRiskMap
+					label={riskMapCellSelected?.inputLabel || ""}
+					defaultValue={{
+						value: riskMapCellSelected?.value || "",
+						color: riskMapCellSelected?.color || "",
+					}}
 					onCancel={() => {
-						setSeverityMapSelected(null)
+						setRiskMapCellSelected(null)
 					}}
 					onSubmit={handleSubmitCell}
 					isSubmitProcess={isSubmitMatrixCell}

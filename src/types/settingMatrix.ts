@@ -1,7 +1,7 @@
 import { ResponseApiType } from "@/helpers/ApiHelper"
 import { CommonState, SelectDataType } from "./common"
 import { z } from "zod"
-import { MatrixSchema } from "@/schemas/SettingMatrixSchemat"
+import { MatrixRiskMapSchema, MatrixSchema } from "@/schemas/SettingMatrixSchemat"
 
 export type RowLikelyhoodFrequency = {
 	id: any
@@ -46,6 +46,7 @@ export type MatrixSelectedRowCol = {
 	row_id?: any
 	field: string
 	value?: string
+	color?: string;
 }
 
 export interface SettingMatrixState extends CommonState {
@@ -59,11 +60,16 @@ export interface SettingMatrixState extends CommonState {
 		isFetching: boolean
 		item: SeverityMap[] | null
 	}
+	risk_map: {
+		isFetching: boolean
+		item: RiskMap[] | null
+	}
 	isSubmitMatrixCell: boolean
 	isProcessAddRowLikelyhood: boolean
 	actions: {
 		fetchLikelyhood(): Promise<ResponseApiType<LikelyhoodFrequency>>
 		fetchSeverityMap(): Promise<ResponseApiType<SeverityMap[]>>
+		fetchRiskMap(): Promise<ResponseApiType<RiskMap[]>>
 		fetchOptionsSeverityMap(): void
 		fetchOptionsLikelyhood(): void
 		updateColumnCell(
@@ -80,7 +86,8 @@ export interface SettingMatrixState extends CommonState {
 			columnId: any,
 			rowId: any,
 			value: string,
-			matrixType: "likelyhood" | "severity"
+			matrixType: "likelyhood" | "severity" | "risk-map",
+			color? : string
 		): Promise<ResponseApiType<any>>
 		addRowLikelyhoodFrequency?(): Promise<
 			ResponseApiType<RowLikelyhoodFrequency>
@@ -90,3 +97,4 @@ export interface SettingMatrixState extends CommonState {
 }
 
 export type MatrixSchemaForm = z.infer<typeof MatrixSchema>
+export type MatrixRiskMapSchemaForm = z.infer<typeof MatrixRiskMapSchema>

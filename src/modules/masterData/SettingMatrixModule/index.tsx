@@ -8,26 +8,24 @@ import useSettingMatrixStore from "@/store/settingMatrixStore"
 
 const SettingMatrixModule = () => {
 	const { icon: Icon, title } = useRouteGetTitle()
-	const { actions: {
-		fetchLikelyhood,
-		fetchSeverityMap
-	} } = useSettingMatrixStore();
+	const {
+		actions: { fetchLikelyhood, fetchSeverityMap, fetchRiskMap },
+	} = useSettingMatrixStore()
 
 	useEffect(() => {
 		fetchLikelyhood()
 		fetchSeverityMap()
-	}, [fetchLikelyhood, fetchSeverityMap]);
+		fetchRiskMap()
+	}, [fetchLikelyhood, fetchSeverityMap, fetchRiskMap])
 
 	return (
-		<div
-			className="max-w-full space-y-4"
-		>
+		<div className="max-w-full space-y-4">
 			<div className="rounded-md w-full bg-primary p-4 flex text-white mt-2">
 				{Icon && <Icon />} <span className="ml-2">{title}</span>
 			</div>
 			<LikelyhoodFrequency />
 			<SeverityMap />
-			{/* <RiskMap /> */}
+			<RiskMap />
 		</div>
 	)
 }
