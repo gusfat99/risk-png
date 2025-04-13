@@ -29,7 +29,7 @@ export type RiskAnalysis = {
 	id: number
 	nodes: Node
 	deviations: Deviations
-	consequences: Consequences
+	consequence: Consequences
 	causes: Cause
 }
 

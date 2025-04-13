@@ -137,7 +137,7 @@ export const useColumnsRiskAnalyst = ({
 			},
 			{
 				id: "consequence",
-				accessorFn: (row) => row.consequences.consequence,
+				accessorFn: (row) => row.consequence.consequence,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
