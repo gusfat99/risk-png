@@ -11,121 +11,127 @@ export const columnRiskBank = (
 	onAction: (actionName: string, id: any) => void
 ): ColumnDef<RiskBankFlat>[] => {
 	const columns: ColumnDef<RiskBankFlat>[] = [
-		 {
-			  accessorKey: "no",
-			  header: "No",
-			  cell: ({ row }) =>
-					row.original.isFirstMain ? (
-						 <TableCell
-							  className="border"
-							  rowSpan={row.original.mainRowspan}
-						 >
-							  {row.original.no}
-						 </TableCell>
-					) : null,
-		 },
-		 {
-			  id: "id",
-			  accessorFn: (row) => row.id,
-			  header: () => {
-					return <div className="flex justify-start">Action</div>
-			  },
-			  cell: ({ row }) =>
-					row.original.isFirstMain ? (
-						 <TableCell
-							  className="border text-center"
-							  rowSpan={row.original.mainRowspan}
-						 >
-							  <TableRowActions
-									onAction={(actionName: string) => {
-										 onAction(actionName, row.getValue("id"))
-									}}
-							  />
-						 </TableCell>
-					) : null,
-		 },
-		 {
-			  accessorKey: "parameter",
-			  header: "Parameter",
-			  cell: ({ row }) =>
-					row.original.isFirstMain ? (
-						 <TableCell
-							  className="border"
-							  rowSpan={row.original.mainRowspan}
-						 >
-							  {row.original.parameter}
-						 </TableCell>
-					) : null,
-		 },
-		 {
-			  accessorKey: "deviation",
-			  header: "Deviation",
-			  cell: ({ row }) =>
-					row.original.isFirstMain ? (
-						 <TableCell
-							  className="border"
-							  rowSpan={row.original.mainRowspan}
-						 >
-							  {row.original.deviation}
-						 </TableCell>
-					) : null,
-		 },
-		 {
-			  accessorKey: "cause",
-			  header: "Cause",
-			  cell: ({ row }) =>
-					row.original.isFirstMain ? (
-						 <TableCell
-							  className="border"
-							  rowSpan={row.original.mainRowspan}
-						 >
-							  {row.original.cause}
-						 </TableCell>
-					) : null,
-		 },
-		 {
-			  accessorKey: "consequence",
-			  header: "Consequence",
-			  cell: ({ row }) =>
-					row.original.isFirstConsequence ? (
-						 <TableCell
-							  className="border"
-							  rowSpan={row.original.consequenceRowspan}
-						 >
-							  {row.original.consequence}
-						 </TableCell>
-					) : null,
-		 },
-		 {
-			  accessorKey: "safeguard",
-			  header: "Safeguards",
-			  cell: ({ row }) => (
-					<TableCell className="border">
-						 {row.original.safeguard || "-"} {/* Menampilkan '-' jika safeguard kosong */}
+		{
+			accessorKey: "no",
+			header: () => <div className="text-center">No</div>,
+			size: 40,
+			cell: ({ row }) =>
+				row.original.isFirstMain ? (
+					<TableCell
+						className="border text-center"
+						rowSpan={row.original.mainRowspan}
+					>
+						{row.original.no}
 					</TableCell>
-			  ),
-		 },
-		 {
-			  accessorKey: "document",
-			  header: "Safeguards Document",
-			  cell: ({ row }) => (
-					<TableCell className="border text-center">
-						 {row.original.safeguard_link ? (
-							  <Link
-									target="_blank"
-									href={`${API_URL}/storage/safeguards/${row.original.safeguard_link}`}
-							  >
-									<Button size={"sm"} variant={"warning"}>
-										 <FileDown /> View
-									</Button>
-							  </Link>
-						 ) : (
-							  "-" // Menampilkan '-' jika tidak ada dokumen
-						 )}
+				) : null,
+		},
+		{
+			id: "id",
+			accessorFn: (row) => row.id,
+			size: 60,
+			header: () => {
+				return <div className="text-center">Action</div>
+			},
+			cell: ({ row }) =>
+				row.original.isFirstMain ? (
+					<TableCell
+						className="border text-center"
+						rowSpan={row.original.mainRowspan}
+					>
+						<TableRowActions
+							onAction={(actionName: string) => {
+								onAction(actionName, row.getValue("id"))
+							}}
+						/>
 					</TableCell>
-			  ),
-		 },
-	];
+				) : null,
+		},
+		{
+			accessorKey: "parameter",
+			size: 90,
+			header: "Parameter",
+			cell: ({ row }) =>
+				row.original.isFirstMain ? (
+					<TableCell
+						className="border"
+						rowSpan={row.original.mainRowspan}
+					>
+						{row.original.parameter}
+					</TableCell>
+				) : null,
+		},
+		{
+			accessorKey: "deviation",
+			header: "Deviation",
+			size: 90,
+			cell: ({ row }) =>
+				row.original.isFirstMain ? (
+					<TableCell
+						className="border"
+						rowSpan={row.original.mainRowspan}
+					>
+						{row.original.deviation}
+					</TableCell>
+				) : null,
+		},
+		{
+			accessorKey: "cause",
+			header: "Cause",
+			cell: ({ row }) =>
+				row.original.isFirstMain ? (
+					<TableCell
+						className="border"
+						rowSpan={row.original.mainRowspan}
+					>
+						{row.original.cause}
+					</TableCell>
+				) : null,
+		},
+		{
+			accessorKey: "consequence",
+			header: "Consequence",
+			cell: ({ row }) =>
+				row.original.isFirstConsequence ? (
+					<TableCell
+						className="border"
+						rowSpan={row.original.consequenceRowspan}
+					>
+						{row.original.consequence}
+					</TableCell>
+				) : null,
+		},
+		{
+			accessorKey: "safeguard",
+			header: "Safeguards",
+			cell: ({ row }) => (
+				<TableCell className="border">
+					{row.original.safeguard || "-"}{" "}
+					{/* Menampilkan '-' jika safeguard kosong */}
+				</TableCell>
+			),
+		},
+		{
+			accessorKey: "document",
+			size : 120,
+			header: () => <div className="text-center" >Safeguards Document</div>,
+			cell: ({ row }) => (
+				<TableCell className="border text-center">
+					{row.original.safeguard_link ? (
+						<Link
+							target="_blank"
+							href={`${API_URL}/storage/safeguards/${row.original.safeguard_link}`}
+						>
+							<Button size={"sm"} variant={"warning"}>
+								<FileDown /> View
+							</Button>
+						</Link>
+					) : (
+						"-" // Menampilkan '-' jika tidak ada dokumen
+					)}
+				</TableCell>
+			),
+		},
+	]
 
-	return columns;
-};
+	return columns
+}

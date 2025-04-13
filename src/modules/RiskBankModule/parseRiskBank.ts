@@ -34,7 +34,6 @@ export const parseRiskBankToPayload = (
 	const formData = new FormData()
 	const regex = /^-?\d+$/
 	//check is number/id
-
 	formData.append("parameter", value.parameter)
 	formData.append("cause", value.cause)
 	if (value.deviation_id) {
@@ -65,6 +64,7 @@ export const parseRiskBankToPayload = (
 					`${indexSafeguard}[safeguard_title]`,
 					String(safeguard.safeguard ?? "")
 				)
+				
 				formData.append(
 					`${indexSafeguard}[file_path]`,
 					safeguard.file_path ? safeguard.file_path : ""

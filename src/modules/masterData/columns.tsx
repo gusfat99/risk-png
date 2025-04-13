@@ -111,7 +111,7 @@ export const columnNode = (
 			},
 			cell: ({ row }) => (
 				<div className="text-center">
-					{row.getValue("inlet_pressure")}
+					{row.getValue("inlet_pressure")} bar
 				</div>
 			),
 		},
@@ -129,7 +129,7 @@ export const columnNode = (
 			cell: ({ row }) => {
 				return (
 					<div className="text-center">
-						{row.getValue("outlet_pressure")}
+						{row.getValue("outlet_pressure")} bar
 					</div>
 				)
 			},
@@ -141,8 +141,7 @@ export const columnNode = (
 				return (
 					<DataTableColumnHeader
 						column={column}
-						title="Notes Special
-Condition / Remarks"
+						title="Notes Special Condition / Remarks"
 					/>
 				)
 			},

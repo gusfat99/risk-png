@@ -6,15 +6,21 @@ import {
 	ResponseApiType,
 } from "@/helpers/ApiHelper"
 import { toast } from "@/hooks/use-toast"
-import { parseRiskBankToFlatted } from "@/modules/RiskBankModule/parseRiskBank"
+import {
+	parseRiskBankToFlatted,
+	parseRiskBankToPayload,
+} from "@/modules/RiskBankModule/parseRiskBank"
 import { commonInitualState } from "@/types/common"
 import {
 	Deviations,
 	RiskBank,
-	RiskDataBankState
+	RiskBankSchemaForm,
+	RiskDataBankState,
 } from "@/types/riskDataBank"
 import { Safeguard } from "@/types/safeguard"
 import { createStore, runUpdater } from "./store"
+import fetchFileViaProxy from "@/services/fetchFileAsFile"
+import { API_URL } from "@/constants"
 
 const initialState = {
 	...commonInitualState,
@@ -49,7 +55,7 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 								if (Array.isArray(data.data)) {
 									const flattenedData =
 										parseRiskBankToFlatted(data.data || [])
-										
+
 									set({
 										riskDataBankItems: data.data || [],
 										riskDataBankFlat: flattenedData,
@@ -204,36 +210,80 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 					}
 				)
 			},
-			updateData: async (id: any, payload: File) => {
+			updateData: async (id: any, payload: RiskBankSchemaForm) => {
 				set({
 					isSubmit: true,
 				})
 				return new Promise<ResponseApiType<RiskBank>>(
-					(resolve, reject) => {
-						postData<RiskBank>(`${RISK_BANK_EP}/${id}`, payload, {
-							headers: {
-								"Content-Type": "multipart/form-data",
-							},
-						})
-							.then((data) => {
+					async (resolve, reject) => {
+						try {
+							// const consequences = payload.consequences
+							// let i = 0
+							// for (const consequence of consequences) {
+							// 	const safeguards = consequence.safeguards || []
+							// 	let j = 0
+							// 	for (const safeguard of safeguards) {
+							// 		if (
+							// 			typeof safeguard.file_path ===
+							// 				"string" &&
+							// 			safeguard.file_path
+							// 		) {
+							// 			const file = await fetchFileViaProxy(
+							// 				`${API_URL}/storage/safeguards/${safeguard.file_path}`,
+							// 				safeguard.file_path
+							// 			)
+							// 			if (file) {
+							// 				const safeguards =
+							// 					payload.consequences[i]
+							// 						.safeguards || []
+							// 				if (safeguards.length > 0) {
+							// 					safeguards[j].file_path = file
+							// 				}
+							// 			} else {
+							// 				throw new Error(
+							// 					"Failed to fetch file"
+							// 				)
+							// 			}
+							// 		} else {
+							// 			continue
+							// 		}
+							// 		j++
+							// 	}
+							// 	i++
+							// }
+
+							const formData = parseRiskBankToPayload(payload)
+							// console.log({ payload, formData })
+
+							const result = await postData<RiskBank>(
+								`${RISK_BANK_EP}/${id}`,
+								formData,
+								{
+									headers: {
+										"Content-Type": "multipart/form-data",
+									},
+								}
+							)
+							if (result.data) {
 								set((state) => {
 									return {
 										riskDataBankItems: [
 											...state.riskDataBankItems,
-											...(data.data ? [data.data] : []),
+											...(result.data
+												? [result.data]
+												: []),
 										],
 									}
 								})
-								resolve(data)
+								resolve(result)
+							}
+						} catch (error) {
+							reject(error)
+						} finally {
+							set({
+								isSubmit: false,
 							})
-							.catch((err) => {
-								reject(err)
-							})
-							.finally(() => {
-								set({
-									isSubmit: false,
-								})
-							})
+						}
 					}
 				)
 			},

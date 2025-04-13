@@ -2,6 +2,8 @@ import { ResponseApiType } from "@/helpers/ApiHelper"
 import { CommonState } from "./common"
 import { Safeguard } from "./safeguard"
 import { PaginationState, Updater } from "@tanstack/react-table"
+import { z } from "zod"
+import { RiskBankSchema } from "@/schemas/RiskBankSchema"
 
 // Type untuk Deviations
 export interface Deviations {
@@ -20,10 +22,10 @@ export interface Consequences {
 }
 
 export interface Cause {
-	id: number;
-	deviation_id: number;
-	parameter: string;
-	cause: string;
+	id: number
+	deviation_id: number
+	parameter: string
+	cause: string
 }
 
 // Type untuk Objek Utama
@@ -45,14 +47,14 @@ export interface RiskBankFlat {
 	cause: string
 	deviations: Deviations
 	deviation: string
-	mainRowspan: number;
-	consequenceRowspan: number;
+	mainRowspan: number
+	consequenceRowspan: number
 	consequences: Consequences[]
 	consequence: string
 	safeguard: string
 	safeguard_link: string
 	isFirstMain: boolean
-	isFirstConsequence : boolean
+	isFirstConsequence: boolean
 }
 
 export interface RiskDataBankState extends CommonState {
@@ -60,20 +62,22 @@ export interface RiskDataBankState extends CommonState {
 	riskDataBankFlat: RiskBankFlat[]
 	riskDataBankSelected: RiskBank | null
 	supportData: {
-		isFetchingSupportData: boolean;
-		deviationItems: Deviations[] | null;
-		safeguardItems : Safeguard[] | null,
-	},
+		isFetchingSupportData: boolean
+		deviationItems: Deviations[] | null
+		safeguardItems: Safeguard[] | null
+	}
 	actions: {
 		fetchAllData(): Promise<ResponseApiType<RiskBank[]>>
 		fetchAllSupportData(): Promise<{
-			deviation: Deviations[] | null,
-			safeguard : Safeguard[] | null
+			deviation: Deviations[] | null
+			safeguard: Safeguard[] | null
 		}>
-		fetchSingleData?(id : any): Promise<ResponseApiType<RiskBank>>
+		fetchSingleData?(id: any): Promise<ResponseApiType<RiskBank>>
 		createData?(payload: any): Promise<ResponseApiType<RiskBank>>
-		updateData?(id: any, paylaod: any): Promise<ResponseApiType<RiskBank>>
+		updateData?(id: any, payload: RiskBankSchemaForm): Promise<ResponseApiType<RiskBank>>
 		deleteData?(id: any): Promise<ResponseApiType<any>>
 		setPagination?: (updater: Updater<PaginationState>) => void
 	}
 }
+
+export type RiskBankSchemaForm = z.infer<typeof RiskBankSchema>

@@ -3,15 +3,14 @@ import {
 	deleteData,
 	getDataApi,
 	postData,
-	putData,
-	ResponseApiType,
+	ResponseApiType
 } from "@/helpers/ApiHelper"
+import { toast } from "@/hooks/use-toast"
+import { NodeSchema } from "@/schemas/NodeSchema"
 import { commonInitualState } from "@/types/common"
 import { Node, NodeState } from "@/types/node"
-import { NodeSchema } from "@/schemas/NodeSchema"
-import { createStore, runUpdater } from "./store"
 import { z } from "zod"
-import { toast } from "@/hooks/use-toast"
+import { createStore, runUpdater } from "./store"
 
 const initialState = {
 	...commonInitualState,
@@ -85,7 +84,7 @@ const useNodeStore = createStore<NodeState>("node-data", (set, get) => ({
 				isSubmit: true,
 			})
 			return new Promise<ResponseApiType<Node>>((resolve, reject) => {
-				putData<Node>(`${NODE_EP}/${id}`, payload)
+				postData<Node>(`${NODE_EP}/${id}`, payload)
 					.then((data) => {
 						set((state) => {
 							return {

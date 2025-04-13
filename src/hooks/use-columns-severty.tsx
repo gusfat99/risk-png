@@ -102,7 +102,7 @@ export const useColumnsRiskAnalyst = ({
 				accessorFn: (row) => row.id,
 
 				header: () => {
-					return <div className="flex justify-start">Action</div>
+					return <div className="flex justify-center">Action</div>
 				},
 				cell: ({ row }) => (
 					<TableRowActions

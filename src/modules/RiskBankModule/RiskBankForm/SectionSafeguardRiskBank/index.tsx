@@ -80,7 +80,7 @@ const SectionSafeguardRiskBank: React.FC<IProps> = ({
 			if (safeguardSelected) {
 				form.setValue(
 					`consequences.${idxConsequence}.safeguards.${idxsafeguard}.safeguard`,
-					value
+					value?.toString()
 				)
 				form.setValue(
 					`consequences.${idxConsequence}.safeguards.${idxsafeguard}.safeguard_title`,
@@ -95,6 +95,7 @@ const SectionSafeguardRiskBank: React.FC<IProps> = ({
 			form.setValue(name, value)
 		}
 	}
+	console.log({values : form.getValues('consequences')})
 
 	return (
 		<div className="border rounded-lg border-gray-200 p-3">
@@ -190,31 +191,13 @@ const SectionSafeguardRiskBank: React.FC<IProps> = ({
 														/>
 													)}
 												/>
-												{/* <FormField
-													control={form.control}
-													name={`consequences.${idxConsequence}.safeguards.${idxsafeguard}.safeguard`}
-													render={({ field }) => (
-														<InputController
-															{...field}
-															readOnly={isDetail}
-															label="Safeguard Name"
-															placeholder="Enter Safeguard"
-															onChange={(e) => {
-																form.setValue(
-																	`consequences.${idxConsequence}.safeguards.${idxsafeguard}.safeguard`,
-																	e.target
-																		.value
-																)
-															}}
-														/>
-													)}
-												/> */}
+											
 												<FormField
 													control={form.control}
 													name={`consequences.${idxConsequence}.safeguards.${idxsafeguard}.safeguard_title`}
 													render={({ field }) => (
 														<InputController
-															{...field}
+															defaultValue={field.value}
 															readOnly={isDetail}
 															label="Safeguard Doucument Title"
 															placeholder="Enter Safeguard Document Title"

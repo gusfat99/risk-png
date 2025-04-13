@@ -8,7 +8,7 @@ interface IProps extends ButtonProps {
 
 const RemoveButton: React.FC<IProps> = ({ size = "sm", ...rest }) => {
 	return (
-		<Button size={size} type="button" variant={"destructive"} {...rest}>
+		<Button size={size} type="button" variant={"ghost"} {...rest}>
 			<Trash2 />
 		</Button>
 	)

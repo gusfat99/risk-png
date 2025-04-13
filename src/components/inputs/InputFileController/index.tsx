@@ -5,6 +5,7 @@ import {
 	FormMessage,
 } from "@/components/ui/form"
 import { Input, InputProps } from "@/components/ui/input"
+import { API_URL } from "@/constants"
 import { useToast } from "@/hooks/use-toast"
 import { cn, shortenFileName } from "@/lib/utils"
 import { MimeTypes } from "@/types/common"
@@ -44,7 +45,8 @@ const InputFileContoller: React.FC<IProps> = ({
 	const allowMimeTypes =
 		fileValidations?.allowMimeTypes || defaultAllowMimeTypes
 	const maxSizeMb = fileValidations?.maxSizeMb || 10 //default set 10 MB
-
+	console.log({ existingFile })
+	
 	const handleFileChange = (file: File, cb: (file: File) => void) => {
 		if (file) {
 			// Validasi file
@@ -151,7 +153,7 @@ const InputFileContoller: React.FC<IProps> = ({
 										}
 									)}
 								>
-									{existingFile ? "Update " : "Choose "} File
+									{existingFile && typeof existingFile === "string" ? "Update " : "Choose "} File
 									<Input
 										type="file"
 										className="hidden"
@@ -187,7 +189,7 @@ const InputFileContoller: React.FC<IProps> = ({
 						</div>
 						<div>
 							{/* Existing file preview */}
-							{existingFile && (
+							{existingFile && typeof existingFile === "string" && (
 								<div className="mb-2">
 									{sizeInput === "md" && (
 										<p className="text-sm text-gray-600">
@@ -195,15 +197,15 @@ const InputFileContoller: React.FC<IProps> = ({
 										</p>
 									)}
 									<a
-										href={existingFile}
+										href={API_URL+"/storage/safeguards/"+existingFile}
 										target="_blank"
 										rel="noopener noreferrer"
 										className="text-blue-600 hover:underline text-sm"
 									>
 										{shortenFileName(
 											existingFile
-												.split("/")
-												.pop()
+												?.split("/")
+												?.pop()
 												?.split("_")
 												?.join(" ") || ""
 										)}

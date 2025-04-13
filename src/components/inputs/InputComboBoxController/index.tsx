@@ -67,7 +67,7 @@ const InputComboboxController = React.forwardRef<
 		ref
 	) => {
 		const [mode, setMode] = useState<"text" | "select">(defaultMode)
-		
+		console.log({fieldVlaue : field.value,  items : selectConfig?.items})
 		return (
 			<FormItem className="w-full">
 				<FormLabel className={cn("tracking-wider", labelClassName)}>
@@ -115,11 +115,11 @@ const InputComboboxController = React.forwardRef<
 				{mode === "select" && (
 					<FormControl>
 						<Select
-							defaultValue={value}
+							defaultValue={field.value}
 							onValueChange={(val) =>
 								val && handleChange(val as any, field.name)
 							}
-							value={value}
+							value={field.value}
 							disabled={disabled}
 							name={field.name}
 							// {...restProps}
