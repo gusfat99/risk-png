@@ -90,7 +90,7 @@ const LikelyhoodFrequencyTable: React.FC<LikelyhoodFrequencyTableProps> = ({
 								<TableCell
 									className={cn("border-2 text-center")}
 								>
-									{row.id}
+									{key+1}
 								</TableCell>
 								<TableCell
 									className={cn(

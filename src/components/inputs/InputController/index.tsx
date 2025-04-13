@@ -65,7 +65,7 @@ const InputController = React.forwardRef<
 								onChange={restProps.onChange}
 								type={type ?? "text"}
 								placeholder={placeholder}
-								className={cn({
+								className={cn("h-10",{
 									"pr-10": secure,
 								})}
 							/>

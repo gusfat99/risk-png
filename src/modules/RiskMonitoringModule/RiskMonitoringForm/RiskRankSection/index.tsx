@@ -1,6 +1,6 @@
-import InputController from "@/components/inputs/InputController"
+import InputSelectController from "@/components/inputs/InputSelectController"
 import { FormField } from "@/components/ui/form"
-import { useDebounce } from "@/hooks/use-debounce"
+import useSettingMatrixStore from "@/store/settingMatrixStore"
 import { RiskMonitoringSchemaForm } from "@/types/riskMonitoring"
 import React from "react"
 import { UseFormReturn } from "react-hook-form"
@@ -15,41 +15,39 @@ type fieldInputType = {
 	label: string
 	field: keyof RiskMonitoringSchemaForm
 	group: number
+	col_id?:any
 }
 
 const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
+	const {  severity_map_options } = useSettingMatrixStore()
+	
 	const fieldsInput: fieldInputType[] = [
 		{
 			label: "Severity to Personnel (SP)",
 			field: "sp_affected",
+			col_id: 1,
 			group: 1,
 		},
 
 		{
 			label: "Severity to Finance (SF)",
 			field: "sf_affected",
+			col_id: 2,
 			group: 1,
 		},
 		{
 			label: "Severity to Asset (SA)",
 			field: "sa_affected",
+			col_id: 3,
 			group: 1,
 		},
 		{
 			label: "Severity to Environment (SE)",
 			field: "se_affected",
+			col_id: 4,
 			group: 2,
 		},
-		{
-			label: "Severity to Reputation & Legal (SRL)",
-			field: "srl_affected",
-			group: 2,
-		},
-		{
-			label: "Severity to Public Notification (SPN)",
-			field: "spn_affected",
-			group: 2,
-		},
+		
 	]
 
 	const valuesRank = [
@@ -60,9 +58,7 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 		Number(form.watch("srl_affected")),
 	]
 
-	const handleChange = useDebounce((value: any, name: any) => {
-		form.setValue(name, value)
-	})
+
 
 	return (
 		<div className="border-2 border-gray-200  rounded-lg p-4 space-y-4">
@@ -79,20 +75,18 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 								control={form.control}
 								name={fieldInput.field}
 								render={({ field }) => (
-									<InputController
-									
-										defaultValue={field.value}
-										type="number"
+									<InputSelectController
+										field={field}
+										items={severity_map_options.filter(x => x.saverity_row_id?.toString() === fieldInput.col_id?.toString() )}
 										disabled={isDetail}
 										label={fieldInput.label}
 										placeholder={
 											"Enter " + fieldInput.label
 										}
-										onChange={(e) => {
-											const value = e.target.value
-											handleChange(
-												value,
-												fieldInput.field
+										onChange={(value) => {
+											form.setValue(
+												fieldInput.field,
+												value
 											)
 										}}
 									/>
@@ -109,19 +103,18 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 								control={form.control}
 								name={fieldInput.field}
 								render={({ field }) => (
-									<InputController
-										defaultValue={field.value}
-										type="number"
+									<InputSelectController
+										field={field}
+										items={severity_map_options.filter(x => x.saverity_row_id?.toString() === fieldInput.col_id?.toString() )}
 										disabled={isDetail}
 										label={fieldInput.label}
 										placeholder={
 											"Enter " + fieldInput.label
 										}
-										onChange={(e) => {
-											const value = e.target.value
-											handleChange(
-												value,
-												fieldInput.field
+										onChange={(value) => {
+											form.setValue(
+												fieldInput.field,
+												value
 											)
 										}}
 									/>

@@ -33,6 +33,7 @@ const RiskAnalystForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 		actions: { updateData, createData },
 	} = useRiskAnalysStore()
 
+
 	const { toast } = useToast()
 	const route = useRouter()
 	const params = useParams<{ id: any }>()

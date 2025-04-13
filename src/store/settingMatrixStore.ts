@@ -138,7 +138,7 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 								data.data?.column || []
 							).map((column) => ({
 								label: `(${column.id}) ${column.frequency_name}`,
-								value: column.id,
+								value: column.id?.toString(),
 							}))
 
 							set((prevState) => ({
@@ -179,7 +179,8 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 								data.data || []
 							).map((cell) => ({
 								label: `(${cell.column_value}) ${cell.column_deviation}: ${cell.severity_map_value}`,
-								value: cell.column_value,
+								value: cell.column_value?.toString(),
+								saverity_row_id : cell.row_value
 							}))
 
 							set((prevState) => ({
