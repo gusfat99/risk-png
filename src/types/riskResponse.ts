@@ -13,8 +13,6 @@ import { Cause, Consequences, Deviations } from "./riskDataBank"
 
 export type RiskResponse = {
 	id: number
-	risk_analyst_id: number
-	risk_analyst: RiskAnalystResponse
 	sp_expected: number
 	se_expected: number
 	sf_expected: number
@@ -23,7 +21,25 @@ export type RiskResponse = {
 	spn_expected: number
 	l_frequency_expected: number
 	risk_ranking_expected: number
-	hazop_status: HazopStatus
+	hazop_status: HazopStatus[]
+	node_id: number
+	deviation_id: number
+	risk_bank_id: number
+	consequence_id: number
+	existing_safeguard: Array<string>
+	sp_current: number
+	se_current: number
+	sf_current: number
+	srl_current: number
+	sa_current: number
+	spn_current: number
+	l_frequency_current: number
+	risk_ranking_current: number
+	remark_analyst: string
+	deviations: Deviations
+	causes: Cause
+	consequence: Consequences
+	tahun : string
 }
 
 export type Hazop = {
@@ -60,7 +76,7 @@ export type RiskAnalystResponse = {
 	remark_analyst: string
 	deviations: Deviations
 	causes: Cause
-	consequences: Consequences
+	consequence: Consequences
 }
 
 export interface RiskResponseState extends CommonState {
@@ -79,7 +95,7 @@ export interface RiskResponseState extends CommonState {
 	actions: {
 		fetchAllData(
 			nodeId: any
-		): Promise<ResponseApiType<{ risk_response: RiskResponse[] }>>
+		): Promise<ResponseApiType<{ risk_items: RiskResponse[] }>>
 		fetchSingleData?(id: any): Promise<ResponseApiType<RiskResponse>>
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>
 		fetchHazopByRiskAnalyst?(

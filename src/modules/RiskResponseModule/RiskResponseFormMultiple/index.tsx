@@ -70,7 +70,7 @@ const RiskResponseFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 					sa_expected: item.sa_expected,
 					spn_expected: item.spn_expected,
 					l_frequency_expected: item.l_frequency_expected,
-					risk_analyst_id: item.risk_analyst.id.toString(),
+					risk_analyst_id: item.id.toString(),
 				})),
 			}
 		}, [riskResponseItems])
@@ -92,12 +92,12 @@ const RiskResponseFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 				fetchHazopByRiskAnalyst &&
 					fetchHazopByRiskAnalyst(
 						nodeSelected?.id,
-						row.risk_analyst_id
+						row.id
 					)
 				setHazopOpen((prev) => ({
 					...prev,
 					hazop_id: row.id,
-					risk_analyst_id: row.risk_analyst.id,
+					risk_analyst_id: row.id,
 					open: true,
 				}))
 			}
@@ -105,7 +105,7 @@ const RiskResponseFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 				setHazopStatus &&
 					setHazopStatus({
 						nodeId: nodeSelected?.id,
-						riskId: row.risk_analyst_id,
+						riskId: row.id,
 						status: value2,
 					})
 			}

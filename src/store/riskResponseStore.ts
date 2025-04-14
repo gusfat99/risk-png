@@ -50,11 +50,11 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 				})
 				return new Promise<
 					ResponseApiType<{
-						risk_response: RiskResponse[]
+						risk_items: RiskResponse[]
 					}>
 				>((resolve, reject) => {
 					getDataApi<{
-						risk_response: RiskResponse[]
+						risk_items: RiskResponse[]
 					}>(`${RISK_RESPONSE_EP}/${nodeId}`, {
 						page: get().pagination_tanstack.pageIndex,
 						per_page: get().pagination_tanstack.pageSize,
@@ -63,7 +63,7 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 							if (data.data) {
 								set({
 									riskResponseItems:
-										data.data.risk_response || [],
+										data.data.risk_items || [],
 									meta: data?.meta,
 								})
 								resolve(data)
@@ -376,18 +376,18 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 								const hazopItemsSelected =
 									riskResponseItems.findIndex(
 										(item) =>
-											item.risk_analyst_id?.toString() === data.data?.risk_analyst_id?.toString() &&
-											item.risk_analyst.node_id?.toString() === nodeId.toString()
+											item.id?.toString() === data.data?.risk_analyst_id?.toString() &&
+											item.node_id?.toString() === nodeId.toString()
 									)
 								if (hazopItemsSelected > -1) {
 									riskResponseItems[
 										hazopItemsSelected
-									].hazop_status.hazop_completed =
+									].hazop_status[0].hazop_completed =
 										data.data.hazop_completed
 
 									riskResponseItems[
 										hazopItemsSelected
-									].hazop_status.date_finished =
+									].hazop_status[0].date_finished =
 										data.data.date_finished
 
 									set({

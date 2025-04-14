@@ -55,18 +55,26 @@ const CellInput = ({ row, form, name }: { row: any; form: any; name: any }) => {
 	const debouncedUpdate = useDebounce((key: any, value: any) => {
 		form.setValue(key, value)
 	})
-	const fieldSeverity = fieldsInputSeverity.find(field => name.includes(field.name_code));
+	const fieldSeverity = fieldsInputSeverity.find((field) =>
+		name.includes(field.name_code)
+	)
 	let items = severity_map_options
 	if (fieldSeverity) {
-		items = items.filter(item => item.saverity_row_id?.toString() === fieldSeverity.col_id?.toString()).map(x => ({
-			...x,
-			value : parseInt(x.value)
-		}))
+		items = items
+			.filter(
+				(item) =>
+					item.saverity_row_id?.toString() ===
+					fieldSeverity.col_id?.toString()
+			)
+			.map((x) => ({
+				...x,
+				value: parseInt(x.value),
+			}))
 	}
 	if (name.includes("l_frequency")) {
-		items = likelyhood_options.map(x => ({
+		items = likelyhood_options.map((x) => ({
 			...x,
-			value : parseInt(x.value)
+			value: parseInt(x.value),
 		}))
 	}
 
@@ -191,7 +199,6 @@ export const useColumnsRiskAnalyst = ({
 			{
 				id: "sp_current_risk_analyst_id",
 				accessorFn: (row) => row.id,
-				size: 180,
 				enableSorting: false,
 				header: ({ column }) => {
 					return (
@@ -490,7 +497,7 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "deviation",
-				accessorFn: (row) => row.risk_analyst.deviations.name ?? "",
+				accessorFn: (row) => row.deviations.name ?? "",
 
 				header: ({ column }) => {
 					return (
@@ -506,7 +513,7 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "cause",
-				accessorFn: (row) => `${row.risk_analyst.causes.cause}`,
+				accessorFn: (row) => `${row.causes.cause}`,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader column={column} title="Cause" />
@@ -518,7 +525,7 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "consequence",
-				accessorFn: (row) => row.risk_analyst.consequences.consequence,
+				accessorFn: (row) => row.consequence.consequence,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -536,7 +543,7 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "existing_safeguard",
-				accessorFn: (row) => row.risk_analyst.existing_safeguard,
+				accessorFn: (row) => row.existing_safeguard,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -546,12 +553,12 @@ export const useColumnsRiskResponse = ({
 					)
 				},
 				cell: ({ row }) => (
-					<div>{row.getValue("existing_safeguard")}</div>
+					<div>{row.original.existing_safeguard.join(", ")}</div>
 				),
 			},
 			{
 				id: "sp_current",
-				accessorFn: (row) => row.risk_analyst.sp_current,
+				accessorFn: (row) => row.sp_current,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -560,6 +567,7 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
+				enableSorting: false,
 				meta: {
 					className: "text-center",
 				},
@@ -574,7 +582,7 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "se_current",
-				accessorFn: (row) => row.risk_analyst.se_current,
+				accessorFn: (row) => row.se_current,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -599,7 +607,7 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "sf_current",
-				accessorFn: (row) => row.risk_analyst.sf_current,
+				accessorFn: (row) => row.sf_current,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -623,7 +631,7 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "srl_current",
-				accessorFn: (row) => row.risk_analyst.srl_current,
+				accessorFn: (row) => row.srl_current,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -633,6 +641,9 @@ export const useColumnsRiskResponse = ({
 							}
 						/>
 					)
+				},
+				meta: {
+					className: "text-center",
 				},
 				size: 180,
 				enableSorting: false,
@@ -646,7 +657,7 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "sa_current",
-				accessorFn: (row) => row.risk_analyst.sa_current,
+				accessorFn: (row) => row.sa_current,
 				size: 180,
 				enableSorting: false,
 				header: ({ column }) => {
@@ -671,7 +682,7 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "spn_current",
-				accessorFn: (row) => row.risk_analyst.spn_current,
+				accessorFn: (row) => row.spn_current,
 				size: 180,
 				enableSorting: false,
 				header: ({ column }) => {
@@ -684,6 +695,9 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
+				meta: {
+					className: "text-center",
+				},
 				cell: ({ row }) => {
 					return (
 						<div className="text-center">
@@ -694,7 +708,7 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "l_frequency_current",
-				accessorFn: (row) => row.risk_analyst.l_frequency_current,
+				accessorFn: (row) => row.l_frequency_current,
 				size: 180,
 				enableSorting: false,
 				header: ({ column }) => {
@@ -720,7 +734,7 @@ export const useColumnsRiskResponse = ({
 				id: "risk_ranking_current",
 				size: 180,
 				enableSorting: false,
-				accessorFn: (row) => row.risk_analyst.risk_ranking_current,
+				accessorFn: (row) => row.risk_ranking_current,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -728,6 +742,9 @@ export const useColumnsRiskResponse = ({
 							title={"Rank Risk (RR) Current"}
 						/>
 					)
+				},
+				meta: {
+					className: "text-center",
 				},
 				cell: ({ row }) => {
 					return (
@@ -845,6 +862,9 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
+				meta: {
+					className: "text-center",
+				},
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
@@ -895,6 +915,9 @@ export const useColumnsRiskResponse = ({
 							}
 						/>
 					)
+				},
+				meta: {
+					className: "text-center",
 				},
 				cell: ({ row }) => {
 					return (
@@ -959,13 +982,16 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "hazop_status",
-				accessorFn: (row) => row.hazop_status.hazop_completed,
+				accessorFn: (row) => row.hazop_status,
 				size: 120,
 				enableSorting: false,
+				meta: {
+					className: "text-center",
+				},
 				header: "Hazop Status",
 				cell: ({ row }) => {
 					let hazop_status =
-						row.original.hazop_status.hazop_completed.toLowerCase()
+						row.original.hazop_status[0].hazop_completed.toLowerCase()
 					hazop_status =
 						hazopStatus.find((x) => x.value === hazop_status)
 							?.label || "-"
@@ -1023,7 +1049,7 @@ export const useColumnsRiskResponse = ({
 			{
 				id: "date_finished",
 				enableSorting: false,
-				accessorFn: (row) => row.hazop_status.date_finished,
+				accessorFn: (row) => row.hazop_status[0].date_finished,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -1046,7 +1072,7 @@ export const useColumnsRiskResponse = ({
 			{
 				id: "remark_analyst",
 				enableSorting: false,
-				accessorFn: (row) => row.risk_analyst.remark_analyst,
+				accessorFn: (row) => row.remark_analyst,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
