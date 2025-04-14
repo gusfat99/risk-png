@@ -104,7 +104,7 @@ const RiskAnalystFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 		onAction: handleAction,
 		form,
 	})
-
+	
 	return (
 		<Form {...form}>
 			<form

@@ -4,7 +4,7 @@ import { FormField } from "@/components/ui/form"
 import useSettingMatrixStore from "@/store/settingMatrixStore"
 import { RiskAnalysisForm } from "@/types/riksAnalyst"
 import { Separator } from "@radix-ui/react-select"
-import React, { useMemo } from "react"
+import React from "react"
 import { UseFormReturn } from "react-hook-form"
 
 interface IProps {
@@ -20,48 +20,48 @@ type fieldInputType = {
 	col_id?: any
 }
 
+const fieldsInput: fieldInputType[] = [
+	{
+		label: "Severity to Personnel (SP)",
+		field: "sp_current",
+		col_id: 1,
+		group: 1,
+	},
+
+	{
+		label: "Severity to Finance (SF)",
+		field: "sf_current",
+		col_id: 2,
+		group: 1,
+	},
+	{
+		label: "Severity to Asset (SA)",
+		field: "sa_current",
+		col_id: 3,
+		group: 1,
+	},
+	{
+		label: "Severity to Environment (SE)",
+		field: "se_current",
+		col_id: 4,
+		group: 2,
+	},
+	{
+		label: "Severity to Reputation & Legal (SRL)",
+		field: "srl_current",
+		col_id: 5,
+		group: 2,
+	},
+	{
+		label: "Severity to Public Notification (SPN)",
+		field: "spn_current",
+		col_id: 6,
+		group: 2,
+	},
+]
+
 const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 	const { likelyhood_options, severity_map_options } = useSettingMatrixStore()
-
-	const fieldsInput: fieldInputType[] = [
-		{
-			label: "Severity to Personnel (SP)",
-			field: "sp_current",
-			col_id: 1,
-			group: 1,
-		},
-
-		{
-			label: "Severity to Finance (SF)",
-			field: "sf_current",
-			col_id: 2,
-			group: 1,
-		},
-		{
-			label: "Severity to Asset (SA)",
-			field: "sa_current",
-			col_id: 3,
-			group: 1,
-		},
-		{
-			label: "Severity to Environment (SE)",
-			field: "se_current",
-			col_id: 4,
-			group: 2,
-		},
-		{
-			label: "Severity to Reputation & Legal (SRL)",
-			field: "srl_current",
-			col_id: 5,
-			group: 2,
-		},
-		{
-			label: "Severity to Public Notification (SPN)",
-			field: "spn_current",
-			col_id: 6,
-			group: 2,
-		},
-	]
 
 	const valuesRank = [
 		Number(form.watch("sa_current")),
@@ -72,19 +72,15 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 		Number(form.watch("l_frequency_current")),
 	]
 
-	const riskRankValue = useMemo(() => {
-		// Konversi semua nilai ke number
-		const valuesRankCopy = [...valuesRank]
-		valuesRankCopy.splice(valuesRank.length - 1, 1) //remove l_frequency_current
+	// Konversi semua nilai ke number
+	const valuesRankCopy = [...valuesRank]
+	valuesRankCopy.splice(valuesRank.length - 1, 1) //remove l_frequency_current
 
-		// Cari nilai tertinggi
-		const maxValue = Math.max(...valuesRankCopy)
-		// Kalikan dengan l_frequency_current
-		const riskRankValue =
-			maxValue * Number(form.getValues("l_frequency_current"))
-		// form.setValue('risk_rank', riskRankValue?.toString());
-		return riskRankValue
-	}, [form])
+	// Cari nilai tertinggi
+	const maxValue = Math.max(...valuesRankCopy)
+	// Kalikan dengan l_frequency_current
+	const riskRankValue =
+		maxValue * Number(form.getValues("l_frequency_current"))
 
 	return (
 		<div className="border-2 border-gray-200  rounded-lg p-4 space-y-4">
@@ -103,7 +99,11 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 								render={({ field }) => (
 									<InputSelectController
 										field={field}
-										items={severity_map_options.filter(x => x.saverity_row_id?.toString() === fieldInput.col_id?.toString() )}
+										items={severity_map_options.filter(
+											(x) =>
+												x.saverity_row_id?.toString() ===
+												fieldInput.col_id?.toString()
+										)}
 										disabled={isDetail}
 										label={fieldInput.label}
 										placeholder={
@@ -131,7 +131,11 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 								render={({ field }) => (
 									<InputSelectController
 										field={field}
-										items={severity_map_options.filter(x => x.saverity_row_id?.toString() === fieldInput.col_id?.toString() )}
+										items={severity_map_options.filter(
+											(x) =>
+												x.saverity_row_id?.toString() ===
+												fieldInput.col_id?.toString()
+										)}
 										disabled={isDetail}
 										label={fieldInput.label}
 										placeholder={
@@ -176,11 +180,10 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 				<FormField
 					key={"risk"}
 					control={form.control}
-					
 					name={"risk_rank"}
 					render={({ field }) => (
 						<InputController
-							{...field}
+							value={riskRankValue}
 							label="Risk Rank"
 							readOnly
 							placeholder={"Risk Rank"}

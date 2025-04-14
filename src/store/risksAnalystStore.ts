@@ -311,13 +311,13 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 				set({
 					isSubmit: true,
 				})
-				return new Promise<ResponseApiType<RiskAnalysis>>(
+				return new Promise<ResponseApiType<{risk_analyst : RiskAnalysis}>>(
 					(resolve, reject) => {
 						const formData = new FormData()
 						Object.entries(payload).forEach(([key, value]) => {
 							formData.append(key, value)
 						})
-						postData<RiskAnalysis>(
+						postData<{risk_analyst : RiskAnalysis}>(
 							RISK_ANALYST_EP + "/" + nodeId,
 							payload,
 							{
@@ -331,7 +331,7 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 									return {
 										riskAnalysItems: [
 											...state.riskAnalysItems,
-											...(data.data ? [data.data] : []),
+											...(data.data ? [data.data.risk_analyst] : []),
 										],
 									}
 								})
@@ -348,13 +348,13 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 					}
 				)
 			},
-			updateData: async (id: any, nodeId : any, payload: File) => {
+			updateData: async (id: any, nodeId : any, payload: any) => {
 				set({
 					isSubmit: true,
 				})
-				return new Promise<ResponseApiType<RiskAnalysis>>(
+				return new Promise<ResponseApiType<{risk_analyst : RiskAnalysis}>>(
 					(resolve, reject) => {
-						postData<RiskAnalysis>(
+						postData<{risk_analyst : RiskAnalysis}>(
 							`${RISK_ANALYST_EP}/${nodeId}/update/${id}`,
 							payload,
 							{
@@ -368,7 +368,7 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 									return {
 										riskAnalysItems: [
 											...state.riskAnalysItems,
-											...(data.data ? [data.data] : []),
+											...(data.data ? [data.data.risk_analyst] : []),
 										],
 									}
 								})

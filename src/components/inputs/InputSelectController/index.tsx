@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils"
 import { Skeleton } from "@/components/ui/skeleton"
 
 interface FormSelectInputProps extends SelectProps {
-	label: string
+	label?: string
 	description?: string
 	labelClassName?: string
 	placeholder: string
@@ -51,10 +51,12 @@ function InputSelectController(props: FormSelectInputProps) {
 
 	return (
 		<FormItem>
-			<FormLabel className={cn("tracking-wider", labelClassName)}>
-				{label}{" "}
-				{isRequired && <span className="text-destructive">*</span>}
-			</FormLabel>
+			{label && (
+				<FormLabel className={cn("tracking-wider", labelClassName)}>
+					{label}{" "}
+					{isRequired && <span className="text-destructive">*</span>}
+				</FormLabel>
+			)}
 			{loading && <Skeleton className="h-10 w-full" />}
 			{!loading && (
 				<>

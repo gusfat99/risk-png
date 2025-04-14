@@ -217,43 +217,7 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 				return new Promise<ResponseApiType<RiskBank>>(
 					async (resolve, reject) => {
 						try {
-							// const consequences = payload.consequences
-							// let i = 0
-							// for (const consequence of consequences) {
-							// 	const safeguards = consequence.safeguards || []
-							// 	let j = 0
-							// 	for (const safeguard of safeguards) {
-							// 		if (
-							// 			typeof safeguard.file_path ===
-							// 				"string" &&
-							// 			safeguard.file_path
-							// 		) {
-							// 			const file = await fetchFileViaProxy(
-							// 				`${API_URL}/storage/safeguards/${safeguard.file_path}`,
-							// 				safeguard.file_path
-							// 			)
-							// 			if (file) {
-							// 				const safeguards =
-							// 					payload.consequences[i]
-							// 						.safeguards || []
-							// 				if (safeguards.length > 0) {
-							// 					safeguards[j].file_path = file
-							// 				}
-							// 			} else {
-							// 				throw new Error(
-							// 					"Failed to fetch file"
-							// 				)
-							// 			}
-							// 		} else {
-							// 			continue
-							// 		}
-							// 		j++
-							// 	}
-							// 	i++
-							// }
-
 							const formData = parseRiskBankToPayload(payload)
-							// console.log({ payload, formData })
 
 							const result = await postData<RiskBank>(
 								`${RISK_BANK_EP}/${id}`,

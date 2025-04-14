@@ -67,7 +67,6 @@ const InputComboboxController = React.forwardRef<
 		ref
 	) => {
 		const [mode, setMode] = useState<"text" | "select">(defaultMode)
-		console.log({fieldVlaue : field.value,  items : selectConfig?.items})
 		return (
 			<FormItem className="w-full">
 				<FormLabel className={cn("tracking-wider", labelClassName)}>

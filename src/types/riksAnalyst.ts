@@ -29,7 +29,7 @@ export type RiskAnalysis = {
 	id: number
 	nodes: Node
 	deviations: Deviations
-	consequence: Consequences
+	consequence: Consequences | null
 	causes: Cause
 }
 
@@ -69,12 +69,12 @@ export interface RiskAnalystState extends CommonState {
 		createData?(
 			payload: RiskAnalysisForm,
 			nodeId: any
-		): Promise<ResponseApiType<RiskAnalysis>>
+		): Promise<ResponseApiType<{risk_analyst : RiskAnalysis}>>
 		updateData?(
 			id: any,
 			nodeId: any,
 			paylaod: any
-		): Promise<ResponseApiType<RiskAnalysis>>
+		): Promise<ResponseApiType<{risk_analyst :RiskAnalysis}>>
 		updateSavertyMultiple?(
 			nodeId : any,
 			payload: RiskAnalysisSevertyMultipleForm

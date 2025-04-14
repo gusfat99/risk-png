@@ -45,7 +45,6 @@ const InputFileContoller: React.FC<IProps> = ({
 	const allowMimeTypes =
 		fileValidations?.allowMimeTypes || defaultAllowMimeTypes
 	const maxSizeMb = fileValidations?.maxSizeMb || 10 //default set 10 MB
-	console.log({ existingFile })
 	
 	const handleFileChange = (file: File, cb: (file: File) => void) => {
 		if (file) {

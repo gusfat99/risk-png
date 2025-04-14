@@ -1,18 +1,20 @@
 import DataTableColumnHeader from "@/components/DataTable/DataTableColumnHeader"
 import InputController from "@/components/inputs/InputController"
+import InputSelectController from "@/components/inputs/InputSelectController"
 import TableRowActions from "@/components/TableRowActions"
 import { Button } from "@/components/ui/button"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuLabel,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { FormField } from "@/components/ui/form"
 import { hazopStatus } from "@/data/enumetions"
+import { fieldsInputSeverity } from "@/data/severity"
 import { useDebounce } from "@/hooks/use-debounce"
 import { cn } from "@/lib/utils"
+import useSettingMatrixStore from "@/store/settingMatrixStore"
 import {
 	RiskAnalysis,
 	RiskAnalysisSevertyMultipleForm,
@@ -48,24 +50,40 @@ interface UseColumnsRiskResponseProps extends UseColumnsProps {
 
 const CellInput = ({ row, form, name }: { row: any; form: any; name: any }) => {
 	const rowId = row.index
+	const { likelyhood_options, severity_map_options } = useSettingMatrixStore()
 
 	const debouncedUpdate = useDebounce((key: any, value: any) => {
 		form.setValue(key, value)
 	})
+	const fieldSeverity = fieldsInputSeverity.find(field => name.includes(field.name_code));
+	let items = severity_map_options
+	if (fieldSeverity) {
+		items = items.filter(item => item.saverity_row_id?.toString() === fieldSeverity.col_id?.toString()).map(x => ({
+			...x,
+			value : parseInt(x.value)
+		}))
+	}
+	if (name.includes("l_frequency")) {
+		items = likelyhood_options.map(x => ({
+			...x,
+			value : parseInt(x.value)
+		}))
+	}
 
 	return (
 		<FormField
 			control={form.control}
 			name={`risks.${rowId}.${name}`}
 			render={({ field }) => (
-				<InputController
+				<InputSelectController
+					field={field}
 					defaultValue={field.value}
-					type="number"
-					placeholder="Enter SP"
-					onChange={(e) => {
+					placeholder="Select SP"
+					items={items}
+					onChange={(value) => {
 						debouncedUpdate(
 							`risks.${rowId}.${name}`,
-							parseInt(e.target.value) as any
+							parseInt(value) as any
 						)
 					}}
 				/>
@@ -137,7 +155,7 @@ export const useColumnsRiskAnalyst = ({
 			},
 			{
 				id: "consequence",
-				accessorFn: (row) => row.consequence.consequence,
+				accessorFn: (row) => row.consequence?.consequence || "",
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -183,8 +201,8 @@ export const useColumnsRiskAnalyst = ({
 						/>
 					)
 				},
-				meta : {
-					className : "text-center"
+				meta: {
+					className: "text-center",
 				},
 				cell: ({ row }) => {
 					return (
@@ -222,8 +240,8 @@ export const useColumnsRiskAnalyst = ({
 						/>
 					)
 				},
-				meta : {
-					className : "text-center"
+				meta: {
+					className: "text-center",
 				},
 				size: 180,
 				enableSorting: false,
@@ -248,8 +266,8 @@ export const useColumnsRiskAnalyst = ({
 						/>
 					)
 				},
-				meta : {
-					className : "text-center"
+				meta: {
+					className: "text-center",
 				},
 				size: 180,
 				enableSorting: false,
@@ -274,8 +292,8 @@ export const useColumnsRiskAnalyst = ({
 						/>
 					)
 				},
-				meta : {
-					className : "text-center"
+				meta: {
+					className: "text-center",
 				},
 				cell: ({ row }) => {
 					return (
@@ -300,8 +318,8 @@ export const useColumnsRiskAnalyst = ({
 						/>
 					)
 				},
-				meta : {
-					className : "text-center"
+				meta: {
+					className: "text-center",
 				},
 				size: 180,
 				enableSorting: false,
@@ -326,8 +344,8 @@ export const useColumnsRiskAnalyst = ({
 						/>
 					)
 				},
-				meta : {
-					className : "text-center"
+				meta: {
+					className: "text-center",
 				},
 				size: 180,
 				enableSorting: false,
@@ -348,12 +366,12 @@ export const useColumnsRiskAnalyst = ({
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Likelihood Frequency Kejadian (L)"}
+							title={"Likelyhood Frequency Kejadian (L)"}
 						/>
 					)
 				},
-				meta : {
-					className : "text-center"
+				meta: {
+					className: "text-center",
 				},
 				size: 180,
 				enableSorting: false,
@@ -378,13 +396,13 @@ export const useColumnsRiskAnalyst = ({
 						/>
 					)
 				},
-				meta : {
-					className : "text-center"
+				meta: {
+					className: "text-center",
 				},
 				size: 120,
 				enableSorting: false,
 				cell: ({ row }) => {
-					const severty = form.watch("risks") [row.index]
+					const severty = form.watch("risks")[row.index]
 					const severties = [
 						severty["sa_current"],
 						severty["sp_current"],
@@ -542,8 +560,8 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
-				meta : {
-					className : "text-center"
+				meta: {
+					className: "text-center",
 				},
 				cell: ({ row }) => {
 					return (
@@ -565,8 +583,8 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
-				meta : {
-					className : "text-center"
+				meta: {
+					className: "text-center",
 				},
 				size: 180,
 				enableSorting: false,
@@ -590,8 +608,8 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
-				meta : {
-					className : "text-center"
+				meta: {
+					className: "text-center",
 				},
 				size: 180,
 				enableSorting: false,
@@ -639,8 +657,8 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
-				meta : {
-					className : "text-center"
+				meta: {
+					className: "text-center",
 				},
 				cell: ({ row }) => {
 					return (
@@ -687,8 +705,8 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
-				meta : {
-					className : "text-center"
+				meta: {
+					className: "text-center",
 				},
 				cell: ({ row }) => {
 					return (
@@ -732,8 +750,8 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
-				meta : {
-					className : "text-center"
+				meta: {
+					className: "text-center",
 				},
 				cell: ({ row }) => {
 					return (
@@ -773,8 +791,8 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
-				meta : {
-					className : "text-center"
+				meta: {
+					className: "text-center",
 				},
 				cell: ({ row }) => {
 					return (
@@ -799,8 +817,8 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
-				meta : {
-					className : "text-center"
+				meta: {
+					className: "text-center",
 				},
 				cell: ({ row }) => {
 					return (
@@ -850,8 +868,8 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
-				meta : {
-					className : "text-center"
+				meta: {
+					className: "text-center",
 				},
 				cell: ({ row }) => {
 					return (
@@ -901,8 +919,8 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
-				meta : {
-					className : "text-center"
+				meta: {
+					className: "text-center",
 				},
 				cell: ({ row }) => {
 					return (
@@ -927,8 +945,8 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
-				meta : {
-					className : "text-center"
+				meta: {
+					className: "text-center",
 				},
 				cell: ({ row }) => {
 					return (
@@ -1172,8 +1190,8 @@ export const useColumnsMonitoring = ({
 						/>
 					)
 				},
-				meta : {
-					className : "text-center"
+				meta: {
+					className: "text-center",
 				},
 				// meta: {
 				// 	className : "max-w-[130px]",
@@ -1219,8 +1237,8 @@ export const useColumnsMonitoring = ({
 						/>
 					)
 				},
-				meta : {
-					className : "text-center"
+				meta: {
+					className: "text-center",
 				},
 				size: 180,
 				cell: ({ row }) => {
@@ -1245,8 +1263,8 @@ export const useColumnsMonitoring = ({
 						/>
 					)
 				},
-				meta : {
-					className : "text-center"
+				meta: {
+					className: "text-center",
 				},
 				size: 180,
 				cell: ({ row }) => {
@@ -1296,8 +1314,8 @@ export const useColumnsMonitoring = ({
 						/>
 					)
 				},
-				meta : {
-					className : "text-center"
+				meta: {
+					className: "text-center",
 				},
 				size: 180,
 				cell: ({ row }) => {

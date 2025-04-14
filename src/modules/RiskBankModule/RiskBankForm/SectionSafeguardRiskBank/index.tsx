@@ -95,7 +95,6 @@ const SectionSafeguardRiskBank: React.FC<IProps> = ({
 			form.setValue(name, value)
 		}
 	}
-	console.log({values : form.getValues('consequences')})
 
 	return (
 		<div className="border rounded-lg border-gray-200 p-3">

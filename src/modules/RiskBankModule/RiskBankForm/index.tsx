@@ -41,12 +41,10 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 
 	const handleSubmit = async (values: RiskBankSchemaForm) => {
 		try {
-			console.log("submited")
 			if (createData && !params?.id && !isEdit) {
-				console.log("emg created ?");
 				const formDataPayload = parseRiskBankToPayload(values)
 				const result = await createData(formDataPayload)
-				
+
 				if (result) {
 					toast({
 						title: result.message ?? "",
@@ -58,7 +56,6 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 					throw new Error("Failed")
 				}
 			} else if (updateData && params.id && isEdit) {
-				console.log(" udpated ?");
 				// const formDataPayload = parseRiskBankToPayload(values)
 				const result = await updateData(params?.id, values)
 
@@ -102,7 +99,6 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 				  }
 				: { ...initialRiskBank },
 	})
-
 
 	const consequences = form.watch("consequences")
 	const fieldArrayConsequences = useFieldArray({
