@@ -9,21 +9,25 @@ import { useEffect } from "react"
 import {
 	useColumnsReportRiskBySeverity,
 } from "./columns"
+import { SelectDataType } from "@/types/common"
 
 const RiskReportSeverityModule = () => {
 	const pathname = usePathname()
 	const {
 		nodeSelected,
 		isFetching,
+		isFetchingSeverity,
 		actions: {
 			setNodeSelected,
 			fetchNodeData,
 			fetchAllData,
 			setHazopByRiskAnalyst,
 			setPagination,
+			fetchSeverity
 		},
 		pagination_tanstack,
 		riskResponseItems,
+		severityItems,
 		supportData: {
 			node: { isFetching: isFetchingNode, nodeItems },
 		},
@@ -44,6 +48,9 @@ const RiskReportSeverityModule = () => {
 		if (nodeItems.length === 0) {
 			fetchNodeData()
 		}
+		if (severityItems?.length === 0) {
+			fetchSeverity()
+		}
 		if (nodeSelected?.id) {
 			fetchAllData(nodeSelected.id)
 		}
@@ -53,10 +60,16 @@ const RiskReportSeverityModule = () => {
 	}, [
 		fetchNodeData,
 		fetchAllData,
+		fetchSeverity,
 		setHazopByRiskAnalyst,
 		nodeSelected?.id,
 		nodeItems.length,
 	])
+
+	const severityOptions : SelectDataType[] = (severityItems || []).map(x => ({
+		label: x.label,
+		value : x.key
+	}))
 
 	const { column } = useColumnsReportRiskBySeverity({
 		onAction: () => {},
@@ -86,7 +99,7 @@ const RiskReportSeverityModule = () => {
 						<InputSelect
 							label="Show Severity Column"
 							placeholder="Select Severity Column"
-							items={nodeOptions}
+							items={severityOptions}
 							loading={isFetchingNode}
 							className="w-full"
 							value={nodeSelected?.id?.toString() ?? ""}

@@ -10,6 +10,7 @@ import { z } from "zod"
 import { CommonState } from "./common"
 import { Node } from "./node"
 import { Cause, Consequences, Deviations } from "./riskDataBank"
+import { Severity } from "./severity"
 
 export type RiskResponse = {
 	id: number
@@ -21,7 +22,8 @@ export type RiskResponse = {
 	spn_expected: number
 	l_frequency_expected: number
 	risk_ranking_expected: number
-	hazop_status: HazopStatus[]
+	date_finished: string
+	hazop_completed : "pending" | "in_progress" | "done"
 	node_id: number
 	deviation_id: number
 	risk_bank_id: number
@@ -52,7 +54,7 @@ export type Hazop = {
 
 export type HazopStatus = {
 	risk_analyst_id: number
-	hazop_completed: string
+	hazop_completed: HazopStatusValue
 	date_finished: string | null
 }
 
@@ -84,7 +86,9 @@ export interface RiskResponseState extends CommonState {
 	riskResponseSelected: RiskResponse | null
 	nodeSelected: Node | null
 	hazopItemsSelected: Hazop[] | null
+	severityItems : Severity[] | null
 	isFetchingHazopItems: boolean
+	isFetchingSeverity: boolean
 	supportData: {
 		node: {
 			nodeItems: Node[]
@@ -98,7 +102,7 @@ export interface RiskResponseState extends CommonState {
 		): Promise<ResponseApiType<{ risk_items: RiskResponse[] }>>
 		fetchSingleData?(id: any): Promise<ResponseApiType<RiskResponse>>
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>
-		fetchSeverity(): Promise<ResponseApiType<Node[]>>
+		fetchSeverity(): Promise<ResponseApiType<Severity[]>>
 		fetchHazopByRiskAnalyst?(
 			nodeId: any,
 			riskAnalystId: any

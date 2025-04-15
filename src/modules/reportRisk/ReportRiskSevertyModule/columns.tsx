@@ -455,7 +455,7 @@ export const useColumnsReportRiskBySeverity = ({
 			},
 			{
 				id: "hazop_status",
-				accessorFn: (row) => row.hazop_status,
+				accessorFn: (row) => row.hazop_completed,
 				size: 120,
 				enableSorting: false,
 				meta: {
@@ -464,7 +464,7 @@ export const useColumnsReportRiskBySeverity = ({
 				header: "Hazop Status",
 				cell: ({ row }) => {
 					let hazop_status =
-						row.original.hazop_status[0].hazop_completed.toLowerCase()
+						row.original.hazop_completed.toLowerCase()
 					hazop_status =
 						hazopStatus.find((x) => x.value === hazop_status)
 							?.label || "-"
@@ -490,7 +490,7 @@ export const useColumnsReportRiskBySeverity = ({
 			{
 				id: "date_finished",
 				enableSorting: false,
-				accessorFn: (row) => row.hazop_status[0].date_finished,
+				accessorFn: (row) => row.date_finished,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader

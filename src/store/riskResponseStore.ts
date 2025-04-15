@@ -3,6 +3,7 @@ import {
 	NODE_EP,
 	RISK_ANALYST_EP,
 	RISK_RESPONSE_EP,
+	SEVERITY_EP,
 } from "@/constants/endpoints"
 import {
 	deleteData,
@@ -22,14 +23,17 @@ import {
 	RiskResponseState,
 } from "@/types/riskResponse"
 import { createStore, runUpdater } from "./store"
+import { Severity } from "@/types/severity"
 
 const initialState = {
 	...commonInitualState,
+	severityItems: [],
 	riskResponseItems: [],
 	riskResponseSelected: null,
 	nodeSelected: null,
 	hazopItemsSelected: null,
 	isFetchingHazopItems: false,
+	isFetchingSeverity: false,
 	supportData: {
 		node: {
 			isFetching: false,
@@ -237,6 +241,36 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 					}
 				)
 			},
+			fetchSeverity: async () => {
+				set({
+					isFetchingSeverity: true,
+				})
+				return new Promise<ResponseApiType<Severity[]>>(
+					(resolve, reject) => {
+						getDataApi<Severity[]>(`${SEVERITY_EP}`)
+							.then(async (data) => {
+								if (Array.isArray(data.data)) {
+									set({
+										isFetchingSeverity: false,
+										severityItems: data.data,
+									})
+								}
+							})
+							.catch((err) => {
+								toast({
+									title: "ERROR",
+									description: err.message,
+									variant: "destructive",
+								})
+								set({
+									isFetchingSeverity: false,
+									severityItems: [],
+								})
+								reject(err)
+							})
+					}
+				)
+			},
 			setHazopByRiskAnalyst: (data: Hazop[] | null) => {
 				set({
 					hazopItemsSelected: data,
@@ -376,19 +410,21 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 								const hazopItemsSelected =
 									riskResponseItems.findIndex(
 										(item) =>
-											item.id?.toString() === data.data?.risk_analyst_id?.toString() &&
-											item.node_id?.toString() === nodeId.toString()
+											item.id?.toString() ===
+												data.data?.risk_analyst_id?.toString() &&
+											item.node_id?.toString() ===
+												nodeId.toString()
 									)
 								if (hazopItemsSelected > -1) {
 									riskResponseItems[
 										hazopItemsSelected
-									].hazop_status[0].hazop_completed =
+									].hazop_completed =
 										data.data.hazop_completed
 
 									riskResponseItems[
 										hazopItemsSelected
-									].hazop_status[0].date_finished =
-										data.data.date_finished
+									].date_finished =
+										data.data.date_finished ?? ""
 
 									set({
 										riskResponseItems: riskResponseItems,
