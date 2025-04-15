@@ -32,19 +32,19 @@ import { format } from "date-fns"
 import React, { useMemo } from "react"
 import { UseFormReturn } from "react-hook-form"
 
-interface UseColumnsProps {
+export interface UseColumnsProps {
 	onAction?: (actionName: string, value: any, value2?: any) => void
 }
 
-interface UseColumnsRiskAnalystProps extends UseColumnsProps {
+export interface UseColumnsRiskAnalystProps extends UseColumnsProps {
 	form: UseFormReturn<RiskAnalysisSevertyMultipleForm>
 }
 
-interface UseColumnsRiskMonitoringProps extends UseColumnsProps {
+export interface UseColumnsRiskMonitoringProps extends UseColumnsProps {
 	form: UseFormReturn<RiskMonitoringSevertyMultipleForm>
 }
 
-interface UseColumnsRiskResponseProps extends UseColumnsProps {
+export interface UseColumnsRiskResponseProps extends UseColumnsProps {
 	form: UseFormReturn<RiskResponseSevertyExpectMultipleSchemaForm>
 }
 
@@ -525,7 +525,7 @@ export const useColumnsRiskResponse = ({
 			},
 			{
 				id: "consequence",
-				accessorFn: (row) => row.consequence.consequence,
+				accessorFn: (row) => row.consequence?.consequence || "",
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader

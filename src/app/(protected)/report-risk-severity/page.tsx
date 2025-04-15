@@ -1,8 +1,9 @@
+import ReportRiskSeverityModule from '@/modules/reportRisk/ReportRiskSevertyModule'
 import React from 'react'
 
 const Page = () => {
   return (
-    <div>Page</div>
+    <ReportRiskSeverityModule/>
   )
 }
 

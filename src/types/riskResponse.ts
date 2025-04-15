@@ -38,7 +38,7 @@ export type RiskResponse = {
 	remark_analyst: string
 	deviations: Deviations
 	causes: Cause
-	consequence: Consequences
+	consequence: Consequences | null
 	tahun : string
 }
 
@@ -98,6 +98,7 @@ export interface RiskResponseState extends CommonState {
 		): Promise<ResponseApiType<{ risk_items: RiskResponse[] }>>
 		fetchSingleData?(id: any): Promise<ResponseApiType<RiskResponse>>
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>
+		fetchSeverity(): Promise<ResponseApiType<Node[]>>
 		fetchHazopByRiskAnalyst?(
 			nodeId: any,
 			riskAnalystId: any

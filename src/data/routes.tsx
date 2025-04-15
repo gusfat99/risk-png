@@ -67,6 +67,10 @@ const routes: {
 					title: "Report Risk By Severity",
 					url: "/report-risk-severity",
 				},
+				{
+					title: "Report Risk Monitoring",
+					url: "/report-risk-monitoring",
+				},
 			],
 		},
 		{
