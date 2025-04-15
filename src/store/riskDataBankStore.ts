@@ -19,8 +19,7 @@ import {
 } from "@/types/riskDataBank"
 import { Safeguard } from "@/types/safeguard"
 import { createStore, runUpdater } from "./store"
-import fetchFileViaProxy from "@/services/fetchFileAsFile"
-import { API_URL } from "@/constants"
+import useAuthStore from "./authStore"
 
 const initialState = {
 	...commonInitualState,
@@ -34,12 +33,14 @@ const initialState = {
 	riskDataBankSelected: null,
 }
 
+
 const useRiskDataBankStore = createStore<RiskDataBankState>(
 	"risk-data-bank",
 	(set, get) => ({
 		...initialState,
 		actions: {
 			fetchAllData: async () => {
+				const  year_selected  = useAuthStore.getState().year_selected
 				set({
 					isFetching: true,
 				})
@@ -48,6 +49,7 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 						getDataApi<RiskBank[]>(RISK_BANK_EP, {
 							page: get().pagination_tanstack.pageIndex,
 							per_page: get().pagination_tanstack.pageSize,
+							year : year_selected
 						})
 							.then((data) => {
 								//parse data to flat
@@ -255,17 +257,17 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 				return new Promise<ResponseApiType<null>>((resolve, reject) => {
 					deleteData<null>(RISK_BANK_EP + "/" + id)
 						.then((data) => {
-							const filterData = get().riskDataBankItems.filter(
-								(x) => x.id?.toString() !== id.toString()
-							)
-							const filterDataFlat =
-								get().riskDataBankFlat.filter(
-									(x) => x.id?.toString() !== id.toString()
-								)
-							set({
-								riskDataBankItems: filterData,
-								riskDataBankFlat: filterDataFlat,
-							})
+							// const filterData = get().riskDataBankItems.filter(
+							// 	(x) => x.id?.toString() !== id.toString()
+							// )
+							// const filterDataFlat =
+							// 	get().riskDataBankFlat.filter(
+							// 		(x) => x.id?.toString() !== id.toString()
+							// 	)
+							// set({
+							// 	riskDataBankItems: filterData,
+							// 	riskDataBankFlat: filterDataFlat,
+							// })
 							resolve(data)
 						})
 						.catch((err) => {

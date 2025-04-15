@@ -65,6 +65,7 @@ const RiskBankModule = () => {
 						title: result.message,
 						variant: "success",
 					})
+					fetchAllData();
 				})
 		}
 	}

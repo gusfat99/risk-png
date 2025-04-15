@@ -19,6 +19,7 @@ import {
 	SeverityMap,
 } from "@/types/settingMatrix"
 import { createStore } from "./store"
+import useAuthStore from "./authStore"
 
 const initialState = {
 	...commonInitualState,
@@ -40,6 +41,7 @@ const initialState = {
 	isProcessAddRowLikelyhood: false,
 }
 
+const year_selected = useAuthStore.getState().year_selected
 const useSettingMatrixStore = createStore<SettingMatrixState>(
 	"setting-matrix",
 	(set, get) => ({
@@ -54,7 +56,12 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 				}))
 				return new Promise<ResponseApiType<LikelyhoodFrequency>>(
 					(resolve, reject) => {
-						getDataApi<LikelyhoodFrequency>(LIKELYHOOD_FREQUENCY_EP)
+						getDataApi<LikelyhoodFrequency>(
+							LIKELYHOOD_FREQUENCY_EP,
+							{
+								year: year_selected,
+							}
+						)
 							.then((data) => {
 								if (
 									data &&
@@ -99,7 +106,9 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 								isFetching: true,
 							},
 						}))
-						getDataApi<SeverityMap[]>(SEVERITY_MAP_EP)
+						getDataApi<SeverityMap[]>(SEVERITY_MAP_EP, {
+							year : year_selected
+						})
 							.then((data) => {
 								if (Array.isArray(data.data)) {
 									set(() => ({
@@ -139,7 +148,9 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 								isFetching: true,
 							},
 						}))
-						getDataApi<RiskMap[]>(RISK_MAP_EP)
+						getDataApi<RiskMap[]>(RISK_MAP_EP, {
+							year : year_selected
+						})
 							.then((data) => {
 								if (Array.isArray(data.data)) {
 									set(() => ({

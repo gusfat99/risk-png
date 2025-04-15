@@ -22,6 +22,7 @@ import {
 	RiskMonitoringState,
 } from "@/types/riskMonitoring"
 import { createStore, runUpdater } from "./store"
+import useAuthStore from "./authStore"
 
 const initialState = {
 	...commonInitualState,
@@ -49,6 +50,7 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 		...initialState,
 		actions: {
 			fetchAllData: async () => {
+				const  year_selected  = useAuthStore.getState().year_selected
 				set({
 					isFetching: true,
 				})
@@ -57,6 +59,7 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 						getDataApi<RiskMonitoring[]>(`${RISK_MONITROING_EP}`, {
 							page: get().pagination_tanstack.pageIndex,
 							per_page: get().pagination_tanstack.pageSize,
+							year : year_selected
 						})
 							.then((data) => {
 								if (data.data && Array.isArray(data.data)) {

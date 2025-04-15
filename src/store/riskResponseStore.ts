@@ -24,6 +24,7 @@ import {
 } from "@/types/riskResponse"
 import { createStore, runUpdater } from "./store"
 import { Severity } from "@/types/severity"
+import useAuthStore from "./authStore"
 
 const initialState = {
 	...commonInitualState,
@@ -49,6 +50,7 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 		...initialState,
 		actions: {
 			fetchAllData: async (nodeId: any) => {
+				const  year_selected  = useAuthStore.getState().year_selected
 				set({
 					isFetching: true,
 				})
@@ -62,6 +64,7 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 					}>(`${RISK_RESPONSE_EP}/${nodeId}`, {
 						page: get().pagination_tanstack.pageIndex,
 						per_page: get().pagination_tanstack.pageSize,
+						year : year_selected
 					})
 						.then((data) => {
 							if (data.data) {

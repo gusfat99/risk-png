@@ -191,37 +191,36 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 							key={idxConsequence}
 							className="flex flex-row gap-4 items-end"
 						>
-							<div className="w-full" >
-
-							<FormField
-								control={form.control}
-								name={`consequences.${idxConsequence}.id`}
-								render={({ field }) => (
-									<InputController
-										{...field}
-										type="hidden"
-										placeholder="Enter Consequence"
-									/>
-								)}
-							/>
-							<FormField
-								control={form.control}
-								name={`consequences.${idxConsequence}.consequence`}
-								render={({ field }) => (
-									<InputController
-										{...field}
-										readOnly={isDetail}
-										label="Consequence"
-										placeholder="Enter Consequence"
-										onChange={(e) => {
-											form.setValue(
-												`consequences.${idxConsequence}.consequence`,
-												e.target.value
-											)
-										}}
-									/>
-								)}
-							/>
+							<div className="w-full">
+								<FormField
+									control={form.control}
+									name={`consequences.${idxConsequence}.id`}
+									render={({ field }) => (
+										<InputController
+											{...field}
+											type="hidden"
+											placeholder="Enter Consequence"
+										/>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name={`consequences.${idxConsequence}.consequence`}
+									render={({ field }) => (
+										<InputController
+											{...field}
+											readOnly={isDetail}
+											label="Consequence"
+											placeholder="Enter Consequence"
+											onChange={(e) => {
+												form.setValue(
+													`consequences.${idxConsequence}.consequence`,
+													e.target.value
+												)
+											}}
+										/>
+									)}
+								/>
 							</div>
 							{!isDetail && (
 								<RemoveButton
