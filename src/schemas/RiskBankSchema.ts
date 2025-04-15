@@ -10,8 +10,9 @@ export const   RiskBankSchema = z.object({
 		message: "Cause is required",
 	}).min(1, { message: "Cause is required",}),
 	consequences: z
-		.array(
-			z.object({
+	.array(
+		z.object({
+				id: z.string().optional(), //only for edit
 				consequence: z.string({
 					message: "Consequence is required",
 				}).min(1, { message: "Consequence is required",}),

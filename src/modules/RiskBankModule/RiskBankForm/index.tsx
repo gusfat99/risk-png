@@ -96,6 +96,12 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 							parseRiskBanktoView(riskDataBankSelected)
 								.deviation_id
 						),
+						consequences: parseRiskBanktoView(
+							riskDataBankSelected
+						).consequences.map((consequence) => ({
+							...consequence,
+							id: String(consequence.id),
+						})),
 				  }
 				: { ...initialRiskBank },
 	})
@@ -185,6 +191,19 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 							key={idxConsequence}
 							className="flex flex-row gap-4 items-end"
 						>
+							<div className="w-full" >
+
+							<FormField
+								control={form.control}
+								name={`consequences.${idxConsequence}.id`}
+								render={({ field }) => (
+									<InputController
+										{...field}
+										type="hidden"
+										placeholder="Enter Consequence"
+									/>
+								)}
+							/>
 							<FormField
 								control={form.control}
 								name={`consequences.${idxConsequence}.consequence`}
@@ -203,6 +222,7 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 									/>
 								)}
 							/>
+							</div>
 							{!isDetail && (
 								<RemoveButton
 									disabled={consequences.length <= 1}
