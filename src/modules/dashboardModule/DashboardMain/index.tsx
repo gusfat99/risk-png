@@ -1,15 +1,20 @@
 "use client"
 import DashboardChartDonutCard from "@/components/cards/DashboardChartDonutCard"
-import DashboardRiskCard, {
-	DashboardRiskCardProps,
-} from "@/components/cards/DashboardRiskCard"
-import { DashbaordRiskMatrixCard } from "@/components/cards/DashboardRiskMatrixCard"
-import PieChartDonut from "@/components/charts/PieChartDonutExample"
-import { cn } from "@/lib/utils"
+import DashboardRiskCard from "@/components/cards/DashboardRiskCard"
+import DashboardRiskMatrixCard from "@/components/cards/DashboardRiskMatrixCard"
+import { cn, groupBy } from "@/lib/utils"
+import useSettingMatrixStore from "@/store/settingMatrixStore"
 import { CopyCheck, LineChart, SquareKanbanIcon } from "lucide-react"
-import React from "react"
+import { useEffect } from "react"
 
 const DashboardMain = () => {
+	const {
+		severity_map,
+		likelyhood_frequency,
+		risk_map,
+		actions: { fetchRiskMap },
+	} = useSettingMatrixStore()
+
 	const itemsCounting = [
 		{
 			label: "Risk Data Bank",
@@ -57,6 +62,12 @@ const DashboardMain = () => {
 		},
 	]
 
+	const severityMapGrouped = groupBy(severity_map.item || [], "column_value")
+
+	useEffect(() => {
+		fetchRiskMap()
+	}, [fetchRiskMap])
+
 	return (
 		<div className="max-w-full mt-4 space-y-4">
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -85,7 +96,12 @@ const DashboardMain = () => {
 					<DashboardChartDonutCard title="SAFEGUARDS" />
 				</div>
 				<div className="col-span-2">
-					<DashbaordRiskMatrixCard />
+					<DashboardRiskMatrixCard
+						likelyhoodFrequencyItems={likelyhood_frequency.item}
+						severityMapGrouped={severityMapGrouped}
+						loading={risk_map.isFetching}
+						riskMapItems={risk_map.item || []}
+					/>
 				</div>
 			</div>
 		</div>

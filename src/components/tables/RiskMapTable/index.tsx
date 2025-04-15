@@ -90,7 +90,8 @@ const RiskMapTable: React.FC<RiskMapTableProps> = ({
 								</TableCell>
 								<TableCell
 									className={cn(
-										"border-2 text-center  hover:bg-muted"
+										"border-2 text-center  hover:bg-muted",
+										
 									)}
 								>
 									{frequency.frequency_name}
@@ -112,7 +113,12 @@ const RiskMapTable: React.FC<RiskMapTableProps> = ({
 												keyDeviation
 											}
 											className={cn(
-												`border-2 text-center hover:bg-muted  hover:cursor-pointer`
+												`border-2 text-center hover:bg-muted`,
+												{
+													"hover:cursor-pointer": onClick
+														? true
+														: false,
+												}
 											)}
 											style={{
 												backgroundColor:
