@@ -11,6 +11,7 @@ import { useMemo } from "react"
 export const usColumnsReportRiskBySeverity = ({
 	onAction,
 }: UseColumnsProps) => {
+	
 	const column: ColumnDef<RiskResponse>[] = useMemo(() => {
 		const cols: ColumnDef<RiskResponse>[] = [
 			{
