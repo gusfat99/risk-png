@@ -1,7 +1,9 @@
 import {
 	CAUSE_EP,
+	DETAIL_REPORT_RISK_MONITROING_EP,
 	DEVIATION_EP,
 	NODE_EP,
+	REPORT_RISK_MONITROING_EP,
 	RISK_ANALYST_EP,
 	RISK_MONITROING_EP,
 } from "@/constants/endpoints"
@@ -17,6 +19,8 @@ import { commonInitualState } from "@/types/common"
 import { Node } from "@/types/node"
 import { Cause, Deviations } from "@/types/riskDataBank"
 import {
+	DetailReportRiskMonitoring,
+	ReportRiskMonitoring,
 	RiskMonitoring,
 	RiskMonitoringSchemaForm,
 	RiskMonitoringState,
@@ -28,7 +32,10 @@ const initialState = {
 	...commonInitualState,
 	riskMonitoringItems: [],
 	riskMonitoringSelected: null,
-	nodeSelected : null,
+	isFetchingReport: false,
+	reportRiskMonitoring: [],
+	reportRiskMonitoringDetail: [],
+	nodeSelected: null,
 	supportData: {
 		node: {
 			isFetching: false,
@@ -51,7 +58,7 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 		...initialState,
 		actions: {
 			fetchAllData: async () => {
-				const  year_selected  = useAuthStore.getState().year_selected
+				const year_selected = useAuthStore.getState().year_selected
 				set({
 					isFetching: true,
 				})
@@ -61,7 +68,7 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 							page: get().pagination_tanstack.pageIndex,
 							per_page: get().pagination_tanstack.pageSize,
 							year: year_selected,
-							node_id : get().nodeSelected?.id || undefined
+							node_id: get().nodeSelected?.id || undefined,
 						})
 							.then((data) => {
 								if (data.data && Array.isArray(data.data)) {
@@ -93,6 +100,97 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 					}
 				)
 			},
+			fetchReportRiskMonitoringData: async () => {
+				const year_selected = useAuthStore.getState().year_selected
+				set({
+					isFetchingReport: true,
+				})
+				return new Promise<ResponseApiType<ReportRiskMonitoring[]>>(
+					(resolve, reject) => {
+						getDataApi<ReportRiskMonitoring[]>(
+							`${REPORT_RISK_MONITROING_EP}`,
+							{
+								page: get().pagination_tanstack.pageIndex,
+								per_page: get().pagination_tanstack.pageSize,
+								year: year_selected,
+							}
+						)
+							.then((data) => {
+								if (data.data && Array.isArray(data.data)) {
+									set({
+										reportRiskMonitoring: data.data || [],
+										meta: data?.meta,
+									})
+								} else {
+									set({
+										reportRiskMonitoring: [],
+										meta: data?.meta,
+									})
+								}
+								resolve(data)
+							})
+							.catch((err) => {
+								toast({
+									title: "ERROR",
+									description: err.message,
+									variant: "destructive",
+								})
+								reject(err)
+							})
+							.finally(() => {
+								set({
+									isFetchingReport: false,
+								})
+							})
+					}
+				)
+			},
+			fetchDetailReportRiskMonitoring: async () => {
+				const year_selected = useAuthStore.getState().year_selected
+				set({
+					isFetchingReport: true,
+				})
+				return new Promise<
+					ResponseApiType<DetailReportRiskMonitoring[]>
+				>((resolve, reject) => {
+					getDataApi<DetailReportRiskMonitoring[]>(
+						`${DETAIL_REPORT_RISK_MONITROING_EP}`,
+						{
+							page: get().pagination_tanstack.pageIndex,
+							per_page: get().pagination_tanstack.pageSize,
+							year: year_selected,
+						}
+					)
+						.then((data) => {
+							if (data.data && Array.isArray(data.data)) {
+								set({
+									reportRiskMonitoringDetail: data.data || [],
+									meta: data?.meta,
+								})
+							} else {
+								set({
+									reportRiskMonitoringDetail: [],
+									meta: data?.meta,
+								})
+							}
+							resolve(data)
+						})
+						.catch((err) => {
+							toast({
+								title: "ERROR",
+								description: err.message,
+								variant: "destructive",
+							})
+							reject(err)
+						})
+						.finally(() => {
+							set({
+								isFetchingReport: false,
+							})
+						})
+				})
+			},
+
 			fetchNodeData: async () => {
 				set((prev) => ({
 					supportData: {
@@ -472,7 +570,7 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 				}
 				//Get Consequence Data
 			},
-			setNodeSelected: (nodeId : any) => {
+			setNodeSelected: (nodeId: any) => {
 				const nodeItems = get().supportData.node.nodeItems
 				const nodeSelected = nodeItems.find(
 					(node) => node.id === nodeId
