@@ -8,10 +8,10 @@ import { ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
 import { useMemo } from "react"
 
-export const usColumnsReportRiskBySeverity = ({
+export const useColumnsReportRiskBySeverity = ({
 	onAction,
 }: UseColumnsProps) => {
-	
+
 	const column: ColumnDef<RiskResponse>[] = useMemo(() => {
 		const cols: ColumnDef<RiskResponse>[] = [
 			{

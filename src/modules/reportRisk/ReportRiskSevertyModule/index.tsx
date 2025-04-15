@@ -7,7 +7,7 @@ import { RiskResponse } from "@/types/riskResponse"
 import { usePathname } from "next/navigation"
 import { useEffect } from "react"
 import {
-	usColumnsReportRiskBySeverity,
+	useColumnsReportRiskBySeverity,
 } from "./columns"
 
 const RiskReportSeverityModule = () => {
@@ -58,7 +58,7 @@ const RiskReportSeverityModule = () => {
 		nodeItems.length,
 	])
 
-	const { column } = usColumnsReportRiskBySeverity({
+	const { column } = useColumnsReportRiskBySeverity({
 		onAction: () => {},
 	})
 
