@@ -28,6 +28,7 @@ export type RiskMonitoring = {
 export interface RiskMonitoringState extends CommonState {
 	riskMonitoringItems: RiskMonitoring[]
 	riskMonitoringSelected: RiskMonitoring | null
+	nodeSelected: Node | null
 	supportData: {
 		node: {
 			nodeItems: Node[]
@@ -60,6 +61,7 @@ export interface RiskMonitoringState extends CommonState {
 			name: keyof RiskMonitoringSchemaForm,
 			id: any
 		) => void
+		setNodeSelected: (nodeId: number) => void
 	}
 }
 

@@ -15,12 +15,12 @@ type fieldInputType = {
 	label: string
 	field: keyof RiskMonitoringSchemaForm
 	group: number
-	col_id?:any
+	col_id?: any
 }
 
 const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
-	const {  severity_map_options } = useSettingMatrixStore()
-	
+	const { severity_map_options } = useSettingMatrixStore()
+
 	const fieldsInput: fieldInputType[] = [
 		{
 			label: "Severity to Personnel (SP)",
@@ -47,7 +47,18 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 			col_id: 4,
 			group: 2,
 		},
-		
+		{
+			label: "Severity to Reputation & Legal (SRL)",
+			field: "srl_affected",
+			col_id: 5,
+			group: 2,
+		},
+		{
+			label: "Severity to Reputation & Legal (SPN)",
+			field: "spn_affected",
+			col_id: 5,
+			group: 2,
+		},
 	]
 
 	const valuesRank = [
@@ -56,9 +67,8 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 		Number(form.watch("spn_affected")),
 		Number(form.watch("sp_affected")),
 		Number(form.watch("srl_affected")),
+		Number(form.watch("spn_affected")),
 	]
-
-
 
 	return (
 		<div className="border-2 border-gray-200  rounded-lg p-4 space-y-4">
@@ -77,7 +87,11 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 								render={({ field }) => (
 									<InputSelectController
 										field={field}
-										items={severity_map_options.filter(x => x.saverity_row_id?.toString() === fieldInput.col_id?.toString() )}
+										items={severity_map_options.filter(
+											(x) =>
+												x.saverity_row_id?.toString() ===
+												fieldInput.col_id?.toString()
+										)}
 										disabled={isDetail}
 										label={fieldInput.label}
 										placeholder={
@@ -105,7 +119,11 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 								render={({ field }) => (
 									<InputSelectController
 										field={field}
-										items={severity_map_options.filter(x => x.saverity_row_id?.toString() === fieldInput.col_id?.toString() )}
+										items={severity_map_options.filter(
+											(x) =>
+												x.saverity_row_id?.toString() ===
+												fieldInput.col_id?.toString()
+										)}
 										disabled={isDetail}
 										label={fieldInput.label}
 										placeholder={

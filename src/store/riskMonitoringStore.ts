@@ -28,6 +28,7 @@ const initialState = {
 	...commonInitualState,
 	riskMonitoringItems: [],
 	riskMonitoringSelected: null,
+	nodeSelected : null,
 	supportData: {
 		node: {
 			isFetching: false,
@@ -59,7 +60,8 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 						getDataApi<RiskMonitoring[]>(`${RISK_MONITROING_EP}`, {
 							page: get().pagination_tanstack.pageIndex,
 							per_page: get().pagination_tanstack.pageSize,
-							year : year_selected
+							year: year_selected,
+							node_id : get().nodeSelected?.id || undefined
 						})
 							.then((data) => {
 								if (data.data && Array.isArray(data.data)) {
@@ -469,6 +471,17 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 						})
 				}
 				//Get Consequence Data
+			},
+			setNodeSelected: (nodeId : any) => {
+				const nodeItems = get().supportData.node.nodeItems
+				const nodeSelected = nodeItems.find(
+					(node) => node.id === nodeId
+				)
+				if (nodeSelected) {
+					set({
+						nodeSelected,
+					})
+				}
 			},
 		},
 	})

@@ -9,6 +9,7 @@ const RiskAnalystModule = () => {
 	const {
 		actions: { fetchNodeData, fetchAllData },
 		isFetching,
+		nodeSelected,
 		supportData: {
 			node: { nodeItems, isFetching: isFetchingNode },
 		},
@@ -27,7 +28,7 @@ const RiskAnalystModule = () => {
 		}
 		fetchAllData();
 		
-	}, [fetchNodeData, fetchAllData, nodeItems])
+	}, [fetchNodeData, fetchAllData, nodeItems.length, nodeSelected])
 
 	return (
 		<div className=" space-y-4">

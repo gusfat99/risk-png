@@ -2,6 +2,7 @@
 import AddButton from "@/components/buttons/AddButton"
 import DataTable from "@/components/DataTable"
 import InputSearch from "@/components/inputs/InputSearch"
+import InputSelect from "@/components/inputs/InputSelect"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import Spinner from "@/components/ui/spinner"
@@ -9,6 +10,7 @@ import { useColumnsMonitoring } from "@/hooks/use-columns-severty"
 import { useToast } from "@/hooks/use-toast"
 import { RiskMonitoringSeverityMultpleSchema } from "@/schemas/RiskMonitoringSchema"
 import useRiskMonitoringStore from "@/store/riskMonitoringStore"
+import { SelectDataType } from "@/types/common"
 import {
 	RiskMonitoring,
 	RiskMonitoringSevertyMultipleForm,
@@ -30,12 +32,16 @@ const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 	const router = useRouter()
 
 	const {
-		actions: { setPagination },
+		actions: { setPagination, setNodeSelected },
+		nodeSelected,
 		isFetching,
 		riskMonitoringItems,
 		meta,
 		isSubmit,
 		pagination_tanstack,
+		supportData: {
+			node: { nodeItems, isFetching: isFetchingNode },
+		},
 	} = useRiskMonitoringStore()
 	const total = meta?.total || 0
 
@@ -65,20 +71,22 @@ const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 		defaultValues: defaultValues,
 	})
 
-	const handleAction = useCallback((actionName: string, id: any) => {
-	
-		if (actionName === "update") {
-			router.push(basePathname + "/update/" + id)
-		} else if (actionName === "detail") {
-			router.push(basePathname + "/detail/" + id)
-		} else if (actionName === "delete") {
-			//
-			// setShownAlertDel({
-			// 	id,
-			// 	shown: true,
-			// })
-		}
-	}, [basePathname])
+	const handleAction = useCallback(
+		(actionName: string, id: any) => {
+			if (actionName === "update") {
+				router.push(basePathname + "/update/" + id)
+			} else if (actionName === "detail") {
+				router.push(basePathname + "/detail/" + id)
+			} else if (actionName === "delete") {
+				//
+				// setShownAlertDel({
+				// 	id,
+				// 	shown: true,
+				// })
+			}
+		},
+		[basePathname]
+	)
 
 	// const handleSubmit = async (values: RiskMonitoringSevertyMultipleForm) => {
 	// 	try {
@@ -116,6 +124,11 @@ const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 		form,
 	})
 
+	const nodeOptions: SelectDataType[] = nodeItems.map((node) => ({
+		label: node.node,
+		value: node.id?.toString(),
+	}))
+
 	return (
 		<Form {...form}>
 			<form
@@ -124,11 +137,16 @@ const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 			>
 				<div className="flex flex-row justify-between items-end">
 					<div className="flex flex-row gap-2 items-end">
-						<InputSearch
-							label="Filter Data"
-							isRequired={false}
-							placeholder="Search..."
-							// className="max-w-sm"
+						<InputSelect
+							label="Filter by Node"
+							placeholder="Select Node"
+							items={nodeOptions}
+							loading={isFetchingNode}
+							className="w-[264px]"
+							value={nodeSelected?.id?.toString() ?? ""}
+							onValueChange={(value) => {
+								setNodeSelected(parseInt(value))
+							}}
 						/>
 						<Link href={basePathname + "/add"}>
 							<AddButton label="Add Risk Incidence" />
