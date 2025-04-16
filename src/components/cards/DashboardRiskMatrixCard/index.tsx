@@ -1,6 +1,7 @@
 // import { RiskMatrixTable } from "@/components/tables/RiskMatrixTable"
 import RiskMapTable from "@/components/tables/RiskMapTable"
 import { Button } from "@/components/ui/button"
+import { HeatMap } from "@/types/dashboard"
 import {
 	LikelyhoodFrequency,
 	RiskMap,
@@ -14,7 +15,8 @@ interface DashboardRiskMatrixCardProps {
 	loading: boolean
 	severityMapGrouped: Record<any, SeverityMap[]>
 	likelyhoodFrequencyItems: LikelyhoodFrequency | null
-	onClickSetting? : () => void
+	onClickSetting?: () => void
+	heatmap: HeatMap[]
 }
 
 const DashboardRiskMatrixCard: React.FC<DashboardRiskMatrixCardProps> = ({
@@ -22,16 +24,22 @@ const DashboardRiskMatrixCard: React.FC<DashboardRiskMatrixCardProps> = ({
 	loading,
 	severityMapGrouped,
 	likelyhoodFrequencyItems,
-	onClickSetting
+	onClickSetting,
+	heatmap,
 }) => {
-	
 	return (
 		<div className="shadow-md p-3 rounded-lg space-y-4">
 			<div className="flex flex-row justify-between">
 				<div className="bg-primary-100 rounded-md p-2 text-center text-primary font-semibold max-w-[254px] w-full m-auto">
 					HEAT MAP
 				</div>
-				<Button variant={"ghost"} size={"sm"} onClick={() => {onClickSetting && onClickSetting()}} >
+				<Button
+					variant={"ghost"}
+					size={"sm"}
+					onClick={() => {
+						onClickSetting && onClickSetting()
+					}}
+				>
 					<Settings size={50} />
 				</Button>
 			</div>
@@ -40,6 +48,8 @@ const DashboardRiskMatrixCard: React.FC<DashboardRiskMatrixCardProps> = ({
 					data={riskMapItems}
 					columns={Object.entries(severityMapGrouped)}
 					rowsMain={likelyhoodFrequencyItems}
+					forDashboard={true}
+					heatmap={heatmap}
 				/>
 			)}
 		</div>

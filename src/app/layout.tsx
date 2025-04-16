@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Plus_Jakarta_Sans, Poppins } from "next/font/google"
 import "./globals.css"
 import { Suspense } from "react"
+import LoadingIndicator from "@/components/LoadingIndicator"
 
 const poppinsSans = Poppins({
 	variable: "--font-poppins-sans",
@@ -30,7 +31,7 @@ export default function RootLayout({
 			<body
 				className={`${poppinsSans.variable} ${plusJktSans.variable}  antialiased`}
 			>
-				<Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+				<Suspense fallback={<LoadingIndicator/>}>{children}</Suspense>
 				<Toaster />
 			</body>
 		</html>

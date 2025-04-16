@@ -8,6 +8,12 @@ export type Dashboard = {
 	total_safeguard: 13
 	amount_above_apetite: 3
 	implemented_safeguard: 2
+	heat_map: HeatMap[]
+}
+
+export type HeatMap = {
+	risk_ranking: number
+	total: number
 }
 
 export interface DashboardState extends CommonState {

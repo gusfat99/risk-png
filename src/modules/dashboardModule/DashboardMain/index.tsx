@@ -167,6 +167,7 @@ const DashboardMain = () => {
 						severityMapGrouped={severityMapGrouped}
 						loading={risk_map.isFetching}
 						riskMapItems={risk_map.item || []}
+						heatmap={dashboardItem?.heat_map || []}
 						onClickSetting={() => {
 							router.replace("/data-master-setting-matrix")
 						}}

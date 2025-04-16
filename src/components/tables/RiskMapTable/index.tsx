@@ -6,6 +6,7 @@ import {
 	TableRow,
 } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
+import { HeatMap } from "@/types/dashboard"
 import {
 	LikelyhoodFrequency,
 	MatrixSelectedRowCol,
@@ -20,6 +21,7 @@ interface RiskMapTableProps {
 	rowsMain: LikelyhoodFrequency
 	onClick?(data: MatrixSelectedRowCol): void
 	forDashboard?: boolean
+	heatmap?: HeatMap[]
 }
 
 const RiskMapTable: React.FC<RiskMapTableProps> = ({
@@ -27,6 +29,7 @@ const RiskMapTable: React.FC<RiskMapTableProps> = ({
 	rowsMain,
 	data,
 	forDashboard,
+	heatmap = [],
 	onClick,
 }) => {
 	return (
@@ -107,6 +110,11 @@ const RiskMapTable: React.FC<RiskMapTableProps> = ({
 												x.deviation?.toString() ===
 													col[0].column_value?.toString()
 										)
+										const matchingHeatMap = heatmap.find(
+											(x) =>
+												matchingCell?.value?.toString() ===
+												x.risk_ranking?.toString()
+										)
 
 										return (
 											<TableCell
@@ -122,6 +130,10 @@ const RiskMapTable: React.FC<RiskMapTableProps> = ({
 															onClick
 																? true
 																: false,
+														"p-2": forDashboard,
+														"p-4": !forDashboard,
+														relative: forDashboard,
+														// 'flex flex-col' : forDashboard
 													}
 												)}
 												style={{
@@ -147,7 +159,21 @@ const RiskMapTable: React.FC<RiskMapTableProps> = ({
 														})
 												}}
 											>
-												{matchingCell?.value || "-"}
+												{forDashboard && (
+													<>
+														<div className="text-2xl absolute inset-0 left-2 top-2 flex   font-semibold">
+															{matchingHeatMap?.total ||
+																0}
+														</div>
+														<div className="absolute bottom-1 right-4 text-xs font-semibold">
+															{
+																matchingCell?.value
+															}
+														</div>
+													</>
+												)}
+												{!forDashboard &&
+													matchingCell?.value}
 											</TableCell>
 										)
 									})}
