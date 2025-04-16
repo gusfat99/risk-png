@@ -18,3 +18,4 @@ export const PERSONAL_INFO_EP = "/setting-profil/personal-info";
 export const LIKELYHOOD_FREQUENCY_EP = "/setting-matrix/likelyhood-frequency";
 export const SEVERITY_MAP_EP = "/setting-matrix/severity-map";
 export const RISK_MAP_EP = "/setting-matrix/risk-map";
+export const EXPORT_MONITORING_EP = "/export-monitoring";

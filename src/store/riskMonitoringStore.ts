@@ -2,6 +2,7 @@ import {
 	CAUSE_EP,
 	DETAIL_REPORT_RISK_MONITROING_EP,
 	DEVIATION_EP,
+	EXPORT_MONITORING_EP,
 	NODE_EP,
 	REPORT_RISK_MONITROING_EP,
 	RISK_ANALYST_EP,
@@ -101,96 +102,6 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 					}
 				)
 			},
-			fetchReportRiskMonitoringData: async () => {
-				const year_selected = useAuthStore.getState().year_selected
-				set({
-					isFetchingReport: true,
-				})
-				return new Promise<ResponseApiType<ReportRiskMonitoring[]>>(
-					(resolve, reject) => {
-						getDataApi<ReportRiskMonitoring[]>(
-							`${REPORT_RISK_MONITROING_EP}`,
-							{
-								page: get().pagination_tanstack.pageIndex,
-								per_page: get().pagination_tanstack.pageSize,
-								year: year_selected,
-							}
-						)
-							.then((data) => {
-								if (data.data && Array.isArray(data.data)) {
-									set({
-										reportRiskMonitoring: data.data || [],
-										meta: data?.meta,
-									})
-								} else {
-									set({
-										reportRiskMonitoring: [],
-										meta: data?.meta,
-									})
-								}
-								resolve(data)
-							})
-							.catch((err) => {
-								toast({
-									title: "ERROR",
-									description: err.message,
-									variant: "destructive",
-								})
-								reject(err)
-							})
-							.finally(() => {
-								set({
-									isFetchingReport: false,
-								})
-							})
-					}
-				)
-			},
-			fetchDetailReportRiskMonitoring: async () => {
-				const year_selected = useAuthStore.getState().year_selected
-				set({
-					isFetchingReport: true,
-				})
-				return new Promise<
-					ResponseApiType<DetailReportRiskMonitoring[]>
-				>((resolve, reject) => {
-					getDataApi<DetailReportRiskMonitoring[]>(
-						`${DETAIL_REPORT_RISK_MONITROING_EP}`,
-						{
-							page: get().pagination_tanstack.pageIndex,
-							per_page: get().pagination_tanstack.pageSize,
-							year: year_selected,
-						}
-					)
-						.then((data) => {
-							if (data.data && Array.isArray(data.data)) {
-								set({
-									reportRiskMonitoringDetail: data.data || [],
-									meta: data?.meta,
-								})
-							} else {
-								set({
-									reportRiskMonitoringDetail: [],
-									meta: data?.meta,
-								})
-							}
-							resolve(data)
-						})
-						.catch((err) => {
-							toast({
-								title: "ERROR",
-								description: err.message,
-								variant: "destructive",
-							})
-							reject(err)
-						})
-						.finally(() => {
-							set({
-								isFetchingReport: false,
-							})
-						})
-				})
-			},
 
 			fetchNodeData: async () => {
 				set((prev) => ({
@@ -245,6 +156,7 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 					}
 				)
 			},
+		
 			fetchDeviationData: async () => {
 				set((prev) => ({
 					supportData: {

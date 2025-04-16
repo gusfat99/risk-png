@@ -1,20 +1,22 @@
 import {
-   DETAIL_REPORT_RISK_MONITROING_EP,
-   NODE_EP,
-   REPORT_RISK_MONITROING_EP
+	DETAIL_REPORT_RISK_MONITROING_EP,
+	EXPORT_MONITORING_EP,
+	NODE_EP,
+	REPORT_RISK_MONITROING_EP,
 } from "@/constants/endpoints"
 import {
-   getDataApi,
-   ResponseApiType
+	extractFilenameFromHeader,
+	getDataApi,
+	ResponseApiType,
 } from "@/helpers/ApiHelper"
 import { toast } from "@/hooks/use-toast"
 import { commonInitualState } from "@/types/common"
 
 import { Node } from "@/types/node"
 import {
-   DetailReportRiskMonitoring,
-   ReportRiskMonitoring,
-   ReportRiskMonitoringState
+	DetailReportRiskMonitoring,
+	ReportRiskMonitoring,
+	ReportRiskMonitoringState,
 } from "@/types/riskMonitoring"
 import useAuthStore from "./authStore"
 import { createStore, runUpdater } from "./store"
@@ -103,7 +105,7 @@ const useReportRiskMonitoringStore = createStore<ReportRiskMonitoringState>(
 							year: year_selected,
 							node_id: nodeId,
 							deviation_id: deviationId,
-							risk_bank_id : riskBankId
+							risk_bank_id: riskBankId,
 						}
 					)
 						.then((data) => {
@@ -187,6 +189,63 @@ const useReportRiskMonitoringStore = createStore<ReportRiskMonitoringState>(
 							})
 					}
 				)
+			},
+			downloadFileReportDetail: async ({
+				nodeId,
+				deviationId,
+				riskBankId,
+			}) => {
+				const year_selected = useAuthStore.getState().year_selected
+				getDataApi<any>(
+					EXPORT_MONITORING_EP,
+					{
+						year: year_selected,
+						node_id: nodeId,
+						deviation_id: deviationId,
+						risk_bank_id: riskBankId,
+					},
+					undefined,
+					undefined,
+					"blob"
+				)
+					.then((data) => {
+						//parse data to flat
+						// Proses download seperti sebelumnya
+						const blobUrl = window.URL.createObjectURL(
+							new Blob([data as any])
+						)
+						// const contentDisposition =
+						// 	data.headers["Content-Disposition"]
+						// const finalFilename = contentDisposition
+						// 	? extractFilenameFromHeader(contentDisposition) ||
+						// 	  "filename.xlsx"
+						// 	: "filename.xlsx"
+
+						const link = document.createElement("a")
+						link.href = blobUrl
+						link.download = "risk-monitoring.xlsx"
+						document.body.appendChild(link)
+						link.click()
+
+						// Cleanup
+						setTimeout(() => {
+							if (link.parentNode) {
+								link.parentNode.removeChild(link)
+							}
+							window.URL.revokeObjectURL(blobUrl)
+						}, 100)
+						toast({
+							title: "Finished downlaod data",
+							variant: "success",
+						})
+					})
+					.catch((err) => {
+						toast({
+							title: "ERROR",
+							description: err.message,
+							variant: "destructive",
+						})
+					})
 			},
 			setPagination: (updater) =>
 				set((state) => ({

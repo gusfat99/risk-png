@@ -246,3 +246,13 @@ export const getDataApi = <T>(
 		return Promise.resolve()
 	})
 }
+
+
+export function extractFilenameFromHeader(contentDisposition: string): string | null {
+	const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+	const matches = filenameRegex.exec(contentDisposition);
+	if (matches && matches[1]) {
+	  return matches[1].replace(/['"]/g, '');
+	}
+	return null;
+ }

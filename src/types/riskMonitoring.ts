@@ -82,12 +82,7 @@ export interface RiskMonitoringState extends CommonState {
 	}
 	actions: {
 		fetchAllData(): Promise<ResponseApiType<RiskMonitoring[]>>
-		fetchReportRiskMonitoringData(): Promise<
-			ResponseApiType<ReportRiskMonitoring[]>
-		>
-		fetchDetailReportRiskMonitoring(): Promise<
-			ResponseApiType<DetailReportRiskMonitoring[]>
-		>
+
 		fetchSingleData?(id: any): Promise<ResponseApiType<RiskMonitoring>>
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>
 		fetchDeviationData(): Promise<ResponseApiType<Deviations[]>>
@@ -106,9 +101,9 @@ export interface RiskMonitoringState extends CommonState {
 		) => void
 		setNodeSelected: (nodeId: number) => void
 		updateSavertyMultiple: (
-			nodeId : any,
+			nodeId: any,
 			payload: RiskMonitoringSevertyMultipleForm
-		) =>  Promise<ResponseApiType<RiskMonitoring[]>>
+		) => Promise<ResponseApiType<RiskMonitoring[]>>
 	}
 }
 export interface ReportRiskMonitoringState extends CommonState {
@@ -134,6 +129,11 @@ export interface ReportRiskMonitoringState extends CommonState {
 		setPagination?: (updater: Updater<PaginationState>) => void
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>
 		setNodeSelected: (nodeId: number) => void
+		downloadFileReportDetail: (params: {
+			nodeId: any
+			deviationId: any
+			riskBankId: any
+		}) => void
 	}
 }
 

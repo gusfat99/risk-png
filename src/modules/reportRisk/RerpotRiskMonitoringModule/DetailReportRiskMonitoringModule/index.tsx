@@ -3,31 +3,33 @@ import ExportExcelButton from "@/components/buttons/ExportExcelButton"
 import DataTable from "@/components/DataTable"
 import useReportRiskMonitoringStore from "@/store/reportRiskMonitoringStore"
 import {
-   DetailReportRiskMonitoring,
-   ReportRiskMonitoring,
+	DetailReportRiskMonitoring,
+	ReportRiskMonitoring,
 } from "@/types/riskMonitoring"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useCallback, useEffect } from "react"
-import {
-   columnDetailReportRiskMonitoring
-} from "../columns"
+import { columnDetailReportRiskMonitoring } from "../columns"
 import IncidentDataCard from "@/components/cards/IncidentDataCard"
 
 const ReportRiskMonitoringModule = () => {
 	const pathname = usePathname()
-	const searchParams = useSearchParams();
+	const searchParams = useSearchParams()
 	const route = useRouter()
 	const {
 		isFetchingReport,
 		reportRiskMonitoringDetail,
 		pagination_tanstack,
 		meta,
-		actions: { fetchDetailReportRiskMonitoring, setPagination },
+		actions: {
+			fetchDetailReportRiskMonitoring,
+			setPagination,
+			downloadFileReportDetail,
+		},
 	} = useReportRiskMonitoringStore()
 	const total = meta?.total || 0
-	const nodeId = searchParams.get("node");
-	const deviationId = searchParams.get("deviation");
-	const riskBankId = searchParams.get("risk_bank");
+	const nodeId = searchParams.get("node")
+	const deviationId = searchParams.get("deviation")
+	const riskBankId = searchParams.get("risk_bank")
 
 	const splitPathname = pathname.split("/")
 	const basePathname = "/".concat(splitPathname[1])
@@ -43,29 +45,40 @@ const ReportRiskMonitoringModule = () => {
 		[]
 	)
 
+	const onDownloadExcel = () => {
+		downloadFileReportDetail({
+			nodeId,
+			deviationId,
+			riskBankId,
+		})
+	}
+
 	useEffect(() => {
 		fetchDetailReportRiskMonitoring({
 			nodeId,
 			deviationId,
-			riskBankId
+			riskBankId,
 		})
 	}, [fetchDetailReportRiskMonitoring, nodeId, deviationId, riskBankId])
 
 	return (
 		<div className="w-full space-y-4">
 			{reportRiskMonitoringDetail.length > 0 && (
-
-			<IncidentDataCard
-				data={{
-					cause: reportRiskMonitoringDetail[0].causes.cause,
-					node : reportRiskMonitoringDetail[0].nodes.node,
-					incident_count: total,
-					deviation : reportRiskMonitoringDetail[0].deviations.name,
-				}}
-			/>
+				<IncidentDataCard
+					data={{
+						cause: reportRiskMonitoringDetail[0].causes.cause,
+						node: reportRiskMonitoringDetail[0].nodes.node,
+						incident_count: total,
+						deviation:
+							reportRiskMonitoringDetail[0].deviations.name,
+					}}
+				/>
 			)}
 			<div className="flex flex-row justify-between items-end">
-				<ExportExcelButton label="Export Excel" />
+				<ExportExcelButton
+					label="Export Excel"
+					onClick={() => onDownloadExcel()}
+				/>
 			</div>
 			<div className="mt-1">
 				<DataTable<DetailReportRiskMonitoring>

@@ -1,5 +1,20 @@
 import { MetaResponseType } from "@/helpers/ApiHelper"
 
+// types/download.ts
+export interface DownloadOptions {
+	params?: Record<string, any>;
+	headers?: Record<string, string>;
+	timeout?: number;
+	onProgress?: (progress: number) => void;
+ }
+ 
+ export interface DownloadResult {
+	success: boolean;
+	filename?: string;
+	error?: string;
+	blobUrl?: string;
+}
+ 
 export type PaginationType = {
 	pageSize: number; //initial page index
 	pageIndex: number //default page size
