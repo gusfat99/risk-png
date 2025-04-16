@@ -14,6 +14,7 @@ interface DashboardRiskMatrixCardProps {
 	loading: boolean
 	severityMapGrouped: Record<any, SeverityMap[]>
 	likelyhoodFrequencyItems: LikelyhoodFrequency | null
+	onClickSetting? : () => void
 }
 
 const DashboardRiskMatrixCard: React.FC<DashboardRiskMatrixCardProps> = ({
@@ -21,6 +22,7 @@ const DashboardRiskMatrixCard: React.FC<DashboardRiskMatrixCardProps> = ({
 	loading,
 	severityMapGrouped,
 	likelyhoodFrequencyItems,
+	onClickSetting
 }) => {
 	
 	return (
@@ -29,7 +31,7 @@ const DashboardRiskMatrixCard: React.FC<DashboardRiskMatrixCardProps> = ({
 				<div className="bg-primary-100 rounded-md p-2 text-center text-primary font-semibold max-w-[254px] w-full m-auto">
 					HEAT MAP
 				</div>
-				<Button variant={"ghost"} size={"sm"}>
+				<Button variant={"ghost"} size={"sm"} onClick={() => {onClickSetting && onClickSetting()}} >
 					<Settings size={50} />
 				</Button>
 			</div>

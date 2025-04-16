@@ -9,6 +9,7 @@ import useDashboardStore from "@/store/dashboard"
 import useSettingMatrixStore from "@/store/settingMatrixStore"
 import { SelectDataType } from "@/types/common"
 import { CopyCheck, LineChart, SquareKanbanIcon } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 
 const DashboardMain = () => {
@@ -16,7 +17,6 @@ const DashboardMain = () => {
 		severity_map,
 		likelyhood_frequency,
 		risk_map,
-
 		actions: { fetchRiskMap, fetchLikelyhood, fetchSeverityMap },
 	} = useSettingMatrixStore()
 	const {
@@ -28,6 +28,7 @@ const DashboardMain = () => {
 		},
 		actions: { fetchDashboard, fetchNodeData, setNodeSelected },
 	} = useDashboardStore()
+	const router = useRouter()
 
 	const itemsCounting = [
 		{
@@ -77,7 +78,6 @@ const DashboardMain = () => {
 		fetchRiskMap,
 		fetchLikelyhood,
 		fetchSeverityMap,
-
 		fetchNodeData,
 		nodeItems.length,
 	])
@@ -85,7 +85,7 @@ const DashboardMain = () => {
 	useEffect(() => {
 		fetchDashboard()
 	}, [nodeSelected, fetchDashboard])
-	
+
 	const nodeOptions: SelectDataType[] = nodeItems.map((node) => ({
 		label: node.node,
 		value: node.id?.toString(),
@@ -98,7 +98,7 @@ const DashboardMain = () => {
 					title="Risk Data Bank"
 					content={{
 						label: "Total Data Registered",
-						value: dashboardItem?.total_risk || 0,
+						value: dashboardItem?.total_risk_bank || 0,
 					}}
 					icon={<SquareKanbanIcon />}
 				/>
@@ -139,8 +139,27 @@ const DashboardMain = () => {
 			</div>
 			<div className="grid md:grid-cols-3 grid-cols-1 gap-2">
 				<div className="space-y-4">
-					<DashboardChartDonutCard title="RISK" />
-					<DashboardChartDonutCard title="SAFEGUARDS" />
+					<DashboardChartDonutCard
+						title="RISK"
+						data={[
+							{
+								name: "Amount of Risk Above Appetite",
+								fill: "hsl(var(--secondary-400))",
+								value: dashboardItem?.amount_above_apetite || 0,
+							},
+						]}
+					/>
+					<DashboardChartDonutCard
+						title="SAFEGUARDS"
+						data={[
+							{
+								name: "Safeguards Implemented",
+								fill: "hsl(var(--secondary-400))",
+								value:
+									dashboardItem?.implemented_safeguard || 0,
+							},
+						]}
+					/>
 				</div>
 				<div className="col-span-2">
 					<DashboardRiskMatrixCard
@@ -148,6 +167,9 @@ const DashboardMain = () => {
 						severityMapGrouped={severityMapGrouped}
 						loading={risk_map.isFetching}
 						riskMapItems={risk_map.item || []}
+						onClickSetting={() => {
+							router.replace("/data-master-setting-matrix")
+						}}
 					/>
 				</div>
 			</div>

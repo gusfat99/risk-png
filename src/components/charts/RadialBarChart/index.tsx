@@ -1,11 +1,12 @@
-import {
-	ChartConfig,
-	ChartContainer,
-	ChartTooltip,
-	ChartTooltipContent,
-} from "@/components/ui/chart"
+import { ChartConfig, ChartContainer } from "@/components/ui/chart"
 import React from "react"
-import { Pie, PieChart, Label } from "recharts"
+import {
+	Label,
+	PolarGrid,
+	PolarRadiusAxis,
+	RadialBar,
+	RadialBarChart,
+} from "recharts"
 
 // types/chart.ts
 export type ChartDataItem = {
@@ -19,7 +20,7 @@ export interface PieChartDonutProps {
 	config: ChartConfig
 }
 
-export const PieChartDonut: React.FC<PieChartDonutProps> = ({
+export const RadialBarChartApp: React.FC<PieChartDonutProps> = ({
 	config,
 	data,
 }) => {
@@ -28,18 +29,21 @@ export const PieChartDonut: React.FC<PieChartDonutProps> = ({
 			config={config}
 			className="mx-auto aspect-square max-h-[250px]"
 		>
-			<PieChart>
-				<ChartTooltip
-					cursor={false}
-					content={<ChartTooltipContent hideLabel />}
+			<RadialBarChart
+				data={data}
+				endAngle={100}
+				innerRadius={80}
+				outerRadius={140}
+			>
+				<PolarGrid
+					gridType="circle"
+					radialLines={false}
+					stroke="none"
+					className="first:fill-muted last:fill-background"
+					polarRadius={[86, 74]}
 				/>
-				<Pie
-					data={data}
-					dataKey="value"
-					nameKey="name"
-					enableBackground={1}
-					innerRadius={60} // Radius dalam untuk efek donut
-				>
+				<RadialBar dataKey="value" background />
+				<PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
 					<Label
 						content={({ viewBox }) => {
 							if (viewBox && "cx" in viewBox && "cy" in viewBox) {
@@ -53,24 +57,24 @@ export const PieChartDonut: React.FC<PieChartDonutProps> = ({
 										<tspan
 											x={viewBox.cx}
 											y={viewBox.cy}
-											className="fill-foreground text-3xl font-bold"
+											className="fill-foreground text-4xl font-bold"
 										>
-											{231}
+											{data[0].value.toLocaleString()}
 										</tspan>
 										<tspan
 											x={viewBox.cx}
 											y={(viewBox.cy || 0) + 24}
 											className="fill-muted-foreground"
 										>
-											Visitors
+											Total Data
 										</tspan>
 									</text>
 								)
 							}
 						}}
 					/>
-				</Pie>
-			</PieChart>
+				</PolarRadiusAxis>
+			</RadialBarChart>
 		</ChartContainer>
 	)
 }

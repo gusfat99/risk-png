@@ -1,22 +1,20 @@
 import { ChartDataItem, PieChartDonut } from "@/components/charts/PieChartDonut"
-import {
-   ChartConfig
-} from "@/components/ui/chart"
+import { RadialBarChartApp } from "@/components/charts/RadialBarChart"
+import { ChartConfig } from "@/components/ui/chart"
 import { cn } from "@/lib/utils"
 import React from "react"
 
 interface IProps {
-	title: string
+	title: string,
+	data : ChartDataItem[]
 }
 
 const browserData: ChartDataItem[] = [
 	{
 		name: "Amount of Risk Above Appetite",
-		value: 20,
+		value: 19,
 		fill: "hsl(var(--secondary-400))",
 	},
-	
-	{ name: "Total Data", value: 80, fill: "#FFCC91" },
 ]
 
 const config: ChartConfig = {
@@ -25,14 +23,14 @@ const config: ChartConfig = {
 	},
 }
 
-const DashboardChartDonutCard: React.FC<IProps> = ({ title }) => {
+const DashboardChartDonutCard: React.FC<IProps> = ({ title,  data }) => {
 	return (
 		<div className="shadow-md rounded-lg flex flex-col p-4">
 			<div className="bg-primary-100 rounded-md p-2 text-center text-primary font-semibold">
 				{title}
 			</div>
 			<div className="flex flex-row justify-evenly w-full flex-wrap">
-				{browserData.map((item, key) => {
+				{data.map((item, key) => {
 					return (
 						<div
 							key={key}
@@ -52,7 +50,7 @@ const DashboardChartDonutCard: React.FC<IProps> = ({ title }) => {
 				})}
 			</div>
 			<div className="flex-1">
-				<PieChartDonut data={browserData} config={config} />
+				<RadialBarChartApp data={data} config={config} />
 			</div>
 		</div>
 	)
