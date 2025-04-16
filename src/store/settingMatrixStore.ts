@@ -107,7 +107,7 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 							},
 						}))
 						getDataApi<SeverityMap[]>(SEVERITY_MAP_EP, {
-							year : year_selected
+							year: year_selected,
 						})
 							.then((data) => {
 								if (Array.isArray(data.data)) {
@@ -149,7 +149,7 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 							},
 						}))
 						getDataApi<RiskMap[]>(RISK_MAP_EP, {
-							year : year_selected
+							year: year_selected,
 						})
 							.then((data) => {
 								if (Array.isArray(data.data)) {
@@ -234,9 +234,13 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 				getDataApi<SeverityMap[]>(SEVERITY_MAP_EP)
 					.then((data) => {
 						if (data && Array.isArray(data.data)) {
-							const options: SelectDataType[] = (
-								data.data || []
-							).map((cell) => ({
+							let options: SelectDataType[] = [
+								{
+									label: "not taken into considered",
+									value: 0,
+								},
+							]
+							options = (data.data || []).map((cell) => ({
 								label: `(${cell.column_value}) ${cell.column_deviation}: ${cell.severity_map_value}`,
 								value: cell.column_value?.toString(),
 								saverity_row_id: cell.row_value,

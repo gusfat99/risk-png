@@ -30,7 +30,7 @@ export const RiskMonitoringSchema = z.object({
 })
 
 export const RiskMonitoringSeveritySchema = z.object({
-   risk_monitoring_id: z.string(),
+   id: z.string().optional(),
    sp_affected: toValidatedNumberActual("SP"),
    sf_affected: toValidatedNumberActual("SF"),
    se_affected: toValidatedNumberActual("SE"),

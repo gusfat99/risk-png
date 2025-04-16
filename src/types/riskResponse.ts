@@ -44,6 +44,7 @@ export type RiskResponse = {
 	tahun : string
 }
 
+
 export type Hazop = {
 	id?: number
 	hazop_recom: string

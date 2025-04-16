@@ -48,7 +48,7 @@ export interface UseColumnsRiskResponseProps extends UseColumnsProps {
 	form: UseFormReturn<RiskResponseSevertyExpectMultipleSchemaForm>
 }
 
-const CellInput = ({ row, form, name }: { row: any; form: any; name: any }) => {
+const CellInput = ({ row, form, name, }: { row: any; form: any; name: any }) => {
 	const rowId = row.index
 	const { likelyhood_options, severity_map_options } = useSettingMatrixStore()
 
@@ -1231,7 +1231,7 @@ export const useColumnsMonitoring = ({
 						<React.Fragment>
 							<FormField
 								control={form.control}
-								name={`risks.${row.index}.risk_monitoring_id`}
+								name={`risks.${row.index}.id`}
 								render={({ field }) => (
 									<InputController
 										{...field}

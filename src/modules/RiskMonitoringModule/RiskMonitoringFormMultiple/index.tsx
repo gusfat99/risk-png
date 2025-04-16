@@ -32,7 +32,7 @@ const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 	const router = useRouter()
 
 	const {
-		actions: { setPagination, setNodeSelected },
+		actions: { setPagination, setNodeSelected, updateSavertyMultiple },
 		nodeSelected,
 		isFetching,
 		riskMonitoringItems,
@@ -56,7 +56,7 @@ const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 					srl_affected: item.srl_affected,
 					sa_affected: item.sa_affected,
 					spn_affected: item.spn_affected,
-					risk_monitoring_id: item.id.toString(),
+					id: item.id.toString(),
 				})),
 			}
 		}, [riskMonitoringItems])
@@ -88,36 +88,38 @@ const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 		[basePathname]
 	)
 
-	// const handleSubmit = async (values: RiskMonitoringSevertyMultipleForm) => {
-	// 	try {
-	// 		if (nodeSelected?.id && updateSavertyMultiple) {
-	// 			const result = await updateSavertyMultiple(
-	// 				nodeSelected?.id,
-	// 				values
-	// 			)
-	// 			if (!result.errors) {
-	// 				toast({
-	// 					title: result.message ?? "",
-	// 					variant: "success",
-	// 				})
-	// 			} else {
-	// 				throw new Error(result.errors)
-	// 			}
-	// 		} else {
-	// 			throw new Error("Please Select Node before")
-	// 		}
-	// 	} catch (error: any) {
-	// 		console.log({ error })
-	// 		toast({
-	// 			title: error?.message
-	// 				? error.message
-	// 				: "An unexpected error occurred",
-	// 			variant: "destructive",
-	// 		})
-	// 	}
-	// }
 
-	const handleSubmit = useCallback(() => {}, [])
+	const handleSubmit = useCallback(
+		async (values: RiskMonitoringSevertyMultipleForm) => {
+			try {
+				if ( updateSavertyMultiple) {
+					const result = await updateSavertyMultiple(
+						nodeSelected?.id,
+						values
+					)
+					if (!result.errors) {
+						toast({
+							title: result.message ?? "",
+							variant: "success",
+						})
+					} else {
+						throw new Error(result.errors)
+					}
+				} else {
+					throw new Error("updateSavertyMultiple not found")
+				}
+			} catch (error: any) {
+				console.log({ error })
+				toast({
+					title: error?.message
+						? error.message
+						: "An unexpected error occurred",
+					variant: "destructive",
+				})
+			}
+		},
+		[]
+	)
 
 	const { column } = useColumnsMonitoring({
 		onAction: handleAction,
@@ -128,7 +130,7 @@ const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 		label: node.node,
 		value: node.id?.toString(),
 	}))
-
+	console.log({errors : form.formState.errors, values : form.getValues()})
 	return (
 		<Form {...form}>
 			<form

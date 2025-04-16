@@ -23,6 +23,7 @@ import {
 	ReportRiskMonitoring,
 	RiskMonitoring,
 	RiskMonitoringSchemaForm,
+	RiskMonitoringSevertyMultipleForm,
 	RiskMonitoringState,
 } from "@/types/riskMonitoring"
 import { createStore, runUpdater } from "./store"
@@ -471,6 +472,42 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 										],
 									}
 								})
+								resolve(data)
+							})
+							.catch((err) => {
+								reject(err)
+							})
+							.finally(() => {
+								set({
+									isSubmit: false,
+								})
+							})
+					}
+				)
+			},
+			updateSavertyMultiple: async (
+				nodeId: any,
+				payload: RiskMonitoringSevertyMultipleForm
+			) => {
+				set({
+					isSubmit: true,
+				})
+				return new Promise<ResponseApiType<RiskMonitoring[]>>(
+					(resolve, reject) => {
+						postData<RiskMonitoring[]>(
+							`${RISK_MONITROING_EP}/severity-multi`,
+							payload
+						)
+							.then((data) => {
+								// if (Array.isArray(data.data)) {
+								// 	set((prevState) => ({
+								// 		riskMonitoringItems: [
+								// 			...(prevState.riskMonitoringItems ||
+								// 				[]),
+								// 			...(data.data ? data.data : []),
+								// 		],
+								// 	}))
+								// }
 								resolve(data)
 							})
 							.catch((err) => {

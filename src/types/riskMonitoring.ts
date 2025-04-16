@@ -105,6 +105,10 @@ export interface RiskMonitoringState extends CommonState {
 			id: any
 		) => void
 		setNodeSelected: (nodeId: number) => void
+		updateSavertyMultiple: (
+			nodeId : any,
+			payload: RiskMonitoringSevertyMultipleForm
+		) =>  Promise<ResponseApiType<RiskMonitoring[]>>
 	}
 }
 export interface ReportRiskMonitoringState extends CommonState {
