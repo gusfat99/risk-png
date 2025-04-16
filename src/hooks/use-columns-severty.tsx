@@ -775,7 +775,7 @@ export const useColumnsRiskResponse = ({
 						<React.Fragment>
 							<FormField
 								control={form.control}
-								name={`risks.${row.index}.risk_analyst_id`}
+								name={`risks.${row.index}.id`}
 								render={({ field }) => (
 									<InputController
 										{...field}

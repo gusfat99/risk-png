@@ -389,7 +389,7 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 			},
 			setHazopStatus: async ({ nodeId, riskId, status }) => {
 				return new Promise<ResponseApiType<any>>((resolve, reject) => {
-					postData<HazopStatus>(
+					postData<RiskResponse>(
 						`${RISK_RESPONSE_EP}/${nodeId}/hazop-status/${riskId}`,
 						{
 							hazop_completed: status,
@@ -414,7 +414,7 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 									riskResponseItems.findIndex(
 										(item) =>
 											item.id?.toString() ===
-												data.data?.risk_analyst_id?.toString() &&
+												data.data?.id?.toString() &&
 											item.node_id?.toString() ===
 												nodeId.toString()
 									)

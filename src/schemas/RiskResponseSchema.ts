@@ -38,7 +38,7 @@ export const RiskResponseHazopMultipleSchema = z.object({
 })
 
 export const RiskResponseSevertyExpectSchema = z.object({
-	risk_analyst_id: z.string(),
+	id: z.string(),
 	sp_expected: toValidatedNumberActual("SP"),
 	sf_expected: toValidatedNumberActual("SF"),
 	se_expected: toValidatedNumberActual("SE"),

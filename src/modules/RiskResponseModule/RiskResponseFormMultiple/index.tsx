@@ -70,7 +70,7 @@ const RiskResponseFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 					sa_expected: item.sa_expected,
 					spn_expected: item.spn_expected,
 					l_frequency_expected: item.l_frequency_expected,
-					risk_analyst_id: item.id.toString(),
+					id: item.id.toString(),
 				})),
 			}
 		}, [riskResponseItems])
