@@ -53,6 +53,8 @@ const ReportRiskMonitoringModule = () => {
 
 	return (
 		<div className="w-full space-y-4">
+			{reportRiskMonitoringDetail.length > 0 && (
+
 			<IncidentDataCard
 				data={{
 					cause: reportRiskMonitoringDetail[0].causes.cause,
@@ -61,6 +63,7 @@ const ReportRiskMonitoringModule = () => {
 					deviation : reportRiskMonitoringDetail[0].deviations.name,
 				}}
 			/>
+			)}
 			<div className="flex flex-row justify-between items-end">
 				<ExportExcelButton label="Export Excel" />
 			</div>

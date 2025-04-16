@@ -1,4 +1,5 @@
 export const AUTH_EP = "/auth/login";
+export const DASHBOARD_EP = "/dashboard";
 export const NODE_EP = "/node-data";
 export const SAFEGUARD_EP = "/safeguard";
 export const SAFEGUARD_EXIST_EP = "/existing-safeguard";
