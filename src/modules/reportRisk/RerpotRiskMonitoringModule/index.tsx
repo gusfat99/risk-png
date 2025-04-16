@@ -3,9 +3,9 @@ import DataTable from "@/components/DataTable"
 import InputSelect from "@/components/inputs/InputSelect"
 import useReportRiskMonitoringStore from "@/store/reportRiskMonitoringStore"
 import { ReportRiskMonitoring } from "@/types/riskMonitoring"
-import { usePathname, useSearchParams, useRouter } from "next/navigation"
-import { columnReportRiskMonitoring } from "./columns"
+import { usePathname, useRouter } from "next/navigation"
 import { useCallback, useEffect } from "react"
+import { columnReportRiskMonitoring } from "./columns"
 
 const ReportRiskMonitoringModule = () => {
 	const pathname = usePathname()
