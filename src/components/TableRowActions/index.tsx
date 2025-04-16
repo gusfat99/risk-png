@@ -13,12 +13,22 @@ import {
 interface TableRowActionsProps {
 	onAction: (actionName: string) => void
 	menuName?: string
+	acl?: {
+		canView?: boolean
+		canEdit?: boolean
+		canDelete?: boolean
+	}
 	children?: React.ReactNode
 }
 
 const TableRowActions: React.FC<TableRowActionsProps> = ({
 	onAction,
 	children,
+	acl = {
+		canView: true,
+		canEdit: true,
+		canDelete: true,
+	},
 }) => {
 	// const {permissions} = useAuthContext();
 
@@ -36,7 +46,7 @@ const TableRowActions: React.FC<TableRowActionsProps> = ({
 	// );
 
 	return (
-		<DropdownMenu >
+		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button aria-haspopup="true" size="icon" variant="ghost">
 					<MoreHorizontal className="h-4 w-4" />
@@ -45,33 +55,36 @@ const TableRowActions: React.FC<TableRowActionsProps> = ({
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="end">
 				<DropdownMenuLabel>Aksi</DropdownMenuLabel>
-				<DropdownMenuItem className="hover:cursor-pointer"
-					onClick={() => {
-						onAction("detail")
-					}}
-				>
-					<Eye/> Detail
-				</DropdownMenuItem>
-
-				{/* {hasEditPermissions && (
-				)} */}
-				<DropdownMenuItem className="hover:cursor-pointer"
-					onClick={() => {
-						onAction("update")
-					}}
-				>
-					<Pencil/> Edit
-				</DropdownMenuItem>
-
-				{/* {hasDeletePermissions && (
-				)} */}
-				<DropdownMenuItem className="hover:cursor-pointer"
-					onClick={() => {
-						onAction("delete")
-					}}
-				>
-					<Trash/> Delete
-				</DropdownMenuItem>
+				{acl.canView && (
+					<DropdownMenuItem
+						className="hover:cursor-pointer"
+						onClick={() => {
+							onAction("detail")
+						}}
+					>
+						<Eye /> Detail
+					</DropdownMenuItem>
+				)}
+				{acl.canEdit && (
+					<DropdownMenuItem
+						className="hover:cursor-pointer"
+						onClick={() => {
+							onAction("update")
+						}}
+					>
+						<Pencil /> Edit
+					</DropdownMenuItem>
+				)}
+				{acl.canDelete && (
+					<DropdownMenuItem
+						className="hover:cursor-pointer"
+						onClick={() => {
+							onAction("delete")
+						}}
+					>
+						<Trash /> Delete
+					</DropdownMenuItem>
+				)}
 
 				{children && children}
 			</DropdownMenuContent>

@@ -122,9 +122,11 @@ export interface ReportRiskMonitoringState extends CommonState {
 		fetchReportRiskMonitoring(): Promise<
 			ResponseApiType<ReportRiskMonitoring[]>
 		>
-		fetchDetailReportRiskMonitoring(): Promise<
-			ResponseApiType<DetailReportRiskMonitoring[]>
-		>
+		fetchDetailReportRiskMonitoring(params: {
+			nodeId: any
+			deviationId: any
+			riskBankId: any
+		}): Promise<ResponseApiType<DetailReportRiskMonitoring[]>>
 		setPagination?: (updater: Updater<PaginationState>) => void
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>
 		setNodeSelected: (nodeId: number) => void

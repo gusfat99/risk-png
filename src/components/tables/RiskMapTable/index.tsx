@@ -19,12 +19,14 @@ interface RiskMapTableProps {
 	columns: [title: string, SeverityMap[]][]
 	rowsMain: LikelyhoodFrequency
 	onClick?(data: MatrixSelectedRowCol): void
+	forDashboard?: boolean
 }
 
 const RiskMapTable: React.FC<RiskMapTableProps> = ({
 	columns,
 	rowsMain,
 	data,
+	forDashboard,
 	onClick,
 }) => {
 	return (
@@ -74,82 +76,84 @@ const RiskMapTable: React.FC<RiskMapTableProps> = ({
 							rowSpan={6}
 							className="border-2 text-center [writing-mode:vertical-rl]"
 						>
-							Frequency
+							Frequency Level
 						</TableCell>
 					</TableRow>
-					{rowsMain.column.map((frequency, rowKey) => {
-						return (
-							<TableRow
-								key={rowKey}
-								className="border-2 text-center hover:bg-transparent"
-							>
-								<TableCell
-									className={cn("border-2 text-center")}
+					{rowsMain.column
+						.sort((x, y) => y.id - x.id)
+						.map((frequency, rowKey) => {
+							return (
+								<TableRow
+									key={rowKey}
+									className="border-2 text-center hover:bg-transparent"
 								>
-									{rowKey + 1}
-								</TableCell>
-								<TableCell
-									className={cn(
-										"border-2 text-center  hover:bg-muted",
-										
-									)}
-								>
-									{frequency.frequency_name}
-								</TableCell>
-								{columns.map(([_, col], keyDeviation) => {
-									const matchingCell = data.find(
-										(x) =>
-											x.frequency?.toString() ===
-												frequency.id?.toString() &&
-											x.deviation?.toString() ===
-												col[0].column_value?.toString()
-									)
+									<TableCell
+										className={cn("border-2 text-center")}
+									>
+										{frequency.id}
+									</TableCell>
+									<TableCell
+										className={cn(
+											"border-2 text-center  hover:bg-muted"
+										)}
+									>
+										{frequency.frequency_name}
+									</TableCell>
+									{columns.map(([_, col], keyDeviation) => {
+										const matchingCell = data.find(
+											(x) =>
+												x.frequency?.toString() ===
+													frequency.id?.toString() &&
+												x.deviation?.toString() ===
+													col[0].column_value?.toString()
+										)
 
-									return (
-										<TableCell
-											key={
-												col?.[0].column_value +
-												rowKey +
-												keyDeviation
-											}
-											className={cn(
-												`border-2 text-center hover:bg-muted`,
-												{
-													"hover:cursor-pointer": onClick
-														? true
-														: false,
+										return (
+											<TableCell
+												key={
+													col?.[0].column_value +
+													rowKey +
+													keyDeviation
 												}
-											)}
-											style={{
-												backgroundColor:
-													matchingCell?.color,
-											}}
-											onClick={() => {
-												onClick &&
-													onClick({
-														field: "matrix",
-														inputLabel: `Deviation x Frequency (${
-															keyDeviation + 1
-														}x${rowKey + 1})`,
-														row_id: rowKey + 1,
-														col_id: col[0]
-															.column_value,
-														value:
-															matchingCell?.value ||
-															"",
-														color:
-															matchingCell?.color ||
-															"",
-													})
-											}}
-										>
-											{matchingCell?.value || "-"}
-										</TableCell>
-									)
-								})}
-							</TableRow>
-						)
-					})}
+												className={cn(
+													`border-2 text-center hover:bg-muted`,
+													{
+														"hover:cursor-pointer":
+															onClick
+																? true
+																: false,
+													}
+												)}
+												style={{
+													backgroundColor:
+														matchingCell?.color,
+												}}
+												onClick={() => {
+													onClick &&
+														onClick({
+															field: "matrix",
+															inputLabel: `Deviation x Frequency (${
+																keyDeviation + 1
+															}x${rowKey + 1})`,
+															row_id: rowKey + 1,
+															col_id: col[0]
+																.column_value,
+															value:
+																matchingCell?.value ||
+																"",
+															color:
+																matchingCell?.color ||
+																"",
+														})
+												}}
+											>
+												{matchingCell?.value || "-"}
+											</TableCell>
+										)
+									})}
+								</TableRow>
+							)
+						})}
 				</TableBody>
 			</Table>
 		</div>

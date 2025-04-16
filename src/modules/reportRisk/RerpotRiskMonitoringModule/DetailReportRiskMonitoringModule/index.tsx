@@ -6,14 +6,16 @@ import {
    DetailReportRiskMonitoring,
    ReportRiskMonitoring,
 } from "@/types/riskMonitoring"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useCallback, useEffect } from "react"
 import {
    columnDetailReportRiskMonitoring
 } from "../columns"
+import IncidentDataCard from "@/components/cards/IncidentDataCard"
 
 const ReportRiskMonitoringModule = () => {
 	const pathname = usePathname()
+	const searchParams = useSearchParams();
 	const route = useRouter()
 	const {
 		isFetchingReport,
@@ -23,6 +25,9 @@ const ReportRiskMonitoringModule = () => {
 		actions: { fetchDetailReportRiskMonitoring, setPagination },
 	} = useReportRiskMonitoringStore()
 	const total = meta?.total || 0
+	const nodeId = searchParams.get("node");
+	const deviationId = searchParams.get("deviation");
+	const riskBankId = searchParams.get("risk_bank");
 
 	const splitPathname = pathname.split("/")
 	const basePathname = "/".concat(splitPathname[1])
@@ -39,15 +44,27 @@ const ReportRiskMonitoringModule = () => {
 	)
 
 	useEffect(() => {
-		fetchDetailReportRiskMonitoring()
-	}, [fetchDetailReportRiskMonitoring])
+		fetchDetailReportRiskMonitoring({
+			nodeId,
+			deviationId,
+			riskBankId
+		})
+	}, [fetchDetailReportRiskMonitoring, nodeId, deviationId, riskBankId])
 
 	return (
-		<div className="w-full">
+		<div className="w-full space-y-4">
+			<IncidentDataCard
+				data={{
+					cause: reportRiskMonitoringDetail[0].causes.cause,
+					node : reportRiskMonitoringDetail[0].nodes.node,
+					incident_count: total,
+					deviation : reportRiskMonitoringDetail[0].deviations.name,
+				}}
+			/>
 			<div className="flex flex-row justify-between items-end">
 				<ExportExcelButton label="Export Excel" />
 			</div>
-			<div className="mt-4">
+			<div className="mt-1">
 				<DataTable<DetailReportRiskMonitoring>
 					columns={columnDetailReportRiskMonitoring(
 						handleActionTable

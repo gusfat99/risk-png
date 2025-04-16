@@ -83,7 +83,11 @@ const useReportRiskMonitoringStore = createStore<ReportRiskMonitoringState>(
 					}
 				)
 			},
-			fetchDetailReportRiskMonitoring: async () => {
+			fetchDetailReportRiskMonitoring: async ({
+				nodeId,
+				deviationId,
+				riskBankId,
+			}) => {
 				const year_selected = useAuthStore.getState().year_selected
 				set({
 					isFetchingReport: true,
@@ -97,6 +101,9 @@ const useReportRiskMonitoringStore = createStore<ReportRiskMonitoringState>(
 							page: get().pagination_tanstack.pageIndex,
 							per_page: get().pagination_tanstack.pageSize,
 							year: year_selected,
+							node_id: nodeId,
+							deviation_id: deviationId,
+							risk_bank_id : riskBankId
 						}
 					)
 						.then((data) => {

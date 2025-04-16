@@ -75,7 +75,7 @@ const LikelyhoodFrequencyTable: React.FC<LikelyhoodFrequencyTableProps> = ({
 					<TableRow className="border-2 hover:bg-transparent">
 						{/* Kolom Frequency Level */}
 						<TableCell
-							rowSpan={6}
+							rowSpan={data.row.length + 1}
 							className="border-2 text-center [writing-mode:vertical-rl]"
 						>
 							Explanation
