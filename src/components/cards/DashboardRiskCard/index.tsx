@@ -36,8 +36,8 @@ const DashboardRiskCard: React.FC<DashboardRiskCardProps> = ({
 						<p className="text-gray-500">{item.label}</p>
 						<p className="text-xl font-semibold ">
 							{dashboardItem && item.field in dashboardItem
-								? dashboardItem[item.field as keyof Dashboard]
-								: "N/A"}
+								? String(dashboardItem[item.field as keyof Dashboard])
+								: ""}
 						</p>
 					</div>
 				))}
