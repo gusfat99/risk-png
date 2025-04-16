@@ -1,5 +1,5 @@
 import { Button, ButtonProps } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import { FileSpreadsheet, Plus } from "lucide-react"
 import React from "react"
 
 interface IProps extends ButtonProps {
@@ -8,18 +8,18 @@ interface IProps extends ButtonProps {
 	label?: string
 }
 
-const AddButton: React.FC<IProps> = ({
+const ExportExcelButton: React.FC<IProps> = ({
 	size = "default",
 	children,
 	label,
 	...rest
 }) => {
 	return (
-		<Button size={size} type="button" variant={"success"} {...rest}>
-			<Plus /> {label && label}
+		<Button size={size} type="button" variant={"outline_success"} {...rest}>
+			<FileSpreadsheet /> {label && label}
 			{children && children}
 		</Button>
 	)
 }
 
-export default AddButton
+export default ExportExcelButton

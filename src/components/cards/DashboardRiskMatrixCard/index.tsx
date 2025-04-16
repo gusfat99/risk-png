@@ -22,8 +22,7 @@ const DashboardRiskMatrixCard: React.FC<DashboardRiskMatrixCardProps> = ({
 	severityMapGrouped,
 	likelyhoodFrequencyItems,
 }) => {
-	// Data dinamis untuk risk levels
-
+	
 	return (
 		<div className="shadow-md p-3 rounded-lg space-y-4">
 			<div className="flex flex-row justify-between">

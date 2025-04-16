@@ -1,41 +1,31 @@
 "use client"
+import ExportExcelButton from "@/components/buttons/ExportExcelButton"
 import DataTable from "@/components/DataTable"
-import InputSelect from "@/components/inputs/InputSelect"
 import useReportRiskMonitoringStore from "@/store/reportRiskMonitoringStore"
-import { ReportRiskMonitoring } from "@/types/riskMonitoring"
-import { usePathname } from "next/navigation"
-import { columnReportRiskMonitoring } from "./columns"
+import {
+   DetailReportRiskMonitoring,
+   ReportRiskMonitoring,
+} from "@/types/riskMonitoring"
+import { usePathname, useRouter } from "next/navigation"
 import { useCallback, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import {
+   columnDetailReportRiskMonitoring
+} from "../columns"
 
 const ReportRiskMonitoringModule = () => {
 	const pathname = usePathname()
 	const route = useRouter()
 	const {
 		isFetchingReport,
-		reportRiskMonitoring,
-		nodeSelected,
-		supportData: {
-			node: { isFetching: isFetchingNode, nodeItems },
-		},
+		reportRiskMonitoringDetail,
 		pagination_tanstack,
 		meta,
-		actions: {
-			fetchNodeData,
-			fetchReportRiskMonitoring,
-			setPagination,
-			setNodeSelected,
-		},
+		actions: { fetchDetailReportRiskMonitoring, setPagination },
 	} = useReportRiskMonitoringStore()
 	const total = meta?.total || 0
 
 	const splitPathname = pathname.split("/")
 	const basePathname = "/".concat(splitPathname[1])
-
-	const nodeOptions = nodeItems.map((node) => ({
-		label: node.node,
-		value: node.id?.toString() ?? "",
-	}))
 
 	const handleActionTable = useCallback(
 		(actionName: string, row: ReportRiskMonitoring) => {
@@ -49,31 +39,20 @@ const ReportRiskMonitoringModule = () => {
 	)
 
 	useEffect(() => {
-		if (nodeItems.length === 0) {
-			fetchNodeData()
-		}
-		fetchReportRiskMonitoring()
-	}, [fetchReportRiskMonitoring, fetchNodeData, nodeSelected])
+		fetchDetailReportRiskMonitoring()
+	}, [fetchDetailReportRiskMonitoring])
 
 	return (
 		<div className="w-full">
 			<div className="flex flex-row justify-between items-end">
-				<InputSelect
-					label="Node"
-					placeholder="Select Node"
-					items={nodeOptions}
-					loading={isFetchingNode}
-					className="w-full"
-					value={nodeSelected?.id?.toString() ?? ""}
-					onValueChange={(value) => {
-						setNodeSelected(parseInt(value))
-					}}
-				/>
+				<ExportExcelButton label="Export Excel" />
 			</div>
 			<div className="mt-4">
-				<DataTable<ReportRiskMonitoring>
-					columns={columnReportRiskMonitoring(handleActionTable)}
-					data={reportRiskMonitoring}
+				<DataTable<DetailReportRiskMonitoring>
+					columns={columnDetailReportRiskMonitoring(
+						handleActionTable
+					)}
+					data={reportRiskMonitoringDetail}
 					loading={isFetchingReport}
 					rowCount={total}
 					manualPagination={true}

@@ -12,9 +12,10 @@ const DashboardMain = () => {
 		severity_map,
 		likelyhood_frequency,
 		risk_map,
-		actions: { fetchRiskMap },
+		
+		actions: { fetchRiskMap, fetchLikelyhood, fetchSeverityMap },
 	} = useSettingMatrixStore()
-
+	
 	const itemsCounting = [
 		{
 			label: "Risk Data Bank",
@@ -66,7 +67,9 @@ const DashboardMain = () => {
 
 	useEffect(() => {
 		fetchRiskMap()
-	}, [fetchRiskMap])
+		fetchLikelyhood()
+		fetchSeverityMap()
+	}, [fetchRiskMap, fetchLikelyhood, fetchSeverityMap])
 
 	return (
 		<div className="max-w-full mt-4 space-y-4">
