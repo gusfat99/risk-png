@@ -1,11 +1,13 @@
+import { Dashboard } from "@/types/dashboard"
 import React from "react"
 
 export interface DashboardRiskCardProps {
 	title?: string
 	content: Array<{
 		label: string
-		value: any
+		field: string
 	}>
+	dashboardItem: null | Dashboard
 
 	icon: React.ReactElement
 }
@@ -14,6 +16,7 @@ const DashboardRiskCard: React.FC<DashboardRiskCardProps> = ({
 	title,
 	content,
 	icon,
+	dashboardItem,
 }) => {
 	const Icon = icon
 	return (
@@ -31,7 +34,11 @@ const DashboardRiskCard: React.FC<DashboardRiskCardProps> = ({
 				{content.map((item, index) => (
 					<div className="mt-4" key={index}>
 						<p className="text-gray-500">{item.label}</p>
-						<p className="text-xl font-semibold ">{item.value}</p>
+						<p className="text-xl font-semibold ">
+							{dashboardItem && item.field in dashboardItem
+								? dashboardItem[item.field as keyof Dashboard]
+								: "N/A"}
+						</p>
 					</div>
 				))}
 			</div>

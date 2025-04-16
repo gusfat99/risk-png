@@ -113,6 +113,17 @@ const useDashboardStore = createStore<DashboardState>(
 					}
 				)
 			},
+			setNodeSelected: (nodeId) => {
+				const nodeItems = get().supportData.node.nodeItems
+				const nodeSelected = nodeItems.find(
+					(node) => node.id?.toString() === nodeId?.toString()
+				)
+				if (nodeSelected) {
+					set({
+						nodeSelected,
+					})
+				}
+			},
 		},
 	})
 )

@@ -21,5 +21,7 @@ export interface DashboardState extends CommonState {
 	}
 	actions: {
 		fetchDashboard(): Promise<ResponseApiType<Dashboard>>
+		fetchNodeData(): Promise<ResponseApiType<Node[]>>
+		setNodeSelected: (nodeId: any) => void
 	}
 }
