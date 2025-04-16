@@ -1,6 +1,7 @@
 import InputSelectController from "@/components/inputs/InputSelectController"
 import { FormField } from "@/components/ui/form"
 import useSettingMatrixStore from "@/store/settingMatrixStore"
+import { SelectDataType } from "@/types/common"
 import { RiskMonitoringSchemaForm } from "@/types/riskMonitoring"
 import React from "react"
 import { UseFormReturn } from "react-hook-form"
@@ -56,7 +57,7 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 		{
 			label: "Severity to Reputation & Legal (SPN)",
 			field: "spn_affected",
-			col_id: 5,
+			col_id: 6,
 			group: 2,
 		},
 	]
@@ -79,66 +80,73 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 				<div className="space-y-4">
 					{fieldsInput
 						.filter((f) => f.group === 1)
-						.map((fieldInput) => (
-							<FormField
-								key={fieldInput.field}
-								control={form.control}
-								name={fieldInput.field}
-								render={({ field }) => (
-									<InputSelectController
-										field={field}
-										items={severity_map_options.filter(
-											(x) =>
-												x.saverity_row_id?.toString() ===
-												fieldInput.col_id?.toString()
-										)}
-										disabled={isDetail}
-										label={fieldInput.label}
-										placeholder={
-											"Enter " + fieldInput.label
-										}
-										onChange={(value) => {
-											form.setValue(
-												fieldInput.field,
-												value
-											)
-										}}
-									/>
-								)}
-							/>
-						))}
+						.map((fieldInput) => {
+							const opts = severity_map_options.filter(
+								(x) =>
+									x.saverity_row_id?.toString() ===
+									fieldInput.col_id?.toString()
+							)
+
+							return (
+								<FormField
+									key={fieldInput.field}
+									control={form.control}
+									name={fieldInput.field}
+									render={({ field }) => (
+										<InputSelectController
+											field={field}
+											items={opts}
+											disabled={isDetail}
+											label={fieldInput.label}
+											placeholder={
+												"Enter " + fieldInput.label
+											}
+											onChange={(value) => {
+												form.setValue(
+													fieldInput.field,
+													value
+												)
+											}}
+										/>
+									)}
+								/>
+							)
+						})}
 				</div>
 				<div className="space-y-4">
 					{fieldsInput
 						.filter((f) => f.group === 2)
-						.map((fieldInput) => (
-							<FormField
-								key={fieldInput.field}
-								control={form.control}
-								name={fieldInput.field}
-								render={({ field }) => (
-									<InputSelectController
-										field={field}
-										items={severity_map_options.filter(
-											(x) =>
-												x.saverity_row_id?.toString() ===
-												fieldInput.col_id?.toString()
-										)}
-										disabled={isDetail}
-										label={fieldInput.label}
-										placeholder={
-											"Enter " + fieldInput.label
-										}
-										onChange={(value) => {
-											form.setValue(
-												fieldInput.field,
-												value
-											)
-										}}
-									/>
-								)}
-							/>
-						))}
+						.map((fieldInput) => {
+							const opts = severity_map_options.filter(
+								(x) =>
+									x.saverity_row_id?.toString() ===
+									fieldInput.col_id?.toString()
+							)
+							return (
+								<FormField
+									key={fieldInput.field}
+									control={form.control}
+									name={fieldInput.field}
+									render={({ field }) => (
+										<InputSelectController
+											field={field}
+											items={opts}
+											disabled={isDetail}
+											label={fieldInput.label}
+											placeholder={
+												"Enter " + fieldInput.label
+											}
+											onChange={(value) => {
+												form.setValue(
+													fieldInput.field,
+													value
+												)
+											}}
+										/>
+									)}
+								/>
+							)
+						})}
 				</div>
 			</div>
 		</div>

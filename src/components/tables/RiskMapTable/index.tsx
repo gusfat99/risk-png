@@ -80,7 +80,7 @@ const RiskMapTable: React.FC<RiskMapTableProps> = ({
 						</TableCell>
 					</TableRow>
 					{rowsMain.column
-						.sort((x, y) => y.id - x.id)
+						// .sort((x, y) => y.id - x.id)
 						.map((frequency, rowKey) => {
 							return (
 								<TableRow

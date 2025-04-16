@@ -1,7 +1,6 @@
 "use client"
 import AddButton from "@/components/buttons/AddButton"
 import DataTable from "@/components/DataTable"
-import InputSearch from "@/components/inputs/InputSearch"
 import InputSelect from "@/components/inputs/InputSelect"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
@@ -130,7 +129,7 @@ const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 		label: node.node,
 		value: node.id?.toString(),
 	}))
-	console.log({errors : form.formState.errors, values : form.getValues()})
+	
 	return (
 		<Form {...form}>
 			<form
