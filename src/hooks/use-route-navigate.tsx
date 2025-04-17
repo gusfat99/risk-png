@@ -99,10 +99,17 @@ export const useRouteNavigate = () => {
 
 	pathNameArr.forEach((pathname, index) => {
 		if (index === 0) {
-			breadcrumbs.push({
-				title: route?.title || "",
-				path: route?.url || "#",
-			})
+			if (route?.items && route?.items?.length > 0) {
+				breadcrumbs.push({
+					title: route?.title || "",
+					path: `/${pathname}`,
+				})
+			} else {
+				breadcrumbs.push({
+					title: route?.title || "",
+					path: route?.url || "#",
+				})
+			}
 		} else {
 			breadcrumbs.push({
 				title: toSentenceCase(pathname) + " " + "Data",

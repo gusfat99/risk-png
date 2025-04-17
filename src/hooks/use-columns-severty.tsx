@@ -48,7 +48,7 @@ export interface UseColumnsRiskResponseProps extends UseColumnsProps {
 	form: UseFormReturn<RiskResponseSevertyExpectMultipleSchemaForm>
 }
 
-const CellInput = ({ row, form, name, }: { row: any; form: any; name: any }) => {
+const CellInput = ({ row, form, name }: { row: any; form: any; name: any }) => {
 	const rowId = row.index
 	const { likelyhood_options, severity_map_options } = useSettingMatrixStore()
 
@@ -193,7 +193,11 @@ export const useColumnsRiskAnalyst = ({
 				size: 280,
 				enableSorting: false,
 				cell: ({ row }) => (
-					<div>{row.getValue("existing_safeguard")}</div>
+					<ul>
+						{row.original.existing_safeguard.map((safeguard, key) => (
+							<li key={key}>{safeguard.safeguard}</li>
+						))}
+					</ul>
 				),
 			},
 			{

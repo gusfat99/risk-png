@@ -63,7 +63,7 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 		...initialState,
 		actions: {
 			fetchAllData: async (nodeId: any) => {
-				const  year_selected  = useAuthStore.getState().year_selected
+				const year_selected = useAuthStore.getState().year_selected
 				set({
 					isFetching: true,
 				})
@@ -75,7 +75,7 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 						{
 							page: get().pagination_tanstack.pageIndex,
 							per_page: get().pagination_tanstack.pageSize,
-							year : year_selected
+							year: year_selected,
 						}
 					)
 						.then((data) => {
@@ -211,68 +211,19 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 					}
 				)
 			},
-			fetchSingleData: async (nodeId: any, id: any) => {
+			fetchSingleData: async (nodeId: any, riskId: any) => {
 				set({
 					isFetching: true,
-					supportData: {
-						...get().supportData,
-						deviation: {
-							...get().supportData.deviation,
-							isFetching: true,
-						},
-						cause: {
-							...get().supportData.cause,
-							isFetching: true,
-						},
-						consiquence: {
-							...get().supportData.consiquence,
-							isFetching: true,
-						},
-						safeguard: {
-							...get().supportData.safeguard,
-							isFetching: true,
-						},
-					},
 				})
 				return new Promise<ResponseApiType<RiskAnalysis>>(
 					async (resolve, reject) => {
 						try {
 							const data = await getDataApi<RiskAnalysis>(
-								`${RISK_ANALYST_EP}/${nodeId}/${id}`
+								`${RISK_ANALYST_EP}/${nodeId}/${riskId}`
 							)
 							if (data.data) {
-								const {
-									deviations,
-									causes,
-									consequences,
-									safeguards,
-								} = await fetchRiskBankHierarchy(data.data)
 								set({
 									riskAnalysSelected: data.data,
-									supportData: {
-										...get().supportData,
-										deviation: {
-											...get().supportData.deviation,
-											isFetching: false,
-											deviationItems: deviations || [],
-										},
-										cause: {
-											...get().supportData.cause,
-											isFetching: false,
-											causeItems: causes || [],
-										},
-										consiquence: {
-											...get().supportData.consiquence,
-											isFetching: false,
-											consiquenceItems:
-												consequences || [],
-										},
-										safeguard: {
-											...get().supportData.safeguard,
-											isFetching: false,
-											safeguardItems: safeguards || [],
-										},
-									},
 								})
 								resolve(data)
 							}
@@ -286,25 +237,6 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 						} finally {
 							set({
 								isFetching: false,
-								supportData: {
-									...get().supportData,
-									deviation: {
-										...get().supportData.deviation,
-										isFetching: false,
-									},
-									cause: {
-										...get().supportData.cause,
-										isFetching: false,
-									},
-									consiquence: {
-										...get().supportData.consiquence,
-										isFetching: false,
-									},
-									safeguard: {
-										...get().supportData.safeguard,
-										isFetching: false,
-									},
-								},
 							})
 						}
 					}
@@ -314,79 +246,83 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 				set({
 					isSubmit: true,
 				})
-				return new Promise<ResponseApiType<{risk_analyst : RiskAnalysis}>>(
-					(resolve, reject) => {
-						const formData = new FormData()
-						Object.entries(payload).forEach(([key, value]) => {
-							formData.append(key, value)
+				return new Promise<
+					ResponseApiType<{ risk_analyst: RiskAnalysis }>
+				>((resolve, reject) => {
+					const formData = new FormData()
+					Object.entries(payload).forEach(([key, value]) => {
+						formData.append(key, value)
+					})
+					postData<{ risk_analyst: RiskAnalysis }>(
+						RISK_ANALYST_EP + "/" + nodeId,
+						payload,
+						{
+							headers: {
+								"Content-Type": "multipart/form-data",
+							},
+						}
+					)
+						.then((data) => {
+							set((state) => {
+								return {
+									riskAnalysItems: [
+										...state.riskAnalysItems,
+										...(data.data
+											? [data.data.risk_analyst]
+											: []),
+									],
+								}
+							})
+							resolve(data)
 						})
-						postData<{risk_analyst : RiskAnalysis}>(
-							RISK_ANALYST_EP + "/" + nodeId,
-							payload,
-							{
-								headers: {
-									"Content-Type": "multipart/form-data",
-								},
-							}
-						)
-							.then((data) => {
-								set((state) => {
-									return {
-										riskAnalysItems: [
-											...state.riskAnalysItems,
-											...(data.data ? [data.data.risk_analyst] : []),
-										],
-									}
-								})
-								resolve(data)
+						.catch((err) => {
+							reject(err)
+						})
+						.finally(() => {
+							set({
+								isSubmit: false,
 							})
-							.catch((err) => {
-								reject(err)
-							})
-							.finally(() => {
-								set({
-									isSubmit: false,
-								})
-							})
-					}
-				)
+						})
+				})
 			},
-			updateData: async (id: any, nodeId : any, payload: any) => {
+			updateData: async (id: any, nodeId: any, payload: any) => {
 				set({
 					isSubmit: true,
 				})
-				return new Promise<ResponseApiType<{risk_analyst : RiskAnalysis}>>(
-					(resolve, reject) => {
-						postData<{risk_analyst : RiskAnalysis}>(
-							`${RISK_ANALYST_EP}/${nodeId}/update/${id}`,
-							payload,
-							{
-								headers: {
-									"Content-Type": "multipart/form-data",
-								},
-							}
-						)
-							.then((data) => {
-								set((state) => {
-									return {
-										riskAnalysItems: [
-											...state.riskAnalysItems,
-											...(data.data ? [data.data.risk_analyst] : []),
-										],
-									}
-								})
-								resolve(data)
+				return new Promise<
+					ResponseApiType<{ risk_analyst: RiskAnalysis }>
+				>((resolve, reject) => {
+					postData<{ risk_analyst: RiskAnalysis }>(
+						`${RISK_ANALYST_EP}/${nodeId}/update/${id}`,
+						payload,
+						{
+							headers: {
+								"Content-Type": "multipart/form-data",
+							},
+						}
+					)
+						.then((data) => {
+							set((state) => {
+								return {
+									riskAnalysItems: [
+										...state.riskAnalysItems,
+										...(data.data
+											? [data.data.risk_analyst]
+											: []),
+									],
+								}
 							})
-							.catch((err) => {
-								reject(err)
+							resolve(data)
+						})
+						.catch((err) => {
+							reject(err)
+						})
+						.finally(() => {
+							set({
+								isSubmit: false,
 							})
-							.finally(() => {
-								set({
-									isSubmit: false,
-								})
-							})
-					}
-				)
+						})
+				})
 			},
 			updateSavertyMultiple: async (
 				nodeId: any,

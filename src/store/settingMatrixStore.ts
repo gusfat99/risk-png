@@ -226,8 +226,8 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 			},
 			async fetchOptionsSeverityMap() {
 				set((prevState) => ({
-					likelyhood_frequency: {
-						...prevState.likelyhood_frequency,
+					severity_map: {
+						...prevState.severity_map,
 						isFetching: true,
 					},
 				}))
@@ -243,7 +243,11 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 							options = (data.data || []).map((cell) => ({
 								label: `(${cell.column_value}) ${cell.column_deviation}: ${cell.severity_map_value}`,
 								value: cell.column_value?.toString(),
+								column_value: cell.column_value,
 								saverity_row_id: cell.row_value,
+								column_deviation: cell.column_deviation,
+								row_severity: cell.row_severity,
+								severity_map_value: cell.severity_map_value,
 							}))
 
 							set((prevState) => ({

@@ -27,7 +27,7 @@ interface IProps {
 
 const RiskAnalystFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 	const { toast } = useToast()
-	const router = useRouter();
+	const router = useRouter()
 	const {
 		actions: { setPagination, updateSavertyMultiple },
 		isFetching,
@@ -68,6 +68,8 @@ const RiskAnalystFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 	const handleAction = (actionName: string, id: any) => {
 		if (actionName === "update") {
 			router.push(`${basePathname}/update/${id}`)
+		} else if (actionName === "detail") {
+			router.push(`${basePathname}/detail/${nodeSelected?.id}/${id}`)
 		}
 	}
 
@@ -104,7 +106,7 @@ const RiskAnalystFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 		onAction: handleAction,
 		form,
 	})
-	
+
 	return (
 		<Form {...form}>
 			<form
@@ -113,7 +115,6 @@ const RiskAnalystFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 			>
 				<div className="flex flex-row justify-between items-end">
 					<div className="flex flex-row gap-2 items-end">
-						
 						<InputSearch
 							label="Filter Data"
 							isRequired={false}
@@ -123,14 +124,12 @@ const RiskAnalystFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 						<Link href={basePathname + "/add"}>
 							<AddButton label="Add Risk Analysis" />
 						</Link>
-
 					</div>
 					<Button disabled={isSubmit} variant={"secondary"}>
 						{isSubmit && <Spinner className="w-4 h-4" />}
 						<Save /> Save Changes Severity
 					</Button>
 				</div>
-				
 
 				<DataTable<RiskAnalysis>
 					columns={column}
