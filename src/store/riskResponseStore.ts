@@ -35,6 +35,7 @@ const initialState = {
 	hazopItemsSelected: null,
 	isFetchingHazopItems: false,
 	isFetchingSeverity: false,
+	riskSeveritySelected: "risk_ranking_current",
 	supportData: {
 		node: {
 			isFetching: false,
@@ -50,7 +51,7 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 		...initialState,
 		actions: {
 			fetchAllData: async (nodeId: any) => {
-				const  year_selected  = useAuthStore.getState().year_selected
+				const year_selected = useAuthStore.getState().year_selected
 				set({
 					isFetching: true,
 				})
@@ -64,7 +65,7 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 					}>(`${RISK_RESPONSE_EP}/${nodeId}`, {
 						page: get().pagination_tanstack.pageIndex,
 						per_page: get().pagination_tanstack.pageSize,
-						year : year_selected
+						year: year_selected,
 					})
 						.then((data) => {
 							if (data.data) {
@@ -253,6 +254,10 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 						getDataApi<Severity[]>(`${SEVERITY_EP}`)
 							.then(async (data) => {
 								if (Array.isArray(data.data)) {
+									data.data.push({
+										label: "Risk Rank Current",
+										key: "risk_ranking_current",
+									})
 									set({
 										isFetchingSeverity: false,
 										severityItems: data.data,
@@ -608,6 +613,11 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 						nodeSelected,
 					})
 				}
+			},
+			setRiskSeveritySelected: (severity) => {
+				set({
+					riskSeveritySelected: severity,
+				})
 			},
 		},
 	})

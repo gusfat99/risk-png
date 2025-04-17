@@ -17,13 +17,16 @@ const RiskReportSeverityModule = () => {
 		nodeSelected,
 		isFetching,
 		isFetchingSeverity,
+		riskSeveritySelected,
+
 		actions: {
 			setNodeSelected,
 			fetchNodeData,
 			fetchAllData,
 			setHazopByRiskAnalyst,
 			setPagination,
-			fetchSeverity
+			fetchSeverity,
+			setRiskSeveritySelected
 		},
 		pagination_tanstack,
 		riskResponseItems,
@@ -66,13 +69,18 @@ const RiskReportSeverityModule = () => {
 		nodeItems.length,
 	])
 
+	// let severityOptions: SelectDataType[] = severityItems?.map(x => ({
+	// 	label : x.label
+	// }))
 	const severityOptions : SelectDataType[] = (severityItems || []).map(x => ({
 		label: x.label,
 		value : x.key
 	}))
 
 	const { column } = useColumnsReportRiskBySeverity({
-		onAction: () => {},
+		onAction: () => { },
+		riskSeveritySelected,
+		severityOptions
 	})
 
 	return (
@@ -97,14 +105,14 @@ const RiskReportSeverityModule = () => {
 				<>
 					<div className="grid grid-cols-2">
 						<InputSelect
-							label="Show Severity Column"
-							placeholder="Select Severity Column"
+							label="Select severity"
+							placeholder="select severity"
 							items={severityOptions}
 							loading={isFetchingNode}
 							className="w-full"
-							value={nodeSelected?.id?.toString() ?? ""}
+							value={riskSeveritySelected}
 							onValueChange={(value) => {
-								setNodeSelected(parseInt(value))
+								setRiskSeveritySelected((value))
 							}}
 						/>
 					</div>

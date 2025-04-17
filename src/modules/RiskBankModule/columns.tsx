@@ -25,27 +25,7 @@ export const columnRiskBank = (
 					</TableCell>
 				) : null,
 		},
-		{
-			id: "id",
-			accessorFn: (row) => row.id,
-			size: 60,
-			header: () => {
-				return <div className="text-center">Action</div>
-			},
-			cell: ({ row }) =>
-				row.original.isFirstMain ? (
-					<TableCell
-						className="border text-center"
-						rowSpan={row.original.mainRowspan}
-					>
-						<TableRowActions
-							onAction={(actionName: string) => {
-								onAction(actionName, row.getValue("id"))
-							}}
-						/>
-					</TableCell>
-				) : null,
-		},
+		
 		{
 			accessorKey: "parameter",
 			size: 90,

@@ -3,15 +3,22 @@ import { Button } from "@/components/ui/button"
 import { hazopStatus } from "@/data/enumetions"
 import { UseColumnsProps } from "@/hooks/use-columns-severty"
 import { cn } from "@/lib/utils"
+import { SelectDataType } from "@/types/common"
 import { RiskResponse } from "@/types/riskResponse"
 import { ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
 import { useMemo } from "react"
 
+interface ColumnsProps extends UseColumnsProps {
+	riskSeveritySelected: string
+	severityOptions: SelectDataType[]
+}
+
 export const useColumnsReportRiskBySeverity = ({
 	onAction,
-}: UseColumnsProps) => {
-
+	riskSeveritySelected,
+	severityOptions,
+}: ColumnsProps) => {
 	const column: ColumnDef<RiskResponse>[] = useMemo(() => {
 		const cols: ColumnDef<RiskResponse>[] = [
 			{
@@ -24,31 +31,7 @@ export const useColumnsReportRiskBySeverity = ({
 				size: 60,
 				enableSorting: false,
 			},
-			{
-				id: "risk_ranking_current",
-				accessorFn: (row) => row.risk_ranking_current,
-				size: 180,
-				enableSorting: false,
-				header: ({ column }) => {
-					return (
-						<DataTableColumnHeader
-							column={column}
-							title="Risk Ranking (RR) Current"
-						/>
-					)
-				},
-				meta: {
-					className: "text-center",
-				},
-				cell: ({ row }) => {
-					return (
-						<div className="font-semibold text-center">
-							{row.getValue("risk_ranking_current")}
-						</div>
-						// <></>
-					)
-				},
-			},
+
 			{
 				id: "id",
 				accessorFn: (row) => row.id,
@@ -326,7 +309,7 @@ export const useColumnsReportRiskBySeverity = ({
 					className: "text-center",
 				},
 				cell: ({ row }) => {
-					return row.getValue("sp_expected")
+					return<div className="text-center">{ row.getValue("sp_expected")}</div>
 				},
 			},
 			{
@@ -346,7 +329,7 @@ export const useColumnsReportRiskBySeverity = ({
 					className: "text-center",
 				},
 				cell: ({ row }) => {
-					return row.getValue("se_expected")
+					return<div className="text-center">{ row.getValue("se_expected")}</div>
 				},
 			},
 			{
@@ -366,7 +349,7 @@ export const useColumnsReportRiskBySeverity = ({
 					className: "text-center",
 				},
 				cell: ({ row }) => {
-					return row.getValue("sf_expected")
+					return<div className="text-center">{ row.getValue("sf_expected")}</div>
 				},
 			},
 			{
@@ -388,7 +371,7 @@ export const useColumnsReportRiskBySeverity = ({
 					className: "text-center",
 				},
 				cell: ({ row }) => {
-					return row.getValue("srl_expected")
+					return <div className="text-center">{row.getValue("srl_expected")}</div>
 				},
 			},
 			{
@@ -408,7 +391,7 @@ export const useColumnsReportRiskBySeverity = ({
 					className: "text-center",
 				},
 				cell: ({ row }) => {
-					return row.getValue("srl_expected")
+					return <div className="text-center">{row.getValue("srl_expected")}</div>
 				},
 			},
 			{
@@ -430,7 +413,7 @@ export const useColumnsReportRiskBySeverity = ({
 					className: "text-center",
 				},
 				cell: ({ row }) => {
-					return row.getValue("spn_expected")
+					return <div className="text-center">{row.getValue("spn_expected")}</div>
 				},
 			},
 			{
@@ -450,7 +433,7 @@ export const useColumnsReportRiskBySeverity = ({
 					className: "text-center",
 				},
 				cell: ({ row }) => {
-					return row.getValue("l_frequency_expected")
+					return <div className="text-center">{row.getValue("l_frequency_expected")}</div>
 				},
 			},
 			{
@@ -525,8 +508,50 @@ export const useColumnsReportRiskBySeverity = ({
 				cell: ({ row }) => <div>{row.getValue("remark_analyst")}</div>,
 			},
 		]
-		return cols
-	}, [onAction])
+
+		//column by filter severity
+		for (const sv of severityOptions) {
+			if (sv.value === riskSeveritySelected) {
+				cols.splice(1, 0, {
+					id: riskSeveritySelected,
+					accessorFn: (row) => row[riskSeveritySelected as keyof RiskResponse],
+					size: 180,
+					enableSorting: false,
+					header: ({ column }) => {
+						return (
+							<DataTableColumnHeader
+								column={column}
+								title={sv.label}
+							/>
+						)
+					},
+					meta: {
+						className: "text-center",
+					},
+					cell: ({ row }) => {
+						return (
+							<div className="font-semibold text-center">
+								{row.getValue(riskSeveritySelected)}
+							</div>
+							// <></>
+						)
+					},
+				})
+			
+				break;
+			}
+		}
+
+		//remove duclicate id
+		const seen = new Set<any>();
+		const uniqueCols= cols.filter(item => {
+		  if (seen.has(item?.id)) return false;
+		  seen.add(item.id);
+		  return true;
+		});
+		
+		return uniqueCols
+	}, [onAction, riskSeveritySelected])
 
 	return { column }
 }

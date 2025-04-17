@@ -86,6 +86,7 @@ export interface RiskResponseState extends CommonState {
 	riskResponseItems: RiskResponse[]
 	riskResponseSelected: RiskResponse | null
 	nodeSelected: Node | null
+	riskSeveritySelected: string;
 	hazopItemsSelected: Hazop[] | null
 	severityItems : Severity[] | null
 	isFetchingHazopItems: boolean
@@ -139,6 +140,8 @@ export interface RiskResponseState extends CommonState {
 		deleteData?(id: any): Promise<ResponseApiType<any>>
 		setPagination?: (updater: Updater<PaginationState>) => void
 		setNodeSelected: (nodeId: number) => void
+		setRiskSeveritySelected
+		: (severity: string) => void
 	}
 }
 
