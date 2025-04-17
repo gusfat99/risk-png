@@ -53,6 +53,7 @@ const useReportRiskMonitoringStore = createStore<ReportRiskMonitoringState>(
 								page: get().pagination_tanstack.pageIndex,
 								per_page: get().pagination_tanstack.pageSize,
 								year: year_selected,
+								node_id : get().nodeSelected?.id || undefined
 							}
 						)
 							.then((data) => {
