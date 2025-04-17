@@ -1,6 +1,8 @@
 import { ResponseApiType } from "@/helpers/ApiHelper"
 import { CommonState } from "./common"
 import {  PaginationState, Updater } from "@tanstack/react-table"
+import { z } from "zod"
+import { NodeSchema } from "@/schemas/NodeSchema"
 
 export interface Node {
 	id: number
@@ -36,3 +38,5 @@ export interface NodeState extends CommonState {
 		setPagination?: (updater: Updater<PaginationState>) => void;
 	}
 }
+
+export type NodeSchemaForm = z.infer<typeof NodeSchema>

@@ -21,13 +21,12 @@ export const columnNode = (
 
 				return (pageIndex - 1) * pageSize + row.index + 1
 			},
+			size: 60,
 		},
 		{
 			id: "id",
 			accessorFn: (row) => row.id,
-			meta: {
-				hiddenFilter: true,
-			},
+			enableSorting: false,
 			header: () => {
 				return <div className="flex justify-start">Action</div>
 			},
@@ -42,13 +41,12 @@ export const columnNode = (
 		{
 			id: "node",
 			accessorFn: (row) => row.node,
-			meta: {
-				hiddenFilter: true,
-			},
+
 			header: ({ column }) => {
 				return <DataTableColumnHeader column={column} title="Node" />
 			},
 			cell: ({ row }) => row.getValue("node"),
+			enableSorting: false,
 		},
 
 		{
@@ -63,6 +61,7 @@ export const columnNode = (
 				)
 			},
 			cell: ({ row }) => <div>{row.getValue("node_description")}</div>,
+			enableSorting: false,
 		},
 		{
 			id: "node_location",
@@ -75,6 +74,7 @@ export const columnNode = (
 					/>
 				)
 			},
+			enableSorting: false,
 			cell: ({ row }) => (
 				<div className="lowercase">{row.getValue("node_location")}</div>
 				// <></>
@@ -92,6 +92,7 @@ export const columnNode = (
 					/>
 				)
 			},
+			enableSorting: false,
 			cell: ({ row }) => (
 				<div className="lowercase">
 					{row.getValue("drawing_reference")}
@@ -109,6 +110,7 @@ export const columnNode = (
 					/>
 				)
 			},
+			enableSorting: false,
 			cell: ({ row }) => (
 				<div className="text-center">
 					{row.getValue("inlet_pressure")} bar
@@ -126,6 +128,7 @@ export const columnNode = (
 					/>
 				)
 			},
+			enableSorting: false,
 			cell: ({ row }) => {
 				return (
 					<div className="text-center">
@@ -145,6 +148,8 @@ export const columnNode = (
 					/>
 				)
 			},
+			size : 380,
+			enableSorting: false,
 			cell: ({ row }) => {
 				return row.getValue("remark_node")
 			},
@@ -169,7 +174,7 @@ export const columnSafeguard = (
 		{
 			id: "id",
 			accessorFn: (row) => row.id,
-			
+
 			header: () => {
 				return <div className="flex justify-start">Action</div>
 			},
@@ -184,7 +189,7 @@ export const columnSafeguard = (
 		{
 			id: "safeguard",
 			accessorFn: (row) => row.safeguard,
-			
+
 			header: ({ column }) => {
 				return (
 					<DataTableColumnHeader
@@ -216,7 +221,13 @@ export const columnSafeguard = (
 			accessorFn: (row) => row.file_path,
 			header: "Document",
 			cell: ({ row }) => (
-				<Link download={true} target="_blank" href={`${API_URL}/storage/safeguards/${row.getValue("file_path")}`}>
+				<Link
+					download={true}
+					target="_blank"
+					href={`${API_URL}/storage/safeguards/${row.getValue(
+						"file_path"
+					)}`}
+				>
 					<Button size={"sm"} variant={"link"}>
 						<Download /> Download
 					</Button>

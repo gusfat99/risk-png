@@ -23,11 +23,15 @@ export const NodeSchema = z.object({
 		.min(1, { message: "Drawing Reference is required" }),
 	inlet_pressure: z
 		.string()
-		.regex(/^\d+(\.\d+)?$/, "Only numbers or decimals with '.' allowed")
+		.regex(/^\d+(\.\d{1})?$/, {
+			message: "Only numbers with max 1 decimal digit allowed (e.g., 1 or 1.2)",
+		 })
 		.min(0, { message: "Inlet Pressure is required" }),
 	outlet_pressure: z
 		.string()
-		.regex(/^\d+(\.\d+)?$/, "Only numbers or decimals with '.' allowed")
+		.regex(/^\d+(\.\d{1})?$/, {
+			message: "Only numbers with max 1 decimal digit allowed (e.g., 1 or 1.2)",
+		 })
 		.min(0, { message: "Outlet Pressure is required" }),
 	remark_node: z
 		.string({

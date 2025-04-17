@@ -6,6 +6,7 @@ import Spinner from "@/components/ui/spinner"
 import { useToast } from "@/hooks/use-toast"
 import { initialValueNode, NodeSchema } from "@/schemas/NodeSchema"
 import useNodeStore from "@/store/nodeStore"
+import { NodeSchemaForm } from "@/types/node"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Save } from "lucide-react"
 import Link from "next/link"
@@ -43,7 +44,7 @@ const NodeDataForm: React.FC<IProps> = ({ isEdit, isDetail }) => {
 		[params?.id, isEdit, isDetail, nodeItems]
 	)
 
-	const form = useForm<z.infer<typeof NodeSchema>>({
+	const form = useForm<NodeSchemaForm>({
 		resolver: zodResolver(NodeSchema),
 		progressive: false,
 		mode: "onSubmit",
@@ -56,7 +57,7 @@ const NodeDataForm: React.FC<IProps> = ({ isEdit, isDetail }) => {
 				: initialValueNode,
 	})
 
-	const handleSubmit = async (values: z.infer<typeof NodeSchema>) => {
+	const handleSubmit = async (values: NodeSchemaForm) => {
 		try {
 			if (createData && !params?.id && !isEdit) {
 				const result = await createData(values)
