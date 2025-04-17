@@ -57,7 +57,6 @@ const RiskResponseFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 		risk_analyst_id: null,
 		open: false,
 	})
-
 	const defaultValues: RiskResponseSevertyExpectMultipleSchemaForm =
 		React.useMemo(() => {
 			// console.log
@@ -149,7 +148,7 @@ const RiskResponseFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 		onAction: handleAction,
 		form,
 	})
-
+	
 	return (
 		<React.Fragment>
 			<Form {...form}>

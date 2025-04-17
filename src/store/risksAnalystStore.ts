@@ -211,7 +211,106 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 					}
 				)
 			},
-			fetchSingleData: async (nodeId: any, riskId: any) => {
+			fetchSingleData: async (nodeId: any, id: any) => {
+				set({
+					isFetching: true,
+					supportData: {
+						...get().supportData,
+						deviation: {
+							...get().supportData.deviation,
+							isFetching: true,
+						},
+						cause: {
+							...get().supportData.cause,
+							isFetching: true,
+						},
+						consiquence: {
+							...get().supportData.consiquence,
+							isFetching: true,
+						},
+						safeguard: {
+							...get().supportData.safeguard,
+							isFetching: true,
+						},
+					},
+				})
+				return new Promise<ResponseApiType<RiskAnalysis>>(
+					async (resolve, reject) => {
+						try {
+							const data = await getDataApi<RiskAnalysis>(
+								`${RISK_ANALYST_EP}/${nodeId}/${id}`
+							)
+							if (data.data) {
+								const {
+									deviations,
+									causes,
+									consequences,
+									safeguards,
+								} = await fetchRiskBankHierarchy(data.data)
+								set({
+									riskAnalysSelected: data.data,
+									supportData: {
+										...get().supportData,
+										deviation: {
+											...get().supportData.deviation,
+											isFetching: false,
+											deviationItems: deviations || [],
+										},
+										cause: {
+											...get().supportData.cause,
+											isFetching: false,
+											causeItems: causes || [],
+										},
+										consiquence: {
+											...get().supportData.consiquence,
+											isFetching: false,
+											consiquenceItems:
+												consequences || [],
+										},
+										safeguard: {
+											...get().supportData.safeguard,
+											isFetching: false,
+											safeguardItems: safeguards || [],
+										},
+									},
+								})
+								resolve(data)
+							}
+						} catch (err: any) {
+							toast({
+								title: "ERROR",
+								description: err.message,
+								variant: "destructive",
+							})
+							reject(err)
+						} finally {
+							set({
+								isFetching: false,
+								supportData: {
+									...get().supportData,
+									deviation: {
+										...get().supportData.deviation,
+										isFetching: false,
+									},
+									cause: {
+										...get().supportData.cause,
+										isFetching: false,
+									},
+									consiquence: {
+										...get().supportData.consiquence,
+										isFetching: false,
+									},
+									safeguard: {
+										...get().supportData.safeguard,
+										isFetching: false,
+									},
+								},
+							})
+						}
+					}
+				)
+			},
+			fetchDetailData: async (nodeId: any, id: any) => {
 				set({
 					isFetching: true,
 				})
@@ -219,7 +318,7 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 					async (resolve, reject) => {
 						try {
 							const data = await getDataApi<RiskAnalysis>(
-								`${RISK_ANALYST_EP}/${nodeId}/${riskId}`
+								`${RISK_ANALYST_EP}/${nodeId}/${id}`
 							)
 							if (data.data) {
 								set({

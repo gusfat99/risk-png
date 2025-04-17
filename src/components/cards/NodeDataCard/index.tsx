@@ -89,7 +89,7 @@ const NodeDataCard: NodeDataCardComponent = ({ nodeSelected }) => {
 				<TableBody>
 					{filedsNode.map((fieldNode) => (
 						<TableRow className="border-0" key={fieldNode.field}>
-							<TableCell className="text-gray-400 p-1">
+							<TableCell className="text-gray-400 w-40 p-1">
 								{fieldNode.title}
 							</TableCell>
 							<TableCell className=" p-1">:</TableCell>

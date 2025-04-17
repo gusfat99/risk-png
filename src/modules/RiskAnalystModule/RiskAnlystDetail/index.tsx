@@ -10,15 +10,15 @@ interface IProps {}
 
 const RiskAnalystDetail: React.FC<IProps> = () => {
 	const { nodeId, riskId } = useParams()
-	console.log({ nodeId, riskId })
+
 	const {
-		actions: { fetchSingleData },
+		actions: { fetchDetailData },
 		riskAnalysSelected,
 		isFetching,
 	} = useRiskAnalystStore()
 
 	useEffect(() => {
-		fetchSingleData && fetchSingleData(nodeId, riskId)
+		fetchDetailData && fetchDetailData(nodeId, riskId)
 	}, [nodeId, riskId])
 
 	return (

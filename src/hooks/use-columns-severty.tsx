@@ -54,7 +54,7 @@ const CellInput = ({ row, form, name }: { row: any; form: any; name: any }) => {
 
 	const debouncedUpdate = useDebounce((key: any, value: any) => {
 		form.setValue(key, value)
-	})
+	},100)
 	const fieldSeverity = fieldsInputSeverity.find((field) =>
 		name.includes(field.name_code)
 	)
@@ -93,6 +93,7 @@ const CellInput = ({ row, form, name }: { row: any; form: any; name: any }) => {
 							`risks.${rowId}.${name}`,
 							parseInt(value) as any
 						)
+						
 					}}
 				/>
 			)}
@@ -976,9 +977,20 @@ export const useColumnsRiskResponse = ({
 					className: "text-center",
 				},
 				cell: ({ row }) => {
+					const severty = {...form.watch("risks")[row.index]}
+					const severties = [
+						severty["sa_expected"],
+						severty["sp_expected"],
+						severty["se_expected"],
+						severty["spn_expected"],
+						severty["srl_expected"],
+					]
+					const maxValSeverty = Math.max(...severties)
+					const risk_ranking_expected =
+						maxValSeverty * severty["l_frequency_expected"]
 					return (
 						<div className="font-semibold text-center">
-							{row.getValue("risk_ranking_expected")}
+							{risk_ranking_expected}
 						</div>
 						// <></>
 					)
