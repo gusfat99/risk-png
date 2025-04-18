@@ -46,14 +46,14 @@ const TableRowActions: React.FC<TableRowActionsProps> = ({
 	// );
 
 	return (
-		<DropdownMenu>
+		<DropdownMenu  >
 			<DropdownMenuTrigger asChild>
 				<Button aria-haspopup="true" size="icon" variant="ghost">
 					<MoreHorizontal className="h-4 w-4" />
 					<span className="sr-only">Toggle Aksi</span>
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent align="end">
+			<DropdownMenuContent align="center">
 				<DropdownMenuLabel>Aksi</DropdownMenuLabel>
 				{acl.canView && (
 					<DropdownMenuItem

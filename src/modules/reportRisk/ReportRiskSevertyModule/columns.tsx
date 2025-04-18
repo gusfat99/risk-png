@@ -36,7 +36,7 @@ export const useColumnsReportRiskBySeverity = ({
 				id: "id",
 				accessorFn: (row) => row.id,
 				meta: {
-					hiddenFilter: true,
+					className: 'text-center',
 				},
 				header: () => {
 					return (
@@ -46,15 +46,18 @@ export const useColumnsReportRiskBySeverity = ({
 					)
 				},
 				cell: ({ row }) => (
-					<Button
+					<div className="text-center" >
+						<Button
 						variant={"secondary_100"}
 						onClick={() =>
 							onAction && onAction("hazop", row.original)
 						}
+					
 						type="button"
 					>
 						Hazop
 					</Button>
+					</div>
 				),
 			},
 			{
@@ -105,6 +108,7 @@ export const useColumnsReportRiskBySeverity = ({
 			},
 			{
 				id: "existing_safeguard",
+				enableSorting : false,
 				accessorFn: (row) => row.existing_safeguard,
 				header: ({ column }) => {
 					return (
@@ -114,8 +118,9 @@ export const useColumnsReportRiskBySeverity = ({
 						/>
 					)
 				},
+				size : 240,
 				cell: ({ row }) => (
-					<div>{row.original.existing_safeguard.join(", ")}</div>
+					<div>{row.original.existing_safeguard.length <= 0 ? "-" : row.original.existing_safeguard.join(", ")}</div>
 				),
 			},
 			{
@@ -496,6 +501,7 @@ export const useColumnsReportRiskBySeverity = ({
 			{
 				id: "remark_analyst",
 				enableSorting: false,
+				size : 240,
 				accessorFn: (row) => row.remark_analyst,
 				header: ({ column }) => {
 					return (

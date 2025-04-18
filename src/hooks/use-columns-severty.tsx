@@ -127,7 +127,10 @@ export const useColumnsRiskAnalyst = ({
 			{
 				id: "id",
 				accessorFn: (row) => row.id,
-
+				meta: {
+					className : "text-center"
+				},
+				size : 80,
 				header: () => {
 					return <div className="flex justify-center">Action</div>
 				},
@@ -478,9 +481,7 @@ export const useColumnsRiskResponse = ({
 			{
 				id: "id",
 				accessorFn: (row) => row.id,
-				meta: {
-					hiddenFilter: true,
-				},
+			
 				header: () => {
 					return (
 						<div className="flex justify-start">
@@ -1130,11 +1131,12 @@ export const useColumnsMonitoring = ({
 				id: "id",
 				accessorFn: (row) => row.id,
 				meta: {
-					hiddenFilter: true,
+					className : "text-center"
 				},
 				header: () => {
-					return <div className="flex justify-start">Action</div>
+					return <div >Action</div>
 				},
+				size : 80,
 				cell: ({ row }) => (
 					<TableRowActions
 						onAction={(actionName: string) => {

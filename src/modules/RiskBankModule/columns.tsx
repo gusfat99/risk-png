@@ -1,7 +1,7 @@
 import TableRowActions from "@/components/TableRowActions"
 import { Button } from "@/components/ui/button"
 import { TableCell } from "@/components/ui/table"
-import { API_URL } from "@/constants"
+import { API_URL, SAFEGUARDS_PATHNAME_STORAGE } from "@/constants"
 import { RiskBankFlat } from "@/types/riskDataBank"
 import { ColumnDef } from "@tanstack/react-table"
 import { FileDown } from "lucide-react"
@@ -102,7 +102,7 @@ export const columnRiskBank = (
 					{row.original.safeguard_link ? (
 						<Link
 							target="_blank"
-							href={`${API_URL}/storage/safeguards/${row.original.safeguard_link}`}
+							href={`${SAFEGUARDS_PATHNAME_STORAGE}/${row.original.safeguard_link}`}
 						>
 							<Button size={"sm"} variant={"warning"}>
 								<FileDown /> View

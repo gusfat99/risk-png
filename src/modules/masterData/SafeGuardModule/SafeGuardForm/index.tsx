@@ -4,7 +4,7 @@ import InputFileContoller from "@/components/inputs/InputFileController"
 import { Button } from "@/components/ui/button"
 import { Form, FormField } from "@/components/ui/form"
 import Spinner from "@/components/ui/spinner"
-import { API_URL } from "@/constants"
+import { API_URL, SAFEGUARDS_PATHNAME_STORAGE } from "@/constants"
 import { useToast } from "@/hooks/use-toast"
 import { SafeguardSchema, initialSafeguard } from "@/schemas/SafeguardSchema"
 import useSafeguardStore from "@/store/safeguradStore"
@@ -141,7 +141,7 @@ const SafeguardForm: React.FC<IProps> = ({ isEdit, isDetail }) => {
 					name={"file_path"}
 					render={({ field }) => (
 						<InputFileContoller
-							fileUrl={safeguardSelected ? `${API_URL}/storage/safeguards/${safeguardSelected.file_path}` : undefined}
+							fileUrl={safeguardSelected ? `${SAFEGUARDS_PATHNAME_STORAGE}/${safeguardSelected.file_path}` : undefined}
 							label="Safeguard Document"
 							isRequired
 							readOnly={isDetail}

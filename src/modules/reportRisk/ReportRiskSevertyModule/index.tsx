@@ -3,16 +3,21 @@ import NodeDataCard from "@/components/cards/NodeDataCard"
 import DataTable from "@/components/DataTable"
 import InputSelect from "@/components/inputs/InputSelect"
 import useRiskResponseStore from "@/store/riskResponseStore"
-import { RiskResponse } from "@/types/riskResponse"
+import { HazopStatusDialog, RiskResponse } from "@/types/riskResponse"
 import { usePathname } from "next/navigation"
-import { useEffect } from "react"
-import {
-	useColumnsReportRiskBySeverity,
-} from "./columns"
+import { useCallback, useEffect, useState } from "react"
+import { useColumnsReportRiskBySeverity } from "./columns"
 import { SelectDataType } from "@/types/common"
+import DialogMain from "@/components/dialogs/DialogMain"
+import HazopRecommendationList from "@/components/Items/HazopRecommedationList"
 
 const RiskReportSeverityModule = () => {
 	const pathname = usePathname()
+	const [hazopOpen, setHazopOpen] = useState<HazopStatusDialog>({
+		hazop_id: null,
+		risk_analyst_id: null,
+		open: false,
+	})
 	const {
 		nodeSelected,
 		isFetching,
@@ -26,7 +31,7 @@ const RiskReportSeverityModule = () => {
 			setHazopByRiskAnalyst,
 			setPagination,
 			fetchSeverity,
-			setRiskSeveritySelected
+			setRiskSeveritySelected,
 		},
 		pagination_tanstack,
 		riskResponseItems,
@@ -45,8 +50,6 @@ const RiskReportSeverityModule = () => {
 		value: node.id?.toString() ?? "",
 	}))
 
-	
-
 	useEffect(() => {
 		if (nodeItems.length === 0) {
 			fetchNodeData()
@@ -55,7 +58,7 @@ const RiskReportSeverityModule = () => {
 			fetchSeverity()
 		}
 		if (nodeSelected?.id) {
-			fetchAllData(nodeSelected.id)
+			fetchAllData(nodeSelected.id, true) //true for report endpoint
 		}
 		return () => {
 			setHazopByRiskAnalyst && setHazopByRiskAnalyst(null)
@@ -72,16 +75,36 @@ const RiskReportSeverityModule = () => {
 	// let severityOptions: SelectDataType[] = severityItems?.map(x => ({
 	// 	label : x.label
 	// }))
-	const severityOptions : SelectDataType[] = (severityItems || []).map(x => ({
-		label: x.label,
-		value : x.key
-	}))
+	const severityOptions: SelectDataType[] = (severityItems || []).map(
+		(x) => ({
+			label: x.label,
+			value: x.key,
+		})
+	)
 
 	const { column } = useColumnsReportRiskBySeverity({
-		onAction: () => { },
+		onAction: (actionName, row) => {
+			handleAction(actionName, row)
+		},
 		riskSeveritySelected,
-		severityOptions
+		severityOptions,
 	})
+
+	const handleAction = useCallback(
+		(actionName: string, row: RiskResponse) => {
+			if (actionName === "hazop") {
+			
+				setHazopOpen((prev) => ({
+					...prev,
+					hazop_id: row.id,
+					risk_analyst_id: row.id,
+					open: true,
+					hazop: row.hazops,
+				}))
+			}
+		},
+		[]
+	)
 
 	return (
 		<div className="w-full space-y-4">
@@ -112,7 +135,7 @@ const RiskReportSeverityModule = () => {
 							className="w-full"
 							value={riskSeveritySelected}
 							onValueChange={(value) => {
-								setRiskSeveritySelected((value))
+								setRiskSeveritySelected(value)
 							}}
 						/>
 					</div>
@@ -127,6 +150,22 @@ const RiskReportSeverityModule = () => {
 					/>
 				</>
 			)}
+			<DialogMain
+				open={hazopOpen.open}
+				onOpenChange={(value) => {
+					setHazopOpen((prev) => ({
+						...prev,
+						open: value,
+					}))
+					setHazopByRiskAnalyst && setHazopByRiskAnalyst(null)
+				}}
+				title="Hazop Recommendation"
+				size="7xl"
+			>
+				{hazopOpen.open && hazopOpen.hazop && (
+					<HazopRecommendationList data={hazopOpen.hazop} />
+				)}
+			</DialogMain>
 		</div>
 	)
 }

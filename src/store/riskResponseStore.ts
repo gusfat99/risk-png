@@ -1,4 +1,4 @@
-import { API_URL } from "@/constants"
+import { API_URL, HAZOP_PATHNAME_STORAGE } from "@/constants"
 import {
 	NODE_EP,
 	RISK_ANALYST_EP,
@@ -50,7 +50,7 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 	(set, get) => ({
 		...initialState,
 		actions: {
-			fetchAllData: async (nodeId: any) => {
+			fetchAllData: async (nodeId: any, isForReport = false) => {
 				const year_selected = useAuthStore.getState().year_selected
 				set({
 					isFetching: true,
@@ -62,11 +62,17 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 				>((resolve, reject) => {
 					getDataApi<{
 						risk_items: RiskResponse[]
-					}>(`${RISK_RESPONSE_EP}/${nodeId}`, {
-						page: get().pagination_tanstack.pageIndex,
-						per_page: get().pagination_tanstack.pageSize,
-						year: year_selected,
-					})
+					}>(
+						`${RISK_RESPONSE_EP}/${
+							isForReport ? "report-by-severity" : `node/${nodeId}`
+						}`,
+						{
+							page: get().pagination_tanstack.pageIndex,
+							per_page: get().pagination_tanstack.pageSize,
+							year: year_selected,
+							node_id: isForReport ? nodeId : undefined,
+						}
+					)
 						.then((data) => {
 							if (data.data) {
 								set({
@@ -209,7 +215,7 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 										if (hazopItems[i].document_report) {
 											const file =
 												await fetchFileViaProxy(
-													`${API_URL}/storage/hazops/${hazopItems[i].document_report}`,
+													`${HAZOP_PATHNAME_STORAGE}/${hazopItems[i].document_report}`,
 
 													hazopItems[i]
 														.document_report
