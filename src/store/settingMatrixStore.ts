@@ -604,6 +604,7 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 							LIKELYHOOD_FREQUENCY_EP + "/add-row"
 						)
 							.then((data) => {
+								console.log({ data: data.data })
 								if (data.data) {
 									const rows =
 										get().likelyhood_frequency.item?.row ||
@@ -623,11 +624,22 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 											},
 										},
 									}))
+								} else {
+									
+									throw new Error(data.message)
 								}
 								resolve(data)
 							})
 							.catch((err) => {
 								reject(err)
+								toast({
+									title: "Failed",
+									description: err.message,
+									variant: "destructive",
+								})
+								set({
+									isProcessAddRowLikelyhood: false,
+								})
 							})
 					}
 				)

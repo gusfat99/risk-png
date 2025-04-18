@@ -1,6 +1,7 @@
 import InputController from "@/components/inputs/InputController"
 import InputSelectController from "@/components/inputs/InputSelectController"
 import { FormField } from "@/components/ui/form"
+import { fieldsInputSeverity } from "@/data/severity"
 import useSettingMatrixStore from "@/store/settingMatrixStore"
 import { RiskAnalysisForm } from "@/types/riksAnalyst"
 import { Separator } from "@radix-ui/react-select"
@@ -20,45 +21,6 @@ type fieldInputType = {
 	col_id?: any
 }
 
-const fieldsInput: fieldInputType[] = [
-	{
-		label: "Severity to Personnel (SP)",
-		field: "sp_current",
-		col_id: 1,
-		group: 1,
-	},
-
-	{
-		label: "Severity to Finance (SF)",
-		field: "sf_current",
-		col_id: 2,
-		group: 1,
-	},
-	{
-		label: "Severity to Asset (SA)",
-		field: "sa_current",
-		col_id: 3,
-		group: 1,
-	},
-	{
-		label: "Severity to Environment (SE)",
-		field: "se_current",
-		col_id: 4,
-		group: 2,
-	},
-	{
-		label: "Severity to Reputation & Legal (SRL)",
-		field: "srl_current",
-		col_id: 5,
-		group: 2,
-	},
-	{
-		label: "Severity to Public Notification (SPN)",
-		field: "spn_current",
-		col_id: 6,
-		group: 2,
-	},
-]
 
 const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 	const { likelyhood_options, severity_map_options } = useSettingMatrixStore()
@@ -89,13 +51,13 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 			</div>
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 				<div className="space-y-4">
-					{fieldsInput
+					{fieldsInputSeverity
 						.filter((f) => f.group === 1)
 						.map((fieldInput) => (
 							<FormField
 								key={fieldInput.field}
 								control={form.control}
-								name={fieldInput.field}
+								name={fieldInput.field as keyof RiskAnalysisForm}
 								render={({ field }) => (
 									<InputSelectController
 										field={field}
@@ -111,7 +73,7 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 										}
 										onChange={(value) => {
 											form.setValue(
-												fieldInput.field,
+												fieldInput.field as keyof RiskAnalysisForm,
 												value
 											)
 										}}
@@ -121,13 +83,13 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 						))}
 				</div>
 				<div className="space-y-4">
-					{fieldsInput
+					{fieldsInputSeverity
 						.filter((f) => f.group === 2)
 						.map((fieldInput) => (
 							<FormField
 								key={fieldInput.field}
 								control={form.control}
-								name={fieldInput.field}
+								name={fieldInput.field as keyof RiskAnalysisForm}
 								render={({ field }) => (
 									<InputSelectController
 										field={field}
@@ -143,7 +105,7 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 										}
 										onChange={(value) => {
 											form.setValue(
-												fieldInput.field,
+												fieldInput.field as keyof RiskAnalysisForm,
 												value
 											)
 										}}

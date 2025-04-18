@@ -1,7 +1,5 @@
 "use client"
-import IncidentDataCard from "@/components/cards/IncidentDataCard"
 import NodeDataCard from "@/components/cards/NodeDataCard"
-import RiskBankCard from "@/components/cards/RiskBankCard"
 import RiskIncidentCard from "@/components/cards/RiskIncidentCard"
 import SeverityAffectedRiskCard from "@/components/cards/SeverityAffectedRiskCard"
 import useRiskMonitoringStore from "@/store/riskMonitoringStore"
