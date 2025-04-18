@@ -84,6 +84,7 @@ export interface RiskMonitoringState extends CommonState {
 		fetchAllData(): Promise<ResponseApiType<RiskMonitoring[]>>
 
 		fetchSingleData?(id: any): Promise<ResponseApiType<RiskMonitoring>>
+		fetchDetailData?(id: any): Promise<ResponseApiType<RiskMonitoring>>
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>
 		fetchDeviationData(): Promise<ResponseApiType<Deviations[]>>
 		createData?(

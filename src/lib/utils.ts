@@ -75,3 +75,16 @@ export function groupBy<T extends Record<string, any>, K extends keyof T>(
 		return acc
 	}, {} as Record<any, T[]>)
 }
+
+/**
+ * Mengambil nilai properti dari objek berdasarkan path string (dot notation).
+ * @param obj - Objek sumber.
+ * @param path - Path properti, misalnya 'a.b.c'.
+ * @returns Nilai properti jika ada, atau undefined jika tidak ditemukan.
+ */
+export function getPropByPath<T = any>(
+	obj: Record<string, any>,
+	path: string
+): T | undefined {
+	return path.split(".").reduce((acc, key) => acc?.[key], obj) as T
+}

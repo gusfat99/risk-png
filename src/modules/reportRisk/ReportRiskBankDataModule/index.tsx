@@ -81,7 +81,7 @@ const ReportRiskBankDataModule = () => {
 			</div>
 			<div className="mt-4">
 				<DataTable<RiskBankFlat>
-					columns={columnRiskBank(handleActionTable)}
+					columns={columnRiskBank(handleActionTable, true)}
 					data={riskDataBankFlat}
 					loading={isFetching}
 					rowCount={total}

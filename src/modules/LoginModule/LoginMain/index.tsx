@@ -58,6 +58,10 @@ const LoginMain = () => {
 			})
 			.catch((err) => {
 				console.log(err)
+				toast({
+					title: err.message,
+					variant: "destructive"
+				})
 			})
 	}
 

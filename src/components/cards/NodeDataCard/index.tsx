@@ -16,6 +16,10 @@ interface IProps {
 
 const filedsNode: filedsNodeType[] = [
 	{
+		title: "Node",
+		field: "node",
+	},
+	{
 		title: "Node Description",
 		field: "node_description",
 	},
@@ -55,13 +59,13 @@ const NodeDataCardSkeleton = () => {
 				<TableBody>
 					{filedsNode.map((fieldNode) => (
 						<TableRow className="border-0" key={fieldNode.field}>
-							<TableCell className=" p-1">
+							<TableCell className=" p-1 w-40 ">
 								{fieldNode.title}
 							</TableCell>
 
 							<TableCell className=" p-1 w-4">:</TableCell>
 							<TableCell className="p-1">
-								<Skeleton className="w-full h-7" />
+								<Skeleton className="w-full h-6" />
 							</TableCell>
 						</TableRow>
 					))}

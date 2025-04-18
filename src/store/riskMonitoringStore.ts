@@ -156,7 +156,7 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 					}
 				)
 			},
-		
+
 			fetchDeviationData: async () => {
 				set((prev) => ({
 					supportData: {
@@ -320,6 +320,53 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 								resolve(data)
 							}
 						})
+					}
+				)
+			},
+			fetchDetailData: async (id: any) => {
+				set({
+					isFetching: true,
+				})
+				return new Promise<ResponseApiType<RiskMonitoring>>(
+					async (resolve, reject) => {
+						try {
+							const data = await getDataApi<RiskMonitoring>(
+								`${RISK_MONITROING_EP}/${id}`
+							)
+							//parse data to flat
+							if (data.data) {
+								set((prevState) => ({
+									isFetching: false,
+									riskMonitoringSelected: data.data,
+									supportData: {
+										...prevState.supportData,
+										cause: {
+											...prevState.supportData.cause,
+											isFetching: true,
+										},
+									},
+								}))
+							}
+							resolve(data);
+						} catch (error: any) {
+							toast({
+								title: "ERROR",
+								description: error.message,
+								variant: "destructive",
+							})
+							reject(error)
+							set((prevState) => ({
+								isFetching: false,
+								supportData: {
+									...prevState.supportData,
+									cause: {
+										...prevState.supportData.cause,
+										isFetching: false,
+									},
+								},
+							}))
+						}
+					
 					}
 				)
 			},

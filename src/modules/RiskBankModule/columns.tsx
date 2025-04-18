@@ -8,7 +8,8 @@ import { FileDown } from "lucide-react"
 import Link from "next/link"
 
 export const columnRiskBank = (
-	onAction: (actionName: string, id: any) => void
+	onAction: (actionName: string, id: any) => void,
+	isReport = false
 ): ColumnDef<RiskBankFlat>[] => {
 	const columns: ColumnDef<RiskBankFlat>[] = [
 		{
@@ -25,7 +26,7 @@ export const columnRiskBank = (
 					</TableCell>
 				) : null,
 		},
-		
+
 		{
 			accessorKey: "parameter",
 			size: 90,
@@ -92,8 +93,10 @@ export const columnRiskBank = (
 		},
 		{
 			accessorKey: "document",
-			size : 120,
-			header: () => <div className="text-center" >Safeguards Document</div>,
+			size: 120,
+			header: () => (
+				<div className="text-center">Safeguards Document</div>
+			),
 			cell: ({ row }) => (
 				<TableCell className="border text-center">
 					{row.original.safeguard_link ? (
@@ -112,6 +115,33 @@ export const columnRiskBank = (
 			),
 		},
 	]
+
+	if (!isReport) {
+		columns.splice(1, 0, {
+			id: "id",
+			accessorFn: (row) => row.id,
+			meta: {
+				className: "text-center",
+			},
+			header: () => {
+				return <div className="text-center">Action</div>
+			},
+			size: 100,
+			cell: ({ row }) =>
+				row.original.isFirstMain ? (
+					<TableCell
+						className="border text-center"
+						rowSpan={row.original.mainRowspan}
+					>
+						<TableRowActions
+							onAction={(actionName: string) => {
+								onAction(actionName, row.getValue("id"))
+							}}
+						/>
+					</TableCell>
+				) : null,
+		})
+	}
 
 	return columns
 }
