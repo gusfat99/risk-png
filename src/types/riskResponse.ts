@@ -99,6 +99,7 @@ export interface RiskResponseState extends CommonState {
 	severityItems : Severity[] | null
 	isFetchingHazopItems: boolean
 	isFetchingSeverity: boolean
+	isFetchingExportData : boolean
 	supportData: {
 		node: {
 			nodeItems: Node[]
@@ -149,6 +150,7 @@ export interface RiskResponseState extends CommonState {
 		deleteData?(id: any): Promise<ResponseApiType<any>>
 		setPagination?: (updater: Updater<PaginationState>) => void
 		setNodeSelected: (nodeId: number) => void
+		exportExcel: (nodeId : any) => void
 		setRiskSeveritySelected
 		: (severity: string) => void
 	}

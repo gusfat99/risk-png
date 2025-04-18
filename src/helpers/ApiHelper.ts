@@ -24,6 +24,13 @@ export type ResponseApiType<T> = {
 	[x: string]: T | null
 }
 
+export type BlobResponseType<T = Blob> = {
+	data: T | null
+	meta?: MetaResponseType
+	message?: string
+	errors?: string
+ }
+
 /**
  * Sanitize Content
  * @param content any
@@ -36,6 +43,19 @@ export const sanitizeContent = (content: any) => {
 
 	return content
 }
+
+export const sanitizeQueryParams = (params: Record<string, any>): string => {
+	const sanitized = Object.entries(params).reduce((acc, [key, value]) => {
+	  // Sanitasi key dan value
+	  const cleanKey = sanitizeHtml(key, { allowedTags: [], allowedAttributes: {} });
+	  const cleanValue = sanitizeHtml(String(value), { allowedTags: [], allowedAttributes: {} });
+ 
+	  // Encode URI komponen untuk handle spasi/special chars
+	  return `${acc}${acc ? '&' : ''}${encodeURIComponent(cleanKey)}=${encodeURIComponent(cleanValue)}`;
+	}, '');
+ 
+	return sanitized ? `?${sanitized}` : '';
+ };
 
 /**
  * Sanitize a Json Array
@@ -190,7 +210,6 @@ export const putData = <T>(
 	})
 }
 
-
 export const deleteData = <T>(
 	ep: string,
 ): Promise<ResponseApiType<T>> => {
@@ -247,6 +266,43 @@ export const getDataApi = <T>(
 	})
 }
 
+export const getDataBlob = <T = Blob>(
+	url: string,
+	params = {},
+	headers = {}
+ ): Promise<BlobResponseType<T>> => {
+	return new Promise<BlobResponseType<T>>((resolve, reject) => {
+	  axiosInterceptor
+		 .get<T>(url, {
+			params: sanitizeData(params),
+			headers,
+			responseType: 'blob', // Ini yang membedakan, responseType di-set ke 'blob'
+		 })
+		 .then((data) => {
+			if (isRequestSuccessful(data.status)) {
+			  return resolve({
+				 data: data.data,
+				
+			  });
+			} else {
+			  return reject({
+				 message: 'Failed to download file',
+				 errors: 'Download error',
+			  });
+			}
+		 })
+		 .catch((err: AxiosError<ResponseApiType<null>>) => {
+			if (err.status === 401 || err.status === 404) {
+			  return resolve(err.response as unknown as any);
+			}
+			const errorResponse: ResponseApiType<null> | undefined =
+			  err.response?.data;
+			return reject(
+			  errorResponse ?? { message: err.message || 'Unknown error' }
+			);
+		 });
+	});
+ };
 
 export function extractFilenameFromHeader(contentDisposition: string): string | null {
 	const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;

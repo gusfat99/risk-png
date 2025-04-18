@@ -1,4 +1,10 @@
-import { DEVIATION_EP, RISK_BANK_EP, SAFEGUARD_EP } from "@/constants/endpoints"
+import {
+	DEVIATION_EP,
+	EXPORT_RISK_BANK_EP,
+	EXPORT_RISK_SEVERITY_EP,
+	RISK_BANK_EP,
+	SAFEGUARD_EP,
+} from "@/constants/endpoints"
 import {
 	deleteData,
 	getDataApi,
@@ -20,6 +26,7 @@ import {
 import { Safeguard } from "@/types/safeguard"
 import { createStore, runUpdater } from "./store"
 import useAuthStore from "./authStore"
+import { downloadProxyFile } from "@/services/downloadFile"
 
 const initialState = {
 	...commonInitualState,
@@ -33,14 +40,13 @@ const initialState = {
 	riskDataBankSelected: null,
 }
 
-
 const useRiskDataBankStore = createStore<RiskDataBankState>(
 	"risk-data-bank",
 	(set, get) => ({
 		...initialState,
 		actions: {
 			fetchAllData: async () => {
-				const  year_selected  = useAuthStore.getState().year_selected
+				const year_selected = useAuthStore.getState().year_selected
 				set({
 					isFetching: true,
 				})
@@ -49,7 +55,7 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 						getDataApi<RiskBank[]>(RISK_BANK_EP, {
 							page: get().pagination_tanstack.pageIndex,
 							per_page: get().pagination_tanstack.pageSize,
-							year : year_selected
+							year: year_selected,
 						})
 							.then((data) => {
 								//parse data to flat
@@ -292,6 +298,34 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 						state.pagination_tanstack
 					),
 				})),
+			exportExcel() {
+				set({
+					isFetchingExportData: true,
+				})
+				const year_selected = useAuthStore.getState().year_selected;
+				downloadProxyFile(`${EXPORT_RISK_BANK_EP}`, {
+					year: year_selected,
+				})
+					.then((blob) => {
+						toast({
+							title: "Success",
+							description: "Successfull download file excel",
+							variant: "success",
+						})
+					})
+					.catch((err) => {
+						toast({
+							title: "Filed",
+							description: err.message,
+							variant: "destructive",
+						})
+					})
+					.finally(() => {
+						set({
+							isFetchingExportData: false,
+						})
+					})
+			},
 		},
 	})
 )

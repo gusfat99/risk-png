@@ -22,6 +22,7 @@ export type PaginationType = {
 
 export interface CommonState {
 	isFetching: boolean
+	isFetchingExportData: boolean
 	isSubmit: boolean
 	message: string
 	errors: string
@@ -42,6 +43,7 @@ export const commonInitualState = {
 	isFetching: false,
 	isSubmit: false,
 	message: "",
+	isFetchingExportData: false,
 	pagination_tanstack: {
 		pageSize: 10,
 		pageIndex: 1,

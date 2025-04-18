@@ -19,3 +19,5 @@ export const LIKELYHOOD_FREQUENCY_EP = "/setting-matrix/likelyhood-frequency";
 export const SEVERITY_MAP_EP = "/setting-matrix/severity-map";
 export const RISK_MAP_EP = "/setting-matrix/risk-map";
 export const EXPORT_MONITORING_EP = "/export-monitoring";
+export const EXPORT_RISK_SEVERITY_EP = "/export-risk-severity";
+export const EXPORT_RISK_BANK_EP = "/export-risk-bank";

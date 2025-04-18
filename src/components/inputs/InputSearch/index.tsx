@@ -36,14 +36,14 @@ const InputSearch = React.forwardRef<HTMLInputElement, IPropsInputSearch>(
 						)}
 					</div>
 				)}
-				<div className="relative" >
+				<div className="relative">
 					<Input
 						type={type}
 						placeholder={placeholder}
-                  {...restProps}
-                  className="pr-10"
-               />
-               <Search className="text-muted-foreground absolute z-10 top-1/2 right-2 transform  -translate-y-1/2" />
+						{...restProps}
+						className="pr-10 h-10"
+					/>
+					<Search className="text-muted-foreground absolute z-10 top-1/2 right-2 transform  -translate-y-1/2" />
 				</div>
 				{description && (
 					<FormDescription>{description}</FormDescription>

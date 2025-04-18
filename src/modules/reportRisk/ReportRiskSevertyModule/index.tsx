@@ -10,6 +10,7 @@ import { useColumnsReportRiskBySeverity } from "./columns"
 import { SelectDataType } from "@/types/common"
 import DialogMain from "@/components/dialogs/DialogMain"
 import HazopRecommendationList from "@/components/Items/HazopRecommedationList"
+import ExportExcelButton from "@/components/buttons/ExportExcelButton"
 
 const RiskReportSeverityModule = () => {
 	const pathname = usePathname()
@@ -23,7 +24,7 @@ const RiskReportSeverityModule = () => {
 		isFetching,
 		isFetchingSeverity,
 		riskSeveritySelected,
-
+		isFetchingExportData,
 		actions: {
 			setNodeSelected,
 			fetchNodeData,
@@ -32,6 +33,7 @@ const RiskReportSeverityModule = () => {
 			setPagination,
 			fetchSeverity,
 			setRiskSeveritySelected,
+			exportExcel,
 		},
 		pagination_tanstack,
 		riskResponseItems,
@@ -93,7 +95,6 @@ const RiskReportSeverityModule = () => {
 	const handleAction = useCallback(
 		(actionName: string, row: RiskResponse) => {
 			if (actionName === "hazop") {
-			
 				setHazopOpen((prev) => ({
 					...prev,
 					hazop_id: row.id,
@@ -126,16 +127,23 @@ const RiskReportSeverityModule = () => {
 			{/* {isFetching && <RiskAnalystListTableSkeleton />} */}
 			{nodeSelected && (
 				<>
-					<div className="grid grid-cols-2">
+					<div className="flex flex-row gap-4 items-end">
 						<InputSelect
 							label="Select severity"
 							placeholder="select severity"
 							items={severityOptions}
 							loading={isFetchingNode}
-							className="w-full"
+							className="w-full md:w-5/12"
 							value={riskSeveritySelected}
 							onValueChange={(value) => {
 								setRiskSeveritySelected(value)
+							}}
+						/>
+						<ExportExcelButton
+							label="Export Excel"
+							loading={isFetchingExportData}
+							onClick={() => {
+								exportExcel(nodeSelected.id)
 							}}
 						/>
 					</div>

@@ -1,5 +1,6 @@
 import { API_URL, HAZOP_PATHNAME_STORAGE } from "@/constants"
 import {
+	EXPORT_RISK_SEVERITY_EP,
 	NODE_EP,
 	RISK_ANALYST_EP,
 	RISK_RESPONSE_EP,
@@ -25,6 +26,7 @@ import {
 import { createStore, runUpdater } from "./store"
 import { Severity } from "@/types/severity"
 import useAuthStore from "./authStore"
+import { downloadProxyFile } from "@/services/downloadFile"
 
 const initialState = {
 	...commonInitualState,
@@ -35,6 +37,7 @@ const initialState = {
 	hazopItemsSelected: null,
 	isFetchingHazopItems: false,
 	isFetchingSeverity: false,
+	isFetchingExportData: false,
 	riskSeveritySelected: "risk_ranking_current",
 	supportData: {
 		node: {
@@ -64,7 +67,9 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 						risk_items: RiskResponse[]
 					}>(
 						`${RISK_RESPONSE_EP}/${
-							isForReport ? "report-by-severity" : `node/${nodeId}`
+							isForReport
+								? "report-by-severity"
+								: `node/${nodeId}`
 						}`,
 						{
 							page: get().pagination_tanstack.pageIndex,
@@ -500,80 +505,7 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 					}
 				)
 			},
-			// createData: async (payload: RiskResponseForm, nodeId : any) => {
-			//    set({
-			//       isSubmit: true,
-			//    })
-			//    return new Promise<ResponseApiType<RiskResponse>>(
-			//       (resolve, reject) => {
-			//          const formData = new FormData();
-			//          Object.entries(payload).forEach(([key,value]) => {
-			//             formData.append(key, value);
-			//          })
-			//          postData<RiskResponse>(RISK_ANALYST_EP+"/"+nodeId, payload, {
-			//             headers: {
-			//                "Content-Type": "multipart/form-data",
-			//             },
-			//          })
-			//             .then((data) => {
-			//                set((state) => {
-			//                   return {
-			//                      riskResponseItems: [
-			//                         ...state.riskResponseItems,
-			//                         ...(data.data ? [data.data] : []),
-			//                      ],
-			//                   }
-			//                })
-			//                resolve(data)
-			//             })
-			//             .catch((err) => {
-			//                reject(err)
-			//             })
-			//             .finally(() => {
-			//                set({
-			//                   isSubmit: false,
-			//                })
-			//             })
-			//       }
-			//    )
-			// },
-			// updateData: async (id: any, payload: File) => {
-			//    set({
-			//       isSubmit: true,
-			//    })
-			//    return new Promise<ResponseApiType<RiskResponse>>(
-			//       (resolve, reject) => {
-			//          postData<RiskResponse>(
-			//             `${RISK_ANALYST_EP}/${id}`,
-			//             payload,
-			//             {
-			//                headers: {
-			//                   "Content-Type": "multipart/form-data",
-			//                },
-			//             }
-			//          )
-			//             .then((data) => {
-			//                set((state) => {
-			//                   return {
-			//                      riskResponseItems: [
-			//                         ...state.riskResponseItems,
-			//                         ...(data.data ? [data.data] : []),
-			//                      ],
-			//                   }
-			//                })
-			//                resolve(data)
-			//             })
-			//             .catch((err) => {
-			//                reject(err)
-			//             })
-			//             .finally(() => {
-			//                set({
-			//                   isSubmit: false,
-			//                })
-			//             })
-			//       }
-			//    )
-			// },
+
 			deleteData: async (id) => {
 				return new Promise<ResponseApiType<null>>((resolve, reject) => {
 					deleteData<null>(RISK_ANALYST_EP + "/" + id)
@@ -624,6 +556,33 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 				set({
 					riskSeveritySelected: severity,
 				})
+			},
+			exportExcel(nodeId: any) {
+				set({
+					isFetchingExportData: true,
+				})
+				downloadProxyFile(`${EXPORT_RISK_SEVERITY_EP}`, {
+					node_id: nodeId,
+				})
+					.then((blob) => {
+						toast({
+							title: "Success",
+							description: "Successfull download file excel",
+							variant: "success",
+						})
+					})
+					.catch((err) => {
+						toast({
+							title: "Filed",
+							description: err.message,
+							variant: "destructive",
+						})
+					})
+					.finally(() => {
+						set({
+							isFetchingExportData: false,
+						})
+					})
 			},
 		},
 	})

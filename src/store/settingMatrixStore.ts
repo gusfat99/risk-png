@@ -604,7 +604,6 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 							LIKELYHOOD_FREQUENCY_EP + "/add-row"
 						)
 							.then((data) => {
-								console.log({ data: data.data })
 								if (data.data) {
 									const rows =
 										get().likelyhood_frequency.item?.row ||
