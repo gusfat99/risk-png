@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast"
 import { RiskResponseSevertyExpectMultipleSchema } from "@/schemas/RiskResponseSchema"
 import useRiskResponseStore from "@/store/riskResponseStore"
 import {
+	HazopStatusDialog,
 	RiskResponse,
 	RiskResponseSevertyExpectMultipleSchemaForm,
 } from "@/types/riskResponse"
@@ -26,11 +27,7 @@ interface IProps {
 	basePathname: string
 }
 
-export type HazopStatusDialog = {
-	hazop_id: any | null
-	risk_analyst_id: any | null
-	open: boolean
-}
+
 
 const RiskResponseFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 	const { toast } = useToast()
