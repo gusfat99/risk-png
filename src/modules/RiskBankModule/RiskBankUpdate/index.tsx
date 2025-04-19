@@ -1,9 +1,9 @@
 "use client"
-import React, { useEffect } from "react"
-import RiskBankForm from "../RiskBankForm"
+import LoadingIndicator from "@/components/LoadingIndicator"
 import useRiskDataBankStore from "@/store/riskDataBankStore"
 import { useParams } from "next/navigation"
-import Spinner from "@/components/ui/spinner"
+import { useEffect } from "react"
+import RiskBankForm from "../RiskBankForm"
 
 const RiskBankUpdate = () => {
 	const params = useParams()
@@ -22,9 +22,7 @@ const RiskBankUpdate = () => {
 	return (
 		<div className="w-full h-fit">
 			{isFetching && (
-				<div className="flex-1 flex-col flex justify-center items-center">
-					<Spinner className="w-4 h-4" />
-				</div>
+				<LoadingIndicator/>
 			)}
 			{riskDataBankSelected && !isFetching && <RiskBankForm isEdit />}
 		</div>

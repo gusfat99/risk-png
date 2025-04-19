@@ -1,4 +1,4 @@
-import { API_URL, HAZOP_PATHNAME_STORAGE } from "@/constants"
+import { HAZOP_PATHNAME_STORAGE } from "@/constants"
 import {
 	EXPORT_RISK_SEVERITY_EP,
 	NODE_EP,
@@ -13,20 +13,19 @@ import {
 	ResponseApiType,
 } from "@/helpers/ApiHelper"
 import { toast } from "@/hooks/use-toast"
+import { downloadProxyFile } from "@/services/downloadFile"
 import fetchFileViaProxy from "@/services/fetchFileAsFile"
 import { commonInitualState } from "@/types/common"
 import { Node } from "@/types/node"
 import {
 	Hazop,
-	HazopStatus,
 	RiskResponse,
 	RiskResponseSevertyExpectMultipleSchemaForm,
-	RiskResponseState,
+	RiskResponseState
 } from "@/types/riskResponse"
-import { createStore, runUpdater } from "./store"
 import { Severity } from "@/types/severity"
 import useAuthStore from "./authStore"
-import { downloadProxyFile } from "@/services/downloadFile"
+import { createStore, runUpdater } from "./store"
 
 const initialState = {
 	...commonInitualState,
@@ -205,7 +204,7 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 				return new Promise<ResponseApiType<Hazop[]>>(
 					(resolve, reject) => {
 						getDataApi<Hazop[]>(
-							`${RISK_RESPONSE_EP}/${nodeId}/${riskAnalystId}`
+							`${RISK_RESPONSE_EP}/node/${nodeId}/${riskAnalystId}`
 						)
 							.then(async (data) => {
 								//parse data to flat
@@ -310,7 +309,7 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 				return new Promise<ResponseApiType<RiskResponse[]>>(
 					(resolve, reject) => {
 						postData<RiskResponse[]>(
-							`${RISK_RESPONSE_EP}/${nodeId}/create-hazop/${riskId}`,
+							`${RISK_RESPONSE_EP}/node/${nodeId}/create-hazop/${riskId}`,
 							payload,
 							{
 								headers: {
@@ -364,7 +363,7 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 				return new Promise<ResponseApiType<RiskResponse[]>>(
 					(resolve, reject) => {
 						postData<RiskResponse[]>(
-							`${RISK_RESPONSE_EP}/${nodeId}/update-hazop/${riskId}`,
+							`${RISK_RESPONSE_EP}/node/${nodeId}/update-hazop/${riskId}`,
 							payload,
 							{
 								headers: {
@@ -406,7 +405,7 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 			setHazopStatus: async ({ nodeId, riskId, status }) => {
 				return new Promise<ResponseApiType<any>>((resolve, reject) => {
 					postData<RiskResponse>(
-						`${RISK_RESPONSE_EP}/${nodeId}/hazop-status/${riskId}`,
+						`${RISK_RESPONSE_EP}/node/${nodeId}/hazop-status/${riskId}`,
 						{
 							hazop_completed: status,
 						},
@@ -480,7 +479,7 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 				return new Promise<ResponseApiType<RiskResponse[]>>(
 					(resolve, reject) => {
 						postData<RiskResponse[]>(
-							`${RISK_RESPONSE_EP}/${nodeId}/severity-multi`,
+							`${RISK_RESPONSE_EP}/node/${nodeId}/severity-multi`,
 							payload
 						)
 							.then((data) => {

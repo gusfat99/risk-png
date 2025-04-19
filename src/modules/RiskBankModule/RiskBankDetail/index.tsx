@@ -1,9 +1,8 @@
 "use client"
-import React, { useEffect } from "react"
-import RiskBankForm from "../RiskBankForm"
+import RiskBankMasterCard from "@/components/cards/RiskBankMasterCard"
 import useRiskDataBankStore from "@/store/riskDataBankStore"
 import { useParams } from "next/navigation"
-import Spinner from "@/components/ui/spinner"
+import { useEffect } from "react"
 
 const RiskBankDetail = () => {
 	const params = useParams()
@@ -22,11 +21,11 @@ const RiskBankDetail = () => {
 	return (
 		<div className="w-full h-fit">
 			{isFetching && (
-				<div className="flex-1 flex-col flex justify-center items-center">
-					<Spinner className="w-4 h-4" />
-				</div>
+				<RiskBankMasterCard.Skeleton />
 			)}
-			{riskDataBankSelected && !isFetching && <RiskBankForm isDetail />}
+			{riskDataBankSelected && !isFetching && (
+				<RiskBankMasterCard data={riskDataBankSelected} />
+			)}
 		</div>
 	)
 }
