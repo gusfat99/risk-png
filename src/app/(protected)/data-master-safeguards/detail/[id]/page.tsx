@@ -1,6 +1,5 @@
-import SafeGuardForm from '@/modules/masterData/SafeGuardModule/SafeGuardForm'
-import React from 'react'
+import SafeguardDetail from '@/modules/masterData/SafeGuardModule/SafeguardDetail'
 
-const Page = () => <SafeGuardForm isDetail />
+const Page = () => <SafeguardDetail  />
 
 export default Page

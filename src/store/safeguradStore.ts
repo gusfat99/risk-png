@@ -57,6 +57,35 @@ const useSafeguardStore = createStore<SafeguardState>(
 					}
 				)
 			},
+			fetchSingleData: async (safeguardId) => {
+				set({
+					isFetching: true,
+				})
+				return new Promise<ResponseApiType<Safeguard>>(
+					(resolve, reject) => {
+						getDataApi<Safeguard>(`${SAFEGUARD_EP}/${safeguardId}`)
+							.then((data) => {
+								set({
+									safeguardSelected: data.data,
+								})
+								resolve(data)
+							})
+							.catch((err) => {
+								toast({
+									title: "ERROR",
+									description: err.message,
+									variant: "destructive",
+								})
+								reject(err)
+							})
+							.finally(() => {
+								set({
+									isFetching: false,
+								})
+							})
+					}
+				)
+			},
 			createData: async (payload: z.infer<typeof SafeguardSchema>) => {
 				set({
 					isSubmit: true,

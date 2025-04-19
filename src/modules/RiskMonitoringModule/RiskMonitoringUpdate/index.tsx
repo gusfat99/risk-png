@@ -24,7 +24,7 @@ const RiskAnalystUpdate = () => {
 		if (params.id) {
 			fetchSingleData && fetchSingleData(params.id)
 		}
-	}, [fetchDeviationData, fetchSingleData])
+	}, [fetchDeviationData, fetchSingleData, params?.id, nodeItems.length])
 
 	return (
 		<div className="w-full">

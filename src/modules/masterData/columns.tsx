@@ -170,6 +170,8 @@ export const columnSafeguard = (
 
 				return (pageIndex - 1) * pageSize + row.index + 1
 			},
+
+			size : 40,
 		},
 		{
 			id: "id",
@@ -185,11 +187,12 @@ export const columnSafeguard = (
 					}}
 				/>
 			),
+			size : 60,
 		},
 		{
 			id: "safeguard",
 			accessorFn: (row) => row.safeguard,
-
+			enableSorting: false,
 			header: ({ column }) => {
 				return (
 					<DataTableColumnHeader
@@ -203,6 +206,7 @@ export const columnSafeguard = (
 
 		{
 			id: "safeguard_title",
+			enableSorting : false,
 			accessorFn: (row) => `${row.safeguard_title}`,
 			header: ({ column }) => {
 				return (
@@ -217,21 +221,29 @@ export const columnSafeguard = (
 
 		{
 			id: "file_path",
-
+			size: 120,
+			meta: {
+				className : "text-center"
+			},
+			
 			accessorFn: (row) => row.file_path,
 			header: "Document",
 			cell: ({ row }) => (
+				<div className="text-center w-full"> 
 				<Link
 					download={true}
 					target="_blank"
 					href={`${SAFEGUARDS_PATHNAME_STORAGE}/${row.getValue(
 						"file_path"
 					)}`}
+					
 				>
 					<Button size={"sm"} variant={"link"}>
 						<Download /> Download
 					</Button>
 				</Link>
+
+				</div>
 			),
 		},
 	]

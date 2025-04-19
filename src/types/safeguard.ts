@@ -22,7 +22,7 @@ export interface SafeguardState extends CommonState {
 	safeguardSelected: Safeguard | null
 	actions: {
 		fetchAllData(): Promise<ResponseApiType<Safeguard[]>>
-		fetchSingleData?(): Promise<ResponseApiType<Safeguard>>
+		fetchSingleData?(safeguardId : any): Promise<ResponseApiType<Safeguard>>
 		createData?(
 			paylaod: SafeguardPayload
 		): Promise<ResponseApiType<Safeguard>>
