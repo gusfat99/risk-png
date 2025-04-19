@@ -11,7 +11,7 @@ export type DownloadFileOption = {
 // Modifikasi fungsi untuk menangani nama file dari header
 export const downloadProxyFile = async (
 	url: string,
-	params?: Object,
+	params?: any,
 	options: DownloadFileOption = {
 		defaultFilename: "filename",
 		autoDownload: true,

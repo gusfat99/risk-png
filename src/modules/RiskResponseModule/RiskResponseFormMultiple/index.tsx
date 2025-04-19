@@ -106,7 +106,7 @@ const RiskResponseFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 					})
 			}
 		},
-		[]
+		[nodeSelected?.id]
 	)
 
 	const handleSubmit = useCallback(
@@ -138,7 +138,7 @@ const RiskResponseFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 				})
 			}
 		},
-		[updateSavertyExpectMultiple, nodeSelected, toast]
+		[updateSavertyExpectMultiple, nodeSelected?.id, toast]
 	)
 
 	const { column } = useColumnsRiskResponse({
