@@ -1,6 +1,6 @@
-import NodeDataForm from '@/modules/masterData/NodeDataModule/NodeDataForm'
-import React from 'react'
+import NodeDataDetail from "@/modules/masterData/NodeDataModule/NodeDataDetail"
+import React from "react"
 
-const Page = () => <NodeDataForm isDetail />
+const Page = () => <NodeDataDetail />
 
-export default Page;
+export default Page

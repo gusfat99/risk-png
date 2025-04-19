@@ -52,6 +52,34 @@ const useNodeStore = createStore<NodeState>("node-data", (set, get) => ({
 					})
 			})
 		},
+		fetchSingleData: async (nodeId : any) => {
+			set({
+				isFetching: true,
+			})
+			return new Promise<ResponseApiType<Node>>((resolve, reject) => {
+				getDataApi<Node>(`${NODE_EP}/${nodeId}`)
+					.then((data) => {
+						set({
+							nodeSelected: data.data,
+							meta: data?.meta,
+						})
+						resolve(data)
+					})
+					.catch((err) => {
+						toast({
+							title: "ERROR",
+							description: err.message,
+							variant: "destructive",
+						})
+						reject(err)
+					})
+					.finally(() => {
+						set({
+							isFetching: false,
+						})
+					})
+			})
+		},
 		createData: async (payload: z.infer<typeof NodeSchema>) => {
 			set({
 				isSubmit: true,

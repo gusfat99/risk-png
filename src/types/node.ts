@@ -30,7 +30,7 @@ export interface NodeState extends CommonState {
 	nodeSelected: Node | null,
 	actions: {
 		fetchAllData(): Promise<ResponseApiType<Node[]>>
-		fetchSingleData?(): Promise<ResponseApiType<Node>>
+		fetchSingleData?(nodeId : any): Promise<ResponseApiType<Node>>
 		createData?(paylaod: NodePayload): Promise<ResponseApiType<Node>>
 		updateData?(id: any, paylaod: any): Promise<ResponseApiType<Node>>
 		deleteData?(id: any): Promise<ResponseApiType<any>>
