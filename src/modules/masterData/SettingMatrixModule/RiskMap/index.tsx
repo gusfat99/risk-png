@@ -13,7 +13,7 @@ import RiskApetite from "../RiskApetite"
 
 const RiskMap = () => {
 	const {
-		isFetching,
+		
 		severity_map,
 		likelyhood_frequency,
 		isSubmitMatrixCell,

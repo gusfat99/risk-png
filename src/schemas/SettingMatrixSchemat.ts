@@ -14,10 +14,10 @@ export const AppetiteSchema = z.object({
 		.string()
 		.min(1, "Requried")
 		.refine((val) => !isNaN(Number(val)), {
-			message: name + " Must be a number",
+			message:  " Must be a number",
 		}) // Pastikan angka valid
 		.refine((val) => Number(val) > 0, {
-			message: name + " must be more than 0",
+			message:  " must be more than 0",
 		})
 		.default("15"), // Harus positif
 })
