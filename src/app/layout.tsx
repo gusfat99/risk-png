@@ -31,7 +31,15 @@ export default function RootLayout({
 			<body
 				className={`${poppinsSans.variable} ${plusJktSans.variable}  antialiased`}
 			>
-				<Suspense fallback={<LoadingIndicator/>}>{children}</Suspense>
+				<Suspense
+					fallback={
+						<div className="h-screen flex flex-1 justify-center items-center">
+							<LoadingIndicator />
+						</div>
+					}
+				>
+					{children}
+				</Suspense>
 				<Toaster />
 			</body>
 		</html>

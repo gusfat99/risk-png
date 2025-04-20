@@ -44,6 +44,7 @@ export const commonInitualState = {
 	isSubmit: false,
 	message: "",
 	isFetchingExportData: false,
+	
 	pagination_tanstack: {
 		pageSize: 10,
 		pageIndex: 1,

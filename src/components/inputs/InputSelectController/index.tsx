@@ -25,6 +25,7 @@ interface FormSelectInputProps extends SelectProps {
 	label?: string
 	description?: string
 	labelClassName?: string
+	className?: string
 	placeholder: string
 	items: SelectDataType[]
 	field: any
@@ -46,11 +47,12 @@ function InputSelectController(props: FormSelectInputProps) {
 		isRequired = true,
 		disabled,
 		labelClassName,
+		className,
 		...restProps
 	} = props
 
 	return (
-		<FormItem>
+		<FormItem className={cn(className)}>
 			{label && (
 				<FormLabel className={cn("tracking-wider", labelClassName)}>
 					{label}{" "}

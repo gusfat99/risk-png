@@ -38,6 +38,7 @@ const initialState = {
 	severity_map_options: [],
 	likelyhood_options: [],
 	isSubmitMatrixCell: false,
+	isSubmitAppetite: false,
 	isProcessAddRowLikelyhood: false,
 }
 
@@ -573,6 +574,8 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 											value,
 											frequency: rowId,
 											id: data.data.id,
+											risk_apetite:
+												riskMap[0].risk_apetite,
 										})
 									}
 									set((prevState) => ({
@@ -624,7 +627,6 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 										},
 									}))
 								} else {
-									
 									throw new Error(data.message)
 								}
 								resolve(data)
@@ -672,6 +674,65 @@ const useSettingMatrixStore = createStore<SettingMatrixState>(
 							reject(err)
 						})
 				})
+			},
+			async updateAppetite(appetite) {
+				return new Promise<ResponseApiType<any>>(
+					async (resolve, reject) => {
+						set({
+							isSubmitAppetite: true,
+						})
+						try {
+							const formData = new FormData()
+							formData.append(
+								"risk_apetite",
+								appetite.risk_apetite.toString()
+							)
+							postData<any>(
+								`${RISK_MAP_EP}/risk-apetite`,
+								formData,
+								{
+									headers: {
+										"Content-Type": "multipart/form-data",
+									},
+								}
+							)
+								.then((data) => {
+									if (data.data) {
+										const riskMap = (
+											get().risk_map.item || []
+										).map((risk) => ({
+											...risk,
+											risk_apetite: data.data,
+										}))
+										set({
+											risk_map: {
+												item: riskMap,
+												isFetching: false,
+											},
+											isSubmitAppetite: false,
+										})
+									}
+									resolve(data)
+								})
+								.catch((err) => {
+									reject(err)
+									set({
+										isSubmitAppetite: false,
+									})
+									toast({
+										title: "Failed",
+										description: err.message,
+										variant : "destructive"
+									})
+								})
+								.finally(() => {
+									set({
+										isSubmitAppetite: false,
+									})
+								})
+						} catch (error) {}
+					}
+				)
 			},
 		},
 	})

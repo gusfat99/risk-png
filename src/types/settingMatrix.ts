@@ -1,7 +1,7 @@
 import { ResponseApiType } from "@/helpers/ApiHelper"
 import { CommonState, SelectDataType } from "./common"
 import { z } from "zod"
-import { MatrixRiskMapSchema, MatrixSchema } from "@/schemas/SettingMatrixSchemat"
+import { AppetiteSchema, MatrixRiskMapSchema, MatrixSchema } from "@/schemas/SettingMatrixSchemat"
 
 export type RowLikelyhoodFrequency = {
 	id: any
@@ -37,6 +37,7 @@ export type RiskMap = {
 	deviation: any
 	value: any
 	color: string
+	risk_apetite : string
 	[x: string]: any
 }
 
@@ -65,6 +66,7 @@ export interface SettingMatrixState extends CommonState {
 		item: RiskMap[] | null
 	}
 	isSubmitMatrixCell: boolean
+	isSubmitAppetite: boolean
 	isProcessAddRowLikelyhood: boolean
 	actions: {
 		fetchLikelyhood(): Promise<ResponseApiType<LikelyhoodFrequency>>
@@ -93,8 +95,10 @@ export interface SettingMatrixState extends CommonState {
 			ResponseApiType<RowLikelyhoodFrequency>
 		>
 		deleteLastRowLikelyhoodFrequency?(): Promise<ResponseApiType<any>>
+		updateAppetite?(payload : AppetiteSchemaForm): Promise<ResponseApiType<any>>
 	}
 }
 
 export type MatrixSchemaForm = z.infer<typeof MatrixSchema>
 export type MatrixRiskMapSchemaForm = z.infer<typeof MatrixRiskMapSchema>
+export type AppetiteSchemaForm = z.infer<typeof AppetiteSchema>

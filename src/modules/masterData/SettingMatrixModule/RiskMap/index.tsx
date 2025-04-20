@@ -9,9 +9,11 @@ import {
 } from "@/types/settingMatrix"
 import { useState } from "react"
 import FormInputMatrixRiskMap from "../FormInputMatrixRiskMap"
+import RiskApetite from "../RiskApetite"
 
 const RiskMap = () => {
 	const {
+		isFetching,
 		severity_map,
 		likelyhood_frequency,
 		isSubmitMatrixCell,
@@ -48,6 +50,13 @@ const RiskMap = () => {
 	return (
 		<div className="rounded-md shadow-lg p-4 space-y-4">
 			<h5 className="text-secondary font-semibold">Risk Map</h5>
+			{risk_map.item && risk_map.item.length
+				 > 0 && !risk_map.isFetching && (
+				<RiskApetite
+					riskApetiteDefault={risk_map.item[0].risk_apetite?.toString()}
+				/>
+			)}
+			{risk_map.isFetching && <RiskApetite.Skeleton />}
 			{severity_map.item &&
 				severity_map.item &&
 				likelyhood_frequency.item && (
