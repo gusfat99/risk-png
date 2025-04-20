@@ -56,6 +56,7 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 							page: get().pagination_tanstack.pageIndex,
 							per_page: get().pagination_tanstack.pageSize,
 							year: year_selected,
+							search : get().querySearch || undefined
 						})
 							.then((data) => {
 								//parse data to flat
@@ -298,11 +299,15 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 						state.pagination_tanstack
 					),
 				})),
+			setQuerySearch: (serachValue) =>
+				set(() => ({
+					querySearch: serachValue,
+				})),
 			exportExcel() {
 				set({
 					isFetchingExportData: true,
 				})
-				const year_selected = useAuthStore.getState().year_selected;
+				const year_selected = useAuthStore.getState().year_selected
 				downloadProxyFile(`${EXPORT_RISK_BANK_EP}`, {
 					year: year_selected,
 				})

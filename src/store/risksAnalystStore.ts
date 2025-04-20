@@ -76,6 +76,7 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 							page: get().pagination_tanstack.pageIndex,
 							per_page: get().pagination_tanstack.pageSize,
 							year: year_selected,
+							search : get().querySearch || undefined
 						}
 					)
 						.then((data) => {
@@ -492,6 +493,10 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 						updater,
 						state.pagination_tanstack
 					),
+				})),
+			setQuerySearch: (value: string) =>
+				set(() => ({
+					querySearch: value,
 				})),
 			setNodeSelected: (nodeId) => {
 				const nodeItems = get().supportData.node.nodeItems

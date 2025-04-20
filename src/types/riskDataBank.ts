@@ -77,6 +77,7 @@ export interface RiskDataBankState extends CommonState {
 		updateData?(id: any, payload: RiskBankSchemaForm): Promise<ResponseApiType<RiskBank>>
 		deleteData?(id: any): Promise<ResponseApiType<any>>
 		setPagination?: (updater: Updater<PaginationState>) => void
+		setQuerySearch?: (serachValue: string) => void
 		exportExcel?: () => void
 	}
 }

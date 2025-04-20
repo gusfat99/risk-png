@@ -30,5 +30,6 @@ export interface SafeguardState extends CommonState {
 		deleteData?(id: any): Promise<ResponseApiType<any>>
 		// setPagination?: OnChangeFn<PaginationState>,
 		setPagination?: (updater: Updater<PaginationState>) => void
+		setQuerySearch?: (value: string) => void
 	}
 }

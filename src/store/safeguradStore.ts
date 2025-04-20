@@ -33,6 +33,7 @@ const useSafeguardStore = createStore<SafeguardState>(
 						getDataApi<Safeguard[]>(SAFEGUARD_EP, {
 							page: get().pagination_tanstack.pageIndex,
 							per_page: get().pagination_tanstack.pageSize,
+							search : get().querySearch || undefined
 						})
 							.then((data) => {
 								set({
@@ -196,6 +197,10 @@ const useSafeguardStore = createStore<SafeguardState>(
 						updater,
 						state.pagination_tanstack
 					),
+				})),
+			setQuerySearch: (value: string) =>
+				set(() => ({
+					querySearch: value,
 				})),
 			// setPagination : ()
 		},

@@ -1,15 +1,16 @@
 "use client"
 import NodeDataCard from "@/components/cards/NodeDataCard"
 import InputSelect from "@/components/inputs/InputSelect"
+import { RiskAnalystListTableSkeleton } from "@/components/skeletons/RiskAnalystListTableSkeleton"
 import useRiskAnalysStore from "@/store/risksAnalystStore"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect } from "react"
 import RiskAnalystFormMultiple from "./RiskAnalystFormMultiple"
-import { RiskAnalystListTableSkeleton } from "@/components/skeletons/RiskAnalystListTableSkeleton"
 
 const RiskAnalystModule = () => {
 	const {
 		actions: { fetchNodeData, setNodeSelected, fetchAllData },
+		querySearch,
 		nodeSelected,
 		isFetching,
 		supportData: {
@@ -28,6 +29,8 @@ const RiskAnalystModule = () => {
 		value: node.id,
 	}))
 
+
+
 	useEffect(() => {
 		if (nodeItems.length === 0) {
 			fetchNodeData()
@@ -35,7 +38,7 @@ const RiskAnalystModule = () => {
 		if (nodeSelected) {
 			fetchAllData(nodeSelected.id)
 		}
-	}, [fetchNodeData, fetchAllData, nodeSelected?.id, nodeItems.length])
+	}, [fetchNodeData, fetchAllData, nodeSelected?.id, nodeItems.length, querySearch])
 
 	return (
 		<div className=" space-y-4 w-full max-w-full">
@@ -52,10 +55,10 @@ const RiskAnalystModule = () => {
 				/>
 			</div>
 			{nodeSelected && <NodeDataCard nodeSelected={nodeSelected} />}
-			{isFetching && <RiskAnalystListTableSkeleton />}
-			{!isFetching && nodeSelected && (
-				<RiskAnalystFormMultiple basePathname={basePathname} />
-			)}
+			{/* {isFetching && <RiskAnalystListTableSkeleton />} */}
+			{/* {!isFetching && nodeSelected && (
+			)} */}
+			<RiskAnalystFormMultiple basePathname={basePathname} />
 		</div>
 	)
 }

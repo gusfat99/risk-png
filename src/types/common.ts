@@ -23,6 +23,7 @@ export type PaginationType = {
 export interface CommonState {
 	isFetching: boolean
 	isFetchingExportData: boolean
+	querySearch?: string;
 	isSubmit: boolean
 	message: string
 	errors: string

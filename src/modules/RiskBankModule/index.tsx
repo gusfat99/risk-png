@@ -11,14 +11,16 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { columnRiskBank } from "./columns"
+import { useDebounce } from "@/hooks/use-debounce"
 
 const RiskBankModule = () => {
 	const {
 		riskDataBankFlat,
-		actions: { fetchAllData, setPagination, deleteData },
+		actions: { fetchAllData, setPagination, deleteData, setQuerySearch },
 		isFetching,
 		meta,
 		pagination_tanstack,
+		querySearch,
 	} = useRiskDataBankStore()
 	const { pageIndex, pageSize } = pagination_tanstack
 	const [shownAlertDel, setShownAlertDel] = useState({
@@ -47,6 +49,10 @@ const RiskBankModule = () => {
 		}
 	}
 
+	const handleSearch = useDebounce((value : string) => {
+		setQuerySearch && setQuerySearch(value)
+	})
+
 	const handleDeleteAction = (confirmType: string) => {
 		if (confirmType === "deny") {
 			setShownAlertDel({
@@ -65,14 +71,14 @@ const RiskBankModule = () => {
 						title: result.message,
 						variant: "success",
 					})
-					fetchAllData();
+					fetchAllData()
 				})
 		}
 	}
 
 	useEffect(() => {
 		fetchAllData()
-	}, [fetchAllData, pageIndex, pageSize])
+	}, [fetchAllData, pageIndex, pageSize, querySearch])
 
 	return (
 		<div className="w-full">
@@ -81,6 +87,9 @@ const RiskBankModule = () => {
 					label="Filter Data"
 					isRequired={false}
 					placeholder="Search..."
+					onChange={(e) => {
+						handleSearch(e.target.value, 'filter')
+					}}
 				/>
 				<Link href={basePathname + "/add"}>
 					<Button variant="success">

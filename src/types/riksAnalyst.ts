@@ -83,6 +83,7 @@ export interface RiskAnalystState extends CommonState {
 		deleteData?(id: any): Promise<ResponseApiType<any>>
 		setPagination?: (updater: Updater<PaginationState>) => void
 		setNodeSelected: (nodeId: number) => void
+		setQuerySearch: (value: string) => void
 		handleChangeRiskBankData: (
 			name: keyof z.infer<typeof RiskAnalysisSchema>,
 			id: any

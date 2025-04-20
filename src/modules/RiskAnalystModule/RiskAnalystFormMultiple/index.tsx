@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import Spinner from "@/components/ui/spinner"
 import { useColumnsRiskAnalyst } from "@/hooks/use-columns-severty"
+import { useDebounce } from "@/hooks/use-debounce"
 import { useToast } from "@/hooks/use-toast"
 import { RiskAnalysisSeverityMultpleSchema } from "@/schemas/RiskAnalystSchema"
 import useRiskAnalystStore from "@/store/risksAnalystStore"
@@ -29,7 +30,7 @@ const RiskAnalystFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 	const { toast } = useToast()
 	const router = useRouter()
 	const {
-		actions: { setPagination, updateSavertyMultiple },
+		actions: { setPagination, updateSavertyMultiple, setQuerySearch },
 		isFetching,
 		riskAnalysItems,
 		meta,
@@ -73,6 +74,10 @@ const RiskAnalystFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 		}
 	}
 
+	const handleSearch = useDebounce((value: string) => {
+		setQuerySearch(value)
+	})
+
 	const handleSubmit = async (values: RiskAnalysisSevertyMultipleForm) => {
 		try {
 			if (nodeSelected?.id && updateSavertyMultiple) {
@@ -113,23 +118,29 @@ const RiskAnalystFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 				className="space-y-4 max-w-full  "
 				onSubmit={form.handleSubmit(handleSubmit)}
 			>
-				<div className="flex flex-row justify-between items-end">
-					<div className="flex flex-row gap-2 items-end">
-						<InputSearch
-							label="Filter Data"
-							isRequired={false}
-							placeholder="Search..."
-							// className="max-w-sm"
-						/>
-						<Link href={basePathname + "/add"}>
-							<AddButton label="Add Risk Analysis" />
-						</Link>
+				{nodeSelected && (
+					<div className="flex flex-row justify-between items-end">
+						<div className="flex flex-row gap-2 items-end">
+							<InputSearch
+								label="Filter Data"
+								isRequired={false}
+								placeholder="Search..."
+								onChange={(e) =>
+									handleSearch(e.target.value, "filter")
+								}
+								// className="max-w-sm"
+							/>
+							<Link href={basePathname + "/add"}>
+								<AddButton label="Add Risk Analysis" />
+							</Link>
+						</div>
+						<Button disabled={isSubmit} variant={"secondary"}>
+							{isSubmit && <Spinner className="w-4 h-4" />}
+							{!isSubmit && <Save />}
+							Save Severity Changes
+						</Button>
 					</div>
-					<Button disabled={isSubmit} variant={"secondary"}>
-						{isSubmit && <Spinner className="w-4 h-4" />}
-						<Save /> Save Severity Changes
-					</Button>
-				</div>
+				)}
 
 				<DataTable<RiskAnalysis>
 					columns={column}

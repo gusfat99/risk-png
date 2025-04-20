@@ -11,11 +11,13 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { columnSafeguard } from "../columns"
+import { useDebounce } from "@/hooks/use-debounce"
 
 const SafeguardModule = () => {
 	const {
 		safeguardItems,
-		actions: { fetchAllData, setPagination, deleteData },
+		querySearch,
+		actions: { fetchAllData, setPagination, deleteData, setQuerySearch },
 		isFetching,
 		meta,
 		pagination_tanstack,
@@ -66,9 +68,11 @@ const SafeguardModule = () => {
 		}
 	}
 
+	const handleSearch = useDebounce((value : string) => {setQuerySearch && setQuerySearch(value)})
+
 	useEffect(() => {
 		fetchAllData()
-	}, [fetchAllData, pageIndex, pageSize])
+	}, [fetchAllData, pageIndex, pageSize, querySearch])
 
 	return (
 		<div className="w-full">
@@ -77,6 +81,7 @@ const SafeguardModule = () => {
 					label="Filter Data"
 					isRequired={false}
 					placeholder="Search..."
+					onChange={(e) => handleSearch(e.target.value, 'filter')}
 				/>
 				<Link href={"/data-master-safeguards/add"}>
 					<Button variant="success">

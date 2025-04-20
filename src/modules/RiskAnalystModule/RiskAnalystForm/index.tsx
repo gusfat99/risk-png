@@ -33,7 +33,6 @@ const RiskAnalystForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 		actions: { updateData, createData },
 	} = useRiskAnalysStore()
 
-
 	const { toast } = useToast()
 	const route = useRouter()
 	const params = useParams<{ id: any }>()
@@ -62,7 +61,11 @@ const RiskAnalystForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 					throw new Error("Please Select Node before!")
 				}
 			} else if (updateData && params.id && isEdit) {
-				const result = await updateData(params?.id, nodeSelected?.id, values)
+				const result = await updateData(
+					params?.id,
+					nodeSelected?.id,
+					values
+				)
 
 				if (result) {
 					toast({
@@ -162,7 +165,8 @@ const RiskAnalystForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 						</Link>
 						<Button disabled={isSubmit} variant={"secondary"}>
 							{isSubmit && <Spinner className="w-4 h-4" />}
-							<Save /> Save Data
+							{!isSubmit && <Save />}
+							Save Data
 						</Button>
 					</div>
 				)}
