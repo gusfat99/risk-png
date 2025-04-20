@@ -11,11 +11,13 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import AlertConfirmDialog from "@/components/AlertConfirmDialog"
 import { useToast } from "@/hooks/use-toast"
+import { useDebounce } from "@/hooks/use-debounce"
 
 const NodeDataModule = () => {
 	const {
 		nodeItems,
-		actions: { fetchAllData, setPagination, deleteData },
+		querySearch,
+		actions: { fetchAllData, setPagination, deleteData, setQuerySearch },
 		isFetching,
 		meta,
 		pagination_tanstack,
@@ -43,6 +45,9 @@ const NodeDataModule = () => {
 		}
 	}
 
+		const handleSearch = useDebounce((value : string) => {setQuerySearch && setQuerySearch(value)})
+	
+
 	const handleDeleteAction = (confirmType: string) => {
 	
 		if (confirmType === "deny") {
@@ -68,7 +73,7 @@ const NodeDataModule = () => {
 
 	useEffect(() => {
 		fetchAllData()
-	}, [fetchAllData, pageIndex, pageSize])
+	}, [fetchAllData, pageIndex, pageSize, querySearch])
 
 	return (
 		<div className="w-full">
@@ -77,6 +82,7 @@ const NodeDataModule = () => {
 					label="Filter Data"
 					isRequired={false}
 					placeholder="Search..."
+					onChange={(e)=>handleSearch(e.target.value, 'filter')}
 				/>
 				<Link href={"/data-master-node-data/add"}>
 					<Button variant="success">

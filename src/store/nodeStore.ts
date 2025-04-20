@@ -3,7 +3,7 @@ import {
 	deleteData,
 	getDataApi,
 	postData,
-	ResponseApiType
+	ResponseApiType,
 } from "@/helpers/ApiHelper"
 import { toast } from "@/hooks/use-toast"
 import { NodeSchema } from "@/schemas/NodeSchema"
@@ -29,6 +29,7 @@ const useNodeStore = createStore<NodeState>("node-data", (set, get) => ({
 				getDataApi<Node[]>(NODE_EP, {
 					page: get().pagination_tanstack.pageIndex,
 					per_page: get().pagination_tanstack.pageSize,
+					search : get().querySearch || undefined
 				})
 					.then((data) => {
 						set({
@@ -52,7 +53,7 @@ const useNodeStore = createStore<NodeState>("node-data", (set, get) => ({
 					})
 			})
 		},
-		fetchSingleData: async (nodeId : any) => {
+		fetchSingleData: async (nodeId: any) => {
 			set({
 				isFetching: true,
 			})
@@ -167,6 +168,10 @@ const useNodeStore = createStore<NodeState>("node-data", (set, get) => ({
 					updater,
 					state.pagination_tanstack
 				),
+			})),
+		setQuerySearch: (value: string) =>
+			set(() => ({
+				querySearch: value,
 			})),
 		// setPagination : ()
 	},
