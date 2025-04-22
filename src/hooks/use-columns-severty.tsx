@@ -49,7 +49,7 @@ export interface UseColumnsRiskResponseProps extends UseColumnsProps {
 	form: UseFormReturn<RiskResponseSevertyExpectMultipleSchemaForm>
 }
 
-const CellInput = ({ row, form, name }: { row: any; form: any; name: any }) => {
+const CellInput = ({ row, form, name, name_code }: { row: any; form: any; name: any, name_code : any }) => {
 	const rowId = row.index
 	const { likelyhood_options, severity_map_options } = useSettingMatrixStore()
 
@@ -58,8 +58,9 @@ const CellInput = ({ row, form, name }: { row: any; form: any; name: any }) => {
 	}, 100)
 	
 	const fieldSeverity = fieldsInputSeverity.find((field) =>
-		name.includes(field.name_code)
+		field.name_code === name_code
 	)
+	
 	let items: SelectDataType[] = [{
 		label: "(0) not taken into considered",
 		value : 0,
@@ -242,6 +243,7 @@ export const useColumnsRiskAnalyst = ({
 								)}
 							/>
 							<MemoizedCellInput
+								name_code={"sp"}
 								row={row}
 								form={form}
 								name="sp_current"
@@ -269,6 +271,7 @@ export const useColumnsRiskAnalyst = ({
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
+							name_code={"se"}
 							row={row}
 							form={form}
 							name="se_current"
@@ -295,6 +298,7 @@ export const useColumnsRiskAnalyst = ({
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
+							name_code={"sf"}
 							row={row}
 							form={form}
 							name="sf_current"
@@ -319,6 +323,7 @@ export const useColumnsRiskAnalyst = ({
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
+							name_code={"srl"}
 							row={row}
 							form={form}
 							name="srl_current"
@@ -347,6 +352,7 @@ export const useColumnsRiskAnalyst = ({
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
+							name_code={"sa"}
 							row={row}
 							form={form}
 							name="sa_current"
@@ -373,6 +379,7 @@ export const useColumnsRiskAnalyst = ({
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
+							name_code={"spn"}
 							row={row}
 							form={form}
 							name="spn_current"
@@ -399,6 +406,7 @@ export const useColumnsRiskAnalyst = ({
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
+							name_code={"l_frequency"}
 							row={row}
 							form={form}
 							name="l_frequency_current"
@@ -799,6 +807,7 @@ export const useColumnsRiskResponse = ({
 								)}
 							/>
 							<MemoizedCellInput
+								name_code={"sp"}
 								row={row}
 								form={form}
 								name="sp_expected"
@@ -826,6 +835,7 @@ export const useColumnsRiskResponse = ({
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
+							name_code={"se"}
 							row={row}
 							form={form}
 							name="se_expected"
@@ -852,6 +862,7 @@ export const useColumnsRiskResponse = ({
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
+							name_code={"sf"}
 							row={row}
 							form={form}
 							name="sf_expected"
@@ -880,6 +891,7 @@ export const useColumnsRiskResponse = ({
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
+							name_code={"srl"}
 							row={row}
 							form={form}
 							name="srl_expected"
@@ -906,6 +918,7 @@ export const useColumnsRiskResponse = ({
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
+							name_code={"sa"}
 							row={row}
 							form={form}
 							name="sa_expected"
@@ -934,6 +947,7 @@ export const useColumnsRiskResponse = ({
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
+							name_code={"spn"}
 							row={row}
 							form={form}
 							name="spn_expected"
@@ -960,6 +974,7 @@ export const useColumnsRiskResponse = ({
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
+							name_code={"l_frequency"}
 							row={row}
 							form={form}
 							name="l_frequency_expected"
@@ -1267,6 +1282,7 @@ export const useColumnsMonitoring = ({
 								)}
 							/>
 							<MemoizedCellInput
+								name_code={"sp"}
 								row={row}
 								form={form}
 								name="sp_affected"
@@ -1294,6 +1310,7 @@ export const useColumnsMonitoring = ({
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
+							name_code={"se"}
 							row={row}
 							form={form}
 							name="se_affected"
@@ -1320,6 +1337,7 @@ export const useColumnsMonitoring = ({
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
+							name_code={"sf"}
 							row={row}
 							form={form}
 							name="sf_affected"
@@ -1345,6 +1363,7 @@ export const useColumnsMonitoring = ({
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
+							name_code={"srl"}
 							row={row}
 							form={form}
 							name="srl_affected"
@@ -1371,6 +1390,7 @@ export const useColumnsMonitoring = ({
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
+							name_code={"sa"}
 							row={row}
 							form={form}
 							name="sa_affected"
@@ -1387,6 +1407,7 @@ export const useColumnsMonitoring = ({
 				cell: ({ row }) => {
 					return (
 						<MemoizedCellInput
+							name_code={"spn"}
 							row={row}
 							form={form}
 							name="spn_affected"
