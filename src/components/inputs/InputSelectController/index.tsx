@@ -28,7 +28,7 @@ interface FormSelectInputProps extends SelectProps {
 	className?: string
 	placeholder: string
 	items: SelectDataType[]
-	field: any
+	field?: any
 	disabled?: boolean
 	loading?: boolean
 	isRequired?: boolean
@@ -64,7 +64,7 @@ function InputSelectController(props: FormSelectInputProps) {
 				<>
 					<Select
 						defaultValue={field.value}
-						onValueChange={(val) => val && onChange(val)}
+						onValueChange={(val) => typeof val !== "undefined" &&  val !== null && onChange(val)}
 						value={field.value}
 						disabled={disabled}
 						{...restProps}

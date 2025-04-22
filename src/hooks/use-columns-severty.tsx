@@ -55,14 +55,16 @@ const CellInput = ({ row, form, name }: { row: any; form: any; name: any }) => {
 
 	const debouncedUpdate = useDebounce((key: any, value: any) => {
 		form.setValue(key, value)
-	},100)
+	}, 100)
+	
 	const fieldSeverity = fieldsInputSeverity.find((field) =>
 		name.includes(field.name_code)
 	)
 	let items: SelectDataType[] = [{
 		label: "(0) not taken into considered",
 		value : 0,
-	},...severity_map_options]
+	}, ...severity_map_options]
+	
 	if (fieldSeverity) {
 		items = items
 			.filter(

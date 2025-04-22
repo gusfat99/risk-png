@@ -1,4 +1,5 @@
 import { MetaResponseType } from "@/helpers/ApiHelper"
+import React from "react";
 
 // types/download.ts
 export interface DownloadOptions {
@@ -31,6 +32,7 @@ export interface CommonState {
 	meta?: MetaResponseType
 }
 
+
 export type MimeTypes = "pdf" | "xlsx" | "docx" | "png" | "jpg" | "jpg"
 
 export type SelectDataType = {
@@ -38,6 +40,11 @@ export type SelectDataType = {
 	value: any
 	[x: string]: any
 }
+
+export type FormRefType = {
+	submit: (e?: React.BaseSyntheticEvent) => Promise<void>
+}
+
 
 export const commonInitualState = {
 	errors: "",

@@ -48,12 +48,12 @@ export const RiskAnalysisSeverityMultpleSchema = z.object({
 export function toValidatedNumber(name: string) {
 	const numberSchema = z
 		.string()
-		.min(1, name + " is required")
+		.min(0, name + " is required")
 		.refine((val) => !isNaN(Number(val)), {
 			message: name + " Must be a number",
 		}) // Pastikan angka valid
-		.refine((val) => Number(val) > 0, {
-			message: name + " must be more than 0",
+		.refine((val) => Number(val) > -1, {
+			message: name + " must be more than -1",
 		}) // Harus positif
 
 		.refine((val) => Number(val) <= 5, {
@@ -65,12 +65,12 @@ export function toValidatedNumber(name: string) {
 export function toValidatedNumberActual(name: string) {
 	const numberSchema = z
 		.number()
-		.min(1, name + " is required")
+		.min(0, name + " is required")
 		.refine((val) => !isNaN(Number(val)), {
 			message: name + " Must be a number",
 		}) // Pastikan angka valid
-		.refine((val) => Number(val) > 0, {
-			message: name + " must be more than 0",
+		.refine((val) => Number(val) > -1, {
+			message: name + " must be more than -1",
 		}) // Harus positif
 
 		.refine((val) => Number(val) <= 5, {
