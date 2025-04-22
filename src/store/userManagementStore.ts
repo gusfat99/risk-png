@@ -1,4 +1,5 @@
 import {
+	CHANGE_PWD_EP,
 	MANAGEMENT_USER_EP,
 	MANAGEMENT_USER_ROLE_EP,
 	PERSONAL_INFO_EP,
@@ -262,7 +263,7 @@ const useUserManagementStore = createStore<UserState>(
 					formData.append("password_confirmation", payload.password_confirmation)
 				
 					
-					postData<User>(`${PERSONAL_INFO_EP}`, formData, {
+					postData<User>(`${CHANGE_PWD_EP}`, formData, {
 						headers: {
 							"Content-Type": "multipart/form-data",
 						},

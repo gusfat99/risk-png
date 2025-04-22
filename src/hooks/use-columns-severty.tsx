@@ -15,6 +15,7 @@ import { fieldsInputSeverity } from "@/data/severity"
 import { useDebounce } from "@/hooks/use-debounce"
 import { cn } from "@/lib/utils"
 import useSettingMatrixStore from "@/store/settingMatrixStore"
+import { SelectDataType } from "@/types/common"
 import {
 	RiskAnalysis,
 	RiskAnalysisSevertyMultipleForm,
@@ -58,13 +59,16 @@ const CellInput = ({ row, form, name }: { row: any; form: any; name: any }) => {
 	const fieldSeverity = fieldsInputSeverity.find((field) =>
 		name.includes(field.name_code)
 	)
-	let items = severity_map_options
+	let items: SelectDataType[] = [{
+		label: "(0) not taken into considered",
+		value : 0,
+	},...severity_map_options]
 	if (fieldSeverity) {
 		items = items
 			.filter(
 				(item) =>
-					item.saverity_row_id?.toString() ===
-					fieldSeverity.col_id?.toString()
+					(item.saverity_row_id?.toString() ===
+					fieldSeverity.col_id?.toString()) || item.value === 0
 			)
 			.map((x) => ({
 				...x,
