@@ -150,6 +150,7 @@ export interface RiskResponseState extends CommonState {
 		deleteData?(id: any): Promise<ResponseApiType<any>>
 		setPagination?: (updater: Updater<PaginationState>) => void
 		setNodeSelected: (nodeId: number) => void
+		setQuerySearch?: (serachValue: string) => void
 		exportExcel: (nodeId : any) => void
 		setRiskSeveritySelected
 		: (severity: string) => void

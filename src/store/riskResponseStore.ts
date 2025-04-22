@@ -21,7 +21,7 @@ import {
 	Hazop,
 	RiskResponse,
 	RiskResponseSevertyExpectMultipleSchemaForm,
-	RiskResponseState
+	RiskResponseState,
 } from "@/types/riskResponse"
 import { Severity } from "@/types/severity"
 import useAuthStore from "./authStore"
@@ -74,6 +74,7 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 							page: get().pagination_tanstack.pageIndex,
 							per_page: get().pagination_tanstack.pageSize,
 							year: year_selected,
+							search : get().querySearch || undefined,
 							node_id: isForReport ? nodeId : undefined,
 						}
 					)
@@ -539,6 +540,10 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 						updater,
 						state.pagination_tanstack
 					),
+				})),
+			setQuerySearch: (value: string) =>
+				set(() => ({
+					querySearch: value,
 				})),
 			setNodeSelected: (nodeId) => {
 				const nodeItems = get().supportData.node.nodeItems

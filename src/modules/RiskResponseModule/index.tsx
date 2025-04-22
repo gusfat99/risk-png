@@ -12,6 +12,7 @@ import { Save } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { useEffect, useRef } from "react"
 import RiskResponseFormMultiple from "./RiskResponseFormMultiple"
+import { useDebounce } from "@/hooks/use-debounce"
 
 const RiskResponseModule = () => {
 	const pathname = usePathname()
@@ -27,6 +28,7 @@ const RiskResponseModule = () => {
 			fetchNodeData,
 			fetchAllData,
 			setHazopByRiskAnalyst,
+			setQuerySearch
 		},
 		supportData: {
 			node: { isFetching: isFetchingNode, nodeItems },
@@ -44,6 +46,10 @@ const RiskResponseModule = () => {
 		formRef.current?.submit()
 	}
 
+	const handleSearch = useDebounce((value : string) => {
+		setQuerySearch && setQuerySearch(value)
+	})
+
 	useEffect(() => {
 		if (nodeItems.length === 0) {
 			fetchNodeData()
@@ -60,6 +66,7 @@ const RiskResponseModule = () => {
 		setHazopByRiskAnalyst,
 		nodeSelected?.id,
 		nodeItems.length,
+		querySearch
 	])
 
 	return (
@@ -86,6 +93,7 @@ const RiskResponseModule = () => {
 							label="Filter Data"
 							isRequired={false}
 							placeholder="Search..."
+							onChange={(e) => handleSearch(e.target.value, 'filter')}
 							// className="max-w-sm"
 						/>
 					</div>
