@@ -204,4 +204,6 @@ const RiskResponseFormMultiple = forwardRef<FormRefType, IProps>(
 	}
 )
 
+RiskResponseFormMultiple.displayName = "RiskResponseFormMultiple";
+
 export default RiskResponseFormMultiple

@@ -131,4 +131,6 @@ const RiskAnalystFormMultiple = forwardRef<FormRefType, IProps>(
 	}
 )
 
+RiskAnalystFormMultiple.displayName = "RiskAnalystFormMultiple"
+
 export default RiskAnalystFormMultiple
