@@ -1,17 +1,27 @@
 "use client"
 import NodeDataCard from "@/components/cards/NodeDataCard"
+import InputSearch from "@/components/inputs/InputSearch"
 import InputSelect from "@/components/inputs/InputSelect"
-import { RiskAnalystListTableSkeleton } from "@/components/skeletons/RiskAnalystListTableSkeleton"
+import LoadingIndicator from "@/components/LoadingIndicator"
+import NotFoundData from "@/components/NotFoundData"
+import { Button } from "@/components/ui/button"
+import Spinner from "@/components/ui/spinner"
 import useRiskResponseStore from "@/store/riskResponseStore"
+import { FormRefType } from "@/types/common"
+import { Save } from "lucide-react"
 import { usePathname } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import RiskResponseFormMultiple from "./RiskResponseFormMultiple"
 
 const RiskResponseModule = () => {
 	const pathname = usePathname()
+	const formRef = useRef<FormRefType>(null)
 	const {
 		nodeSelected,
 		isFetching,
+		isSubmit,
+		riskResponseItems,
+		querySearch,
 		actions: {
 			setNodeSelected,
 			fetchNodeData,
@@ -29,6 +39,10 @@ const RiskResponseModule = () => {
 		label: node.node,
 		value: node.id?.toString() ?? "",
 	}))
+
+	const handleSubmit = () => {
+		formRef.current?.submit()
+	}
 
 	useEffect(() => {
 		if (nodeItems.length === 0) {
@@ -64,10 +78,38 @@ const RiskResponseModule = () => {
 				/>
 			</div>
 			{nodeSelected && <NodeDataCard nodeSelected={nodeSelected} />}
-			{isFetching && <RiskAnalystListTableSkeleton />}
-			{!isFetching && nodeSelected && (
-				<RiskResponseFormMultiple basePathname={basePathname} />
+			{/* {isFetching && <RiskAnalystListTableSkeleton />} */}
+			{nodeSelected && (
+				<div className="flex flex-row justify-between items-end">
+					<div className="flex flex-row gap-2 items-end">
+						<InputSearch
+							label="Filter Data"
+							isRequired={false}
+							placeholder="Search..."
+							// className="max-w-sm"
+						/>
+					</div>
+					<Button
+						onClick={handleSubmit}
+						disabled={isSubmit || riskResponseItems.length === 0}
+						variant={"secondary"}
+					>
+						{isSubmit && <Spinner className="w-4 h-4" />}
+						{!isSubmit && <Save />}
+						Save Severity Changes
+					</Button>
+				</div>
 			)}
+			{!isFetching && nodeSelected && (
+				<RiskResponseFormMultiple ref={formRef} basePathname={basePathname} />
+			)}
+
+			{riskResponseItems.length === 0 && nodeSelected && !isFetching && (
+				<NotFoundData
+					description={"Data not found for key " + querySearch}
+				/>
+			)}
+			{nodeSelected && isFetching && <LoadingIndicator />}
 		</div>
 	)
 }

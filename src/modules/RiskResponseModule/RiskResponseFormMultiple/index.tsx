@@ -18,202 +18,190 @@ import {
 // import { RiskAnalysisSevertyMultipleForm } from "@/schemas/RiskAnalystSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Save } from "lucide-react"
-import React, { useCallback } from "react"
+import React, { forwardRef, useCallback, useImperativeHandle } from "react"
 import { useForm } from "react-hook-form"
 import HazopRecomendationsForm from "../HazopRecomendationsForm"
+import { FormRefType } from "@/types/common"
 // import Datepicker from "react-tailwindcss-datepicker"
 
 interface IProps {
 	basePathname: string
 }
 
-
-
-const RiskResponseFormMultiple: React.FC<IProps> = ({ basePathname }) => {
-	const { toast } = useToast()
-	const {
-		actions: {
-			setHazopStatus,
-			setPagination,
-			updateSavertyExpectMultiple,
-			fetchHazopByRiskAnalyst,
-			setHazopByRiskAnalyst,
-		},
-		isFetchingHazopItems,
-		hazopItemsSelected,
-		isFetching,
-		riskResponseItems,
-		meta,
-		isSubmit,
-		pagination_tanstack,
-		nodeSelected,
-	} = useRiskResponseStore()
-	const total = meta?.total || 0
-	const [hazopOpen, setHazopOpen] = React.useState<HazopStatusDialog>({
-		hazop_id: null,
-		risk_analyst_id: null,
-		open: false,
-	})
-	const defaultValues: RiskResponseSevertyExpectMultipleSchemaForm =
-		React.useMemo(() => {
-			// console.log
-			return {
-				risks: riskResponseItems.map((item) => ({
-					sp_expected: item.sp_expected,
-					sf_expected: item.sf_expected,
-					se_expected: item.se_expected,
-					srl_expected: item.srl_expected,
-					sa_expected: item.sa_expected,
-					spn_expected: item.spn_expected,
-					l_frequency_expected: item.l_frequency_expected,
-					id: item.id.toString(),
-				})),
-			}
-		}, [riskResponseItems])
-
-	const form = useForm<RiskResponseSevertyExpectMultipleSchemaForm>({
-		resolver: zodResolver(RiskResponseSevertyExpectMultipleSchema),
-		progressive: false,
-		mode: "onChange",
-		reValidateMode: "onSubmit",
-		shouldFocusError: true,
-		shouldUnregister: true,
-		defaultValues: defaultValues,
-	})
-
-	const handleAction = useCallback(
-		(actionName: string, row: RiskResponse, value2: any) => {
-			if (actionName === "hazop") {
-				// setSelectedId(id)
-				fetchHazopByRiskAnalyst &&
-					fetchHazopByRiskAnalyst(
-						nodeSelected?.id,
-						row.id
-					)
-				setHazopOpen((prev) => ({
-					...prev,
-					hazop_id: row.id,
-					risk_analyst_id: row.id,
-					open: true,
-				}))
-			}
-			if (actionName === "hazop_status") {
-				setHazopStatus &&
-					setHazopStatus({
-						nodeId: nodeSelected?.id,
-						riskId: row.id,
-						status: value2,
-					})
-			}
-		},
-		[nodeSelected?.id]
-	)
-
-	const handleSubmit = useCallback(
-		async (values: RiskResponseSevertyExpectMultipleSchemaForm) => {
-			try {
-				if (nodeSelected?.id && updateSavertyExpectMultiple) {
-					const result = await updateSavertyExpectMultiple(
-						nodeSelected?.id,
-						values
-					)
-					if (!result.errors) {
-						toast({
-							title: result.message ?? "",
-							variant: "success",
-						})
-					} else {
-						throw new Error(result.errors)
-					}
-				} else {
-					throw new Error("Please Select Node before")
+const RiskResponseFormMultiple = forwardRef<FormRefType, IProps>(
+	({ basePathname }, ref) => {
+		const { toast } = useToast()
+		const {
+			actions: {
+				setHazopStatus,
+				setPagination,
+				updateSavertyExpectMultiple,
+				fetchHazopByRiskAnalyst,
+				setHazopByRiskAnalyst,
+			},
+			isFetchingHazopItems,
+			hazopItemsSelected,
+			isFetching,
+			riskResponseItems,
+			meta,
+			isSubmit,
+			pagination_tanstack,
+			nodeSelected,
+		} = useRiskResponseStore()
+		const total = meta?.total || 0
+		const [hazopOpen, setHazopOpen] = React.useState<HazopStatusDialog>({
+			hazop_id: null,
+			risk_analyst_id: null,
+			open: false,
+		})
+		const defaultValues: RiskResponseSevertyExpectMultipleSchemaForm =
+			React.useMemo(() => {
+				// console.log
+				return {
+					risks: riskResponseItems.map((item) => ({
+						sp_expected: item.sp_expected,
+						sf_expected: item.sf_expected,
+						se_expected: item.se_expected,
+						srl_expected: item.srl_expected,
+						sa_expected: item.sa_expected,
+						spn_expected: item.spn_expected,
+						l_frequency_expected: item.l_frequency_expected,
+						id: item.id.toString(),
+					})),
 				}
-			} catch (error: any) {
-				console.log({ error })
-				toast({
-					title: error?.message
-						? error.message
-						: "An unexpected error occurred",
-					variant: "destructive",
-				})
-			}
-		},
-		[updateSavertyExpectMultiple, nodeSelected?.id, toast]
-	)
+			}, [riskResponseItems])
 
-	const { column } = useColumnsRiskResponse({
-		onAction: handleAction,
-		form,
-	})
-	
-	return (
-		<React.Fragment>
-			<Form {...form}>
-				<form
-					className="space-y-4 max-w-full "
-					onSubmit={form.handleSubmit(handleSubmit)}
-				>
-					<div className="flex flex-row justify-between items-end">
-						<div className="flex flex-row gap-2 items-end">
-							<InputSearch
-								label="Filter Data"
-								isRequired={false}
-								placeholder="Search..."
-								// className="max-w-sm"
-							/>
-						</div>
-						<Button disabled={isSubmit} variant={"secondary"}>
-							{isSubmit && <Spinner className="w-4 h-4" />}
-							<Save /> Save Changes Severity
-						</Button>
-					</div>
-					<DataTable<RiskResponse>
-						columns={column}
-						data={riskResponseItems}
-						loading={isFetching}
-						rowCount={total}
-						manualPagination={true}
-						onPaginationChange={setPagination}
-						pagination={pagination_tanstack}
-					/>
-				</form>
-			</Form>
-			<DialogMain
-				open={hazopOpen.open}
-				onOpenChange={(value) => {
+		const form = useForm<RiskResponseSevertyExpectMultipleSchemaForm>({
+			resolver: zodResolver(RiskResponseSevertyExpectMultipleSchema),
+			progressive: false,
+			mode: "onChange",
+			reValidateMode: "onSubmit",
+			shouldFocusError: true,
+			shouldUnregister: true,
+			defaultValues: defaultValues,
+		})
+
+		const handleAction = useCallback(
+			(actionName: string, row: RiskResponse, value2: any) => {
+				if (actionName === "hazop") {
+					// setSelectedId(id)
+					fetchHazopByRiskAnalyst &&
+						fetchHazopByRiskAnalyst(nodeSelected?.id, row.id)
 					setHazopOpen((prev) => ({
 						...prev,
-						open: value,
+						hazop_id: row.id,
+						risk_analyst_id: row.id,
+						open: true,
 					}))
-					setHazopByRiskAnalyst && setHazopByRiskAnalyst(null)
-				}}
-				title="Hazop Recomendation"
-				size="7xl"
-			>
-				{isFetchingHazopItems && (
-					<div className="flex justify-center items-center w-full h-full">
-						<Spinner className="w-10 h-10" />
-					</div>
-				)}
-				{!isFetchingHazopItems && hazopItemsSelected && (
-					<HazopRecomendationsForm
-						params={{
-							risk_analyst_id: hazopOpen.risk_analyst_id,
-							hazop_id: hazopOpen.hazop_id,
-						}}
-						afterSaveSuccesfull={() => {
-							setHazopOpen((prev) => ({
-								risk_analyst_id: null,
-								hazop_id: null,
-								open: false,
-							}))
-							setHazopByRiskAnalyst && setHazopByRiskAnalyst(null)
-						}}
-					/>
-				)}
-			</DialogMain>
-		</React.Fragment>
-	)
-}
+				}
+				if (actionName === "hazop_status") {
+					setHazopStatus &&
+						setHazopStatus({
+							nodeId: nodeSelected?.id,
+							riskId: row.id,
+							status: value2,
+						})
+				}
+			},
+			[nodeSelected?.id]
+		)
+
+		const onSubmit = useCallback(
+			async (values: RiskResponseSevertyExpectMultipleSchemaForm) => {
+				try {
+					if (nodeSelected?.id && updateSavertyExpectMultiple) {
+						const result = await updateSavertyExpectMultiple(
+							nodeSelected?.id,
+							values
+						)
+						if (!result.errors) {
+							toast({
+								title: result.message ?? "",
+								variant: "success",
+							})
+						} else {
+							throw new Error(result.errors)
+						}
+					} else {
+						throw new Error("Please Select Node before")
+					}
+				} catch (error: any) {
+					console.log({ error })
+					toast({
+						title: error?.message
+							? error.message
+							: "An unexpected error occurred",
+						variant: "destructive",
+					})
+				}
+			},
+			[updateSavertyExpectMultiple, nodeSelected?.id, toast]
+		)
+
+		const { column } = useColumnsRiskResponse({
+			onAction: handleAction,
+			form,
+		})
+
+		// Expose submit to parent
+		useImperativeHandle(ref, () => ({
+			submit: form.handleSubmit(onSubmit),
+		}))
+
+		return (
+			<React.Fragment>
+				<Form {...form}>
+					<form className="space-y-4 max-w-full ">
+						
+						<DataTable<RiskResponse>
+							columns={column}
+							data={riskResponseItems}
+							loading={isFetching}
+							rowCount={total}
+							manualPagination={true}
+							onPaginationChange={setPagination}
+							pagination={pagination_tanstack}
+						/>
+					</form>
+				</Form>
+				<DialogMain
+					open={hazopOpen.open}
+					onOpenChange={(value) => {
+						setHazopOpen((prev) => ({
+							...prev,
+							open: value,
+						}))
+						setHazopByRiskAnalyst && setHazopByRiskAnalyst(null)
+					}}
+					title="Hazop Recomendation"
+					size="7xl"
+				>
+					{isFetchingHazopItems && (
+						<div className="flex justify-center items-center w-full h-full">
+							<Spinner className="w-10 h-10" />
+						</div>
+					)}
+					{!isFetchingHazopItems && hazopItemsSelected && (
+						<HazopRecomendationsForm
+							params={{
+								risk_analyst_id: hazopOpen.risk_analyst_id,
+								hazop_id: hazopOpen.hazop_id,
+							}}
+							afterSaveSuccesfull={() => {
+								setHazopOpen((prev) => ({
+									risk_analyst_id: null,
+									hazop_id: null,
+									open: false,
+								}))
+								setHazopByRiskAnalyst &&
+									setHazopByRiskAnalyst(null)
+							}}
+						/>
+					)}
+				</DialogMain>
+			</React.Fragment>
+		)
+	}
+)
 
 export default RiskResponseFormMultiple

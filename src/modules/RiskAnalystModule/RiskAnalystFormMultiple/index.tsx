@@ -13,13 +13,12 @@ import {
 // import { RiskAnalysisSevertyMultipleForm } from "@/schemas/RiskAnalystSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
-import React, { forwardRef, useImperativeHandle } from "react"
+import React, { forwardRef, useCallback, useImperativeHandle } from "react"
 import { useForm } from "react-hook-form"
 
 interface IProps {
 	basePathname: string
 }
-
 
 const RiskAnalystFormMultiple = forwardRef<FormRefType, IProps>(
 	({ basePathname }, ref) => {
@@ -70,8 +69,7 @@ const RiskAnalystFormMultiple = forwardRef<FormRefType, IProps>(
 			}
 		}
 
-
-		const onSubmit = async (values: RiskAnalysisSevertyMultipleForm) => {
+		const onSubmit = useCallback(async (values: RiskAnalysisSevertyMultipleForm) => {
 			try {
 				if (nodeSelected?.id && updateSavertyMultiple) {
 					const result = await updateSavertyMultiple(
@@ -98,7 +96,7 @@ const RiskAnalystFormMultiple = forwardRef<FormRefType, IProps>(
 					variant: "destructive",
 				})
 			}
-		}
+		}, [])
 
 		const { column } = useColumnsRiskAnalyst({
 			onAction: handleAction,
