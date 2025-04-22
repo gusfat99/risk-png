@@ -64,7 +64,7 @@ export const columnReportRiskMonitoring = (
 		},
 		{
 			accessorKey: "incident_severity",
-			header: "Incident Count",
+			header: "Incident Severity",
 			meta: {
 				className: "text-center",
 			},

@@ -11,11 +11,14 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { columnsManagementUser } from "./columns"
+import { useDebounce } from "@/hooks/use-debounce"
 
 const ManagementUsersModule = () => {
 	const {
 		userItems,
-		actions: { fetchAllData, setPagination, deleteData },
+		userRoleItems,
+		querySearch,
+		actions: { fetchAllData, setPagination, deleteData, setUserSelected, fetchUserRoleData, setQuerySearch},
 		isFetching,
 		meta,
 		pagination_tanstack,
@@ -35,6 +38,7 @@ const ManagementUsersModule = () => {
 
 	const handleActionTable = (action: string, id: any) => {
 		if (action === "update") {
+			setUserSelected && setUserSelected(id);
 			router.push(basePathname + "/update/" + id)
 		} else if (action === "detail") {
 			router.push(basePathname + "/detail/" + id)
@@ -69,9 +73,15 @@ const ManagementUsersModule = () => {
 		}
 	}
 
+		const handleSearch = useDebounce((value : string) => {setQuerySearch && setQuerySearch(value)})
+
 	useEffect(() => {
 		fetchAllData()
-	}, [fetchAllData, pageIndex, pageSize])
+		if (userRoleItems.length === 0) {
+			fetchUserRoleData();
+		}
+		
+	}, [fetchAllData, pageIndex, pageSize, userRoleItems.length, querySearch])
 
 	return (
 		<div className="w-full">
@@ -80,6 +90,7 @@ const ManagementUsersModule = () => {
 					label="Filter Data"
 					isRequired={false}
 					placeholder="Search..."
+					onChange={(e) => handleSearch(e.target.value, 'filter')}
 				/>
 				<Link href={basePathname+"/add"}>
 					<Button variant="success">

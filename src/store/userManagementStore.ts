@@ -1,14 +1,18 @@
-import { MANAGEMENT_USER_EP, PERSONAL_INFO_EP } from "@/constants/endpoints"
+import {
+	MANAGEMENT_USER_EP,
+	MANAGEMENT_USER_ROLE_EP,
+	PERSONAL_INFO_EP,
+} from "@/constants/endpoints"
 import {
 	deleteData,
 	getDataApi,
 	postData,
-	putData,
 	ResponseApiType,
 } from "@/helpers/ApiHelper"
 import { toast } from "@/hooks/use-toast"
 import { commonInitualState } from "@/types/common"
 import {
+	ChangePasswordForm,
 	PersonalInfoForm,
 	User,
 	UserManagementForm,
@@ -16,6 +20,7 @@ import {
 	UserState,
 } from "@/types/user"
 import { createStore, runUpdater } from "./store"
+import useAuthStore from "./authStore"
 
 const initialState = {
 	...commonInitualState,
@@ -38,6 +43,7 @@ const useUserManagementStore = createStore<UserState>(
 						getDataApi<User[]>(MANAGEMENT_USER_EP, {
 							page: get().pagination_tanstack.pageIndex,
 							per_page: get().pagination_tanstack.pageSize,
+							search: get().querySearch || undefined,
 						})
 							.then((data) => {
 								set({
@@ -62,13 +68,13 @@ const useUserManagementStore = createStore<UserState>(
 					}
 				)
 			},
-			fetcUserRoleData: async () => {
+			fetchUserRoleData: async () => {
 				set({
 					isFetching: true,
 				})
 				return new Promise<ResponseApiType<UserRole[]>>(
 					(resolve, reject) => {
-						getDataApi<UserRole[]>(`${MANAGEMENT_USER_EP}/role`, {
+						getDataApi<UserRole[]>(`${MANAGEMENT_USER_ROLE_EP}`, {
 							page: get().pagination_tanstack.pageIndex,
 							per_page: get().pagination_tanstack.pageSize,
 						})
@@ -127,7 +133,7 @@ const useUserManagementStore = createStore<UserState>(
 					isSubmit: true,
 				})
 				return new Promise<ResponseApiType<User>>((resolve, reject) => {
-					putData<User>(`${MANAGEMENT_USER_EP}/${id}`, payload)
+					postData<User>(`${MANAGEMENT_USER_EP}/${id}`, payload)
 						.then((data) => {
 							set((state) => {
 								return {
@@ -183,23 +189,60 @@ const useUserManagementStore = createStore<UserState>(
 						state.pagination_tanstack
 					),
 				})),
+			setUserSelected: (id: any) => {
+				console.log({ id })
+				const user = get().userItems.find(
+					(x) => x.id.toString() === id.toString()
+				)
+				if (user) {
+					set({
+						userSelected: user,
+					})
+				}
+			},
+			setQuerySearch: (value: string) =>
+				set(() => ({
+					querySearch: value,
+				})),
 			updateMyPersonalInfo: async (payload: PersonalInfoForm) => {
 				set({
 					isSubmit: true,
 				})
 				return new Promise<ResponseApiType<User>>((resolve, reject) => {
-					const formData = new FormData();
+					const formData = new FormData()
 					formData.append("name", payload.name)
 					formData.append("email", payload.email)
+				
 					if (payload.profile_picture) {
-						formData.append("profile_picture", payload.profile_picture)
+						formData.append(
+							"profile_picture",
+							payload.profile_picture
+						)
 					}
-					postData<User>(`${PERSONAL_INFO_EP}`, formData)
+					postData<User>(`${PERSONAL_INFO_EP}`, formData, {
+						headers: {
+							"Content-Type": "multipart/form-data",
+						},
+					})
 						.then((data) => {
+							if (data.data) {
+								
+								//set new user data to store auth
+								useAuthStore.getState().setUser(data.data);
+								toast({
+									title: "Success",
+									description: data.errors,
+									variant : "success"
+								})
+							}
 							resolve(data)
 						})
 						.catch((err) => {
 							reject(err)
+							toast({
+								title: "Failed",
+								description: err.message,
+							})
 						})
 						.finally(() => {
 							set({
@@ -208,6 +251,45 @@ const useUserManagementStore = createStore<UserState>(
 						})
 				})
 			},
+			changePassword: async (payload: ChangePasswordForm) => {
+				set({
+					isSubmit: true,
+				})
+				return new Promise<ResponseApiType<any>>((resolve, reject) => {
+					const formData = new FormData()
+					formData.append("current_password", payload.current_password)
+					formData.append("password", payload.password)
+					formData.append("password_confirmation", payload.password_confirmation)
+				
+					
+					postData<User>(`${PERSONAL_INFO_EP}`, formData, {
+						headers: {
+							"Content-Type": "multipart/form-data",
+						},
+					})
+						.then((data) => {
+							toast({
+								title: "Success",
+								description: data.message,
+								variant : 'success'
+							})
+							resolve(data)
+						})
+						.catch((err) => {
+							reject(err)
+							toast({
+								title: "Failed",
+								description: err.message,
+							})
+						})
+						.finally(() => {
+							set({
+								isSubmit: false,
+							})
+						})
+				})
+			},
+
 			// setPagination : ()
 		},
 	})

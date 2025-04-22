@@ -7,6 +7,7 @@ import Spinner from "@/components/ui/spinner"
 import { useDebounce } from "@/hooks/use-debounce"
 import { useToast } from "@/hooks/use-toast"
 import {
+	getUserManagementSchema,
 	initialValueUserManagement,
 	UserManagementSchema,
 } from "@/schemas/UserManagementSchema"
@@ -28,6 +29,7 @@ const ManagementUserForm: React.FC<IProps> = ({ isEdit, isDetail }) => {
 	const {
 		isSubmit,
 		userRoleItems,
+		userSelected,
 		actions: { createData, updateData },
 	} = useUserManagementStore()
 	const [visibilityPwd, setVisibilityPwd] = useState<{
@@ -44,19 +46,26 @@ const ManagementUserForm: React.FC<IProps> = ({ isEdit, isDetail }) => {
 	const splitPathname = pathname.split("/")
 	const basePathname = "/".concat(splitPathname[1])
 
-	const userRolesOptions = userRoleItems.map((role) => ({
+	const userRolesOptions = (userRoleItems || []).map((role) => ({
 		label: role.name,
-		value: role.id,
+		value: role.id?.toString(),
 	}))
 
 	const form = useForm<UserManagementForm>({
-		resolver: zodResolver(UserManagementSchema),
+		resolver: zodResolver(getUserManagementSchema(isEdit || false)),
 		progressive: false,
 		mode: "onSubmit",
 		reValidateMode: "onSubmit",
 		shouldFocusError: true,
 		shouldUnregister: true,
-		defaultValues: initialValueUserManagement,
+		defaultValues:
+			isEdit && userSelected
+				? {
+						email: userSelected.email,
+						role_id: userSelected.roles[0].id?.toString(),
+						name: userSelected.name,
+				  }
+				: initialValueUserManagement,
 	})
 
 	const handleSubmit = async (values: UserManagementForm) => {
@@ -103,6 +112,8 @@ const ManagementUserForm: React.FC<IProps> = ({ isEdit, isDetail }) => {
 		form.setValue(name, value)
 	})
 
+	console.log({error : form.formState.errors})
+
 	return (
 		<Form {...form}>
 			<form
@@ -140,84 +151,96 @@ const ManagementUserForm: React.FC<IProps> = ({ isEdit, isDetail }) => {
 							/>
 						)}
 					/>
-					<FormField
-						control={form.control}
-						name={"password"}
-						render={({ field }) => (
-							<InputController
-								defaultValue={field.value}
-								readOnly={isDetail}
-								label="Enter Password"
-								placeholder="Enter Password"
-								type={
-									visibilityPwd.password === "show"
-										? "text"
-										: "password"
-								}
-								passwordVisible={
-									visibilityPwd.password === "show"
-								}
-								onClickShuffix={() => {
-									if (visibilityPwd.password === "show")
-										setVisibilityPwd((prev) => ({
-											...prev,
-											password: "off",
-										}))
-									else
-										setVisibilityPwd((prev) => ({
-											...prev,
-											password: "show",
-										}))
-								}}
-								secure
-								onChange={(e) => {
-									handleChange(e.target.value, "password")
-								}}
+					{!isEdit && (
+						<>
+							<FormField
+								control={form.control}
+								name={"password"}
+								render={({ field }) => (
+									<InputController
+										defaultValue={field.value}
+										readOnly={isDetail}
+										label="Enter Password"
+										placeholder="Enter Password"
+										type={
+											visibilityPwd.password === "show"
+												? "text"
+												: "password"
+										}
+										passwordVisible={
+											visibilityPwd.password === "show"
+										}
+										onClickShuffix={() => {
+											if (
+												visibilityPwd.password ===
+												"show"
+											)
+												setVisibilityPwd((prev) => ({
+													...prev,
+													password: "off",
+												}))
+											else
+												setVisibilityPwd((prev) => ({
+													...prev,
+													password: "show",
+												}))
+										}}
+										secure
+										onChange={(e) => {
+											handleChange(
+												e.target.value,
+												"password"
+											)
+										}}
+									/>
+								)}
 							/>
-						)}
-					/>
-					<FormField
-						control={form.control}
-						name={"password_confirmation"}
-						render={({ field }) => (
-							<InputController
-								defaultValue={field.value}
-								readOnly={isDetail}
-								label="Confirm Password"
-								placeholder="Enter Confirm Password"
-								type={
-									visibilityPwd.confirm_password === "show"
-										? "text"
-										: "password"
-								}
-								passwordVisible={
-									visibilityPwd.confirm_password === "show"
-								}
-								onClickShuffix={() => {
-									if (
-										visibilityPwd.confirm_password ===
-										"show"
-									)
-										setVisibilityPwd((prev) => ({
-											...prev,
-											confirm_password: "off",
-										}))
-									else
-										setVisibilityPwd((prev) => ({
-											...prev,
-											confirm_password: "show",
-										}))
-								}}
-								secure
-								onChange={(e) => {
-									handleChange(
-										e.target.value,
-										"password_confirmation"
-									)
-								}}
+							<FormField
+								control={form.control}
+								name={"password_confirmation"}
+								render={({ field }) => (
+									<InputController
+										defaultValue={field.value}
+										readOnly={isDetail}
+										label="Confirm Password"
+										placeholder="Enter Confirm Password"
+										type={
+											visibilityPwd.confirm_password ===
+											"show"
+												? "text"
+												: "password"
+										}
+										passwordVisible={
+											visibilityPwd.confirm_password ===
+											"show"
+										}
+										onClickShuffix={() => {
+											if (
+												visibilityPwd.confirm_password ===
+												"show"
+											)
+												setVisibilityPwd((prev) => ({
+													...prev,
+													confirm_password: "off",
+												}))
+											else
+												setVisibilityPwd((prev) => ({
+													...prev,
+													confirm_password: "show",
+												}))
+										}}
+										secure
+										onChange={(e) => {
+											handleChange(
+												e.target.value,
+												"password_confirmation"
+											)
+										}}
+									/>
+								)}
 							/>
-						)}
-					/>
+						</>
+					)}
 				</div>
 				<FormField
 					control={form.control}

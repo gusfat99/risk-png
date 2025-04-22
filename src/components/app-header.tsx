@@ -25,6 +25,7 @@ import {
 import { Separator } from "./ui/separator"
 import { SidebarTrigger } from "./ui/sidebar"
 import Title from "./ui/title"
+import { PROFILE_PATHNAME_STORAGE } from "@/constants"
 
 const AppHeader = () => {
 	const { subtitle } = useRouteGetTitle()
@@ -92,9 +93,9 @@ const AppHeader = () => {
 							{user?.email}
 						</span>
 					</div>
-					<div className=" overflow-hidden rounded-lg">
+					<div className=" overflow-hidden rounded-full max-h-[38px]">
 						<Image
-							src={AvatarDummy}
+							src={user?.profile_picture ? PROFILE_PATHNAME_STORAGE+"/"+user.profile_picture : AvatarDummy}
 							alt="avatar-pertamina-gas"
 							className="overflow-hidden"
 							width={38}

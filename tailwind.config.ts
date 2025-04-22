@@ -49,7 +49,7 @@ export default {
 					"900": "hsl(var(--secondary-900))",
 					"950": "hsl(var(--secondary-950))",
 					DEFAULT: "hsl(var(--secondary))",
-					foreground: "hsl(var(--secondary-foreground))",
+					foreground: "hsl(var(--secondary-100))",
 				},
 				muted: {
 					DEFAULT: "hsl(var(--muted))",

@@ -6,12 +6,14 @@ import {
 	FormMessage,
 } from "@/components/ui/form"
 import { Input, InputProps } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 import { Eye, EyeOff } from "lucide-react"
 import React from "react"
 
 interface InputControllerProps extends InputProps {
 	label?: string
+	loading?: boolean
 	description?: string
 	placeholder: string
 	children?: React.ReactNode
@@ -39,6 +41,7 @@ const InputController = React.forwardRef<
 			passwordVisible = false,
 			labelClassName = "",
 			secure = false,
+			loading,
 			onClickShuffix,
 			...restProps
 		},
@@ -46,7 +49,7 @@ const InputController = React.forwardRef<
 	) => {
 		return (
 			<FormItem className="w-full">
-				{label && (
+				{label && !loading && (
 					<FormLabel className={cn("tracking-wider", labelClassName)}>
 						{label}{" "}
 						{isRequired && (
@@ -54,44 +57,49 @@ const InputController = React.forwardRef<
 						)}
 					</FormLabel>
 				)}
-				<FormControl>
-					<div className="relative">
-						{children ? (
-							children
-						) : (
-							<Input
-								{...restProps}
-								ref={ref} // forward ref to Input component
-								onChange={restProps.onChange}
-								type={type ?? "text"}
-								placeholder={placeholder}
-								className={cn("h-10",{
-									"pr-10": secure,
-								})}
-							/>
-						)}
-						{secure && (
-							<div className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
-								<button
-									type="button"
-									onClick={() => {
-										onClickShuffix && onClickShuffix()
-									}}
-								>
-									{passwordVisible && (
-										<Eye className="text-muted-foreground" />
-									)}
-									{!passwordVisible && (
-										<EyeOff className="text-muted-foreground" />
-									)}
-								</button>
-							</div>
-						)}
-					</div>
-				</FormControl>
-				{description && (
+				{label && loading && <Skeleton className="w-[120px] h-4" />}
+				{!loading && (
+					<FormControl>
+						<div className="relative">
+							{children ? (
+								children
+							) : (
+								<Input
+									{...restProps}
+									ref={ref} // forward ref to Input component
+									onChange={restProps.onChange}
+									type={type ?? "text"}
+									placeholder={placeholder}
+									className={cn("h-10", {
+										"pr-10": secure,
+									})}
+								/>
+							)}
+							{secure && (
+								<div className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
+									<button
+										type="button"
+										onClick={() => {
+											onClickShuffix && onClickShuffix()
+										}}
+									>
+										{passwordVisible && (
+											<Eye className="text-muted-foreground" />
+										)}
+										{!passwordVisible && (
+											<EyeOff className="text-muted-foreground" />
+										)}
+									</button>
+								</div>
+							)}
+						</div>
+					</FormControl>
+				)}
+				{loading && <Skeleton className="h-10 w-full" />}
+				{description && !loading && (
 					<FormDescription>{description}</FormDescription>
 				)}
+				{description && loading && <Skeleton className="h-4 w-full" />}
 				<FormMessage />
 			</FormItem>
 		)

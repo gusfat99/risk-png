@@ -1,27 +1,21 @@
-import InputWithLabel from "@/components/inputs/Input"
 import InputController from "@/components/inputs/InputController"
 import { Button } from "@/components/ui/button"
 import { Form, FormField } from "@/components/ui/form"
-import { useDebounce } from "@/hooks/use-debounce"
-import {
-	ChangePasswordSchema,
-	PersonalInfoSchema,
-} from "@/schemas/UserManagementSchema"
-import {
-	ChangePasswordForm as ChangePasswordProps,
-	PersonalInfoForm as PersonalInfoFormProps,
-} from "@/types/user"
-import { zodResolver } from "@hookform/resolvers/zod"
-import Image from "next/image"
-import AvatarDummy from "@/assets/images/dummy-avatar.png"
-import React, { useState } from "react"
-import { useForm } from "react-hook-form"
 import Spinner from "@/components/ui/spinner"
-import { Save } from "lucide-react"
+import { useDebounce } from "@/hooks/use-debounce"
+import { ChangePasswordSchema } from "@/schemas/UserManagementSchema"
 import useUserManagementStore from "@/store/userManagementStore"
+import { ChangePasswordForm as ChangePasswordProps } from "@/types/user"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Save } from "lucide-react"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
 
 const ChangePasswordForm = () => {
-	const { isSubmit } = useUserManagementStore()
+	const {
+		isSubmit,
+		actions: { changePassword },
+	} = useUserManagementStore()
 	const [visibilityPwd, setVisibilityPwd] = useState<{
 		current_password: "show" | "off"
 		new_password: "show" | "off"
@@ -45,11 +39,15 @@ const ChangePasswordForm = () => {
 		},
 	})
 
-	const handleSubmit = (payload: ChangePasswordProps) => {}
+	const handleSubmit = (payload: ChangePasswordProps) => {
+		changePassword && changePassword(payload)
+	}
 
-	const handleChange = useDebounce((value: any, name: any) => {
+	const handleChange = (value: string, name: keyof ChangePasswordProps) =>
 		form.setValue(name, value)
-	})
+
+	console.log({errors : form.formState.errors})
+
 	return (
 		<Form {...form}>
 			<form
@@ -171,7 +169,8 @@ const ChangePasswordForm = () => {
 				<div className="flex justify-end gap-4">
 					<Button disabled={isSubmit} variant={"secondary"}>
 						{isSubmit && <Spinner className="w-4 h-4" />}
-						<Save /> Save Changes
+						{!isSubmit && <Save />}
+						Save Changes
 					</Button>
 				</div>
 			</form>

@@ -251,7 +251,7 @@ export const useColumnsRiskAnalyst = ({
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Severity to Environment (EP)"}
+							title={"Severity to Environment (SE)"}
 						/>
 					)
 				},

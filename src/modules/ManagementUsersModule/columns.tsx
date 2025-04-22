@@ -1,8 +1,9 @@
 import DataTableColumnHeader from "@/components/DataTable/DataTableColumnHeader"
 import TableRowActions from "@/components/TableRowActions"
+import { Badge } from "@/components/ui/badge"
 import { User } from "@/types/user"
 import { ColumnDef } from "@tanstack/react-table"
-import { Badge } from "lucide-react"
+// import { Badge } from "lucide-react"
 
 export const columnsManagementUser = (
 	onAction: (actionName: string, id: any) => void
@@ -10,18 +11,15 @@ export const columnsManagementUser = (
 	const column: ColumnDef<User>[] = [
 		{
 			header: "No",
+			size : 40,
 			cell: ({ row, table }) => {
 				const { pageIndex, pageSize } = table.getState().pagination
-
 				return (pageIndex - 1) * pageSize + row.index + 1
 			},
 		},
 		{
 			id: "id",
 			accessorFn: (row) => row.id,
-			meta: {
-				hiddenFilter: true,
-			},
 			header: () => {
 				return <div className="flex justify-start">Action</div>
 			},
@@ -30,15 +28,19 @@ export const columnsManagementUser = (
 					onAction={(actionName: string) => {
 						onAction(actionName, row.getValue("id"))
 					}}
+					acl={{
+						canDelete: true,
+						canEdit: true,
+						canView : false
+					}}
 				/>
 			),
+			size : 60,
 		},
 		{
 			id: "name",
 			accessorFn: (row) => row.name,
-			meta: {
-				hiddenFilter: true,
-			},
+			enableSorting : false,
 			header: ({ column }) => {
 				return <DataTableColumnHeader column={column} title="Name" />
 			},
@@ -47,6 +49,7 @@ export const columnsManagementUser = (
 
 		{
 			id: "email",
+			enableSorting : false,
 			accessorFn: (row) => `${row.email}`,
 			header: ({ column }) => {
 				return <DataTableColumnHeader column={column} title="Email" />
@@ -55,13 +58,18 @@ export const columnsManagementUser = (
 		},
 		{
 			id: "role",
+			enableSorting: false,
+			meta: {
+				className : 'text-center'
+			},
 			accessorFn: (row) => row.role,
 			header: ({ column }) => {
 				return <DataTableColumnHeader column={column} title="Role" />
 			},
 			cell: ({ row }) => (
-				<Badge>{row.getValue("role")}</Badge>
-				// <></>
+				<div className="text-center" >
+					<Badge variant={"secondary"} >{ row.getValue('role')}</Badge>
+				</div>
 			),
 		},
 		

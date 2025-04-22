@@ -16,4 +16,5 @@ export interface AuthState {
 	year_selected: string
 	login: (credential : Credential) => Promise<ResponseApiType<User>>
 	logout: () => void
+	setUser : (user : User) => void
 }
