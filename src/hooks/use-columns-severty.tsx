@@ -599,7 +599,7 @@ export const useColumnsRiskResponse = ({
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Severity to Environment (EP) Current"}
+							title={"Severity to Environment (SE) Current"}
 						/>
 					)
 				},
@@ -816,7 +816,7 @@ export const useColumnsRiskResponse = ({
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Severity to Environment (EP) Expected"}
+							title={"Severity to Environment (SE) Expected"}
 						/>
 					)
 				},
@@ -1283,7 +1283,7 @@ export const useColumnsMonitoring = ({
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Severity to Environment (EP) Affected"}
+							title={"Severity to Environment (SE) Affected"}
 						/>
 					)
 				},
