@@ -3,8 +3,7 @@ import {
 	deleteData,
 	getDataApi,
 	postData,
-	putData,
-	ResponseApiType,
+	ResponseApiType
 } from "@/helpers/ApiHelper"
 import { toast } from "@/hooks/use-toast"
 import { SafeguardSchema } from "@/schemas/SafeguardSchema"
@@ -165,6 +164,9 @@ const useSafeguardStore = createStore<SafeguardState>(
 				)
 			},
 			deleteData: async (id) => {
+				set({
+					isFetchingDelete : true
+				})
 				return new Promise<ResponseApiType<null>>((resolve, reject) => {
 					deleteData<null>(SAFEGUARD_EP + "/" + id)
 						.then((data) => {
@@ -186,7 +188,7 @@ const useSafeguardStore = createStore<SafeguardState>(
 						})
 						.finally(() => {
 							set({
-								isFetching: false,
+								isFetchingDelete : false
 							})
 						})
 				})

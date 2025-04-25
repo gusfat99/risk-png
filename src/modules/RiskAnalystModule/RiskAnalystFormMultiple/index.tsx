@@ -111,8 +111,7 @@ const RiskAnalystFormMultiple = forwardRef<FormRefType, IProps>(
 		return (
 			<Form {...form}>
 				<form
-					className="space-y-4 max-w-full  "
-					// onSubmit={form.handleSubmit(handleSubmit)}
+					className="space-y-4 max-w-full"
 				>
 					{riskAnalysItems && riskAnalysItems.length > 0 && (
 						<DataTable<RiskAnalysis>

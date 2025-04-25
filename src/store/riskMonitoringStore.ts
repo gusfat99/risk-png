@@ -1,12 +1,9 @@
 import {
 	CAUSE_EP,
-	DETAIL_REPORT_RISK_MONITROING_EP,
 	DEVIATION_EP,
-	EXPORT_MONITORING_EP,
 	NODE_EP,
-	REPORT_RISK_MONITROING_EP,
 	RISK_ANALYST_EP,
-	RISK_MONITROING_EP,
+	RISK_MONITROING_EP
 } from "@/constants/endpoints"
 import {
 	deleteData,
@@ -20,15 +17,13 @@ import { commonInitualState } from "@/types/common"
 import { Node } from "@/types/node"
 import { Cause, Deviations } from "@/types/riskDataBank"
 import {
-	DetailReportRiskMonitoring,
-	ReportRiskMonitoring,
 	RiskMonitoring,
 	RiskMonitoringSchemaForm,
 	RiskMonitoringSevertyMultipleForm,
-	RiskMonitoringState,
+	RiskMonitoringState
 } from "@/types/riskMonitoring"
-import { createStore, runUpdater } from "./store"
 import useAuthStore from "./authStore"
+import { createStore, runUpdater } from "./store"
 
 const initialState = {
 	...commonInitualState,
@@ -102,7 +97,6 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 					}
 				)
 			},
-
 			fetchNodeData: async () => {
 				set((prev) => ({
 					supportData: {
@@ -156,7 +150,6 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 					}
 				)
 			},
-
 			fetchDeviationData: async () => {
 				set((prev) => ({
 					supportData: {
@@ -482,7 +475,10 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 			},
 			deleteData: async (id) => {
 				return new Promise<ResponseApiType<null>>((resolve, reject) => {
-					deleteData<null>(RISK_ANALYST_EP + "/" + id)
+					set({
+						isFetchingDelete : true
+					})
+					deleteData<null>(RISK_MONITROING_EP + "/" + id)
 						.then((data) => {
 							const filterData = get().riskMonitoringItems.filter(
 								(x) => x.id?.toString() !== id.toString()
@@ -503,7 +499,7 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 						})
 						.finally(() => {
 							set({
-								isFetching: false,
+								isFetchingDelete : false
 							})
 						})
 				})

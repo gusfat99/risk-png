@@ -17,6 +17,7 @@ const NodeDataModule = () => {
 	const {
 		nodeItems,
 		querySearch,
+		isFetchingDelete,
 		actions: { fetchAllData, setPagination, deleteData, setQuerySearch },
 		isFetching,
 		meta,
@@ -107,6 +108,7 @@ const NodeDataModule = () => {
 					title="Are you sure want to delete this data ?"
 					description="deleted data cannot be revert!"
 					onAction={handleDeleteAction}
+					loading={isFetchingDelete}
 				/>
 			</div>
 		</div>

@@ -98,7 +98,7 @@ const RiskMonitoringForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 			})
 		}
 	}
-
+	
 	return (
 		<Form {...form}>
 			<form

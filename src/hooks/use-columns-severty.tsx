@@ -204,9 +204,9 @@ export const useColumnsRiskAnalyst = ({
 				size: 280,
 				enableSorting: false,
 				cell: ({ row }) => (
-					<ul>
+					<ul className="!list-decimal" >
 						{row.original.existing_safeguard.map((safeguard, key) => (
-							<li key={key}>{safeguard.safeguard}</li>
+							<li key={key}>{safeguard}</li>
 						))}
 					</ul>
 				),

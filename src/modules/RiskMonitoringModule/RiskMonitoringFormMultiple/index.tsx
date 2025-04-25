@@ -1,4 +1,5 @@
 "use client"
+import AlertConfirmDialog from "@/components/AlertConfirmDialog"
 import AddButton from "@/components/buttons/AddButton"
 import DataTable from "@/components/DataTable"
 import InputSelect from "@/components/inputs/InputSelect"
@@ -19,7 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Save } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import React, { useCallback } from "react"
+import React, { useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
 
 interface IProps {
@@ -29,10 +30,15 @@ interface IProps {
 const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 	const { toast } = useToast()
 	const router = useRouter()
+	const [shownAlertDel, setShownAlertDel] = useState({
+		id: null,
+		shown: false,
+	})
 
 	const {
-		actions: { setPagination, setNodeSelected, updateSavertyMultiple },
+		actions: { setPagination, setNodeSelected, updateSavertyMultiple, deleteData },
 		nodeSelected,
+		isFetchingDelete,
 		isFetching,
 		riskMonitoringItems,
 		meta,
@@ -70,6 +76,28 @@ const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 		defaultValues: defaultValues,
 	})
 
+	const handleDeleteAction = (confirmType: string) => {
+		if (confirmType === "deny") {
+			setShownAlertDel({
+				id: null,
+				shown: false,
+			})
+		} else if (confirmType === "confirm") {
+			shownAlertDel.id &&
+				deleteData &&
+				deleteData(shownAlertDel.id).then((result) => {
+					setShownAlertDel({
+						id: null,
+						shown: false,
+					})
+					toast({
+						title: result.message,
+						variant: "success",
+					})
+				})
+		}
+	}
+
 	const handleAction = useCallback(
 		(actionName: string, id: any) => {
 			if (actionName === "update") {
@@ -77,21 +105,19 @@ const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 			} else if (actionName === "detail") {
 				router.push(basePathname + "/detail/" + id)
 			} else if (actionName === "delete") {
-				//
-				// setShownAlertDel({
-				// 	id,
-				// 	shown: true,
-				// })
+				setShownAlertDel({
+					id,
+					shown: true,
+				})
 			}
 		},
 		[basePathname]
 	)
 
-
 	const handleSubmit = useCallback(
 		async (values: RiskMonitoringSevertyMultipleForm) => {
 			try {
-				if ( updateSavertyMultiple) {
+				if (updateSavertyMultiple) {
 					const result = await updateSavertyMultiple(
 						nodeSelected?.id,
 						values
@@ -129,46 +155,55 @@ const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 		label: node.node,
 		value: node.id?.toString(),
 	}))
-	
+
 	return (
-		<Form {...form}>
-			<form
-				className="space-y-4 max-w-full "
-				onSubmit={form.handleSubmit(handleSubmit)}
-			>
-				<div className="flex flex-row justify-between items-end">
-					<div className="flex flex-row gap-2 items-end">
-						<InputSelect
-							label="Filter by Node"
-							placeholder="Select Node"
-							items={nodeOptions}
-							loading={isFetchingNode}
-							className="w-[264px]"
-							value={nodeSelected?.id?.toString() ?? ""}
-							onValueChange={(value) => {
-								setNodeSelected(parseInt(value))
-							}}
-						/>
-						<Link href={basePathname + "/add"}>
-							<AddButton label="Add Risk Incidence" />
-						</Link>
+		<React.Fragment>
+			<Form {...form}>
+				<form
+					className="space-y-4 max-w-full "
+					onSubmit={form.handleSubmit(handleSubmit)}
+				>
+					<div className="flex flex-row justify-between items-end">
+						<div className="flex flex-row gap-2 items-end">
+							<InputSelect
+								label="Filter by Node"
+								placeholder="Select Node"
+								items={nodeOptions}
+								loading={isFetchingNode}
+								className="w-[264px]"
+								value={nodeSelected?.id?.toString() ?? ""}
+								onValueChange={(value) => {
+									setNodeSelected(parseInt(value))
+								}}
+							/>
+							<Link href={basePathname + "/add"}>
+								<AddButton label="Add Risk Incidence" />
+							</Link>
+						</div>
+						<Button disabled={isSubmit} variant={"secondary"}>
+							{isSubmit && <Spinner className="w-4 h-4" />}
+							<Save /> Save Changes Severity
+						</Button>
 					</div>
-					<Button disabled={isSubmit} variant={"secondary"}>
-						{isSubmit && <Spinner className="w-4 h-4" />}
-						<Save /> Save Changes Severity
-					</Button>
-				</div>
-				<DataTable<RiskMonitoring>
-					columns={column}
-					data={riskMonitoringItems}
-					loading={isFetching}
-					rowCount={total}
-					manualPagination={true}
-					onPaginationChange={setPagination}
-					pagination={pagination_tanstack}
-				/>
-			</form>
-		</Form>
+					<DataTable<RiskMonitoring>
+						columns={column}
+						data={riskMonitoringItems}
+						loading={isFetching}
+						rowCount={total}
+						manualPagination={true}
+						onPaginationChange={setPagination}
+						pagination={pagination_tanstack}
+					/>
+				</form>
+			</Form>
+			<AlertConfirmDialog
+				open={shownAlertDel.shown && shownAlertDel.id ? true : false}
+				title="Are you sure want to delete this data ?"
+				description="deleted data cannot be revert!"
+				onAction={handleDeleteAction}
+				loading={isFetchingDelete}
+			/>
+		</React.Fragment>
 	)
 }
 

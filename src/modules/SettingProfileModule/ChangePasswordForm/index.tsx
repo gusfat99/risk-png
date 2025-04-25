@@ -46,8 +46,6 @@ const ChangePasswordForm = () => {
 	const handleChange = (value: string, name: keyof ChangePasswordProps) =>
 		form.setValue(name, value)
 
-	console.log({errors : form.formState.errors})
-
 	return (
 		<Form {...form}>
 			<form

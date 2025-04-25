@@ -16,7 +16,7 @@ export type RiskAnalysis = {
 	deviation_id: string
 	risk_bank_id: string
 	consequence_id: string
-	existing_safeguard: Safeguard[]
+	existing_safeguard: string[]
 	sp_current: any
 	sf_current: any
 	se_current: any

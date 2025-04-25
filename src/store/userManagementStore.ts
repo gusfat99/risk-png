@@ -157,6 +157,9 @@ const useUserManagementStore = createStore<UserState>(
 				})
 			},
 			deleteData: async (id) => {
+				set({
+					isFetchingDelete : true
+				})
 				return new Promise<ResponseApiType<null>>((resolve, reject) => {
 					deleteData<null>(MANAGEMENT_USER_EP + "/" + id)
 						.then((data) => {
@@ -178,7 +181,7 @@ const useUserManagementStore = createStore<UserState>(
 						})
 						.finally(() => {
 							set({
-								isFetching: false,
+								isFetchingDelete : false
 							})
 						})
 				})
@@ -191,7 +194,7 @@ const useUserManagementStore = createStore<UserState>(
 					),
 				})),
 			setUserSelected: (id: any) => {
-				console.log({ id })
+			
 				const user = get().userItems.find(
 					(x) => x.id.toString() === id.toString()
 				)

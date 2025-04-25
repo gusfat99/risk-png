@@ -2,6 +2,7 @@ import InputSelectController from "@/components/inputs/InputSelectController"
 import { FormField } from "@/components/ui/form"
 import { fieldsInputSeverity } from "@/data/severity"
 import useSettingMatrixStore from "@/store/settingMatrixStore"
+import { SelectDataType } from "@/types/common"
 import { RiskMonitoringSchemaForm } from "@/types/riskMonitoring"
 import React from "react"
 import { UseFormReturn } from "react-hook-form"
@@ -12,24 +13,13 @@ interface IProps {
 	form: UseFormReturn<RiskMonitoringSchemaForm>
 }
 
-type fieldInputType = {
-	label: string
-	field: keyof RiskMonitoringSchemaForm
-	group: number
-	col_id?: any
-}
-
 const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 	const { severity_map_options } = useSettingMatrixStore()
 
-	const valuesRank = [
-		Number(form.watch("sa_affected")),
-		Number(form.watch("se_affected")),
-		Number(form.watch("spn_affected")),
-		Number(form.watch("sp_affected")),
-		Number(form.watch("srl_affected")),
-		Number(form.watch("spn_affected")),
-	]
+	const zeroValueOption = {
+		label: "(0) not taken into considered",
+		value: "0",
+	}
 
 	return (
 		<div className="border-2 border-gray-200  rounded-lg p-4 space-y-4">
@@ -41,18 +31,20 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 					{fieldsInputSeverity
 						.filter((f) => f.group === 1)
 						.map((fieldInput) => {
-							const opts = severity_map_options.filter(
-								(x) =>
-									x.saverity_row_id?.toString() ===
-									fieldInput.col_id?.toString()
-							)
-
+							const opts: SelectDataType[] = [
+								zeroValueOption,
+								...severity_map_options.filter(
+									(x) =>
+										x.saverity_row_id?.toString() ===
+										fieldInput.col_id?.toString()
+								),
+							]
 							return (
 								<FormField
-									key={fieldInput.field}
+									key={fieldInput.field2}
 									control={form.control}
 									name={
-										fieldInput.field as keyof RiskMonitoringSchemaForm
+										fieldInput.field2 as keyof RiskMonitoringSchemaForm
 									}
 									render={({ field }) => (
 										<InputSelectController
@@ -65,7 +57,7 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 											}
 											onChange={(value) => {
 												form.setValue(
-													fieldInput.field as keyof RiskMonitoringSchemaForm,
+													fieldInput.field2 as keyof RiskMonitoringSchemaForm,
 													value
 												)
 											}}
@@ -79,17 +71,21 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 					{fieldsInputSeverity
 						.filter((f) => f.group === 2)
 						.map((fieldInput) => {
-							const opts = severity_map_options.filter(
-								(x) =>
-									x.saverity_row_id?.toString() ===
-									fieldInput.col_id?.toString()
-							)
+							const opts: SelectDataType[] = [
+								zeroValueOption,
+								...severity_map_options.filter(
+									(x) =>
+										x.saverity_row_id?.toString() ===
+										fieldInput.col_id?.toString()
+								),
+							]
+
 							return (
 								<FormField
-									key={fieldInput.field}
+									key={fieldInput.field2}
 									control={form.control}
 									name={
-										fieldInput.field as keyof RiskMonitoringSchemaForm
+										fieldInput.field2 as keyof RiskMonitoringSchemaForm
 									}
 									render={({ field }) => (
 										<InputSelectController
@@ -102,7 +98,7 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 											}
 											onChange={(value) => {
 												form.setValue(
-													fieldInput.field as keyof RiskMonitoringSchemaForm,
+													fieldInput.field2 as keyof RiskMonitoringSchemaForm,
 													value
 												)
 											}}

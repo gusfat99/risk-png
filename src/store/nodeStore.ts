@@ -136,6 +136,9 @@ const useNodeStore = createStore<NodeState>("node-data", (set, get) => ({
 			})
 		},
 		deleteData: async (id) => {
+			set({
+				isFetchingDelete : true
+			})
 			return new Promise<ResponseApiType<null>>((resolve, reject) => {
 				deleteData<null>(NODE_EP + "/" + id)
 					.then((data) => {
@@ -157,7 +160,7 @@ const useNodeStore = createStore<NodeState>("node-data", (set, get) => ({
 					})
 					.finally(() => {
 						set({
-							isFetching: false,
+							isFetchingDelete : false
 						})
 					})
 			})

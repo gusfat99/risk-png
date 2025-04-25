@@ -1,9 +1,8 @@
 import {
 	DEVIATION_EP,
 	EXPORT_RISK_BANK_EP,
-	EXPORT_RISK_SEVERITY_EP,
 	RISK_BANK_EP,
-	SAFEGUARD_EP,
+	SAFEGUARD_EP
 } from "@/constants/endpoints"
 import {
 	deleteData,
@@ -16,6 +15,7 @@ import {
 	parseRiskBankToFlatted,
 	parseRiskBankToPayload,
 } from "@/modules/RiskBankModule/parseRiskBank"
+import { downloadProxyFile } from "@/services/downloadFile"
 import { commonInitualState } from "@/types/common"
 import {
 	Deviations,
@@ -24,9 +24,8 @@ import {
 	RiskDataBankState,
 } from "@/types/riskDataBank"
 import { Safeguard } from "@/types/safeguard"
-import { createStore, runUpdater } from "./store"
 import useAuthStore from "./authStore"
-import { downloadProxyFile } from "@/services/downloadFile"
+import { createStore, runUpdater } from "./store"
 
 const initialState = {
 	...commonInitualState,
@@ -261,6 +260,9 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 				)
 			},
 			deleteData: async (id) => {
+				set({
+					isFetchingDelete : true
+				})
 				return new Promise<ResponseApiType<null>>((resolve, reject) => {
 					deleteData<null>(RISK_BANK_EP + "/" + id)
 						.then((data) => {
@@ -287,7 +289,7 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 						})
 						.finally(() => {
 							set({
-								isFetching: false,
+								isFetchingDelete : true
 							})
 						})
 				})

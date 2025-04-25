@@ -460,6 +460,9 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 				)
 			},
 			deleteData: async (id) => {
+				set({
+					isFetchingDelete : true
+				})
 				return new Promise<ResponseApiType<null>>((resolve, reject) => {
 					deleteData<null>(RISK_ANALYST_EP + "/" + id)
 						.then((data) => {
@@ -482,7 +485,7 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 						})
 						.finally(() => {
 							set({
-								isFetching: false,
+								isFetchingDelete : false
 							})
 						})
 				})

@@ -5,9 +5,8 @@ import {
 	REPORT_RISK_MONITROING_EP,
 } from "@/constants/endpoints"
 import {
-	extractFilenameFromHeader,
 	getDataApi,
-	ResponseApiType,
+	ResponseApiType
 } from "@/helpers/ApiHelper"
 import { toast } from "@/hooks/use-toast"
 import { commonInitualState } from "@/types/common"

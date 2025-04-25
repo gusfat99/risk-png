@@ -112,7 +112,6 @@ const ManagementUserForm: React.FC<IProps> = ({ isEdit, isDetail }) => {
 		form.setValue(name, value)
 	})
 
-	console.log({error : form.formState.errors})
 
 	return (
 		<Form {...form}>

@@ -18,6 +18,7 @@ const ManagementUsersModule = () => {
 		userItems,
 		userRoleItems,
 		querySearch,
+		isFetchingDelete,
 		actions: { fetchAllData, setPagination, deleteData, setUserSelected, fetchUserRoleData, setQuerySearch},
 		isFetching,
 		meta,
@@ -115,6 +116,7 @@ const ManagementUsersModule = () => {
 					title="Are you sure want to delete this data ?"
 					description="deleted data cannot be revert!"
 					onAction={handleDeleteAction}
+					loading={isFetchingDelete}
 				/>
 			</div>
 		</div>
