@@ -15,7 +15,7 @@ interface IProps {
 	cause: Cause | null
 	deviation: Deviations | null
 	consequence: Consequences | null
-	existing_safeguard: Safeguard[]
+	existing_safeguard: string[]
 }
 
 const RiskBankCardSkeleton = () => {
@@ -126,9 +126,9 @@ const RiskBankCard: RiskBankCardComponent = ({
 								"-"
 							) : (
 								<ul>
-									{existing_safeguard.map((safeguard) => (
-										<li key={safeguard.id}>
-											{safeguard.safeguard}
+									{existing_safeguard.map((safeguard, index) => (
+										<li key={index}>
+											{safeguard}
 										</li>
 									))}
 								</ul>
