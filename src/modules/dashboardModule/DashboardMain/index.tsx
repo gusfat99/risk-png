@@ -148,6 +148,7 @@ const DashboardMain = () => {
 								value: dashboardItem?.amount_above_apetite || 0,
 							},
 						]}
+						totalValue={dashboardItem?.total_risk || 0}
 					/>
 					<DashboardChartDonutCard
 						title="SAFEGUARDS"
@@ -159,6 +160,7 @@ const DashboardMain = () => {
 									dashboardItem?.implemented_safeguard || 0,
 							},
 						]}
+						totalValue={dashboardItem?.total_safeguard || 0}
 					/>
 				</div>
 				<div className="col-span-2">

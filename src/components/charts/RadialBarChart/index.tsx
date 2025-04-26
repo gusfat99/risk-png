@@ -18,20 +18,23 @@ export type ChartDataItem = {
 export interface PieChartDonutProps {
 	data: ChartDataItem[]
 	config: ChartConfig
+	totalValue: number
 }
 
 export const RadialBarChartApp: React.FC<PieChartDonutProps> = ({
 	config,
 	data,
+	totalValue,
 }) => {
+	const degree = (data[0].value / totalValue) * 360
 	return (
 		<ChartContainer
 			config={config}
 			className="mx-auto aspect-square max-h-[250px]"
 		>
 			<RadialBarChart
-				data={data}
-				endAngle={100}
+				data={[...data]}
+				endAngle={parseFloat(degree.toFixed(2))}
 				innerRadius={80}
 				outerRadius={140}
 			>

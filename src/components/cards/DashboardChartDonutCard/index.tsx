@@ -6,16 +6,11 @@ import React from "react"
 
 interface IProps {
 	title: string,
-	data : ChartDataItem[]
+	data: ChartDataItem[]
+	totalValue: number;
 }
 
-const browserData: ChartDataItem[] = [
-	{
-		name: "Amount of Risk Above Appetite",
-		value: 19,
-		fill: "hsl(var(--secondary-400))",
-	},
-]
+
 
 const config: ChartConfig = {
 	value: {
@@ -23,7 +18,7 @@ const config: ChartConfig = {
 	},
 }
 
-const DashboardChartDonutCard: React.FC<IProps> = ({ title,  data }) => {
+const DashboardChartDonutCard: React.FC<IProps> = ({ title,  data, totalValue }) => {
 	return (
 		<div className="shadow-md rounded-lg flex flex-col p-4">
 			<div className="bg-primary-100 rounded-md p-2 text-center text-primary font-semibold">
@@ -50,7 +45,7 @@ const DashboardChartDonutCard: React.FC<IProps> = ({ title,  data }) => {
 				})}
 			</div>
 			<div className="flex-1">
-				<RadialBarChartApp data={data} config={config} />
+				<RadialBarChartApp data={data} config={config} totalValue={totalValue} />
 			</div>
 		</div>
 	)
