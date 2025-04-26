@@ -41,6 +41,7 @@ interface InputComboboxControllerProps extends InputProps {
 		items: SelectDataType[]
 	}
 	handleChange: (value: string, name: string) => void
+	onCheckedChange?(mode: string): void;
 }
 
 const InputComboboxController = React.forwardRef<
@@ -62,7 +63,8 @@ const InputComboboxController = React.forwardRef<
 			handleChange,
 			placeholderCheckbox,
 			value,
-			...restProps
+			onCheckedChange,
+			
 		},
 		ref
 	) => {
@@ -149,12 +151,14 @@ const InputComboboxController = React.forwardRef<
 				<FormMessage />
 				{!disabled && (
 					<InputCheckbox
-						id="placeholderCheckbox"
+						id={field.name}
 						label={placeholderCheckbox}
 						onCheckedChange={(checked) => {
 							if (checked) {
 								setMode("text")
+								onCheckedChange && onCheckedChange("text")
 							} else {
+								onCheckedChange && onCheckedChange("select")
 								setMode("select")
 							}
 						}}

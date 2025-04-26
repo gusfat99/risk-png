@@ -244,7 +244,7 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 						<Plus /> Add Consequence
 					</Button>
 				)}
-				<SectionSafeguardRiskBank form={form} isDetail={isDetail} />
+				<SectionSafeguardRiskBank form={form} isDetail={isDetail} isEdit={isEdit} />
 				{!isDetail && (
 					<div className="flex justify-end gap-4">
 						<Link href={basePathname}>

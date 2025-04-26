@@ -3,7 +3,7 @@
 import * as React from "react"
 
 import BgCity from "@/assets/images/background-city.png"
-import LogoMainWhite from "@/assets/images/logomain-white.png"
+import LogoMainWhite from "@/assets/images/logomain-white.svg"
 import { NavMain } from "@/components/nav-main"
 // import { NavSocond } from "@/components/nav-user"
 import {

@@ -1,5 +1,5 @@
 "use client"
-import MainLogo from "@/assets/images/logomain.png"
+import MainLogo from "@/assets/images/logomain.svg"
 import InputController from "@/components/inputs/InputController"
 import { Button } from "@/components/ui/button"
 import { Form, FormField } from "@/components/ui/form"

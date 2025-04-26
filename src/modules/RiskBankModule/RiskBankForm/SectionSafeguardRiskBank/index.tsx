@@ -3,6 +3,7 @@ import RemoveButton from "@/components/buttons/RemoveButton"
 import InputComboboxController from "@/components/inputs/InputComboBoxController"
 import InputController from "@/components/inputs/InputController"
 import InputFileContoller from "@/components/inputs/InputFileController"
+import SafeguardFormItem from "@/components/Items/SafeguardFormItem"
 import { FormField } from "@/components/ui/form"
 import { Label } from "@/components/ui/label"
 import { RiskBankSchema } from "@/schemas/RiskBankSchema"
@@ -76,7 +77,7 @@ const SectionSafeguardRiskBank: React.FC<IProps> = ({
 			const safeguardSelected = safeguardItems?.find(
 				(x) => x.id?.toString() === value
 			)
-
+			
 			if (safeguardSelected) {
 				form.setValue(
 					`consequences.${idxConsequence}.safeguards.${idxsafeguard}.safeguard`,
@@ -101,7 +102,6 @@ const SectionSafeguardRiskBank: React.FC<IProps> = ({
 			<Label className="font-semibold">Safeguards :</Label>
 			<div className="mt-2 space-y-4">
 				{(consequences || []).map((consequence, idxConsequence) => {
-		
 					return (
 						<div
 							key={idxConsequence}
@@ -133,118 +133,21 @@ const SectionSafeguardRiskBank: React.FC<IProps> = ({
 								)}
 							</div>
 							{(consequence?.safeguards || []).map(
-								(safeguard, idxsafeguard) => {
+								(_, idxsafeguard) => {
 									return (
-										<div
-											key={idxsafeguard}
-											className="border flex flex-col border-gray-300 rounded-md p-2"
-										>
-											{!isDetail && (
-												<RemoveButton
-													className="w-fit self-end"
-													onClick={() => {
-														handleRemoveSafeguard(
-															idxConsequence,
-															idxsafeguard
-														)
-													}}
-												/>
-											)}
-											<div className="grid md:grid-cols-3 grid-cols-1 gap-2">
-												<FormField
-													control={form.control}
-													name={`consequences.${idxConsequence}.safeguards.${idxsafeguard}.safeguard`}
-													render={({ field }) => (
-														<InputComboboxController
-															selectConfig={{
-																items: (
-																	safeguardItems ||
-																	[]
-																).map((x) => ({
-																	label: x.safeguard,
-																	value: x.id?.toString(),
-																})),
-															}}
-															field={field}
-															readOnly={isDetail}
-															disabled={
-																isFetchingSupportData ||
-																isDetail
-															}
-															label="Safeguard"
-															placeholder="Select Safeguard"
-															handleChange={(
-																value,
-																name
-															) => {
-																handleChangeSafeguard(
-																	value,
-																	name,
-																	idxConsequence,
-																	idxsafeguard
-																)
-															}}
-															placeholderCheckbox={
-																"Create New Safeguard"
-															}
-														/>
-													)}
-												/>
-											
-												<FormField
-													control={form.control}
-													name={`consequences.${idxConsequence}.safeguards.${idxsafeguard}.safeguard_title`}
-													render={({ field }) => (
-														<InputController
-															defaultValue={field.value}
-															readOnly={isDetail}
-															label="Safeguard Doucument Title"
-															placeholder="Enter Safeguard Document Title"
-															onChange={(e) => {
-																form.setValue(
-																	`consequences.${idxConsequence}.safeguards.${idxsafeguard}.safeguard_title`,
-																	e.target
-																		.value
-																)
-															}}
-														/>
-													)}
-												/>
-												<FormField
-													control={form.control}
-													name={`consequences.${idxConsequence}.safeguards.${idxsafeguard}.file_path`}
-													render={({ field }) => (
-														<InputFileContoller
-															label="Safeguard Document"
-															isRequired
-															readOnly={isDetail}
-															fileUrl={
-																field.value as any
-															}
-															fileValidations={{
-																maxSizeMb: 5,
-															}}
-															sizeInput="sm"
-															onChangeHandler={(
-																file
-															) => {
-																if (file) {
-																	form.setValue(
-																		`consequences.${idxConsequence}.safeguards.${idxsafeguard}.file_path`,
-																		file
-																	)
-																} else {
-																	form.setValue(
-																		`consequences.${idxConsequence}.safeguards.${idxsafeguard}.file_path`,
-																		undefined as any
-																	)
-																}
-															}}
-														/>
-													)}
-												/>
-											</div>
-										</div>
+										<SafeguardFormItem
+											key={idxsafeguard + idxConsequence}
+											idxConsequence={idxConsequence}
+											idxsafeguard={idxsafeguard}
+											handleChangeSafeguard={
+												handleChangeSafeguard
+											}
+											handleRemoveSafeguard={
+												handleRemoveSafeguard
+											}
+											isEdit={isEdit}
+											form={form}
+										/>
 									)
 								}
 							)}

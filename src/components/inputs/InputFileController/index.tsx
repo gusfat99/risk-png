@@ -116,10 +116,10 @@ const InputFileContoller: React.FC<IProps> = ({
 				{isRequired && <span className="text-destructive">*</span>}
 			</FormLabel>
 			<FormControl>
-				<div className="bg-white rounded-xl border-2 border-gray-300 flex flex-row gap-4 py-3 px-4 items-center w-fit xl:min-w-[340px]">
+				<div className="bg-white rounded-xl border-2 border-gray-300 flex flex-row gap-4 py-3 px-4 items-center w-full">
 					<div
 						className={cn(
-							"border-2 border-gray-300 rounded-full text-gray-700",
+							"border-2 border-gray-300 rounded-full text-gray-700 hidden xl:block",
 							{
 								"p-4": sizeInput === "md" ? true : false,
 								"p-2": sizeInput === "sm" ? true : false,
