@@ -139,29 +139,38 @@ const DashboardMain = () => {
 			</div>
 			<div className="grid md:grid-cols-3 grid-cols-1 gap-2">
 				<div className="space-y-4">
-					<DashboardChartDonutCard
-						title="RISK"
-						data={[
-							{
-								name: "Amount of Risk Above Appetite",
-								fill: "hsl(var(--secondary-400))",
-								value: dashboardItem?.amount_above_apetite || 0,
-							},
-						]}
-						totalValue={dashboardItem?.total_risk || 0}
-					/>
-					<DashboardChartDonutCard
-						title="SAFEGUARDS"
-						data={[
-							{
-								name: "Safeguards Implemented",
-								fill: "hsl(var(--secondary-400))",
-								value:
-									dashboardItem?.implemented_safeguard || 0,
-							},
-						]}
-						totalValue={dashboardItem?.total_safeguard || 0}
-					/>
+					{(isFetching || !dashboardItem) && <DashboardChartDonutCard.Skeleton />}
+					{!isFetching && dashboardItem && (
+						<DashboardChartDonutCard
+							title="RISK"
+							data={[
+								{
+									name: "Amount of Risk Above Appetite",
+									fill: "hsl(var(--secondary-400))",
+									value:
+										dashboardItem?.amount_above_apetite ||
+										0,
+								},
+							]}
+							totalValue={dashboardItem?.total_risk || 0}
+						/>
+					)}
+					{(isFetching || !dashboardItem) && <DashboardChartDonutCard.Skeleton />}
+					{!isFetching && dashboardItem && (
+						<DashboardChartDonutCard
+							title="SAFEGUARDS"
+							data={[
+								{
+									name: "Safeguards Implemented",
+									fill: "hsl(var(--secondary-400))",
+									value:
+										dashboardItem?.implemented_safeguard ||
+										0,
+								},
+							]}
+							totalValue={dashboardItem?.total_safeguard || 0}
+						/>
+					)}
 				</div>
 				<div className="col-span-2">
 					<DashboardRiskMatrixCard

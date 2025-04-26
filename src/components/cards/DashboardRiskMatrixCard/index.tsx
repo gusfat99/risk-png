@@ -43,7 +43,12 @@ const DashboardRiskMatrixCard: React.FC<DashboardRiskMatrixCardProps> = ({
 					<Settings size={50} />
 				</Button>
 			</div>
+			{(loading || !likelyhoodFrequencyItems) && (
+
+			<RiskMapTable.Skeleton/>
+			)}
 			{likelyhoodFrequencyItems && (
+
 				<RiskMapTable
 					data={riskMapItems}
 					columns={Object.entries(severityMapGrouped)}
@@ -52,6 +57,7 @@ const DashboardRiskMatrixCard: React.FC<DashboardRiskMatrixCardProps> = ({
 					heatmap={heatmap}
 				/>
 			)}
+
 		</div>
 	)
 }

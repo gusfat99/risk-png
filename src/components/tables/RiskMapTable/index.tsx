@@ -1,3 +1,4 @@
+import { Skeleton } from "@/components/ui/skeleton"
 import {
 	Table,
 	TableBody,
@@ -24,14 +25,93 @@ interface RiskMapTableProps {
 	heatmap?: HeatMap[]
 }
 
-const RiskMapTable: React.FC<RiskMapTableProps> = ({
-	columns,
-	rowsMain,
-	data,
-	forDashboard,
-	heatmap = [],
-	onClick,
-}) => {
+const RiskMapTableSkeleton = () => {
+	return (
+		<div className="w-full overflow-x-auto">
+			<Table>
+				{/* Header */}
+				<TableHeader>
+					<TableRow className="hover:bg-transparent">
+						{/* Kolom Frequency Level */}
+						<TableCell
+							rowSpan={3}
+							colSpan={3}
+							className="border-2 text-center"
+						>
+							Risk MAP
+						</TableCell>
+						<TableCell colSpan={5} className="border-2 text-center">
+							Deviation
+						</TableCell>
+					</TableRow>
+
+					<TableRow className="border-2 text-center hover:bg-transparent">
+						{Array.from({ length: 5 }).map((_, col) => (
+							<TableCell
+								key={col}
+								className="border-2 text-center"
+							>
+								{col}
+							</TableCell>
+						))}
+					</TableRow>
+					<TableRow className="border-2 text-center hover:bg-transparent">
+						{Array.from({ length: 5 }).map((_, col) => (
+							<TableCell
+								key={col}
+								className="border-2 text-center"
+							>
+								<Skeleton className="h-4 w-20 m-auto" />
+							</TableCell>
+						))}
+					</TableRow>
+				</TableHeader>
+				<TableBody>
+					<TableRow className="border-2 hover:bg-transparent">
+						{/* Kolom Frequency Level */}
+						<TableCell
+							rowSpan={6}
+							className="border-2 text-center [writing-mode:vertical-rl]"
+						>
+							Frequency Level
+						</TableCell>
+					</TableRow>
+					{Array.from({ length: 5 }).map((_, row) => (
+						<TableRow
+							key={row}
+							className="border-2 text-center hover:bg-transparent"
+						>
+							<TableCell className={cn("border-2 text-center")}>
+								{row+1}
+							</TableCell>
+							<TableCell
+								className={cn(
+									"border-2 text-center "
+								)}
+							>
+								<Skeleton className="h-10 w-32 m-auto" />
+							</TableCell>
+							{Array.from({ length: 5 }).map((_, col) => (
+								<TableCell
+									key={col + row}
+									className={cn(
+										`border-2 text-center relative`
+									)}
+								>
+									<Skeleton className="h-10 w-20 m-auto" />
+								</TableCell>
+							))}
+						</TableRow>
+					))}
+				</TableBody>
+			</Table>
+		</div>
+	)
+}
+
+const RiskMapTable: React.FC<RiskMapTableProps> & {
+	Skeleton: typeof RiskMapTableSkeleton
+} = ({ columns, rowsMain, data, forDashboard, heatmap = [], onClick }) => {
 	return (
 		<div className="w-full overflow-x-auto">
 			<Table>
@@ -185,5 +265,7 @@ const RiskMapTable: React.FC<RiskMapTableProps> = ({
 		</div>
 	)
 }
+
+RiskMapTable.Skeleton = RiskMapTableSkeleton
 
 export default RiskMapTable
