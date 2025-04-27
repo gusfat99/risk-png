@@ -16,12 +16,26 @@ import { RouteType } from "@/data/routes"
 import { cn } from "@/lib/utils"
 import AlertConfirmDialog from "./AlertConfirmDialog"
 import { useState } from "react"
+import useAuthStore from "@/store/authStore"
 
 export function NavSecondary({ items }: { items: RouteType[] }) {
 	const { isMobile } = useSidebar()
 	const [isOpenDialog, setIsOpenDialog] = useState(false)
 	const router = useRouter()
 	const pathname = usePathname()
+
+	const handleLogout = (action: string) => {
+		if (action === "confirm") {
+			destroyIsLoggedIn().then(() => {
+				router.replace("/login")
+				useAuthStore.getState().logout()
+				useAuthStore.persist.clearStorage()
+				setIsOpenDialog(false)
+			})
+		} else {
+			setIsOpenDialog(false)
+		}
+	}
 
 	return (
 		<SidebarMenu className="px-5">
@@ -73,16 +87,7 @@ export function NavSecondary({ items }: { items: RouteType[] }) {
 				open={isOpenDialog}
 				title="Confirm"
 				description="Are you sure want to logout?"
-				onAction={(action) => {
-					if (action === "confirm") {
-						destroyIsLoggedIn().then(() => {
-							router.replace("/login")
-							setIsOpenDialog(false)
-						})
-					} else {
-						setIsOpenDialog(false)
-					}
-				}}
+				onAction={handleLogout}
 			/>
 		</SidebarMenu>
 	)

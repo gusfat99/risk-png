@@ -1,6 +1,6 @@
 import { API_URL } from "@/constants"
 import { toast } from "@/hooks/use-toast"
-import { getSSRSafeToken } from "@/lib/storage"
+import useAuthStore from "@/store/authStore"
 // import { alertConfirm } from "@/context/AppAlertProvider"
 // import { destroyToken, getToken } from "@/lib/actions"
 import axios, {
@@ -30,7 +30,8 @@ export type ResponseType<T> = {
 }
 
 const onRequest = async (config: AxiosRequestConfig): Promise<any> => {
-	const token = getSSRSafeToken() // <-- Gunakan fungsi aman SSR
+	// const token = getSSRSafeToken() // <-- Gunakan fungsi aman SSR
+	const token = useAuthStore.getState().token; // <-- Cara akses langsung
 	config.headers = config.headers ?? {}
 	config.headers["Cache-Control"] = "no-cache"
 

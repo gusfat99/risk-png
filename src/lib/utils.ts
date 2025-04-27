@@ -1,5 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import CryptoJS from "crypto-js"
+import { SECRET_KEY } from "@/constants"
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
@@ -101,4 +103,15 @@ export function riskRankColor(n: number) {
 		: n <= 25
 		? "text-red-500"
 		: "text-gray-500" // fallback
+}
+
+
+export const encrypt = (data: any) => {
+	return CryptoJS.AES.encrypt(JSON.stringify(data), SECRET_KEY).toString()
+}
+
+export const decrypt = (data: string) => {
+	const bytes = CryptoJS.AES.decrypt(data, SECRET_KEY)
+	const decryptedData = bytes.toString(CryptoJS.enc.Utf8)
+	return JSON.parse(decryptedData)
 }

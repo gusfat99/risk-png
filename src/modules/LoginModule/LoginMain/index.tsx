@@ -44,7 +44,7 @@ const LoginMain = () => {
 		login({
 			email: values.email,
 			password: values.password,
-			"g-recaptcha-response": "testdd",
+			"g-recaptcha-response": "",
 		})
 			.then((res) => {
 				
