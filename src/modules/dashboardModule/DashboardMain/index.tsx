@@ -5,6 +5,7 @@ import DashboardRiskCardMain from "@/components/cards/DashboardRiskCardMain"
 import DashboardRiskMatrixCard from "@/components/cards/DashboardRiskMatrixCard"
 import InputSelect from "@/components/inputs/InputSelect"
 import { cn, groupBy } from "@/lib/utils"
+import useAuthStore from "@/store/authStore"
 import useDashboardStore from "@/store/dashboard"
 import useSettingMatrixStore from "@/store/settingMatrixStore"
 import { SelectDataType } from "@/types/common"
@@ -19,6 +20,7 @@ const DashboardMain = () => {
 		risk_map,
 		actions: { fetchRiskMap, fetchLikelyhood, fetchSeverityMap },
 	} = useSettingMatrixStore()
+	const { year_selected } = useAuthStore();
 	const {
 		isFetching,
 		dashboardItem,
@@ -80,11 +82,12 @@ const DashboardMain = () => {
 		fetchSeverityMap,
 		fetchNodeData,
 		nodeItems.length,
+		year_selected
 	])
 
 	useEffect(() => {
 		fetchDashboard()
-	}, [nodeSelected, fetchDashboard])
+	}, [nodeSelected, fetchDashboard, year_selected])
 
 	const nodeOptions: SelectDataType[] = nodeItems.map((node) => ({
 		label: node.node,

@@ -30,7 +30,11 @@ import { PROFILE_PATHNAME_STORAGE } from "@/constants"
 const AppHeader = () => {
 	const { subtitle } = useRouteGetTitle()
 	const { breadcrumbs } = useRouteNavigate()
-	const { user, year_selected } = useAuthStore()
+	const { user, year_selected, setYear } = useAuthStore()
+
+	const handleChangeYear = (value: string) => {
+		setYear(value);
+	}
 
 	return (
 		<header className="flex h-16 shrink-0 items-center justify-between gap-2">
@@ -72,7 +76,7 @@ const AppHeader = () => {
 				<button className="bg-primary-100 w-10 rounded-md p-2">
 					<Image src={Bell} width={82} height={82} alt="bell-notif" />
 				</button>
-				<Select value={year_selected}>
+				<Select  onValueChange={handleChangeYear} value={year_selected}>
 					<SelectTrigger className="w-[98px]">
 						<SelectValue placeholder="Tahun" />
 					</SelectTrigger>

@@ -42,6 +42,7 @@ const useAuthStore = create<AuthState>()(
 					user,
 				})
 			},
+			setYear : (year : string) => set({year_selected : year})
 		}),
 		{ name: "auth" }
 	)

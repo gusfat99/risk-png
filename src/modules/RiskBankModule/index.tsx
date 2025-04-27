@@ -12,6 +12,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { columnRiskBank } from "./columns"
 import { useDebounce } from "@/hooks/use-debounce"
+import useAuthStore from "@/store/authStore"
 
 const RiskBankModule = () => {
 	const {
@@ -23,6 +24,7 @@ const RiskBankModule = () => {
 		pagination_tanstack,
 		querySearch,
 	} = useRiskDataBankStore()
+	const { year_selected } = useAuthStore()
 	const { pageIndex, pageSize } = pagination_tanstack
 	const [shownAlertDel, setShownAlertDel] = useState({
 		id: null,
@@ -50,7 +52,7 @@ const RiskBankModule = () => {
 		}
 	}
 
-	const handleSearch = useDebounce((value : string) => {
+	const handleSearch = useDebounce((value: string) => {
 		setQuerySearch && setQuerySearch(value)
 	})
 
@@ -79,7 +81,7 @@ const RiskBankModule = () => {
 
 	useEffect(() => {
 		fetchAllData()
-	}, [fetchAllData, pageIndex, pageSize, querySearch])
+	}, [fetchAllData, pageIndex, pageSize, querySearch, year_selected])
 
 	return (
 		<div className="w-full">
@@ -89,7 +91,7 @@ const RiskBankModule = () => {
 					isRequired={false}
 					placeholder="Search..."
 					onChange={(e) => {
-						handleSearch(e.target.value, 'filter')
+						handleSearch(e.target.value, "filter")
 					}}
 				/>
 				<Link href={basePathname + "/add"}>

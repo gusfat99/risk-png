@@ -5,9 +5,11 @@ import SeverityMap from "./SeverityMap"
 import RiskMap from "./RiskMap"
 import { useRouteGetTitle } from "@/hooks/use-route-navigate"
 import useSettingMatrixStore from "@/store/settingMatrixStore"
+import useAuthStore from "@/store/authStore"
 
 const SettingMatrixModule = () => {
 	const { icon: Icon, title } = useRouteGetTitle()
+	const {year_selected} = useAuthStore();
 	const {
 		actions: { fetchLikelyhood, fetchSeverityMap, fetchRiskMap },
 	} = useSettingMatrixStore()
@@ -16,7 +18,7 @@ const SettingMatrixModule = () => {
 		fetchLikelyhood()
 		fetchSeverityMap()
 		fetchRiskMap()
-	}, [fetchLikelyhood, fetchSeverityMap, fetchRiskMap])
+	}, [fetchLikelyhood, fetchSeverityMap, fetchRiskMap, year_selected])
 
 	return (
 		<div className="max-w-full space-y-4">

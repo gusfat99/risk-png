@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { columnSafeguard } from "../columns"
 import { useDebounce } from "@/hooks/use-debounce"
+import useAuthStore from "@/store/authStore"
 
 const SafeguardModule = () => {
 	const {
@@ -23,6 +24,7 @@ const SafeguardModule = () => {
 		meta,
 		pagination_tanstack,
 	} = useSafeguardStore()
+	const {year_selected} = useAuthStore();
 	const { pageIndex, pageSize } = pagination_tanstack
 	const [shownAlertDel, setShownAlertDel] = useState({
 		id: null,
@@ -73,7 +75,7 @@ const SafeguardModule = () => {
 
 	useEffect(() => {
 		fetchAllData()
-	}, [fetchAllData, pageIndex, pageSize, querySearch])
+	}, [fetchAllData, pageIndex, pageSize, querySearch, year_selected])
 
 	return (
 		<div className="w-full">

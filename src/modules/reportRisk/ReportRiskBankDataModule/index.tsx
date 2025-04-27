@@ -4,6 +4,7 @@ import DataTable from "@/components/DataTable"
 import InputSearch from "@/components/inputs/InputSearch"
 import { useToast } from "@/hooks/use-toast"
 import { columnRiskBank } from "@/modules/RiskBankModule/columns"
+import useAuthStore from "@/store/authStore"
 import useRiskDataBankStore from "@/store/riskDataBankStore"
 import { RiskBankFlat } from "@/types/riskDataBank"
 import { usePathname, useRouter } from "next/navigation"
@@ -20,10 +21,10 @@ const ReportRiskBankDataModule = () => {
 	} = useRiskDataBankStore()
 	const { pageIndex, pageSize } = pagination_tanstack
 	const total = meta?.total || 0
-
+	const { year_selected } = useAuthStore()
 	useEffect(() => {
 		fetchAllData()
-	}, [fetchAllData, pageIndex, pageSize])
+	}, [fetchAllData, pageIndex, pageSize, year_selected])
 
 	return (
 		<div className="w-full">

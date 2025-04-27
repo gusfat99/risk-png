@@ -13,6 +13,7 @@ import { usePathname } from "next/navigation"
 import { useEffect, useRef } from "react"
 import RiskResponseFormMultiple from "./RiskResponseFormMultiple"
 import { useDebounce } from "@/hooks/use-debounce"
+import useAuthStore from "@/store/authStore"
 
 const RiskResponseModule = () => {
 	const pathname = usePathname()
@@ -28,12 +29,13 @@ const RiskResponseModule = () => {
 			fetchNodeData,
 			fetchAllData,
 			setHazopByRiskAnalyst,
-			setQuerySearch
+			setQuerySearch,
 		},
 		supportData: {
 			node: { isFetching: isFetchingNode, nodeItems },
 		},
 	} = useRiskResponseStore()
+	const { year_selected } = useAuthStore()
 	const splitPathname = pathname.split("/")
 	const basePathname = "/".concat(splitPathname[1])
 
@@ -46,7 +48,7 @@ const RiskResponseModule = () => {
 		formRef.current?.submit()
 	}
 
-	const handleSearch = useDebounce((value : string) => {
+	const handleSearch = useDebounce((value: string) => {
 		setQuerySearch && setQuerySearch(value)
 	})
 
@@ -66,7 +68,8 @@ const RiskResponseModule = () => {
 		setHazopByRiskAnalyst,
 		nodeSelected?.id,
 		nodeItems.length,
-		querySearch
+		querySearch,
+		year_selected,
 	])
 
 	return (
@@ -93,7 +96,9 @@ const RiskResponseModule = () => {
 							label="Filter Data"
 							isRequired={false}
 							placeholder="Search..."
-							onChange={(e) => handleSearch(e.target.value, 'filter')}
+							onChange={(e) =>
+								handleSearch(e.target.value, "filter")
+							}
 							// className="max-w-sm"
 						/>
 					</div>
@@ -109,7 +114,10 @@ const RiskResponseModule = () => {
 				</div>
 			)}
 			{!isFetching && nodeSelected && (
-				<RiskResponseFormMultiple ref={formRef} basePathname={basePathname} />
+				<RiskResponseFormMultiple
+					ref={formRef}
+					basePathname={basePathname}
+				/>
 			)}
 
 			{riskResponseItems.length === 0 && nodeSelected && !isFetching && (

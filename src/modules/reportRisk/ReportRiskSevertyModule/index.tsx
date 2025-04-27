@@ -11,6 +11,7 @@ import { SelectDataType } from "@/types/common"
 import DialogMain from "@/components/dialogs/DialogMain"
 import HazopRecommendationList from "@/components/Items/HazopRecommedationList"
 import ExportExcelButton from "@/components/buttons/ExportExcelButton"
+import useAuthStore from "@/store/authStore"
 
 const RiskReportSeverityModule = () => {
 	const pathname = usePathname()
@@ -43,6 +44,7 @@ const RiskReportSeverityModule = () => {
 		},
 		meta,
 	} = useRiskResponseStore()
+	const { year_selected } = useAuthStore()
 	const total = meta?.total || 0
 	const splitPathname = pathname.split("/")
 	const basePathname = "/".concat(splitPathname[1])
@@ -72,6 +74,7 @@ const RiskReportSeverityModule = () => {
 		setHazopByRiskAnalyst,
 		nodeSelected?.id,
 		nodeItems.length,
+		year_selected
 	])
 
 	// let severityOptions: SelectDataType[] = severityItems?.map(x => ({

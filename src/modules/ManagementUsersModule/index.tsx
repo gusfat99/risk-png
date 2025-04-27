@@ -12,6 +12,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { columnsManagementUser } from "./columns"
 import { useDebounce } from "@/hooks/use-debounce"
+import useAuthStore from "@/store/authStore"
 
 const ManagementUsersModule = () => {
 	const {
@@ -19,11 +20,19 @@ const ManagementUsersModule = () => {
 		userRoleItems,
 		querySearch,
 		isFetchingDelete,
-		actions: { fetchAllData, setPagination, deleteData, setUserSelected, fetchUserRoleData, setQuerySearch},
+		actions: {
+			fetchAllData,
+			setPagination,
+			deleteData,
+			setUserSelected,
+			fetchUserRoleData,
+			setQuerySearch,
+		},
 		isFetching,
 		meta,
 		pagination_tanstack,
 	} = useUserManagementStore()
+	const { year_selected } = useAuthStore()
 	const pathname = usePathname()
 	const splitPathname = pathname.split("/")
 
@@ -39,7 +48,7 @@ const ManagementUsersModule = () => {
 
 	const handleActionTable = (action: string, id: any) => {
 		if (action === "update") {
-			setUserSelected && setUserSelected(id);
+			setUserSelected && setUserSelected(id)
 			router.push(basePathname + "/update/" + id)
 		} else if (action === "detail") {
 			router.push(basePathname + "/detail/" + id)
@@ -74,15 +83,23 @@ const ManagementUsersModule = () => {
 		}
 	}
 
-		const handleSearch = useDebounce((value : string) => {setQuerySearch && setQuerySearch(value)})
+	const handleSearch = useDebounce((value: string) => {
+		setQuerySearch && setQuerySearch(value)
+	})
 
 	useEffect(() => {
 		fetchAllData()
 		if (userRoleItems.length === 0) {
-			fetchUserRoleData();
+			fetchUserRoleData()
 		}
-		
-	}, [fetchAllData, pageIndex, pageSize, userRoleItems.length, querySearch])
+	}, [
+		fetchAllData,
+		pageIndex,
+		pageSize,
+		userRoleItems.length,
+		querySearch,
+		year_selected,
+	])
 
 	return (
 		<div className="w-full">
@@ -91,9 +108,9 @@ const ManagementUsersModule = () => {
 					label="Filter Data"
 					isRequired={false}
 					placeholder="Search..."
-					onChange={(e) => handleSearch(e.target.value, 'filter')}
+					onChange={(e) => handleSearch(e.target.value, "filter")}
 				/>
-				<Link href={basePathname+"/add"}>
+				<Link href={basePathname + "/add"}>
 					<Button variant="success">
 						<Plus /> Add User
 					</Button>

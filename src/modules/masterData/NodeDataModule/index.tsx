@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation"
 import AlertConfirmDialog from "@/components/AlertConfirmDialog"
 import { useToast } from "@/hooks/use-toast"
 import { useDebounce } from "@/hooks/use-debounce"
+import useAuthStore from "@/store/authStore"
 
 const NodeDataModule = () => {
 	const {
@@ -23,6 +24,7 @@ const NodeDataModule = () => {
 		meta,
 		pagination_tanstack,
 	} = useNodeStore()
+	const {year_selected} = useAuthStore();
 	const { pageIndex, pageSize } = pagination_tanstack
 	const [shownAlertDel, setShownAlertDel] = useState({
 		id: null,
@@ -74,7 +76,7 @@ const NodeDataModule = () => {
 
 	useEffect(() => {
 		fetchAllData()
-	}, [fetchAllData, pageIndex, pageSize, querySearch])
+	}, [fetchAllData, pageIndex, pageSize, querySearch, year_selected])
 
 	return (
 		<div className="w-full">

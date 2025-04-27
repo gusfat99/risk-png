@@ -6,6 +6,7 @@ import { ReportRiskMonitoring } from "@/types/riskMonitoring"
 import { usePathname, useRouter } from "next/navigation"
 import { useCallback, useEffect } from "react"
 import { columnReportRiskMonitoring } from "./columns"
+import useAuthStore from "@/store/authStore"
 
 const ReportRiskMonitoringModule = () => {
 	const pathname = usePathname()
@@ -26,6 +27,7 @@ const ReportRiskMonitoringModule = () => {
 			setNodeSelected,
 		},
 	} = useReportRiskMonitoringStore()
+	const { year_selected } = useAuthStore()
 	const total = meta?.total || 0
 
 	const splitPathname = pathname.split("/")
@@ -52,7 +54,7 @@ const ReportRiskMonitoringModule = () => {
 			fetchNodeData()
 		}
 		fetchReportRiskMonitoring()
-	}, [fetchReportRiskMonitoring, fetchNodeData, nodeSelected])
+	}, [fetchReportRiskMonitoring, fetchNodeData, nodeSelected, year_selected])
 
 	return (
 		<div className="w-full">

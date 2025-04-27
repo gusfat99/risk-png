@@ -15,6 +15,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useRef } from "react"
 import RiskAnalystFormMultiple from "./RiskAnalystFormMultiple"
 import { FormRefType } from "@/types/common"
+import useAuthStore from "@/store/authStore"
 
 const RiskAnalystModule = () => {
 	const formRef = useRef<FormRefType>(null)
@@ -39,7 +40,7 @@ const RiskAnalystModule = () => {
 			node: { nodeItems, isFetching: isFetchingNode },
 		},
 	} = useRiskAnalysStore()
-
+	const { year_selected } = useAuthStore();
 	const router = useRouter()
 	const pathname = usePathname()
 	const splitPathname = pathname.split("/")
@@ -68,6 +69,7 @@ const RiskAnalystModule = () => {
 		nodeSelected?.id,
 		nodeItems.length,
 		querySearch,
+		year_selected
 	])
 
 	return (
