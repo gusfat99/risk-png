@@ -13,7 +13,7 @@ import { FormField } from "@/components/ui/form"
 import { hazopStatus } from "@/data/enumetions"
 import { fieldsInputSeverity } from "@/data/severity"
 import { useDebounce } from "@/hooks/use-debounce"
-import { cn } from "@/lib/utils"
+import { cn, riskRankColor } from "@/lib/utils"
 import useSettingMatrixStore from "@/store/settingMatrixStore"
 import { SelectDataType } from "@/types/common"
 import {
@@ -49,29 +49,42 @@ export interface UseColumnsRiskResponseProps extends UseColumnsProps {
 	form: UseFormReturn<RiskResponseSevertyExpectMultipleSchemaForm>
 }
 
-const CellInput = ({ row, form, name, name_code }: { row: any; form: any; name: any, name_code : any }) => {
+const CellInput = ({
+	row,
+	form,
+	name,
+	name_code,
+}: {
+	row: any
+	form: any
+	name: any
+	name_code: any
+}) => {
 	const rowId = row.index
 	const { likelyhood_options, severity_map_options } = useSettingMatrixStore()
 
 	const debouncedUpdate = useDebounce((key: any, value: any) => {
 		form.setValue(key, value)
 	}, 100)
-	
-	const fieldSeverity = fieldsInputSeverity.find((field) =>
-		field.name_code === name_code
+
+	const fieldSeverity = fieldsInputSeverity.find(
+		(field) => field.name_code === name_code
 	)
-	
-	let items: SelectDataType[] = [{
-		label: "(0) not taken into considered",
-		value : 0,
-	}, ...severity_map_options]
-	
+
+	let items: SelectDataType[] = [
+		{
+			label: "(0) not taken into considered",
+			value: 0,
+		},
+		...severity_map_options,
+	]
+
 	if (fieldSeverity) {
 		items = items
 			.filter(
 				(item) =>
-					(item.saverity_row_id?.toString() ===
-					fieldSeverity.col_id?.toString()) || item.value === 0
+					item.saverity_row_id?.toString() ===
+						fieldSeverity.col_id?.toString() || item.value === 0
 			)
 			.map((x) => ({
 				...x,
@@ -100,7 +113,6 @@ const CellInput = ({ row, form, name, name_code }: { row: any; form: any; name: 
 							`risks.${rowId}.${name}`,
 							parseInt(value) as any
 						)
-						
 					}}
 				/>
 			)}
@@ -135,9 +147,9 @@ export const useColumnsRiskAnalyst = ({
 				id: "id",
 				accessorFn: (row) => row.id,
 				meta: {
-					className : "text-center"
+					className: "text-center",
 				},
-				size : 80,
+				size: 80,
 				header: () => {
 					return <div className="flex justify-center">Action</div>
 				},
@@ -204,10 +216,12 @@ export const useColumnsRiskAnalyst = ({
 				size: 280,
 				enableSorting: false,
 				cell: ({ row }) => (
-					<ul className="!list-decimal" >
-						{row.original.existing_safeguard.map((safeguard, key) => (
-							<li key={key}>{safeguard}</li>
-						))}
+					<ul className="!list-decimal">
+						{row.original.existing_safeguard.map(
+							(safeguard, key) => (
+								<li key={key}>{safeguard}</li>
+							)
+						)}
 					</ul>
 				),
 			},
@@ -443,7 +457,12 @@ export const useColumnsRiskAnalyst = ({
 					const risk_ranking_current =
 						maxValSeverty * severty["l_frequency_current"]
 					return (
-						<div className="font-semibold text-center">
+						<div
+							className={cn(
+								"font-semibold text-center",
+								`${riskRankColor(risk_ranking_current)}`
+							)}
+						>
 							{risk_ranking_current}
 						</div>
 						// <></>
@@ -495,7 +514,7 @@ export const useColumnsRiskResponse = ({
 			{
 				id: "id",
 				accessorFn: (row) => row.id,
-			
+
 				header: () => {
 					return (
 						<div className="flex justify-start">
@@ -768,7 +787,14 @@ export const useColumnsRiskResponse = ({
 				},
 				cell: ({ row }) => {
 					return (
-						<div className="text-center">
+						<div
+							className={cn(
+								"font-semibold text-center",
+								`${riskRankColor(
+									row.original.risk_ranking_current
+								)}`
+							)}
+						>
 							{row.getValue("risk_ranking_current")}
 						</div>
 					)
@@ -999,7 +1025,7 @@ export const useColumnsRiskResponse = ({
 					className: "text-center",
 				},
 				cell: ({ row }) => {
-					const severty = {...form.watch("risks")[row.index]}
+					const severty = { ...form.watch("risks")[row.index] }
 					const severties = [
 						severty["sa_expected"],
 						severty["sp_expected"],
@@ -1011,7 +1037,12 @@ export const useColumnsRiskResponse = ({
 					const risk_ranking_expected =
 						maxValSeverty * severty["l_frequency_expected"]
 					return (
-						<div className="font-semibold text-center">
+						<div
+							className={cn(
+								"font-semibold text-center",
+								`${riskRankColor(risk_ranking_expected)}`
+							)}
+						>
 							{risk_ranking_expected}
 						</div>
 						// <></>
@@ -1152,12 +1183,12 @@ export const useColumnsMonitoring = ({
 				id: "id",
 				accessorFn: (row) => row.id,
 				meta: {
-					className : "text-center"
+					className: "text-center",
 				},
 				header: () => {
-					return <div >Action</div>
+					return <div>Action</div>
 				},
-				size : 80,
+				size: 80,
 				cell: ({ row }) => (
 					<TableRowActions
 						onAction={(actionName: string) => {

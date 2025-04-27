@@ -14,9 +14,12 @@ import { usePathname, useRouter } from "next/navigation"
 import Link from "next/link"
 import { RouteType } from "@/data/routes"
 import { cn } from "@/lib/utils"
+import AlertConfirmDialog from "./AlertConfirmDialog"
+import { useState } from "react"
 
 export function NavSecondary({ items }: { items: RouteType[] }) {
 	const { isMobile } = useSidebar()
+	const [isOpenDialog, setIsOpenDialog] = useState(false)
 	const router = useRouter()
 	const pathname = usePathname()
 
@@ -30,12 +33,9 @@ export function NavSecondary({ items }: { items: RouteType[] }) {
 								size="lg"
 								className={cn(
 									"data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:text-primary text-primary-100 !gap-4"
-									
 								)}
 								onClick={() => {
-									destroyIsLoggedIn().then(() => {
-										router.replace("/login")
-									})
+									setIsOpenDialog(true);
 								}}
 							>
 								<LogOut className="!size-6" />
@@ -69,6 +69,21 @@ export function NavSecondary({ items }: { items: RouteType[] }) {
 					)
 				})}
 			</SidebarMenuItem>
+			<AlertConfirmDialog
+				open={isOpenDialog}
+				title="Confirm"
+				description="Are you sure want to logout?"
+				onAction={(action) => {
+					if (action === "confirm") {
+						destroyIsLoggedIn().then(() => {
+							router.replace("/login")
+							setIsOpenDialog(false)
+						})
+					} else {
+						setIsOpenDialog(false)
+					}
+				}}
+			/>
 		</SidebarMenu>
 	)
 }

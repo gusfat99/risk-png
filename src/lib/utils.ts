@@ -88,3 +88,17 @@ export function getPropByPath<T = any>(
 ): T | undefined {
 	return path.split(".").reduce((acc, key) => acc?.[key], obj) as T
 }
+
+export function riskRankColor(n: number) {
+	return n < 5
+		? "text-blue-500"
+		: n <= 10
+		? "text-green-500"
+		: n <= 15
+		? "text-yellow-500"
+		: n <= 20
+		? "text-orange-500"
+		: n <= 25
+		? "text-red-500"
+		: "text-gray-500" // fallback
+}
