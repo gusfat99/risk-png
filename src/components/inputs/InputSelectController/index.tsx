@@ -1,7 +1,5 @@
 "use client"
 
-import { z } from "zod"
-
 import {
 	FormControl,
 	FormDescription,
@@ -16,10 +14,10 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select"
-import { SelectProps } from "@radix-ui/react-select"
-import { SelectDataType } from "@/types/common"
-import { cn } from "@/lib/utils"
 import { Skeleton } from "@/components/ui/skeleton"
+import { cn } from "@/lib/utils"
+import { SelectDataType } from "@/types/common"
+import { SelectProps } from "@radix-ui/react-select"
 
 interface FormSelectInputProps extends SelectProps {
 	label?: string
@@ -74,9 +72,9 @@ function InputSelectController(props: FormSelectInputProps) {
 								<SelectValue placeholder={placeholder} />
 							</SelectTrigger>
 						</FormControl>
-						<SelectContent>
+						<SelectContent  className=" max-w-sm sm:max-w-[520px]  mr-5 text-wrap" >
 							{items.map((item, key) => (
-								<SelectItem key={key} value={item.value}>
+								<SelectItem className="max-w-screen-sm  sm:max-w-[520px] text-wrap"  key={key} value={item.value}>
 									{item.label}
 								</SelectItem>
 							))}

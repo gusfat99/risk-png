@@ -14,13 +14,6 @@ interface IProps {
 	form: UseFormReturn<RiskAnalysisForm>
 }
 
-type fieldInputType = {
-	label: string
-	field: keyof RiskAnalysisForm
-	group: number
-	col_id?: any
-}
-
 
 const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 	const { likelyhood_options, severity_map_options } = useSettingMatrixStore()

@@ -81,7 +81,7 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 							page: get().pagination_tanstack.pageIndex,
 							per_page: get().pagination_tanstack.pageSize,
 							year: year_selected,
-							search : get().querySearch || undefined
+							search: get().querySearch || undefined
 						}
 					)
 						.then((data) => {
@@ -516,7 +516,7 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 			},
 			deleteData: async (id) => {
 				set({
-					isFetchingDelete : true
+					isFetchingDelete: true
 				})
 				return new Promise<ResponseApiType<null>>((resolve, reject) => {
 					deleteData<null>(RISK_ANALYST_EP + "/" + id)
@@ -540,7 +540,7 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 						})
 						.finally(() => {
 							set({
-								isFetchingDelete : false
+								isFetchingDelete: false
 							})
 						})
 				})
@@ -576,11 +576,13 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 							...prevState.supportData,
 							deviation: {
 								...prevState.supportData.deviation,
-								deviationItems : [],
+								isFetching: true,
+								deviationItems: [],
 							},
 							cause: {
 								...prevState.supportData.cause,
-								isFetching: true,
+								causeItems: [],
+
 							},
 							consiquence: {
 								...prevState.supportData.consiquence,
