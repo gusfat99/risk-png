@@ -22,6 +22,7 @@ export const RiskDataBankSection: React.FC<IProps> = ({
 }) => {
 	const {
 		supportData: {
+			parameter : { parameterItems, isFetching: isFetchingParameter },
 			deviation: { deviationItems, isFetching: isFetchingDeviation },
 			cause: { causeItems, isFetching: isFetchingCause },
 			consiquence: {
@@ -32,6 +33,7 @@ export const RiskDataBankSection: React.FC<IProps> = ({
 		},
 		actions: { handleChangeRiskBankData },
 	} = useRiskAnalysStore()
+
 
 	const deviationOptions = deviationItems.map((deviation) => ({
 		label: deviation.name || "", // Provide a fallback value
@@ -45,6 +47,10 @@ export const RiskDataBankSection: React.FC<IProps> = ({
 		label: consequence.consequence,
 		value: consequence.id?.toString(),
 	}))
+	const parameterOptions = parameterItems.map((parameter) => ({
+		label: parameter.name || "",
+		value: parameter.id?.toString(),
+	}))
 
 	return (
 		<div className="border-2 border-gray-200  rounded-lg p-4 space-y-4">
@@ -53,6 +59,27 @@ export const RiskDataBankSection: React.FC<IProps> = ({
 			</div>
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 				<div className="space-y-4">
+					<FormField
+						control={form.control}
+						name={"parameter_id"}
+						render={({ field }) => (
+							<InputSelectController
+								field={field}
+								disabled={isDetail}
+								loading={isFetchingParameter}
+								label="Parameter"
+								items={parameterOptions}
+								placeholder="Select Parameter"
+								onChange={(value) => {
+									form.setValue("parameter_id", value)
+									handleChangeRiskBankData(
+										"parameter_id",
+										value
+									)
+								}}
+							/>
+						)}
+					/>
 					<FormField
 						control={form.control}
 						name={"deviation_id"}

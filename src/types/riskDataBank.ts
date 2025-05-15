@@ -12,6 +12,10 @@ export interface Deviations {
 	deviation?: string //sama dengan name
 	is_default: number
 }
+export interface Parameter {
+	id: number
+	name: string
+}
 
 // Type untuk Consequences
 export interface Consequences {
@@ -32,9 +36,15 @@ export interface Cause {
 export interface RiskBank {
 	id: number
 	deviation_id: number
-	parameter: string
 	cause: string
 	deviations: Deviations
+	parameter_deviations: Array<{
+		deviation_id: number;
+		id: number;
+		parameter: Parameter;
+		parameter_id: number;
+		risk_bank_id: number;
+	}>;
 	consequences: Consequences[]
 }
 
@@ -63,6 +73,7 @@ export interface RiskDataBankState extends CommonState {
 	riskDataBankSelected: RiskBank | null
 	supportData: {
 		isFetchingSupportData: boolean
+		parameterItems: Parameter[] | null
 		deviationItems: Deviations[] | null
 		safeguardItems: Safeguard[] | null
 	}

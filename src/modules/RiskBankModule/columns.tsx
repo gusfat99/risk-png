@@ -1,7 +1,7 @@
 import TableRowActions from "@/components/TableRowActions"
 import { Button } from "@/components/ui/button"
 import { TableCell } from "@/components/ui/table"
-import { API_URL, SAFEGUARDS_PATHNAME_STORAGE } from "@/constants"
+import { SAFEGUARDS_PATHNAME_STORAGE } from "@/constants"
 import { RiskBankFlat } from "@/types/riskDataBank"
 import { ColumnDef } from "@tanstack/react-table"
 import { FileDown } from "lucide-react"

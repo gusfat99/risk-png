@@ -1,6 +1,7 @@
 import {
 	DEVIATION_EP,
 	EXPORT_RISK_BANK_EP,
+	PARAMETER_EP,
 	RISK_BANK_EP,
 	SAFEGUARD_EP
 } from "@/constants/endpoints"
@@ -19,6 +20,7 @@ import { downloadProxyFile } from "@/services/downloadFile"
 import { commonInitualState } from "@/types/common"
 import {
 	Deviations,
+	Parameter,
 	RiskBank,
 	RiskBankSchemaForm,
 	RiskDataBankState,
@@ -33,6 +35,7 @@ const initialState = {
 	riskDataBankFlat: [],
 	supportData: {
 		isFetchingSupportData: false,
+		parameterItems: [],
 		deviationItems: [],
 		safeguardItems: [],
 	},
@@ -133,8 +136,12 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 					safeguard: Safeguard[] | null
 				}>(async (resolve, reject) => {
 					try {
-						const [deviationResult, safeguardReusult] =
+						const [parameterResult, deviationResult, safeguardReusult] =
 							await Promise.all([
+								getDataApi<Parameter[]>(PARAMETER_EP, {
+									page: 1,
+									per_page: 1000,
+								}),
 								getDataApi<Deviations[]>(DEVIATION_EP, {
 									page: 1,
 									per_page: 1000,
@@ -146,11 +153,17 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 							])
 
 						const result: {
+							parameter : Parameter[] | null,
 							deviation: Deviations[] | null
 							safeguard: Safeguard[] | null
 						} = {
+							parameter: null,
 							deviation: null,
 							safeguard: null,
+						}
+
+						if (Array.isArray(parameterResult.data)) {
+							result.parameter = parameterResult.data
 						}
 
 						if (Array.isArray(deviationResult.data)) {
@@ -165,6 +178,7 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 							supportData: {
 								...prev.supportData,
 								isFetchingSupportData: false,
+								parameterItems: result.parameter,
 								safeguardItems: result.safeguard,
 								deviationItems: result.deviation,
 							},

@@ -11,6 +11,7 @@ export const REPORT_RISK_MONITROING_EP = "/monitoring-data/report-monitoring";
 export const DETAIL_REPORT_RISK_MONITROING_EP = "/monitoring-data/detail-report";
 export const DEVIATION_EP = "/deviations";
 export const SEVERITY_EP = "/severity";
+export const PARAMETER_EP = "/parameter";
 export const CAUSE_EP = "/cause";
 export const CONSEQUENCE_EP = "/consequence";
 export const MANAGEMENT_USER_EP = "/management-user";

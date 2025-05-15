@@ -6,7 +6,7 @@ export const parseRiskBanktoView = (data: RiskBank) => {
 	return {
 		id: data.id,
 		deviation_id: data.deviation_id,
-		parameter: data.parameter,
+		parameter_id: data.parameter_deviations[0].parameter_id?.toString(),
 		cause: data.cause,
 		deviations: data.deviations,
 		consequences: data.consequences.map((consequence) => {
@@ -35,7 +35,11 @@ export const parseRiskBankToPayload = (
 	const formData = new FormData()
 	const regex = /^-?\d+$/
 	//check is number/id
-	formData.append("parameter", value.parameter)
+	if (regex.test(value.parameter_id || "")) {
+		formData.append("parameter_id", value.parameter_id)
+	} else {
+		formData.append("parameter", value.parameter || "")
+	}
 	formData.append("cause", value.cause)
 	if (value.deviation_id) {
 		formData.append("deviation_id", value.deviation_id)
@@ -104,7 +108,7 @@ export const parseRiskBankToFlatted = (datas: RiskBank[]): RiskBankFlat[] => {
 							id: mainEntry.id,
 							no: currentNo,
 							uniqueKey: `${mainEntry.id}_${consequence.id}_0`,
-							parameter: mainEntry.parameter,
+							parameter: mainEntry.parameter_deviations[0].parameter.name,
 							cause: mainEntry.cause,
 							deviation_id: mainEntry.deviation_id,
 							deviations: mainEntry.deviations,
@@ -137,7 +141,7 @@ export const parseRiskBankToFlatted = (datas: RiskBank[]): RiskBankFlat[] => {
 					id: mainEntry.id,
 					no: currentNo,
 					uniqueKey: `${mainEntry.id}_${consequence.id}_${safeguard.id}`,
-					parameter: mainEntry.parameter,
+					parameter: mainEntry.parameter_deviations[0].parameter.name,
 					cause: mainEntry.cause,
 					deviation_id: mainEntry.deviation_id,
 					deviations: mainEntry.deviations,

@@ -12,6 +12,9 @@ export const RiskAnalysisSchema = z.object({
 	risk_bank_id: z
 		.string({ message: "Cause is required" })
 		.min(1, "Cause is required"),
+	parameter_id: z
+		.string({ message: "Parameter is required" })
+		.min(1, "Parameter is required"),
 	consequence_id: z
 		.string({ message: "Consequence is required" })
 		.min(1, "Consequence is required"),
@@ -82,6 +85,7 @@ export function toValidatedNumberActual(name: string) {
 export const initialRiskAnalyst: RiskAnalysisForm = {
 	consequence_id: "",
 	deviation_id: "",
+	parameter_id : "",
 	risk_rank: "",
 	srl_current: "",
 	spn_current: "",

@@ -5,12 +5,13 @@ import useRiskAnalysStore from "@/store/risksAnalystStore"
 
 const RiskAnalystAdd = () => {
 	const {
-		actions: { fetchDeviationData },
+		actions: { fetchDeviationData, fetchParameterData },
 	} = useRiskAnalysStore()
 
 	useEffect(() => {
-		fetchDeviationData()
-	}, [fetchDeviationData])
+		fetchDeviationData && fetchDeviationData()
+		fetchParameterData && fetchParameterData()
+	}, [fetchDeviationData, fetchParameterData])
 
 	return (
 		<div className="w-full">

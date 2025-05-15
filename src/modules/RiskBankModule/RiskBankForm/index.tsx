@@ -18,6 +18,7 @@ import { useFieldArray, useForm } from "react-hook-form"
 import { z } from "zod"
 import { parseRiskBankToPayload, parseRiskBanktoView } from "../parseRiskBank"
 import SectionSafeguardRiskBank from "./SectionSafeguardRiskBank"
+import InputComboboxController from "@/components/inputs/InputComboBoxController"
 
 interface IProps {
 	isDetail?: boolean
@@ -28,7 +29,7 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 	const {
 		riskDataBankSelected,
 		actions: { createData, updateData, fetchAllSupportData },
-		supportData: { isFetchingSupportData, deviationItems },
+		supportData: { isFetchingSupportData, deviationItems, parameterItems },
 		isSubmit,
 	} = useRiskDataBankStore()
 	const { toast } = useToast()
@@ -78,6 +79,18 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 					: "An unexpected error occurred",
 				variant: "destructive",
 			})
+		}
+	}
+
+	const handleChangeParameter = (value: any) => {
+		const regex = /^-?\d+$/
+	
+		if (regex.test(value)) {
+			form.setValue("parameter_id", value)
+		} else {
+			form.setValue("parameter", value)
+			form.setValue("parameter_id", value)
+			// form.setValue(name, value)
 		}
 	}
 
@@ -137,7 +150,7 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 				onSubmit={form.handleSubmit(handleSubmit)}
 				className="space-y-4"
 			>
-				<FormField
+				{/* <FormField
 					control={form.control}
 					name={"parameter"}
 					render={({ field }) => (
@@ -148,6 +161,35 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 							placeholder="Enter Parameter"
 							onChange={(e) => {
 								form.setValue("parameter", e.target.value)
+							}}
+						/>
+					)}
+				/> */}
+				<FormField
+					control={form.control}
+					name={`parameter_id`}
+					render={({ field }) => (
+						<InputComboboxController
+							selectConfig={{
+								items: (parameterItems || []).map((x) => ({
+									label: x.name ?? "",
+									value: x.id?.toString() ?? "",
+								})),
+							}}
+							field={field}
+							disabled={isFetchingSupportData}
+							label="Parameter"
+							placeholder="Parameter"
+							handleChange={(value) => {
+								handleChangeParameter(value)
+							}}
+							placeholderCheckbox={"Input New Parameter"}
+							onCheckedChange={(value) => {
+								if (value === "select") {
+									form.setValue("parameter", "")
+								} else {
+									form.setValue("parameter_id", "")
+								}
 							}}
 						/>
 					)}
@@ -244,7 +286,11 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 						<Plus /> Add Consequence
 					</Button>
 				)}
-				<SectionSafeguardRiskBank form={form} isDetail={isDetail} isEdit={isEdit} />
+				<SectionSafeguardRiskBank
+					form={form}
+					isDetail={isDetail}
+					isEdit={isEdit}
+				/>
 				{!isDetail && (
 					<div className="flex justify-end gap-4">
 						<Link href={basePathname}>

@@ -87,7 +87,7 @@ const InputComboboxController = React.forwardRef<
 									handleChange(e.target.value, field.name)
 								}
 								type={freetextConfig?.type ?? "text"}
-								placeholder={placeholder}
+								placeholder={`Enter ${placeholder}...`}
 								className={cn({
 									"pr-10": freetextConfig?.secure,
 								})}
@@ -123,11 +123,12 @@ const InputComboboxController = React.forwardRef<
 							value={field.value}
 							disabled={disabled}
 							name={field.name}
+							
 							// {...restProps}
 						>
 							<FormControl>
 								<SelectTrigger>
-									<SelectValue placeholder={placeholder} />
+									<SelectValue placeholder={`Select ${placeholder}...`} />
 								</SelectTrigger>
 							</FormControl>
 							<SelectContent>

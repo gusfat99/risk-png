@@ -3,6 +3,7 @@ import {
 	CONSEQUENCE_EP,
 	DEVIATION_EP,
 	NODE_EP,
+	PARAMETER_EP,
 	RISK_ANALYST_EP,
 	SAFEGUARD_EXIST_EP,
 } from "@/constants/endpoints"
@@ -22,7 +23,7 @@ import {
 } from "@/types/riksAnalyst"
 
 import { Node } from "@/types/node"
-import { Cause, Consequences, Deviations } from "@/types/riskDataBank"
+import { Cause, Consequences, Deviations, Parameter } from "@/types/riskDataBank"
 import { Safeguard } from "@/types/safeguard"
 import { createStore, runUpdater } from "./store"
 import fetchRiskBankHierarchy from "@/services/fetchRiskBankHierarchy"
@@ -37,6 +38,10 @@ const initialState = {
 		node: {
 			isFetching: false,
 			nodeItems: [],
+		},
+		parameter: {
+			parameterItems: [],
+			isFetching: false,
 		},
 		deviation: {
 			deviationItems: [],
@@ -204,6 +209,56 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 										...prev.supportData,
 										deviation: {
 											...prev.supportData.deviation,
+											isFetching: false,
+										},
+									},
+								}))
+							})
+					}
+				)
+			},
+			fetchParameterData: async () => {
+				set((prev) => ({
+					supportData: {
+						...prev.supportData,
+						parameter: {
+							...prev.supportData.parameter,
+							isFetching: true,
+						},
+					},
+				}))
+				return new Promise<ResponseApiType<Parameter[]>>(
+					(resolve, reject) => {
+						getDataApi<Parameter[]>(PARAMETER_EP)
+							.then((data) => {
+								//parse data to flat
+								if (Array.isArray(data.data)) {
+									set((prev) => ({
+										supportData: {
+											...prev.supportData,
+											parameter: {
+												isFetching: false,
+												parameterItems: data.data || [],
+											},
+										},
+									}))
+									resolve(data)
+								}
+							})
+							.catch((err) => {
+								toast({
+									title: "ERROR",
+									description: err.message,
+									variant: "destructive",
+								})
+								reject(err)
+							})
+							.finally(() => {
+								set((prev) => ({
+									supportData: {
+										...prev.supportData,
+										parameter: {
+											...prev.supportData.parameter,
 											isFetching: false,
 										},
 									},
@@ -514,6 +569,64 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 			},
 			//this function for handle select data risk bank, leveling data
 			handleChangeRiskBankData: (name, id) => {
+				//Get Deviation Data
+				if (name === "parameter_id") {
+					set((prevState) => ({
+						supportData: {
+							...prevState.supportData,
+							deviation: {
+								...prevState.supportData.deviation,
+								deviationItems : [],
+							},
+							cause: {
+								...prevState.supportData.cause,
+								isFetching: true,
+							},
+							consiquence: {
+								...prevState.supportData.consiquence,
+								consiquenceItems: [],
+							},
+							safeguard: {
+								...prevState.supportData.safeguard,
+								safeguardItems: [],
+							},
+						},
+					}))
+
+					getDataApi<Deviations[]>(`/${id}${DEVIATION_EP}`)
+						.then((data) => {
+							//parse data to flat
+							if (Array.isArray(data.data)) {
+								set((prevState) => ({
+									supportData: {
+										...prevState.supportData,
+										deviation: {
+											deviationItems: data.data || [],
+											isFetching: false,
+										},
+									},
+								}))
+							}
+						})
+						.catch((err) => {
+							toast({
+								title: "ERROR",
+								description: err.message,
+								variant: "destructive",
+							})
+						})
+						.finally(() => {
+							set((prevState) => ({
+								supportData: {
+									...prevState.supportData,
+									deviation: {
+										...prevState.supportData.deviation,
+										isFetching: false,
+									},
+								},
+							}))
+						})
+				}
 				//Get Cause Data
 				if (name === "deviation_id") {
 					set((prevState) => ({

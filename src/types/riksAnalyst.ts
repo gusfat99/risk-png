@@ -2,7 +2,7 @@ import { ResponseApiType } from "@/helpers/ApiHelper"
 import { CommonState } from "./common"
 import { PaginationState, Updater } from "@tanstack/react-table"
 import { Node } from "./node"
-import { Cause, Consequences, Deviations } from "./riskDataBank"
+import { Cause, Consequences, Deviations, Parameter } from "./riskDataBank"
 import { z } from "zod"
 import {
 	RiskAnalysisSchema,
@@ -13,6 +13,7 @@ import { Safeguard } from "./safeguard"
 
 export type RiskAnalysis = {
 	node_id: string
+	parameter_id: string
 	deviation_id: string
 	risk_bank_id: string
 	consequence_id: string
@@ -46,6 +47,10 @@ export interface RiskAnalystState extends CommonState {
 			deviationItems: Deviations[]
 			isFetching: boolean
 		}
+		parameter: {
+			parameterItems: Parameter[]
+			isFetching: boolean
+		}
 		cause: {
 			causeItems: Cause[]
 			isFetching: boolean
@@ -66,7 +71,8 @@ export interface RiskAnalystState extends CommonState {
 		fetchSingleData?(nodeId : any, id: any): Promise<ResponseApiType<RiskAnalysis>>
 		fetchDetailData?(nodeId : any, id: any): Promise<ResponseApiType<RiskAnalysis>>
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>
-		fetchDeviationData(): Promise<ResponseApiType<Deviations[]>>
+		fetchParameterData?(): Promise<ResponseApiType<Parameter[]>>
+		fetchDeviationData?(): Promise<ResponseApiType<Deviations[]>>
 		createData?(
 			payload: RiskAnalysisForm,
 			nodeId: any

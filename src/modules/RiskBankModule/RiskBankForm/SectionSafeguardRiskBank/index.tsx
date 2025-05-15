@@ -1,8 +1,6 @@
 import AddButton from "@/components/buttons/AddButton"
 import RemoveButton from "@/components/buttons/RemoveButton"
-import InputComboboxController from "@/components/inputs/InputComboBoxController"
 import InputController from "@/components/inputs/InputController"
-import InputFileContoller from "@/components/inputs/InputFileController"
 import SafeguardFormItem from "@/components/Items/SafeguardFormItem"
 import { FormField } from "@/components/ui/form"
 import { Label } from "@/components/ui/label"
@@ -73,7 +71,7 @@ const SectionSafeguardRiskBank: React.FC<IProps> = ({
 	) => {
 		const regex = /^-?\d+$/
 		//check is number/id
-		if (regex.test(value)) {
+		if (regex.test(value)) { 
 			const safeguardSelected = safeguardItems?.find(
 				(x) => x.id?.toString() === value
 			)
