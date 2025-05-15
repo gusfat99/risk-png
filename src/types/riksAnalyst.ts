@@ -14,6 +14,7 @@ import { Safeguard } from "./safeguard"
 export type RiskAnalysis = {
 	node_id: string
 	parameter_id: string
+	parameters: Parameter
 	deviation_id: string
 	risk_bank_id: string
 	consequence_id: string

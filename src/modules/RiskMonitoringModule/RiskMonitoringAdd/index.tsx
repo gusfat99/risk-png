@@ -4,19 +4,20 @@ import { useEffect } from "react"
 import RiskMonitoringForm from "../RiskMonitoringForm"
 
 const RiskAnalystAdd = () => {
-   const {
-      actions: { fetchDeviationData },
-   } = useRiskMonitoringStore()
+	const {
+		actions: { fetchParameterData, fetchNodeData },
+	} = useRiskMonitoringStore()
 
-   useEffect(() => {
-      fetchDeviationData()
-   }, [fetchDeviationData])
+	useEffect(() => {
+      fetchParameterData()
+      fetchNodeData()
+	}, [fetchParameterData, fetchNodeData])
 
-   return (
-      <div className="w-full">
-         <RiskMonitoringForm />
-      </div>
-   )
+	return (
+		<div className="w-full">
+			<RiskMonitoringForm />
+		</div>
+	)
 }
 
 export default RiskAnalystAdd

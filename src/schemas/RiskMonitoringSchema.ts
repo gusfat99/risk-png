@@ -8,6 +8,9 @@ export const RiskMonitoringSchema = z.object({
 	deviation_id: z
 		.string({ message: "Deviation is required" })
 		.min(1, "Deviation Data is required"),
+	parameter_id: z
+		.string({ message: "Parameter is required" })
+		.min(1, "Parameter is required"),
 	risk_bank_id: z
 		.string({ message: "Cause is required" })
 		.min(1, "Cause is required"),

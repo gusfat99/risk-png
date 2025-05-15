@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { Node } from "./node"
-import { Cause, Deviations } from "./riskDataBank"
+import { Cause, Deviations, Parameter } from "./riskDataBank"
 import {
 	RiskMonitoringSchema,
 	RiskMonitoringSeverityMultpleSchema,
@@ -14,6 +14,8 @@ export type RiskMonitoring = {
 	id: number
 	node_id: number
 	deviation_id: number
+	parameter_id: number
+	parameters : Parameter
 	risk_bank_id: number
 	incident_name: string
 	incident_location: string
@@ -71,6 +73,10 @@ export interface RiskMonitoringState extends CommonState {
 			nodeItems: Node[]
 			isFetching: boolean
 		}
+		parameter: {
+			parameterItems: Parameter[]
+			isFetching: boolean
+		}
 		deviation: {
 			deviationItems: Deviations[]
 			isFetching: boolean
@@ -87,6 +93,7 @@ export interface RiskMonitoringState extends CommonState {
 		fetchDetailData?(id: any): Promise<ResponseApiType<RiskMonitoring>>
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>
 		fetchDeviationData(): Promise<ResponseApiType<Deviations[]>>
+		fetchParameterData(): Promise<ResponseApiType<Parameter[]>>
 		createData?(
 			payload: RiskMonitoringSchemaForm
 		): Promise<ResponseApiType<RiskMonitoring>>

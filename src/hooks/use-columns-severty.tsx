@@ -162,6 +162,21 @@ export const useColumnsRiskAnalyst = ({
 				),
 			},
 			{
+				id: "parameter",
+				accessorFn: (row) => row.parameters.name ?? "",
+				size: 120,
+				enableSorting: false,
+				header: ({ column }) => {
+					return (
+						<DataTableColumnHeader
+							column={column}
+							title="Parameter"
+						/>
+					)
+				},
+				cell: ({ row }) => row.getValue("parameter"),
+			},
+			{
 				id: "deviation",
 				accessorFn: (row) => row.deviations.name ?? "",
 				size: 120,
@@ -1196,6 +1211,20 @@ export const useColumnsMonitoring = ({
 						}}
 					/>
 				),
+			},
+			{
+				id: "parameter",
+				accessorFn: (row) => row.parameters.name ?? "",
+				enableSorting: false,
+				header: ({ column }) => {
+					return (
+						<DataTableColumnHeader
+							column={column}
+							title="Parameter"
+						/>
+					)
+				},
+				cell: ({ row }) => row.getValue("parameter"),
 			},
 			{
 				id: "deviation",

@@ -48,6 +48,7 @@ const RiskMonitoringForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 					...riskMonitoringSelected,
 					node_id: String(riskMonitoringSelected.node_id),
 					deviation_id: String(riskMonitoringSelected.deviation_id),
+					parameter_id: String(riskMonitoringSelected.parameter_id),
 					risk_bank_id: String(riskMonitoringSelected.risk_bank_id),
 					sp_affected: String(riskMonitoringSelected.sp_affected),
 					sf_affected: String(riskMonitoringSelected.sf_affected),

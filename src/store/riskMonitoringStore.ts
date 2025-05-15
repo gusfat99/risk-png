@@ -2,6 +2,7 @@ import {
 	CAUSE_EP,
 	DEVIATION_EP,
 	NODE_EP,
+	PARAMETER_EP,
 	RISK_ANALYST_EP,
 	RISK_MONITROING_EP
 } from "@/constants/endpoints"
@@ -15,7 +16,7 @@ import { toast } from "@/hooks/use-toast"
 import { commonInitualState } from "@/types/common"
 
 import { Node } from "@/types/node"
-import { Cause, Deviations } from "@/types/riskDataBank"
+import { Cause, Deviations, Parameter } from "@/types/riskDataBank"
 import {
 	RiskMonitoring,
 	RiskMonitoringSchemaForm,
@@ -38,10 +39,15 @@ const initialState = {
 			isFetching: false,
 			nodeItems: [],
 		},
+		parameter: {
+			parameterItems: [],
+			isFetching: false,
+		},
 		deviation: {
 			deviationItems: [],
 			isFetching: false,
 		},
+
 		cause: {
 			causeItems: [],
 			isFetching: false,
@@ -192,6 +198,56 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 										...prev.supportData,
 										deviation: {
 											...prev.supportData.deviation,
+											isFetching: false,
+										},
+									},
+								}))
+							})
+					}
+				)
+			},
+			fetchParameterData: async () => {
+				set((prev) => ({
+					supportData: {
+						...prev.supportData,
+						parameter: {
+							...prev.supportData.parameter,
+							isFetching: true,
+						},
+					},
+				}))
+				return new Promise<ResponseApiType<Parameter[]>>(
+					(resolve, reject) => {
+						getDataApi<Parameter[]>(PARAMETER_EP)
+							.then((data) => {
+								//parse data to flat
+								if (Array.isArray(data.data)) {
+									set((prev) => ({
+										supportData: {
+											...prev.supportData,
+											parameter: {
+												isFetching: false,
+												parameterItems: data.data || [],
+											},
+										},
+									}))
+									resolve(data)
+								}
+							})
+							.catch((err) => {
+								toast({
+									title: "ERROR",
+									description: err.message,
+									variant: "destructive",
+								})
+								reject(err)
+							})
+							.finally(() => {
+								set((prev) => ({
+									supportData: {
+										...prev.supportData,
+										parameter: {
+											...prev.supportData.parameter,
 											isFetching: false,
 										},
 									},
@@ -359,7 +415,7 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 								},
 							}))
 						}
-					
+
 					}
 				)
 			},
@@ -476,7 +532,7 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 			deleteData: async (id) => {
 				return new Promise<ResponseApiType<null>>((resolve, reject) => {
 					set({
-						isFetchingDelete : true
+						isFetchingDelete: true
 					})
 					deleteData<null>(RISK_MONITROING_EP + "/" + id)
 						.then((data) => {
@@ -499,7 +555,7 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 						})
 						.finally(() => {
 							set({
-								isFetchingDelete : false
+								isFetchingDelete: false
 							})
 						})
 				})
@@ -515,6 +571,56 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 			//this function for handle select data risk bank, leveling data
 			handleChangeRiskMonitoringData: (name, id) => {
 				//Get Cause Data
+				if (name === "parameter_id") {
+					set((prevState) => ({
+						supportData: {
+							...prevState.supportData,
+							deviation: {
+								...prevState.supportData.deviation,
+								deviationItems : [],
+								isFetching: true,
+							},
+							cause: {
+								...prevState.supportData.cause,
+								causeItems : [],
+							},
+						},
+					}))
+
+					getDataApi<Deviations[]>(`/${id}${DEVIATION_EP}`)
+						.then((data) => {
+							//parse data to flat
+							if (Array.isArray(data.data)) {
+								set((prevState) => ({
+									supportData: {
+										...prevState.supportData,
+										deviation: {
+											deviationItems: data.data || [],
+											isFetching: false,
+										},
+									},
+								}))
+							}
+						})
+						.catch((err) => {
+							toast({
+								title: "ERROR",
+								description: err.message,
+								variant: "destructive",
+							})
+						})
+						.finally(() => {
+							set((prevState) => ({
+								supportData: {
+									...prevState.supportData,
+									deviation: {
+										...prevState.supportData.deviation,
+										isFetching: false,
+									},
+								},
+							}))
+						})
+				}
 				if (name === "deviation_id") {
 					set((prevState) => ({
 						supportData: {

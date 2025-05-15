@@ -19,6 +19,7 @@ const RiskDataBankSection: React.FC<IProps> = ({ form, isEdit, isDetail }) => {
 		supportData: {
 			node: { nodeItems, isFetching: isFetchingNode },
 			deviation: { deviationItems, isFetching: isFetchingDeviation },
+			parameter: { parameterItems, isFetching: isFetchingParameter },
 			cause: { causeItems, isFetching: isFetchingCause },
 		},
 		actions: { handleChangeRiskMonitoringData },
@@ -29,6 +30,10 @@ const RiskDataBankSection: React.FC<IProps> = ({ form, isEdit, isDetail }) => {
 		value: node.id?.toString(),
 	}))
 
+	const parameterOptions = parameterItems.map((parameter) => ({
+		label: parameter.name || "", // Provide a fallback value
+		value: parameter.id?.toString(),
+	}))
 	const deviationOptions = deviationItems.map((deviation) => ({
 		label: deviation.name || "", // Provide a fallback value
 		value: deviation.id?.toString(),
@@ -62,6 +67,27 @@ const RiskDataBankSection: React.FC<IProps> = ({ form, isEdit, isDetail }) => {
 								placeholder="Select Node"
 								onChange={(value) => {
 									form.setValue("node_id", value)
+								}}
+							/>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name={"parameter_id"}
+						render={({ field }) => (
+							<InputSelectController
+								field={field}
+								disabled={isDetail}
+								loading={isFetchingParameter}
+								label="Parameter"
+								items={parameterOptions}
+								placeholder="Select Parameter"
+								onChange={(value) => {
+									form.setValue("parameter_id", value)
+									handleChangeRiskMonitoringData(
+										"parameter_id",
+										value
+									)
 								}}
 							/>
 						)}
