@@ -17,6 +17,7 @@ export interface AlertConfirmDialogProps {
 	description: string
 	confirmLabel?: string
 	denyLabel?: string
+	showDenyButton?: boolean
 	onAction?(action: string): void
 	alertDialogFooter?: React.ReactElement
 	loading?: boolean
@@ -31,6 +32,7 @@ function AlertConfirmDialog({
 	onAction,
 	alertDialogFooter,
 	loading,
+	showDenyButton = true,
 }: AlertConfirmDialogProps) {
 	return (
 		<AlertDialog open={open}>
@@ -44,13 +46,15 @@ function AlertConfirmDialog({
 				{alertDialogFooter && alertDialogFooter}
 				{!alertDialogFooter && (
 					<AlertDialogFooter>
-						<AlertDialogCancel
-							onClick={() => onAction && onAction("deny")}
-							disabled={loading}
-						>
-							{loading && <Spinner className="h-4 w-4" />}
-							{denyLabel}
-						</AlertDialogCancel>
+						{showDenyButton && (
+							<AlertDialogCancel
+								onClick={() => onAction && onAction("deny")}
+								disabled={loading}
+							>
+								{loading && <Spinner className="h-4 w-4" />}
+								{denyLabel}
+							</AlertDialogCancel>
+						)}
 						<AlertDialogAction
 							onClick={() => onAction && onAction("confirm")}
 							disabled={loading}
