@@ -61,6 +61,22 @@ export const useColumnsReportRiskBySeverity = ({
 				),
 			},
 			{
+				id: "parameter",
+				accessorFn: (row) => row.parameters.name ?? "",
+
+				header: ({ column }) => {
+					return (
+						<DataTableColumnHeader
+							column={column}
+							title="Parameter"
+						/>
+					)
+				},
+				size: 180,
+				enableSorting: false,
+				cell: ({ row }) => row.getValue("parameter"),
+			},
+			{
 				id: "deviation",
 				accessorFn: (row) => row.deviations.name ?? "",
 

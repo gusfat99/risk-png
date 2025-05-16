@@ -35,6 +35,8 @@ export type ReportRiskMonitoring = {
 	node_id: any
 	node: number
 	deviation_id: any
+	parameter_id: any
+	parameter_name: string
 	deviation_name: number
 	risk_bank_id: string
 	cause: string

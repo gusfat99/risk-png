@@ -84,7 +84,7 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 
 	const handleChangeParameter = (value: any) => {
 		const regex = /^-?\d+$/
-	
+
 		if (regex.test(value)) {
 			form.setValue("parameter_id", value)
 		} else {
@@ -150,21 +150,6 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 				onSubmit={form.handleSubmit(handleSubmit)}
 				className="space-y-4"
 			>
-				{/* <FormField
-					control={form.control}
-					name={"parameter"}
-					render={({ field }) => (
-						<InputController
-							{...field}
-							readOnly={isDetail}
-							label="Parameter Name"
-							placeholder="Enter Parameter"
-							onChange={(e) => {
-								form.setValue("parameter", e.target.value)
-							}}
-						/>
-					)}
-				/> */}
 				<FormField
 					control={form.control}
 					name={`parameter_id`}
@@ -196,21 +181,6 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 				/>
 				<FormField
 					control={form.control}
-					name={"cause"}
-					render={({ field }) => (
-						<InputController
-							{...field}
-							readOnly={isDetail}
-							label="Cause"
-							placeholder="Enter Cause"
-							onChange={(e) => {
-								form.setValue("cause", e.target.value)
-							}}
-						/>
-					)}
-				/>
-				<FormField
-					control={form.control}
 					name={"deviation_id"}
 					render={({ field }) => (
 						<InputSelectController
@@ -222,6 +192,21 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 							items={diviationOptions}
 							onChange={(value) => {
 								form.setValue("deviation_id", value)
+							}}
+						/>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name={"cause"}
+					render={({ field }) => (
+						<InputController
+							{...field}
+							readOnly={isDetail}
+							label="Cause"
+							placeholder="Enter Cause"
+							onChange={(e) => {
+								form.setValue("cause", e.target.value)
 							}}
 						/>
 					)}

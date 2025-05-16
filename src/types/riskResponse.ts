@@ -9,7 +9,7 @@ import { PaginationState, Updater } from "@tanstack/react-table"
 import { z } from "zod"
 import { CommonState } from "./common"
 import { Node } from "./node"
-import { Cause, Consequences, Deviations } from "./riskDataBank"
+import { Cause, Consequences, Deviations, Parameter } from "./riskDataBank"
 import { Severity } from "./severity"
 
 export type HazopStatusDialog = {
@@ -46,6 +46,7 @@ export type RiskResponse = {
 	risk_ranking_current: number
 	remark_analyst: string
 	deviations: Deviations
+	parameters: Parameter
 	causes: Cause
 	consequence: Consequences | null
 	tahun: string

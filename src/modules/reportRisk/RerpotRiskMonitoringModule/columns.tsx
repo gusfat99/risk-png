@@ -43,6 +43,12 @@ export const columnReportRiskMonitoring = (
 			cell: ({ row }) => row.original.node,
 		},
 		{
+			accessorKey: "parameter",
+			header: "Parameter",
+			size: 120,
+			cell: ({ row }) => row.original.parameter_name,
+		},
+		{
 			accessorKey: "deviation",
 			header: "Deviation",
 			size: 120,
