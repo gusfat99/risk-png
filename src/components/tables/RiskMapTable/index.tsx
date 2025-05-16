@@ -82,13 +82,9 @@ const RiskMapTableSkeleton = () => {
 							className="border-2 text-center hover:bg-transparent"
 						>
 							<TableCell className={cn("border-2 text-center")}>
-								{row+1}
+								{row + 1}
 							</TableCell>
-							<TableCell
-								className={cn(
-									"border-2 text-center "
-								)}
-							>
+							<TableCell className={cn("border-2 text-center ")}>
 								<Skeleton className="h-10 w-32 m-auto" />
 							</TableCell>
 							{Array.from({ length: 5 }).map((_, col) => (
@@ -132,24 +128,28 @@ const RiskMapTable: React.FC<RiskMapTableProps> & {
 					</TableRow>
 
 					<TableRow className="border-2 text-center hover:bg-transparent">
-						{columns.map(([_, col]) => (
-							<TableCell
-								key={col?.[0].column_value}
-								className="border-2 text-center"
-							>
-								{col?.[0].column_value}
-							</TableCell>
-						))}
+						{columns
+							.sort((a, b) => parseInt(b[0]) - parseInt(a[0]))
+							.map(([_, col]) => (
+								<TableCell
+									key={col?.[0].column_value}
+									className="border-2 text-center"
+								>
+									{col?.[0].column_value}
+								</TableCell>
+							))}
 					</TableRow>
 					<TableRow className="border-2 text-center hover:bg-transparent">
-						{columns.map(([_, col]) => (
-							<TableCell
-								key={col?.[0].column_value}
-								className="border-2 text-center hover:bg-muted"
-							>
-								{col?.[0].column_deviation}
-							</TableCell>
-						))}
+						{columns
+							.sort((a, b) => parseInt(b[0]) - parseInt(a[0]))
+							.map(([_, col]) => (
+								<TableCell
+									key={col?.[0].column_value}
+									className="border-2 text-center hover:bg-muted"
+								>
+									{col?.[0].column_deviation}
+								</TableCell>
+							))}
 					</TableRow>
 				</TableHeader>
 				<TableBody>
@@ -163,7 +163,7 @@ const RiskMapTable: React.FC<RiskMapTableProps> & {
 						</TableCell>
 					</TableRow>
 					{rowsMain.column
-						// .sort((x, y) => y.id - x.id)
+						.sort((a, b) => b.id - a.id)
 						.map((frequency, rowKey) => {
 							return (
 								<TableRow
@@ -182,81 +182,82 @@ const RiskMapTable: React.FC<RiskMapTableProps> & {
 									>
 										{frequency.frequency_name}
 									</TableCell>
-									{columns.map(([_, col], keyDeviation) => {
-										const matchingCell = data.find(
-											(x) =>
-												x.frequency?.toString() ===
-													frequency.id?.toString() &&
-												x.deviation?.toString() ===
-													col[0].column_value?.toString()
+									{columns
+										.sort(
+											(a, b) =>
+												parseInt(b[0]) - parseInt(a[0])
 										)
-										const matchingHeatMap = heatmap.find(
-											(x) =>
-												matchingCell?.value?.toString() ===
-												x.risk_ranking?.toString()
-										)
+										.map(([colId, col], keyDeviation) => {
+										
+											const matchingCell = data.find(
+												(x) =>
+													x.frequency?.toString() ===
+														frequency.id?.toString() &&
+													x.deviation?.toString() ===
+														col[0].column_value?.toString()
+											)
+											const matchingHeatMap =
+												heatmap.find(
+													(x) =>
+														matchingCell?.value?.toString() ===
+														x.risk_ranking?.toString()
+												)
 
-										return (
-											<TableCell
-												key={
-													col?.[0].column_value +
-													rowKey +
-													keyDeviation
-												}
-												className={cn(
-													`border-2 text-center hover:bg-muted`,
-													{
-														"hover:cursor-pointer":
-															onClick
-																? true
-																: false,
-														"p-2": forDashboard,
-														"p-4": !forDashboard,
-														relative: forDashboard,
-														// 'flex flex-col' : forDashboard
-													}
-												)}
-												style={{
-													backgroundColor:
-														matchingCell?.color,
-												}}
-												onClick={() => {
-													onClick &&
-														onClick({
-															field: "matrix",
-															inputLabel: `Deviation x Frequency (${
-																keyDeviation + 1
-															}x${rowKey + 1})`,
-															row_id: rowKey + 1,
-															col_id: col[0]
-																.column_value,
-															value:
-																matchingCell?.value ||
-																"",
-															color:
-																matchingCell?.color ||
-																"",
-														})
-												}}
-											>
-												{forDashboard && (
-													<>
-														<div className="text-2xl absolute inset-0 left-2 top-2 flex   font-semibold">
-															{matchingHeatMap?.total ||
-																0}
-														</div>
-														<div className="absolute bottom-1 right-4 text-xs font-semibold">
-															{
-																matchingCell?.value
-															}
-														</div>
-													</>
-												)}
-												{!forDashboard &&
-													matchingCell?.value}
-											</TableCell>
-										)
-									})}
+											return (
+												<TableCell
+													key={keyDeviation + rowKey}
+													className={cn(
+														`border-2 text-center hover:bg-muted`,
+														{
+															"hover:cursor-pointer":
+																onClick
+																	? true
+																	: false,
+															"p-2": forDashboard,
+															"p-4": !forDashboard,
+															relative:
+																forDashboard,
+															// 'flex flex-col' : forDashboard
+														}
+													)}
+													style={{
+														backgroundColor:
+															matchingCell?.color,
+													}}
+													onClick={() => {
+														onClick &&
+															onClick({
+																field: "matrix",
+																inputLabel: `Deviation x Frequency (${colId}x${frequency.id})`,
+																row_id: frequency.id,
+																col_id: colId,
+																value:
+																	matchingCell?.value ||
+																	"",
+																color:
+																	matchingCell?.color ||
+																	"",
+															})
+													}}
+												>
+													{forDashboard && (
+														<>
+															<div className="text-2xl absolute inset-0 left-2 top-2 flex   font-semibold">
+																{matchingHeatMap?.total ||
+																	0}
+															</div>
+															<div className="absolute bottom-1 right-4 text-xs font-semibold">
+																{
+																	matchingCell?.value
+																}
+															</div>
+														</>
+													)}
+													{!forDashboard &&
+														matchingCell?.value}
+												</TableCell>
+											)
+										})}
 								</TableRow>
 							)
 						})}
