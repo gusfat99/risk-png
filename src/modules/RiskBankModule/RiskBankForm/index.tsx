@@ -1,5 +1,6 @@
 "use client"
 import RemoveButton from "@/components/buttons/RemoveButton"
+import InputComboboxController from "@/components/inputs/InputComboBoxController"
 import InputController from "@/components/inputs/InputController"
 import InputSelectController from "@/components/inputs/InputSelectController"
 import { Button } from "@/components/ui/button"
@@ -18,7 +19,6 @@ import { useFieldArray, useForm } from "react-hook-form"
 import { z } from "zod"
 import { parseRiskBankToPayload, parseRiskBanktoView } from "../parseRiskBank"
 import SectionSafeguardRiskBank from "./SectionSafeguardRiskBank"
-import InputComboboxController from "@/components/inputs/InputComboBoxController"
 
 interface IProps {
 	isDetail?: boolean
@@ -230,6 +230,7 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 										/>
 									)}
 								/>
+								
 								<FormField
 									control={form.control}
 									name={`consequences.${idxConsequence}.consequence`}

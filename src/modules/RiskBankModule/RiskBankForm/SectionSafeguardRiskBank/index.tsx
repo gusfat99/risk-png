@@ -71,11 +71,11 @@ const SectionSafeguardRiskBank: React.FC<IProps> = ({
 	) => {
 		const regex = /^-?\d+$/
 		//check is number/id
-		if (regex.test(value)) { 
+		if (regex.test(value)) {
 			const safeguardSelected = safeguardItems?.find(
 				(x) => x.id?.toString() === value
 			)
-			
+
 			if (safeguardSelected) {
 				form.setValue(
 					`consequences.${idxConsequence}.safeguards.${idxsafeguard}.safeguard`,
@@ -105,18 +105,13 @@ const SectionSafeguardRiskBank: React.FC<IProps> = ({
 							key={idxConsequence}
 							className="border rounded-lg border-gray-200 p-4 space-y-4 relative"
 						>
-							<FormField
-								control={form.control}
-								name={`consequences.${idxConsequence}.consequence`}
-								render={({ field }) => (
-									<InputController
-										{...field}
-										readOnly={true}
-										label="Consequence"
-										placeholder="Enter Consequence"
-									/>
-								)}
-							/>
+							<div>
+								<Label>Consequence Selected</Label>
+								<h6 className="mt-0">
+									{consequence.consequence}
+								</h6>
+							</div>
+
 							<div className="flex flex-row justify-between items-center">
 								<Label className="font-semibold">
 									Safeguards Data
