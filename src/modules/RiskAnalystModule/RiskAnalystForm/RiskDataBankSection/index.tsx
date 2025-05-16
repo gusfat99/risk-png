@@ -15,14 +15,10 @@ interface IProps {
 	isEdit?: boolean
 }
 
-export const RiskDataBankSection: React.FC<IProps> = ({
-	form,
-	isEdit,
-	isDetail,
-}) => {
+export const RiskDataBankSection: React.FC<IProps> = ({ form, isDetail }) => {
 	const {
 		supportData: {
-			parameter : { parameterItems, isFetching: isFetchingParameter },
+			parameter: { parameterItems, isFetching: isFetchingParameter },
 			deviation: { deviationItems, isFetching: isFetchingDeviation },
 			cause: { causeItems, isFetching: isFetchingCause },
 			consiquence: {
@@ -33,7 +29,6 @@ export const RiskDataBankSection: React.FC<IProps> = ({
 		},
 		actions: { handleChangeRiskBankData },
 	} = useRiskAnalysStore()
-
 
 	const deviationOptions = deviationItems.map((deviation) => ({
 		label: deviation.name || "", // Provide a fallback value
@@ -134,8 +129,8 @@ export const RiskDataBankSection: React.FC<IProps> = ({
 								items={consequenceOptions}
 								placeholder="Select Consequence"
 								onChange={(value) => {
-                           form.setValue("consequence_id", value)
-                           handleChangeRiskBankData(
+									form.setValue("consequence_id", value)
+									handleChangeRiskBankData(
 										"consequence_id",
 										value
 									)
@@ -146,19 +141,28 @@ export const RiskDataBankSection: React.FC<IProps> = ({
 				</div>
 				<div className="space-y-2">
 					<Label className="text-sm">Existing Safeguars</Label>
-					{isFetchingSafeguard && <Skeleton className="w-full h-28" />}
+					{isFetchingSafeguard && (
+						<Skeleton className="w-full h-28" />
+					)}
 					{!isFetchingSafeguard && (
 						<div className="border-2 border-gray-200 rounded-md p-3">
 							<ul>
-                        {safeguardItems.map((safeguard) => (
-                           <React.Fragment key={safeguard.id}>
-
-									<li className="text-sm" key={safeguard.id}>
-										{safeguard.safeguard}
-                              </li>
-                              <Separator className="my-1" />
-                           </React.Fragment>
+								{safeguardItems.map((safeguard) => (
+									<React.Fragment key={safeguard.id}>
+										<li
+											className="text-sm"
+											key={safeguard.id}
+										>
+											{safeguard.safeguard}
+										</li>
+										<Separator className="my-1" />
+									</React.Fragment>
 								))}
+								{safeguardItems.length === 0 && (
+									<li className="text-sm">
+										No Safeguards Found
+									</li>
+								)}
 							</ul>
 						</div>
 					)}

@@ -2,14 +2,16 @@ import {
 	CAUSE_EP,
 	CONSEQUENCE_EP,
 	DEVIATION_EP,
+	PARAMETER_EP,
 	SAFEGUARD_EXIST_EP,
 } from "@/constants/endpoints"
 import { getDataApi } from "@/helpers/ApiHelper"
 import { RiskAnalysis } from "@/types/riksAnalyst"
-import { Cause, Consequences, Deviations } from "@/types/riskDataBank"
+import { Cause, Consequences, Deviations, Parameter } from "@/types/riskDataBank"
 import { Safeguard } from "@/types/safeguard"
 
 export type RiskBankHierarchyType = {
+	parameters: Parameter[] | null
 	deviations: Deviations[] | null
 	causes: Cause[] | null
 	consequences: Consequences[] | null
@@ -22,6 +24,7 @@ const fetchRiskBankHierarchy = (
 	return new Promise<RiskBankHierarchyType>(async (resolve, reject) => {
 		try {
 			const result: RiskBankHierarchyType = {
+				parameters : null,
 				deviations: null,
 				causes: null,
 				consequences: null,
@@ -29,12 +32,18 @@ const fetchRiskBankHierarchy = (
 			}
 
 			const [
+				parameterResult,
 				deviationsResult,
 				causesResult,
 				consequencesResult,
 				safeguardsResult,
+				
 			] = await Promise.all([
-				getDataApi<Deviations[]>(DEVIATION_EP, {
+				getDataApi<Parameter[]>(`${PARAMETER_EP}`, {
+					page: 1,
+					per_page: 1000,
+				}),
+				getDataApi<Deviations[]>(`${riskAnalysItem.parameter_id}${DEVIATION_EP}`, {
 					page: 1,
 					per_page: 1000,
 				}),
@@ -47,6 +56,9 @@ const fetchRiskBankHierarchy = (
 				),
 			])
 
+			if (Array.isArray(parameterResult.data)) {
+				result.parameters = parameterResult.data
+			}
 			if (Array.isArray(deviationsResult.data)) {
 				result.deviations = deviationsResult.data
 			}

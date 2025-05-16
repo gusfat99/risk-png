@@ -100,6 +100,8 @@ const RiskAnalystForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 			riskAnalysSelected && isEdit
 				? {
 						...riskAnalysSelected,
+						parameter_id:
+							riskAnalysSelected.parameter_id.toString(),
 						deviation_id:
 							riskAnalysSelected.deviation_id.toString(),
 						consequence_id:

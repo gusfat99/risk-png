@@ -272,6 +272,10 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 					isFetching: true,
 					supportData: {
 						...get().supportData,
+						parameter: {
+							...get().supportData.parameter,
+							isFetching: true,
+						},
 						deviation: {
 							...get().supportData.deviation,
 							isFetching: true,
@@ -302,11 +306,17 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 									causes,
 									consequences,
 									safeguards,
+									parameters,
 								} = await fetchRiskBankHierarchy(data.data)
 								set({
 									riskAnalysSelected: data.data,
 									supportData: {
 										...get().supportData,
+										parameter: {
+											...get().supportData.parameter,
+											isFetching: false,
+											parameterItems: parameters || [],
+										},
 										deviation: {
 											...get().supportData.deviation,
 											isFetching: false,
@@ -344,6 +354,10 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 								isFetching: false,
 								supportData: {
 									...get().supportData,
+									parameter: {
+										...get().supportData.parameter,
+										isFetching: false,
+									},
 									deviation: {
 										...get().supportData.deviation,
 										isFetching: false,
