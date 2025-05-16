@@ -124,23 +124,32 @@ const RiskBankMasterCard: RiskBankMasterCardComponent = ({ data }) => {
 			<Table className="mt-2">
 				<TableBody>
 					<TableRow className="border-0">
-						<TableCell className="text-gray-400 p-1">
-							Deviation
+						<TableCell className="text-gray-400 w-[120px] p-1">
+							Parameter
 						</TableCell>
 						<TableCell className=" p-1">:</TableCell>
+						<TableCell className="p-1">
+							{data.parameter_deviations[0].parameter.name}
+						</TableCell>
+					</TableRow>
+					<TableRow className="border-0">
+						<TableCell className="text-gray-400 w-[120px] p-1">
+							Deviation
+						</TableCell>
+						<TableCell className=" p-1 w-[2px]">:</TableCell>
 						<TableCell className="p-1">
 							{data.deviations.name}
 						</TableCell>
 					</TableRow>
 					<TableRow className="border-0">
-						<TableCell className="text-gray-400 p-1">
+						<TableCell className="text-gray-400 w-[120px] p-1">
 							Cause
 						</TableCell>
 						<TableCell className=" p-1">:</TableCell>
 						<TableCell className="p-1">{data.cause}</TableCell>
 					</TableRow>
 					<TableRow className="border-0">
-						<TableCell className="text-gray-400 p-1 !align-top">
+						<TableCell className="text-gray-400 w-[120px] p-1 !align-top">
 							Consequence
 						</TableCell>
 						<TableCell className=" p-1 !align-top">:</TableCell>
