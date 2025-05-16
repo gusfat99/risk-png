@@ -14,14 +14,7 @@ const useInactivityTimer = (
 		}
 
 		// Event listeners untuk aktivitas pengguna
-		const events = [
-			"mousedown",
-			"keydown",
-			"scroll",
-			"touchstart",
-			"mousemove",
-			"wheel",
-		]
+		const events = ["mousedown", "keydown", "scroll", "touchstart", "wheel"]
 		events.forEach((event) => window.addEventListener(event, resetTimer))
 
 		// Mulai timer pertama kali
