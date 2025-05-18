@@ -24,7 +24,6 @@ const RiskDataBankSection: React.FC<IProps> = ({ form, isEdit, isDetail }) => {
 		},
 		actions: { handleChangeRiskMonitoringData },
 	} = useRiskMonitoringStore()
-
 	const nodeOptions = nodeItems.map((node) => ({
 		label: node.node || "", // Provide a fallback value
 		value: node.id?.toString(),

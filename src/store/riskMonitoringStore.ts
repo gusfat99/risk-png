@@ -25,6 +25,7 @@ import {
 } from "@/types/riskMonitoring"
 import useAuthStore from "./authStore"
 import { createStore, runUpdater } from "./store"
+import fetchRiskBankHierarchy from "@/services/fetchRiskBankHierarchy"
 
 const initialState = {
 	...commonInitualState,
@@ -259,6 +260,17 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 			fetchSingleData: async (id: any) => {
 				set({
 					isFetching: true,
+					supportData: {
+						...get().supportData,
+						parameter: {
+							...get().supportData.parameter,
+							isFetching: true,
+						},
+						cause: {
+							...get().supportData.cause,
+							isFetching: true,
+						},
+					}
 				})
 				return new Promise<ResponseApiType<RiskMonitoring>>(
 					async (resolve, reject) => {
@@ -266,6 +278,16 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 							const data = await getDataApi<RiskMonitoring>(
 								`${RISK_MONITROING_EP}/${id}`
 							)
+							const {
+								causes,
+								parameters,
+							} = await fetchRiskBankHierarchy({
+								deviation_id: data.data?.deviation_id,
+								parameter_id: data.data?.parameter_id,
+								risk_bank_id: data.data?.risk_bank_id,
+							}, [
+								'parameters', 'causes'
+							])
 							//parse data to flat
 							if (data.data) {
 								set((prevState) => ({
@@ -274,32 +296,17 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 									supportData: {
 										...prevState.supportData,
 										cause: {
-											...prevState.supportData.cause,
-											isFetching: true,
+											causeItems: causes || [],
+											isFetching: false,
 										},
+										parameter: {
+											parameterItems: parameters || [],
+											isFetching: false,
+										}
 									},
 								}))
-								const restCause = await getDataApi<Cause[]>(
-									`/${data.data.deviation_id}${CAUSE_EP}`
-								)
-								if (Array.isArray(restCause.data)) {
-									set((prevState) => ({
-										supportData: {
-											...prevState.supportData,
-											cause: {
-												causeItems:
-													restCause.data || [],
-												isFetching: false,
-											},
-										},
-									}))
-								} else {
-									throw new Error(data.message)
-								}
 							}
-							set({
-								isFetching: false,
-							})
+							resolve(data)
 						} catch (error: any) {
 							toast({
 								title: "ERROR",
@@ -311,6 +318,10 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 								isFetching: false,
 								supportData: {
 									...prevState.supportData,
+									parameter: {
+										...prevState.supportData.parameter,
+										isFetching: false,
+									},
 									cause: {
 										...prevState.supportData.cause,
 										isFetching: false,
@@ -318,57 +329,8 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 								},
 							}))
 						}
-						getDataApi<RiskMonitoring>(
-							`${RISK_MONITROING_EP}/${id}`
-						).then((data) => {
-							//parse data to flat
 
-							if (data.data && Array.isArray(data.data)) {
-								getDataApi<Cause[]>(
-									`/${data.data.deviation_id}${CAUSE_EP}`
-								)
-									.then((restCause) => {
-										//parse data to flat
-										if (Array.isArray(restCause.data)) {
-											set((prevState) => ({
-												supportData: {
-													...prevState.supportData,
-													cause: {
-														causeItems:
-															restCause.data ||
-															[],
-														isFetching: false,
-													},
-												},
-											}))
-										}
-									})
-									.catch((err) => {
-										toast({
-											title: "ERROR",
-											description: err.message,
-											variant: "destructive",
-										})
-									})
-									.finally(() => {
-										set((prevState) => ({
-											supportData: {
-												...prevState.supportData,
-												cause: {
-													...prevState.supportData
-														.cause,
-													isFetching: false,
-												},
-											},
-										}))
-									})
 
-								set({
-									riskMonitoringSelected: data.data,
-								})
-								resolve(data)
-							}
-						})
 					}
 				)
 			},
@@ -577,12 +539,12 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 							...prevState.supportData,
 							deviation: {
 								...prevState.supportData.deviation,
-								deviationItems : [],
+								deviationItems: [],
 								isFetching: true,
 							},
 							cause: {
 								...prevState.supportData.cause,
-								causeItems : [],
+								causeItems: [],
 							},
 						},
 					}))

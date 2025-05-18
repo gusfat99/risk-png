@@ -211,7 +211,6 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 						/>
 					)}
 				/>
-
 				{(consequences || []).map((consequence, idxConsequence) => {
 					return (
 						<div
@@ -230,7 +229,7 @@ const RiskBankForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 										/>
 									)}
 								/>
-								
+
 								<FormField
 									control={form.control}
 									name={`consequences.${idxConsequence}.consequence`}
