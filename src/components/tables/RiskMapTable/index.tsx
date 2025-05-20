@@ -129,7 +129,7 @@ const RiskMapTable: React.FC<RiskMapTableProps> & {
 
 					<TableRow className="border-2 text-center hover:bg-transparent">
 						{columns
-							.sort((a, b) => parseInt(b[0]) - parseInt(a[0]))
+							// .sort((a, b) => parseInt(b[0]) - parseInt(a[0]))
 							.map(([_, col]) => (
 								<TableCell
 									key={col?.[0].column_value}
@@ -141,7 +141,7 @@ const RiskMapTable: React.FC<RiskMapTableProps> & {
 					</TableRow>
 					<TableRow className="border-2 text-center hover:bg-transparent">
 						{columns
-							.sort((a, b) => parseInt(b[0]) - parseInt(a[0]))
+							// .sort((a, b) => parseInt(b[0]) - parseInt(a[0]))
 							.map(([_, col]) => (
 								<TableCell
 									key={col?.[0].column_value}
@@ -183,10 +183,10 @@ const RiskMapTable: React.FC<RiskMapTableProps> & {
 										{frequency.frequency_name}
 									</TableCell>
 									{columns
-										.sort(
-											(a, b) =>
-												parseInt(b[0]) - parseInt(a[0])
-										)
+										// .sort(
+										// 	(a, b) =>
+										// 		parseInt(b[0]) - parseInt(a[0])
+										// )
 										.map(([colId, col], keyDeviation) => {
 										
 											const matchingCell = data.find(
