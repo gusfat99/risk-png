@@ -1,26 +1,28 @@
 "use client"
 import routes from "@/data/routes"
 import { toSentenceCase } from "@/lib/utils"
+import useAuthStore from "@/store/authStore"
 import { usePathname } from "next/navigation"
 import { useMemo } from "react"
 
 export const useRouteGetTitle = () => {
 	const pathname = usePathname()
+	const { menus } = useAuthStore()
 
 	const route = useMemo(() => {
-		let routeAvailable = routes.navMain.find((x) => {
-			if ((x.items || [])?.length > 0) {
-				return x.items?.some((y) => pathname.includes(y.url))
+		let routeAvailable = menus.find((x) => {
+			if ((x.children || [])?.length > 0) {
+				return x.children?.some((y) => pathname.includes(y.path))
 			} else {
-				return pathname.includes(x.url)
+				return pathname.includes(x.path)
 			}
 		})
 		if (!routeAvailable) {
 			routeAvailable = routes.navSecondary.find((x) => {
-				if ((x.items || [])?.length > 0) {
-					return x.items?.some((y) => pathname.includes(y.url))
+				if ((x.children || [])?.length > 0) {
+					return x.children?.some((y) => pathname.includes(y.path))
 				} else {
-					return pathname.includes(x.url)
+					return pathname.includes(x.path)
 				}
 			})
 		}
@@ -28,28 +30,33 @@ export const useRouteGetTitle = () => {
 	}, [pathname])
 
 	const Icon = route?.icon
-	let title = route?.title ?? ""
-	let subtitle = route?.title ?? ""
+	let title = route?.name ?? ""
+	let subtitle = route?.name ?? ""
 	const pathNameArr = pathname.split("/")
 	const lengthPathname = pathNameArr.length
 
-	if (route?.items?.length && route.items.length > 0) {
+	if (route?.children?.length && route.children.length > 0) {
 		if (lengthPathname > 2) {
 			title = toSentenceCase(pathNameArr[2])
 			title +=
 				" " +
-				(route.items.find((r) => pathname.includes(r.url))?.title ?? "")
+				(route.children.find((r) => pathname.includes(r.path))?.name ??
+					"")
 		} else {
 			title =
-				route.items.find((r) => pathname.includes(r.url))?.title ?? ""
+				route.children.find((r) => pathname.includes(r.path))?.name ??
+				""
 		}
 		subtitle +=
-			" - " + route.items.find((r) => pathname.includes(r.url))?.title ||
+			" - " +
+				route.children.find((r) => pathname.includes(r.path))?.name ||
 			""
 	} else {
 		if (lengthPathname > 2) {
 			title = toSentenceCase(pathNameArr[2])
-			title += " " + route?.title
+			title += " " + route?.name
+		} else {
+			title = pathNameArr[1]
 		}
 	}
 	return {
@@ -62,21 +69,22 @@ export const useRouteGetTitle = () => {
 
 export const useRouteNavigate = () => {
 	const pathname = usePathname()
+	const { menus } = useAuthStore()
 
 	const route = useMemo(() => {
-		let availableRoute = routes.navMain.find((x) => {
-			if ((x.items || [])?.length > 0) {
-				return x.items?.some((y) => pathname.includes(y.url))
+		let availableRoute = menus.find((x) => {
+			if ((x.children || [])?.length > 0) {
+				return x.children?.some((y) => pathname.includes(y.path))
 			} else {
-				return pathname.includes(x.url)
+				return pathname.includes(x.path)
 			}
 		})
 		if (!availableRoute) {
 			availableRoute = routes.navSecondary.find((x) => {
-				if ((x.items || [])?.length > 0) {
-					return x.items?.some((y) => pathname.includes(y.url))
+				if ((x.children || [])?.length > 0) {
+					return x.children?.some((y) => pathname.includes(y.path))
 				} else {
-					return pathname.includes(x.url)
+					return pathname.includes(x.path)
 				}
 			})
 		}
@@ -99,21 +107,21 @@ export const useRouteNavigate = () => {
 
 	pathNameArr.forEach((pathname, index) => {
 		if (index === 0) {
-			if (route?.items && route?.items?.length > 0) {
+			if (route?.children && route?.children?.length > 0) {
 				breadcrumbs.push({
-					title: route?.title || "",
+					title: route?.name || "",
 					path: `/${pathname}`,
 				})
 			} else {
 				breadcrumbs.push({
-					title: route?.title || "",
-					path: route?.url || "#",
+					title: route?.name || "",
+					path: route?.path || "#",
 				})
 			}
 		} else {
 			breadcrumbs.push({
 				title: toSentenceCase(pathname) + " " + "Data",
-				path: route?.url || "#",
+				path: route?.path || "#",
 			})
 		}
 	})

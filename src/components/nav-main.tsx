@@ -16,16 +16,13 @@ import {
 	SidebarMenuSubButton,
 	SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
-import { RouteType } from "@/data/routes"
 import { cn } from "@/lib/utils"
+import { MenuPermission } from "@/types/auth"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import LucideIcon from "./LucideIcon"
 
-export function NavMain({
-	items,
-}: {
-	items: RouteType[]
-}) {
+export function NavMain({ items }: { items: MenuPermission[] }) {
 	const pathname = usePathname()
 	// const params = useLOC();
 
@@ -34,65 +31,70 @@ export function NavMain({
 			{/* <SidebarGroupLabel>Platform</SidebarGroupLabel> */}
 			<SidebarMenu>
 				{items.map((item) => {
-					const Icon = item.icon
 					return (
 						<Collapsible
-							key={item.title}
+							key={item.name}
 							asChild
-							defaultOpen={pathname.includes(item.url)}
+							defaultOpen={pathname.includes(item.path)}
 							className="group/collapsible"
 						>
 							<SidebarMenuItem>
-								{item.items?.length ? (
+								{item.children?.length ? (
 									<>
 										<CollapsibleTrigger
 											className="focus:active:shadow-md focus:active:text-primary hover:text-primary group-data-[state=open]/collapsible:focus:hover:text-primary active:focus:shadow-neutral-500 h-12 text-primary-100"
 											asChild
 										>
 											<SidebarMenuButton
-												tooltip={item.title}
+												tooltip={item.name}
 											>
-												<Icon className="!size-6 mr-2" />
-												<span>{item.title}</span>
+												<LucideIcon
+													iconName={item.icon}
+													className="!size-6 mr-2"
+												/>
+												{/* <Icon /> */}
+												<span>{item.name}</span>
 												<ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 " />
 											</SidebarMenuButton>
 										</CollapsibleTrigger>
 										<CollapsibleContent>
 											<SidebarMenuSub>
-												{item.items?.map((subItem) => (
-													<SidebarMenuSubItem
-														key={subItem.title}
-													>
-														<SidebarMenuSubButton
-															asChild
-															className={cn(
-																"hover:text-primary h-12 text-primary-100 active:text-primary-100",
-																{
-																	"text-primary":
-																		pathname.includes(
-																			subItem.url
-																		),
-																	"bg-white":
-																		pathname.includes(
-																			subItem.url
-																		),
-																}
-															)}
+												{item.children?.map(
+													(subItem) => (
+														<SidebarMenuSubItem
+															key={subItem.name}
 														>
-															<Link
-																href={
-																	subItem.url
-																}
-															>
-																<span>
+															<SidebarMenuSubButton
+																asChild
+																className={cn(
+																	"hover:text-primary h-12 text-primary-100 active:text-primary-100",
 																	{
-																		subItem.title
+																		"text-primary":
+																			pathname.includes(
+																				subItem.path
+																			),
+																		"bg-white":
+																			pathname.includes(
+																				subItem.path
+																			),
 																	}
-																</span>
-															</Link>
-														</SidebarMenuSubButton>
-													</SidebarMenuSubItem>
-												))}
+																)}
+															>
+																<Link
+																	href={
+																		subItem.path
+																	}
+																>
+																	<span>
+																		{
+																			subItem.name
+																		}
+																	</span>
+																</Link>
+															</SidebarMenuSubButton>
+														</SidebarMenuSubItem>
+													)
+												)}
 											</SidebarMenuSub>
 										</CollapsibleContent>
 									</>
@@ -102,18 +104,23 @@ export function NavMain({
 											"h-12 hover:text-primary active:shadow-md active:text-primary text-primary-100 active:shadow-neutral-500",
 											{
 												"text-primary":
-													pathname.includes(item.url),
+													pathname.includes(
+														item.path
+													),
 												"bg-white": pathname.includes(
-													item.url
+													item.path
 												),
 											}
 										)}
 										asChild
-										tooltip={item.title}
+										tooltip={item.name}
 									>
-										<Link href={item.url}>
-											<Icon className="!size-6 mr-2" />
-											<span>{item.title}</span>
+										<Link href={item.path}>
+											<LucideIcon
+												iconName={item.icon}
+												className="!size-6 mr-2"
+											/>
+											<span>{item.name}</span>
 										</Link>
 									</SidebarMenuButton>
 								)}

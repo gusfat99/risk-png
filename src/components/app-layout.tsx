@@ -16,15 +16,16 @@ export default function AppLayout({ children }: IProps) {
 		subtitle,
 		title,
 	} = useRouteGetTitle()
+
 	return (
 		<>
 			<AppSidebar />
 			<SidebarInset className="p-5">
 				<AppHeader />
-				{(title?.toLowerCase() === "dashboard" ||
+				{(title?.toLowerCase() === "dashboard" || title?.toLowerCase() === "not-found" ||
 					subtitle?.toLowerCase()?.includes("setting matrix")) &&
 					children}
-				{title?.toLowerCase() !== "dashboard" &&
+				{title?.toLowerCase() !== "dashboard" && title?.toLowerCase() !== "not-found" &&
 					!subtitle?.toLowerCase()?.includes("setting matrix") && (
 						<>
 							{lengthPathname <= 2 && (

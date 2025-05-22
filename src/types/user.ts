@@ -7,6 +7,7 @@ import {
 } from "@/schemas/UserManagementSchema"
 import { ResponseApiType } from "@/helpers/ApiHelper"
 import { PaginationState, Updater } from "@tanstack/react-table"
+import { MenuPermission } from "./auth"
 
 export interface UserRole {
 	id: number
@@ -25,6 +26,11 @@ export interface User {
 	profile_picture: any
 	token: string
 	roles: UserRole[]
+}
+
+export interface UserAuth extends User {
+	menus: MenuPermission[]
+
 }
 
 export interface UserState extends CommonState {

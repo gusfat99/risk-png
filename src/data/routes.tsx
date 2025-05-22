@@ -1,3 +1,4 @@
+import { MenuPermission } from "@/types/auth"
 import {
 	Bolt,
 	ClipboardList,
@@ -25,7 +26,7 @@ export type RouteType = {
 
 const routes: {
 	navMain: RouteType[]
-	navSecondary: RouteType[]
+	navSecondary: MenuPermission[]
 } = {
 	navMain: [
 		{
@@ -100,16 +101,24 @@ const routes: {
 	],
 	navSecondary: [
 		{
-			title: "Setting Profile",
-			url: "/setting-profile",
+			name: "Setting Profile",
+			path: "/setting-profile",
+			order: 1,
+			id: 1,
 			icon: Settings,
+			permissions: [],
+			children: [],
 		},
 		{
-			title: "Logout",
-			url: "",
+			name: "Logout",
+			path: "",
+			order: 2,
+			id: 2,
+			permissions: [],
 			icon: LogOut,
+			children: [],
 		},
-	]
+	],
 }
 
 export default routes

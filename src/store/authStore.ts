@@ -2,7 +2,7 @@ import { AUTH_EP } from "@/constants/endpoints"
 import { postData, ResponseApiType } from "@/helpers/ApiHelper"
 import { decrypt, encrypt } from "@/lib/utils"
 import { AuthState, Credential } from "@/types/auth"
-import { User } from "@/types/user"
+import { User, UserAuth } from "@/types/user"
 import { create } from "zustand"
 import { persist, PersistStorage, StorageValue } from "zustand/middleware"
 
@@ -51,18 +51,19 @@ const useAuthStore = create<AuthState>()(
 			errors: "",
 			token: null,
 			year_selected: new Date().getFullYear().toString(),
+			menus: [],
 			login: async (credential: Credential) => {
 				set({
 					loading: true,
 				})
-				return new Promise<ResponseApiType<User>>((resolve, reject) => {
-					postData<User>(AUTH_EP, credential)
+				return new Promise<ResponseApiType<UserAuth>>((resolve, reject) => {
+					postData<UserAuth>(AUTH_EP, credential)
 						.then((data) => {
-							console.log({ data })
 							set({
 								user: data.data,
 								message: data.message,
 								token: data.data?.token,
+								menus : data.data?.menus
 							})
 							resolve(data)
 						})

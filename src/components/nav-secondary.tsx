@@ -9,16 +9,16 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from "@/components/ui/sidebar"
-import { destroyIsLoggedIn } from "@/services/cookies"
-import { usePathname, useRouter } from "next/navigation"
-import Link from "next/link"
-import { RouteType } from "@/data/routes"
 import { cn } from "@/lib/utils"
-import AlertConfirmDialog from "./AlertConfirmDialog"
-import { useState } from "react"
+import { destroyIsLoggedIn } from "@/services/cookies"
 import useAuthStore from "@/store/authStore"
+import { MenuPermission } from "@/types/auth"
+import Link from "next/link"
+import { usePathname, useRouter } from "next/navigation"
+import { useState } from "react"
+import AlertConfirmDialog from "./AlertConfirmDialog"
 
-export function NavSecondary({ items }: { items: RouteType[] }) {
+export function NavSecondary({ items }: { items: MenuPermission[] }) {
 	const { isMobile } = useSidebar()
 	const [isOpenDialog, setIsOpenDialog] = useState(false)
 	const router = useRouter()
@@ -41,15 +41,15 @@ export function NavSecondary({ items }: { items: RouteType[] }) {
 		<SidebarMenu className="px-5">
 			<SidebarMenuItem>
 				{items.map((route) => {
-					return route.title.includes("Logout") ? (
-						<DropdownMenu key={route.title}>
+					return route.name.includes("Logout") ? (
+						<DropdownMenu key={route.name}>
 							<SidebarMenuButton
 								size="lg"
 								className={cn(
 									"data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:text-primary text-primary-100 !gap-4"
 								)}
 								onClick={() => {
-									setIsOpenDialog(true);
+									setIsOpenDialog(true)
 								}}
 							>
 								<LogOut className="!size-6" />
@@ -59,17 +59,17 @@ export function NavSecondary({ items }: { items: RouteType[] }) {
 							</SidebarMenuButton>
 						</DropdownMenu>
 					) : (
-						<Link href={route.url} key={route.title}>
+						<Link href={route.path} key={route.name}>
 							<SidebarMenuButton
 								size="lg"
 								className={cn(
 									"data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground text-primary-100 hover:text-primary !gap-4",
 									{
 										"text-primary": pathname.includes(
-											route.url
+											route.path
 										),
 										"bg-white": pathname.includes(
-											route.url
+											route.path
 										),
 									}
 								)}

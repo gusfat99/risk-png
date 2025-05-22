@@ -18,8 +18,11 @@ import {
 import routes from "@/data/routes"
 import Image from "next/image"
 import { NavSecondary } from "./nav-secondary"
+import useAuthStore from "@/store/authStore"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+	const { menus } = useAuthStore()
+	
 	return (
 		<Sidebar variant="inset" {...props}>
 			<>
@@ -57,7 +60,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 					</SidebarMenu>
 				</SidebarHeader>
 				<SidebarContent className="px-5">
-					<NavMain items={routes.navMain} />
+					<NavMain items={menus} />
 				</SidebarContent>
 				<SidebarFooter>
 					<NavSecondary items={routes.navSecondary} />
