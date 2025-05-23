@@ -1,5 +1,4 @@
 "use client"
-import { getSSRSafeUser } from "@/lib/storage"
 import useAuthStore from "@/store/authStore"
 import { MenuPermission } from "@/types/auth"
 import { usePathname } from "next/navigation"
