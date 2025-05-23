@@ -28,7 +28,6 @@ export function NavMain({ items }: { items: MenuPermission[] }) {
 
 	return (
 		<SidebarGroup className="backdrop-filter backdrop-blur-sm bg-opacity-20 bg-white rounded-xl">
-			{/* <SidebarGroupLabel>Platform</SidebarGroupLabel> */}
 			<SidebarMenu>
 				{items.map((item) => {
 					return (
@@ -52,7 +51,6 @@ export function NavMain({ items }: { items: MenuPermission[] }) {
 													iconName={item.icon}
 													className="!size-6 mr-2"
 												/>
-												{/* <Icon /> */}
 												<span>{item.name}</span>
 												<ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 " />
 											</SidebarMenuButton>

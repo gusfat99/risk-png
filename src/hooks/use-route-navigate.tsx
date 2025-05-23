@@ -19,7 +19,7 @@ export const useRouteGetTitle = () => {
 		})
 		if (!routeAvailable) {
 			routeAvailable = routes.navSecondary.find((x) => {
-				if ((x.children || [])?.length > 0) {
+				if ((x.children || [])?.length > 0) { 
 					return x.children?.some((y) => pathname.includes(y.path))
 				} else {
 					return pathname.includes(x.path)
@@ -29,7 +29,6 @@ export const useRouteGetTitle = () => {
 		return routeAvailable
 	}, [pathname])
 
-	const Icon = route?.icon
 	let title = route?.name ?? ""
 	let subtitle = route?.name ?? ""
 	const pathNameArr = pathname.split("/")
@@ -55,12 +54,12 @@ export const useRouteGetTitle = () => {
 		if (lengthPathname > 2) {
 			title = toSentenceCase(pathNameArr[2])
 			title += " " + route?.name
-		} else {
+		} else if(pathNameArr[1] === "not-found") {
 			title = pathNameArr[1]
 		}
 	}
 	return {
-		icon: Icon,
+		icon: route?.icon,
 		title,
 		subtitle,
 		length_pathname: lengthPathname,

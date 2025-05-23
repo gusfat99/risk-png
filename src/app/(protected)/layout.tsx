@@ -1,9 +1,11 @@
 "use client"
 import AlertConfirmDialog from "@/components/AlertConfirmDialog"
 import AppLayout from "@/components/app-layout"
+import NotfoundPage from "@/components/NotfoundPage"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { TIME_MINUTES_INACTIVITY_APP } from "@/constants"
 import useInactivityTimer from "@/hooks/use-inactivity-timer"
+import usePermissionAccessUser from "@/hooks/use-permission-access-user"
 import { destroyIsLoggedIn } from "@/services/cookies"
 import useAuthStore from "@/store/authStore"
 import useSettingMatrixStore from "@/store/settingMatrixStore"
@@ -21,6 +23,7 @@ export default function RootLayout({
 		actions: { fetchOptionsLikelyhood, fetchOptionsSeverityMap },
 	} = useSettingMatrixStore()
 	const router = useRouter()
+	const { canAccessCurrentPath, menus } = usePermissionAccessUser()
 
 	useInactivityTimer(() => {
 		setIsOpenAlertInactivity(true)
@@ -39,10 +42,12 @@ export default function RootLayout({
 		fetchOptionsLikelyhood()
 		fetchOptionsSeverityMap()
 	}, [fetchOptionsLikelyhood, fetchOptionsSeverityMap])
-
 	return (
 		<SidebarProvider>
-			<AppLayout>{children}</AppLayout>
+			<AppLayout>
+				{(canAccessCurrentPath || menus.length === 0) && children}
+				{!canAccessCurrentPath && menus.length > 0 && <NotfoundPage />}
+			</AppLayout>
 			<AlertConfirmDialog
 				open={isOpenAlertInactivity}
 				title="Warning!"

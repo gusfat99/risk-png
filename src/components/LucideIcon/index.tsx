@@ -17,10 +17,12 @@ const LucideIcon: React.FC<LucideIconProps> = ({ iconName, ...props }) => {
 
   if (!IconComponent) {
     console.warn(`Icon "${formattedName}" not found in lucide-react.`);
+    
     return <Icons.HelpCircle {...props} />;
+    
   }
 
-  return <IconComponent {...props} />;
+  return <IconComponent  {...props} />;
 };
 
 export default LucideIcon;
