@@ -1,4 +1,5 @@
 import { SelectDataType } from "@/types/common";
+import { BadgeCheck, BookCheck, Bookmark, Loader } from "lucide-react";
 
 export type NodeOptionType = {
    name: string;
@@ -7,18 +8,27 @@ export type NodeOptionType = {
 
 export const hazopStatus: SelectDataType[] = [
    {
-      label: "Pending",
+      label: "Planned",
       value: "pending",
-      color: "text-gray-500"
+      color: "text-gray-500",
+      icon : Bookmark
    },
    {
-      label: "On Progress",
+      label: "In Progress",
       value: "in_progress",
-      color: "text-warning-600"
+      color: "text-warning-600",
+      icon : Loader
    },
    {
-      label: "Done",
+      label: "Completed",
       value : "done",
-      color : "text-success"
+      color: "text-success",
+      icon : BookCheck
+   },
+   {
+      label: "Verified",
+      value : "done",
+      color: "text-secondary",
+      icon : BadgeCheck
    },
 ];
