@@ -41,8 +41,9 @@ const ConfigMenuModule = () => {
 	})
 
 	const handleActionTable = (actionName: string, id: any) => {
-		if (actionName === "edit") {
-			router.push(`${basePathname}/edit/${id}`)
+	
+		if (actionName === "update") {
+			router.push(`${basePathname}/update/${id}`)
 		} else if (actionName === "delete") {
 			setShownAlertDel({
 				id: id,

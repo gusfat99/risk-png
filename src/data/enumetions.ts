@@ -32,3 +32,14 @@ export const hazopStatus: SelectDataType[] = [
       icon : BadgeCheck
    },
 ];
+
+export const typeMenuOptions: SelectDataType[] = [
+   {
+      label: "Item",
+      value : "item"
+   },
+   {
+      label: "Group",
+      value : "group"
+   },
+];

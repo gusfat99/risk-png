@@ -1,3 +1,4 @@
+import { MenuForm } from "@/types/configAclMenu";
 import { z } from "zod";
 
 export const MenuSchema = z.object({
@@ -56,3 +57,13 @@ export const RoleAclMenuSchema = z.object({
    })),
 })
 
+
+export const defaultValueMenu: MenuForm = {
+   name: "",
+   type: "",
+   order: 0,
+   available_actions: ["list", "edit", "detail", "delete", "create"],
+   icon: "",
+   parent_id: "",
+   path: ""
+}

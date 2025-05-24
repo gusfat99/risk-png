@@ -30,7 +30,9 @@ export interface ConfigAclMenuState extends CommonState {
    menuItems: Menu[]
    rolePermissionItems: Role[]
    actions: {
-      fetchMenu(): Promise<ResponseApiType<Menu[]>>
+      fetchMenu(params?: {
+         per_page: number
+      }): Promise<ResponseApiType<Menu[]>>
       fetchRole(): Promise<ResponseApiType<Role[]>>
       createMenu?(payload: MenuForm): Promise<ResponseApiType<Menu>>
       createRolePemissions?(payload: RoleAclMenuForm): Promise<ResponseApiType<Role>>

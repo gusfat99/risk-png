@@ -18,14 +18,14 @@ const initialState = {
 const useConfigAclMenu = createStore<ConfigAclMenuState>("acl-menu", (set, get) => ({
    ...initialState,
    actions: {
-      fetchMenu: async () => {
+      fetchMenu: async (params) => {
          set({
             isFetching: true,
          })
          return new Promise<ResponseApiType<Menu[]>>((resolve, reject) => {
             getDataApi<Menu[]>(MENU_EP, {
                page: get().pagination_tanstack.pageIndex,
-               per_page: get().pagination_tanstack.pageSize,
+               per_page: params?.per_page ? params.per_page : get().pagination_tanstack.pageSize,
                search: get().querySearch || undefined
             })
                .then((data) => {
