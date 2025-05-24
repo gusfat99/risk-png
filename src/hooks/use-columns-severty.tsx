@@ -1111,7 +1111,7 @@ export const useColumnsRiskResponse = ({
 						(x) => x.value === hazop_status
 					)
 					hazop_status = hazop?.label || "-"
-					let textColor = hazop?.color || "";
+					const textColor = hazop?.color || "";
 					// if (hazop_status?.toLowerCase() === "done") {
 					// 	textColor = "text-success"
 					// } else if (hazop_status?.toLowerCase() === "on progress") {
