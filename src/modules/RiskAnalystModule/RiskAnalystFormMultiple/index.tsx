@@ -4,6 +4,7 @@ import { Form } from "@/components/ui/form"
 import { useColumnsRiskAnalyst } from "@/hooks/use-columns-severty"
 import { useToast } from "@/hooks/use-toast"
 import { RiskAnalysisSeverityMultpleSchema } from "@/schemas/RiskAnalystSchema"
+import useRiskResponseStore from "@/store/riskResponseStore"
 import useRiskAnalystStore from "@/store/risksAnalystStore"
 import { FormRefType } from "@/types/common"
 import {
@@ -32,6 +33,9 @@ const RiskAnalystFormMultiple = forwardRef<FormRefType, IProps>(
 			pagination_tanstack,
 			nodeSelected,
 		} = useRiskAnalystStore()
+		const {
+			actions: { setNodeSelected },
+		} = useRiskResponseStore()
 		const total = meta?.total || 0
 
 		const defaultValues: RiskAnalysisSevertyMultipleForm =
@@ -61,42 +65,48 @@ const RiskAnalystFormMultiple = forwardRef<FormRefType, IProps>(
 			defaultValues: defaultValues,
 		})
 
-		const handleAction = (actionName: string, id: any) => {
+		const handleAction = (actionName: string, id: any, row: any) => {
 			if (actionName === "update") {
 				router.push(`${basePathname}/update/${id}`)
 			} else if (actionName === "detail") {
 				router.push(`${basePathname}/detail/${nodeSelected?.id}/${id}`)
+			} else if (actionName === "risk_response") {
+				setNodeSelected(parseInt(row.node_id))
+				router.push(`/risk-response`)
 			}
 		}
 
-		const onSubmit = useCallback(async (values: RiskAnalysisSevertyMultipleForm) => {
-			try {
-				if (nodeSelected?.id && updateSavertyMultiple) {
-					const result = await updateSavertyMultiple(
-						nodeSelected?.id,
-						values
-					)
-					if (!result.errors) {
-						toast({
-							title: result.message ?? "",
-							variant: "success",
-						})
+		const onSubmit = useCallback(
+			async (values: RiskAnalysisSevertyMultipleForm) => {
+				try {
+					if (nodeSelected?.id && updateSavertyMultiple) {
+						const result = await updateSavertyMultiple(
+							nodeSelected?.id,
+							values
+						)
+						if (!result.errors) {
+							toast({
+								title: result.message ?? "",
+								variant: "success",
+							})
+						} else {
+							throw new Error(result.errors)
+						}
 					} else {
-						throw new Error(result.errors)
+						throw new Error("Please Select Node before")
 					}
-				} else {
-					throw new Error("Please Select Node before")
+				} catch (error: any) {
+					console.log({ error })
+					toast({
+						title: error?.message
+							? error.message
+							: "An unexpected error occurred",
+						variant: "destructive",
+					})
 				}
-			} catch (error: any) {
-				console.log({ error })
-				toast({
-					title: error?.message
-						? error.message
-						: "An unexpected error occurred",
-					variant: "destructive",
-				})
-			}
-		}, [])
+			},
+			[]
+		)
 
 		const { column } = useColumnsRiskAnalyst({
 			onAction: handleAction,
@@ -110,9 +120,7 @@ const RiskAnalystFormMultiple = forwardRef<FormRefType, IProps>(
 
 		return (
 			<Form {...form}>
-				<form
-					className="space-y-4 max-w-full"
-				>
+				<form className="space-y-4 max-w-full">
 					{riskAnalysItems && riskAnalysItems.length > 0 && (
 						<DataTable<RiskAnalysis>
 							columns={column}

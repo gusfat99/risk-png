@@ -2,6 +2,7 @@ import { HAZOP_PATHNAME_STORAGE } from "@/constants"
 import {
 	EXPORT_RISK_SEVERITY_EP,
 	NODE_EP,
+	REPORT_RISK_RESPONSE_EP,
 	RISK_ANALYST_EP,
 	RISK_RESPONSE_EP,
 	SEVERITY_EP,
@@ -62,19 +63,16 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 						risk_items: RiskResponse[]
 					}>
 				>((resolve, reject) => {
+					const EP = isForReport ? `${REPORT_RISK_RESPONSE_EP}` : `${RISK_RESPONSE_EP}/node/${nodeId}`;
 					getDataApi<{
 						risk_items: RiskResponse[]
 					}>(
-						`${RISK_RESPONSE_EP}/${
-							isForReport
-								? "report-by-severity"
-								: `node/${nodeId}`
-						}`,
+						`${EP}`,
 						{
 							page: get().pagination_tanstack.pageIndex,
 							per_page: get().pagination_tanstack.pageSize,
 							year: year_selected,
-							search : get().querySearch || undefined,
+							search: get().querySearch || undefined,
 							node_id: isForReport ? nodeId : undefined,
 						}
 					)
@@ -430,9 +428,9 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 									riskResponseItems.findIndex(
 										(item) =>
 											item.id?.toString() ===
-												data.data?.id?.toString() &&
+											data.data?.id?.toString() &&
 											item.node_id?.toString() ===
-												nodeId.toString()
+											nodeId.toString()
 									)
 								if (hazopItemsSelected > -1) {
 									riskResponseItems[
@@ -508,7 +506,7 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 
 			deleteData: async (id) => {
 				set({
-					isFetchingDelete : true
+					isFetchingDelete: true
 				})
 				return new Promise<ResponseApiType<null>>((resolve, reject) => {
 					deleteData<null>(RISK_ANALYST_EP + "/" + id)
@@ -532,7 +530,7 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 						})
 						.finally(() => {
 							set({
-								isFetchingDelete : false
+								isFetchingDelete: false
 							})
 						})
 				})

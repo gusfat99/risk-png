@@ -177,7 +177,7 @@ const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 								}}
 							/>
 							<Link href={basePathname + "/add"}>
-								<AddButton label="Add Risk Incidence" />
+								<AddButton label="Add Risk Incident" />
 							</Link>
 						</div>
 						<Button disabled={isSubmit} variant={"secondary"}>

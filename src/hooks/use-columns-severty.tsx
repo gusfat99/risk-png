@@ -30,6 +30,7 @@ import {
 } from "@/types/riskResponse"
 import { ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
+import { ExternalLink } from "lucide-react"
 import React, { useMemo } from "react"
 import { UseFormReturn } from "react-hook-form"
 
@@ -158,7 +159,21 @@ export const useColumnsRiskAnalyst = ({
 						onAction={(actionName: string) => {
 							onAction && onAction(actionName, row.getValue("id"))
 						}}
-					/>
+					>
+						<DropdownMenuItem
+							className="hover:cursor-pointer"
+							onClick={() => {
+								onAction &&
+									onAction(
+										"risk_response",
+										row.getValue("id"),
+										row.original
+									)
+							}}
+						>
+							<ExternalLink /> Risk Response
+						</DropdownMenuItem>
+					</TableRowActions>
 				),
 			},
 			{
@@ -1092,15 +1107,16 @@ export const useColumnsRiskResponse = ({
 				cell: ({ row }) => {
 					let hazop_status =
 						row.original.hazop_completed.toLowerCase()
-					hazop_status =
-						hazopStatus.find((x) => x.value === hazop_status)
-							?.label || "-"
-					let textColor = "text-gray-500"
-					if (hazop_status?.toLowerCase() === "done") {
-						textColor = "text-success"
-					} else if (hazop_status?.toLowerCase() === "on progress") {
-						textColor = "text-warning-700"
-					}
+					const hazop = hazopStatus.find(
+						(x) => x.value === hazop_status
+					)
+					hazop_status = hazop?.label || "-"
+					let textColor = hazop?.color || "";
+					// if (hazop_status?.toLowerCase() === "done") {
+					// 	textColor = "text-success"
+					// } else if (hazop_status?.toLowerCase() === "on progress") {
+					// 	textColor = "text-warning-700"
+					// }
 
 					return (
 						<DropdownMenu>
@@ -1109,6 +1125,7 @@ export const useColumnsRiskResponse = ({
 									className={cn(textColor)}
 									variant="outline"
 								>
+									{hazop?.icon && <hazop.icon />}
 									{hazop_status}
 								</Button>
 							</DropdownMenuTrigger>
@@ -1132,10 +1149,11 @@ export const useColumnsRiskResponse = ({
 												"text-warning-600",
 											"focus:text-success":
 												status.color === "text-success",
+											"focus:text-secondary" : status.color === "text-secondary"
 										})}
 										key={status.value}
 									>
-										{status.label}
+										{<status.icon />} {status.label}
 									</DropdownMenuItem>
 								))}
 
