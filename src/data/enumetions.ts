@@ -9,7 +9,7 @@ export type NodeOptionType = {
 export const hazopStatus: SelectDataType[] = [
    {
       label: "Planned",
-      value: "pending",
+      value: "planned",
       color: "text-gray-500",
       icon : Bookmark
    },
@@ -21,13 +21,13 @@ export const hazopStatus: SelectDataType[] = [
    },
    {
       label: "Completed",
-      value : "done",
+      value : "completed",
       color: "text-success",
       icon : BookCheck
    },
    {
       label: "Verified",
-      value : "done",
+      value : "verified",
       color: "text-secondary",
       icon : BadgeCheck
    },
