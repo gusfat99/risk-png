@@ -135,6 +135,7 @@ export interface ReportRiskMonitoringState extends CommonState {
 			nodeId: any
 			deviationId: any
 			riskBankId: any
+			parameterId : any
 		}): Promise<ResponseApiType<DetailReportRiskMonitoring[]>>
 		setPagination?: (updater: Updater<PaginationState>) => void
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>

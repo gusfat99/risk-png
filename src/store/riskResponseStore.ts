@@ -21,7 +21,9 @@ import { Node } from "@/types/node"
 import {
 	Hazop,
 	RiskResponse,
+	RiskResponseHazopMultipleSchemaForm,
 	RiskResponseSevertyExpectMultipleSchemaForm,
+	RiskResponseSevertyExpectSchemaForm,
 	RiskResponseState,
 } from "@/types/riskResponse"
 import { Severity } from "@/types/severity"
@@ -479,6 +481,42 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 					(resolve, reject) => {
 						postData<RiskResponse[]>(
 							`${RISK_RESPONSE_EP}/node/${nodeId}/severity-multi`,
+							payload
+						)
+							.then((data) => {
+								// set((state) => {
+								// 	return {
+								// 		riskAnalysItems: [
+								// 			...state.riskAnalysItems,
+								// 			...(data.data ? [data.data] : []),
+								// 		],
+								// 	}
+								// })
+								resolve(data)
+							})
+							.catch((err) => {
+								reject(err)
+							})
+							.finally(() => {
+								set({
+									isSubmit: false,
+								})
+							})
+					}
+				)
+			},
+			updateSavertyExpect: async (
+				nodeId: any,
+				riskId: any,
+				payload: RiskResponseSevertyExpectSchemaForm
+			) => {
+				set({
+					isSubmit: true,
+				})
+				return new Promise<ResponseApiType<RiskResponse>>(
+					(resolve, reject) => {
+						postData<RiskResponse>(
+							`${RISK_RESPONSE_EP}/node/${nodeId}/severity/${riskId}`,
 							payload
 						)
 							.then((data) => {

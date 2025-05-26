@@ -1,5 +1,7 @@
 import { z } from "zod"
 import { toValidatedNumberActual } from "./RiskAnalystSchema"
+import RiskResponseSeverityExpectedForm from "@/modules/RiskResponseModule/RiskResponseSeverityExpectedForm"
+import { RiskResponseSevertyExpectSchemaForm } from "@/types/riskResponse"
 
 // Schema yang telah didefinisikan
 export const RiskResponseHazopSchema = z.object({
@@ -38,7 +40,7 @@ export const RiskResponseHazopMultipleSchema = z.object({
 })
 
 export const RiskResponseSevertyExpectSchema = z.object({
-	id: z.string(),
+	id: z.string().optional(),
 	sp_expected: toValidatedNumberActual("SP"),
 	sf_expected: toValidatedNumberActual("SF"),
 	se_expected: toValidatedNumberActual("SE"),
@@ -53,3 +55,15 @@ export const RiskResponseSevertyExpectSchema = z.object({
 export const RiskResponseSevertyExpectMultipleSchema = z.object({
 	risks: z.array(RiskResponseSevertyExpectSchema),
 })
+
+export const initialDataSevertyExpect: RiskResponseSevertyExpectSchemaForm = {
+	id: "",
+	sp_expected: 0,
+	sf_expected: 0,
+	se_expected: 0,
+	srl_expected: 0,
+	sa_expected: 0,
+	spn_expected: 0,
+	l_frequency_expected: 0,
+
+}

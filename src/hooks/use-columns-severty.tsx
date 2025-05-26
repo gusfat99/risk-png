@@ -77,7 +77,10 @@ const CellInput = ({
 			label: "(0) not taken into considered",
 			value: 0,
 		},
-		...severity_map_options,
+		...severity_map_options.map((x) => ({
+			...x,
+			value: parseInt(x.value),
+		})),
 	]
 
 	if (fieldSeverity) {
@@ -171,7 +174,7 @@ export const useColumnsRiskAnalyst = ({
 									)
 							}}
 						>
-							<ExternalLink /> Risk Response
+							<ExternalLink /> Fill Risk Response
 						</DropdownMenuItem>
 					</TableRowActions>
 				),
@@ -477,11 +480,13 @@ export const useColumnsRiskAnalyst = ({
 				cell: ({ row }) => {
 					const severty = form.watch("risks")[row.index]
 					const severties = [
-						severty["sa_current"],
-						severty["sp_current"],
-						severty["se_current"],
-						severty["spn_current"],
-						severty["srl_current"],
+						severty["sp_current"] || 0,
+						severty["se_current"] || 0,
+						severty["sf_current"] || 0,
+						severty["srl_current"] || 0,
+						severty["sa_current"] || 0,
+						severty["spn_current"] || 0,
+						severty["l_frequency_current"] || 0,
 					]
 					const maxValSeverty = Math.max(...severties)
 					const risk_ranking_current =
@@ -542,9 +547,31 @@ export const useColumnsRiskResponse = ({
 				enableSorting: false,
 			},
 			{
+				id: "id-action",
+				accessorFn: (row) => row.id,
+				meta: {
+					className: "text-center",
+				},
+				header: () => {
+					return <div>Action</div>
+				},
+				size: 80,
+				cell: ({ row }) => (
+					<TableRowActions
+						acl={{
+							canEdit: true,
+							canView: true,
+							canDelete: false,
+						}}
+						onAction={(actionName: string) => {
+							onAction && onAction(actionName, row.original)
+						}}
+					/>
+				),
+			},
+			{
 				id: "id",
 				accessorFn: (row) => row.id,
-
 				header: () => {
 					return (
 						<div className="flex justify-start">
@@ -567,7 +594,6 @@ export const useColumnsRiskResponse = ({
 			{
 				id: "parameter",
 				accessorFn: (row) => row.parameters.name ?? "",
-
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -1073,11 +1099,13 @@ export const useColumnsRiskResponse = ({
 				cell: ({ row }) => {
 					const severty = { ...form.watch("risks")[row.index] }
 					const severties = [
-						severty["sa_expected"],
-						severty["sp_expected"],
-						severty["se_expected"],
-						severty["spn_expected"],
-						severty["srl_expected"],
+						severty["sp_expected"] || 0,
+						severty["se_expected"] || 0,
+						severty["sf_expected"] || 0,
+						severty["srl_expected"] || 0,
+						severty["sa_expected"] || 0,
+						severty["spn_expected"] || 0,
+						severty["l_frequency_expected"] || 0,
 					]
 					const maxValSeverty = Math.max(...severties)
 					const risk_ranking_expected =
@@ -1111,7 +1139,7 @@ export const useColumnsRiskResponse = ({
 						(x) => x.value === hazop_status
 					)
 					hazop_status = hazop?.label || "-"
-					const textColor = hazop?.color || "";
+					const textColor = hazop?.color || ""
 					// if (hazop_status?.toLowerCase() === "done") {
 					// 	textColor = "text-success"
 					// } else if (hazop_status?.toLowerCase() === "on progress") {
@@ -1149,7 +1177,9 @@ export const useColumnsRiskResponse = ({
 												"text-warning-600",
 											"focus:text-success":
 												status.color === "text-success",
-											"focus:text-secondary" : status.color === "text-secondary"
+											"focus:text-secondary":
+												status.color ===
+												"text-secondary",
 										})}
 										key={status.value}
 									>

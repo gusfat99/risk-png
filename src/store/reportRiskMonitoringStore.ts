@@ -89,6 +89,7 @@ const useReportRiskMonitoringStore = createStore<ReportRiskMonitoringState>(
 				nodeId,
 				deviationId,
 				riskBankId,
+				parameterId
 			}) => {
 				const year_selected = useAuthStore.getState().year_selected
 				set({
@@ -106,6 +107,7 @@ const useReportRiskMonitoringStore = createStore<ReportRiskMonitoringState>(
 							node_id: nodeId,
 							deviation_id: deviationId,
 							risk_bank_id: riskBankId,
+							parameter_id : parameterId
 						}
 					)
 						.then((data) => {
