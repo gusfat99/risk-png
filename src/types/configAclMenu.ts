@@ -33,6 +33,7 @@ export interface ConfigAclMenuState extends CommonState {
       fetchMenu(params?: {
          per_page: number
       }): Promise<ResponseApiType<Menu[]>>
+      fetchMenuDetail?(menuId : any): Promise<ResponseApiType<Menu>>
       fetchRole(): Promise<ResponseApiType<Role[]>>
       createMenu?(payload: MenuForm): Promise<ResponseApiType<Menu>>
       createRolePemissions?(payload: RoleAclMenuForm): Promise<ResponseApiType<Role>>

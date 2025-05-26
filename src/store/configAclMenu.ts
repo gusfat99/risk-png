@@ -50,6 +50,50 @@ const useConfigAclMenu = createStore<ConfigAclMenuState>("acl-menu", (set, get) 
                })
          })
       },
+      fetchMenuDetail: async (id) => {
+         set({
+            isFetching: true,
+         })
+         return new Promise<ResponseApiType<Menu>>((resolve, reject) => {
+            getDataApi<Menu>(MENU_EP + "/" + id)
+               .then((data) => {
+                  getDataApi<Menu[]>(MENU_EP, {
+                     per_page: 1000
+                  }).then(resMenu => {
+                     set({
+                        menuItems: resMenu.data || [],
+                        meta: data?.meta,
+                        isFetching : false
+                     })
+                  }).catch(err => {
+                     toast({
+                        variant: "destructive",
+                        title: "Filed get menus data",
+                        description: err.message
+                     })
+                     set({
+                        isFetching : false
+                      })
+                  })
+
+                  resolve(data)
+
+               })
+               .catch((err) => {
+                  toast({
+                     title: "ERROR",
+                     description: err.message,
+                     variant: "destructive",
+                  })
+                  reject(err)
+               })
+               .finally(() => {
+                  set({
+                     isFetching: false,
+                  })
+               })
+         })
+      },
       fetchRole: async () => {
          set({
             isFetching: true,
