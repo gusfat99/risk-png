@@ -22,6 +22,7 @@ import React, { forwardRef, useCallback, useImperativeHandle } from "react"
 import { useForm } from "react-hook-form"
 import HazopRecomendationsForm from "../HazopRecomendationsForm"
 import { FormRefType } from "@/types/common"
+import { useRouter } from "next/navigation"
 // import Datepicker from "react-tailwindcss-datepicker"
 
 interface IProps {
@@ -48,6 +49,7 @@ const RiskResponseFormMultiple = forwardRef<FormRefType, IProps>(
 			pagination_tanstack,
 			nodeSelected,
 		} = useRiskResponseStore()
+		const router = useRouter()
 		const total = meta?.total || 0
 		const [hazopOpen, setHazopOpen] = React.useState<HazopStatusDialog>({
 			hazop_id: null,
@@ -102,6 +104,11 @@ const RiskResponseFormMultiple = forwardRef<FormRefType, IProps>(
 							status: value2,
 						})
 				}
+				if (actionName === "update") {
+					router.push(
+						`${basePathname}/update/${nodeSelected?.id}/${row.id}`
+					)
+				}
 			},
 			[nodeSelected?.id]
 		)
@@ -152,7 +159,6 @@ const RiskResponseFormMultiple = forwardRef<FormRefType, IProps>(
 			<React.Fragment>
 				<Form {...form}>
 					<form className="space-y-4 max-w-full ">
-						
 						<DataTable<RiskResponse>
 							columns={column}
 							data={riskResponseItems}
@@ -204,6 +210,6 @@ const RiskResponseFormMultiple = forwardRef<FormRefType, IProps>(
 	}
 )
 
-RiskResponseFormMultiple.displayName = "RiskResponseFormMultiple";
+RiskResponseFormMultiple.displayName = "RiskResponseFormMultiple"
 
 export default RiskResponseFormMultiple

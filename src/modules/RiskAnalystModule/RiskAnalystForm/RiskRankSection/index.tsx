@@ -1,8 +1,9 @@
 import InputController from "@/components/inputs/InputController"
 import InputSelectController from "@/components/inputs/InputSelectController"
 import { FormField } from "@/components/ui/form"
-import { fieldsInputSeverity } from "@/data/severity"
+import { fieldsInputSeverity, zeroValueOptionSeverity } from "@/data/severity"
 import useSettingMatrixStore from "@/store/settingMatrixStore"
+import { SelectDataType } from "@/types/common"
 import { RiskAnalysisForm } from "@/types/riksAnalyst"
 import { Separator } from "@radix-ui/react-select"
 import React from "react"
@@ -13,7 +14,6 @@ interface IProps {
 	isEdit?: boolean
 	form: UseFormReturn<RiskAnalysisForm>
 }
-
 
 const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 	const { likelyhood_options, severity_map_options } = useSettingMatrixStore()
@@ -46,66 +46,82 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 				<div className="space-y-4">
 					{fieldsInputSeverity
 						.filter((f) => f.group === 1)
-						.map((fieldInput) => (
-							<FormField
-								key={fieldInput.field}
-								control={form.control}
-								name={fieldInput.field as keyof RiskAnalysisForm}
-								render={({ field }) => (
-									<InputSelectController
-										field={field}
-										items={severity_map_options.filter(
-											(x) =>
-												x.saverity_row_id?.toString() ===
-												fieldInput.col_id?.toString()
-										)}
-										disabled={isDetail}
-										label={fieldInput.label}
-										placeholder={
-											"Enter " + fieldInput.label
-										}
-										onChange={(value) => {
-											form.setValue(
-												fieldInput.field as keyof RiskAnalysisForm,
-												value
-											)
-										}}
-									/>
-								)}
-							/>
-						))}
+						.map((fieldInput) => {
+							const opts: SelectDataType[] = [
+								zeroValueOptionSeverity,
+								...severity_map_options.filter(
+									(x) =>
+										x.saverity_row_id?.toString() ===
+										fieldInput.col_id?.toString()
+								),
+							]
+							return (
+								<FormField
+									key={fieldInput.field}
+									control={form.control}
+									name={
+										fieldInput.field as keyof RiskAnalysisForm
+									}
+									render={({ field }) => (
+										<InputSelectController
+											field={field}
+											items={opts}
+											disabled={isDetail}
+											label={fieldInput.label}
+											placeholder={
+												"Enter " + fieldInput.label
+											}
+											onChange={(value) => {
+												form.setValue(
+													fieldInput.field as keyof RiskAnalysisForm,
+													value
+												)
+											}}
+										/>
+									)}
+								/>
+							)
+						})}
 				</div>
 				<div className="space-y-4">
 					{fieldsInputSeverity
 						.filter((f) => f.group === 2)
-						.map((fieldInput) => (
-							<FormField
-								key={fieldInput.field}
-								control={form.control}
-								name={fieldInput.field as keyof RiskAnalysisForm}
-								render={({ field }) => (
-									<InputSelectController
-										field={field}
-										items={severity_map_options.filter(
-											(x) =>
-												x.saverity_row_id?.toString() ===
-												fieldInput.col_id?.toString()
-										)}
-										disabled={isDetail}
-										label={fieldInput.label}
-										placeholder={
-											"Enter " + fieldInput.label
-										}
-										onChange={(value) => {
-											form.setValue(
-												fieldInput.field as keyof RiskAnalysisForm,
-												value
-											)
-										}}
-									/>
-								)}
-							/>
-						))}
+						.map((fieldInput) => {
+							const opts: SelectDataType[] = [
+								zeroValueOptionSeverity,
+								...severity_map_options.filter(
+									(x) =>
+										x.saverity_row_id?.toString() ===
+										fieldInput.col_id?.toString()
+								),
+							]
+							return (
+								<FormField
+									key={fieldInput.field}
+									control={form.control}
+									name={
+										fieldInput.field as keyof RiskAnalysisForm
+									}
+									render={({ field }) => (
+										<InputSelectController
+											field={field}
+											items={opts}
+											disabled={isDetail}
+											label={fieldInput.label}
+											placeholder={
+												"Enter " + fieldInput.label
+											}
+											onChange={(value) => {
+												form.setValue(
+													fieldInput.field as keyof RiskAnalysisForm,
+													value
+												)
+											}}
+										/>
+									)}
+								/>
+							)
+						})}
 				</div>
 			</div>
 			<Separator

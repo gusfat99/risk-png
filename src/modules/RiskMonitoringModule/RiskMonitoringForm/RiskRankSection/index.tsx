@@ -1,6 +1,6 @@
 import InputSelectController from "@/components/inputs/InputSelectController"
 import { FormField } from "@/components/ui/form"
-import { fieldsInputSeverity } from "@/data/severity"
+import { fieldsInputSeverity, zeroValueOptionSeverity } from "@/data/severity"
 import useSettingMatrixStore from "@/store/settingMatrixStore"
 import { SelectDataType } from "@/types/common"
 import { RiskMonitoringSchemaForm } from "@/types/riskMonitoring"
@@ -16,11 +16,6 @@ interface IProps {
 const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 	const { severity_map_options } = useSettingMatrixStore()
 
-	const zeroValueOption = {
-		label: "(0) not taken into considered",
-		value: "0",
-	}
-
 	return (
 		<div className="border-2 border-gray-200  rounded-lg p-4 space-y-4">
 			<div className="text-center">
@@ -32,7 +27,7 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 						.filter((f) => f.group === 1)
 						.map((fieldInput) => {
 							const opts: SelectDataType[] = [
-								zeroValueOption,
+								zeroValueOptionSeverity,
 								...severity_map_options.filter(
 									(x) =>
 										x.saverity_row_id?.toString() ===
@@ -72,7 +67,7 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 						.filter((f) => f.group === 2)
 						.map((fieldInput) => {
 							const opts: SelectDataType[] = [
-								zeroValueOption,
+								zeroValueOptionSeverity,
 								...severity_map_options.filter(
 									(x) =>
 										x.saverity_row_id?.toString() ===

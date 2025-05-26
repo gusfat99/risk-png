@@ -72,7 +72,7 @@ const RiskAnalystFormMultiple = forwardRef<FormRefType, IProps>(
 				router.push(`${basePathname}/detail/${nodeSelected?.id}/${id}`)
 			} else if (actionName === "risk_response") {
 				setNodeSelected(parseInt(row.node_id))
-				router.push(`/risk-response`)
+				router.push(`/risk-response/update/${row.node_id}/${id}`)
 			}
 		}
 

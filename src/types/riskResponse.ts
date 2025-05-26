@@ -140,6 +140,11 @@ export interface RiskResponseState extends CommonState {
 			nodeId: any,
 			payload: RiskResponseSevertyExpectMultipleSchemaForm
 		): Promise<ResponseApiType<RiskResponse[]>>
+		updateSavertyExpect?(
+			nodeId: any,
+			riskId: any,
+			payload: RiskResponseSevertyExpectSchemaForm
+		): Promise<ResponseApiType<RiskResponse>>
 		createData?(
 			payload: any,
 			nodeId: any

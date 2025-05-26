@@ -30,6 +30,7 @@ const ReportRiskMonitoringModule = () => {
 	const nodeId = searchParams.get("node")
 	const deviationId = searchParams.get("deviation")
 	const riskBankId = searchParams.get("risk_bank")
+	const parameterId = searchParams.get("parameter")
 
 	const splitPathname = pathname.split("/")
 	const basePathname = "/".concat(splitPathname[1])
@@ -58,6 +59,7 @@ const ReportRiskMonitoringModule = () => {
 			nodeId,
 			deviationId,
 			riskBankId,
+			parameterId
 		})
 	}, [fetchDetailReportRiskMonitoring, nodeId, deviationId, riskBankId])
 
