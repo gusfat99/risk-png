@@ -108,6 +108,7 @@ const RiskMapTableSkeleton = () => {
 const RiskMapTable: React.FC<RiskMapTableProps> & {
 	Skeleton: typeof RiskMapTableSkeleton
 } = ({ columns, rowsMain, data, forDashboard, heatmap = [], onClick }) => {
+	const frequncyRow = [...(rowsMain.column || [])];
 	return (
 		<div className="w-full overflow-x-auto">
 			<Table>
@@ -162,7 +163,7 @@ const RiskMapTable: React.FC<RiskMapTableProps> & {
 							Frequency Level
 						</TableCell>
 					</TableRow>
-					{rowsMain.column
+					{frequncyRow
 						.sort((a, b) => b.id - a.id)
 						.map((frequency, rowKey) => {
 							return (

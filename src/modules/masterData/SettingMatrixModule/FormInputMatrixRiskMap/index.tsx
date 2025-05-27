@@ -49,7 +49,7 @@ const FormInputMatrixRiskMap: React.FC<FormInputMatrixRiskMapProps> = ({
 					name={"value"}
 					render={({ field }) => (
 						<InputController
-							defaultValue={field.value}
+							{...field}
 							label={label}
 							placeholder={label}
 							onChange={(e) => {

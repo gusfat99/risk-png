@@ -47,7 +47,7 @@ const SeverityRiskCardSkeleton = () => {
 				<TableBody>
 					<TableRow className="border-0">
 						<TableCell className="text-gray-400  w-60 p-1">
-							Likelyhood Frequency (L)
+							Likelihood Frequency (L)
 						</TableCell>
 						<TableCell className="w-4 p-1">:</TableCell>
 						<TableCell className=" p-1">
@@ -181,7 +181,7 @@ const SeverityRiskCard: SeverityRiskCardComponent = ({ item }) => {
 				<TableBody>
 					<TableRow className="border-0">
 						<TableCell className="text-gray-400  w-60 p-1">
-							Likelyhood Frequency (L)
+							Likelihood Frequency (L)
 						</TableCell>
 						<TableCell className="w-4 p-1">:</TableCell>
 						<TableCell className=" p-1">

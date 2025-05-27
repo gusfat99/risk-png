@@ -198,10 +198,10 @@ const RiskResponseSeverityExpectedForm: React.FC<IProps> = ({ isEdit }) => {
 								}))}
 								// disabled={isDetail}
 								label={
-									"Likelyhood Frequency Kejadian (L) Expected"
+									"Likelihood Frequency Kejadian (L) Expected"
 								}
 								placeholder={
-									"Enter Likelyhood Frequency Kejadian (L) Expected"
+									"Enter Likelihood Frequency Kejadian (L) Expected"
 								}
 								onChange={(value) => {
 									form.setValue("l_frequency_expected", parseInt(value))
