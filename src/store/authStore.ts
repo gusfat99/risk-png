@@ -58,7 +58,6 @@ const useAuthStore = create<AuthState>()(
 				return new Promise<ResponseApiType<User>>((resolve, reject) => {
 					postData<User>(AUTH_EP, credential)
 						.then((data) => {
-							console.log({ data })
 							set({
 								user: data.data,
 								message: data.message,

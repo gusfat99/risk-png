@@ -21,7 +21,6 @@ const LikelyhoodFrequencyTable: React.FC<LikelyhoodFrequencyTableProps> = ({
 	data,
 	onClick,
 }) => {
-	console.log("LikelyhoodFrequencyTable data", data)
 	return (
 		<div className="w-full overflow-x-auto">
 			<Table>
