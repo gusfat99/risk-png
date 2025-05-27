@@ -1,9 +1,10 @@
 "use client"
-import InputController from "@/components/inputs/InputController"
+import InputDropdownMultipleController from "@/components/inputs/InputDropdownMultipleController"
 import InputSelectController from "@/components/inputs/InputSelectController"
 import { FormField } from "@/components/ui/form"
 import { useDebounce } from "@/hooks/use-debounce"
 import useRiskMonitoringStore from "@/store/riskMonitoringStore"
+import { StateOption } from "@/types/common"
 import { RiskMonitoringSchemaForm } from "@/types/riskMonitoring"
 import React from "react"
 import { UseFormReturn } from "react-hook-form"
@@ -21,6 +22,11 @@ const RiskDataBankSection: React.FC<IProps> = ({ form, isEdit, isDetail }) => {
 			deviation: { deviationItems, isFetching: isFetchingDeviation },
 			parameter: { parameterItems, isFetching: isFetchingParameter },
 			cause: { causeItems, isFetching: isFetchingCause },
+			consequence: {
+				consequenceItems,
+				isFetching: isFetchingConsequence,
+			},
+			safeguard: { safeguardItems, isFetching: isFetchingSafeguard },
 		},
 		actions: { handleChangeRiskMonitoringData },
 	} = useRiskMonitoringStore()
@@ -41,11 +47,24 @@ const RiskDataBankSection: React.FC<IProps> = ({ form, isEdit, isDetail }) => {
 		label: cause.cause,
 		value: cause.id?.toString(),
 	}))
+	const consequenceOptions = consequenceItems.map((x) => ({
+		label: x.consequence,
+		value: x.id?.toString(),
+	}))
+	const safeguardOptions = safeguardItems.map((x) => ({
+		label: x.safeguard,
+		value: x.id?.toString(),
+	}))
 
 	const handleChange = useDebounce((value: any, name: any) => {
 		form.setValue(name, value)
 	})
 
+	const handleSelectMultiple = (name: any, values: StateOption[]) => {
+		// const mappingValues = values.map((x) => x.value)
+		form.setValue(name, values)
+	}
+	console.log({ watchIncident: form.watch() })
 	return (
 		<div className="border-2 border-gray-200  rounded-lg p-4 space-y-4">
 			<div className="text-center">
@@ -135,48 +154,50 @@ const RiskDataBankSection: React.FC<IProps> = ({ form, isEdit, isDetail }) => {
 					/>
 					<FormField
 						control={form.control}
-						name={"incident_name"}
+						name={"consequence_id"}
 						render={({ field }) => (
-							<InputController
-								defaultValue={field.value}
-								readOnly={isDetail}
-								label="Incident Name"
-								placeholder="Enter Incident Name"
-								onChange={(e) => {
-									const value = e.target.value
-									handleChange(value, "incident_name")
+							<InputSelectController
+								field={field}
+								disabled={isDetail}
+								loading={isFetchingConsequence}
+								label="Consequence"
+								items={consequenceOptions}
+								placeholder="Select Consequence"
+								onChange={(value) => {
+									form.setValue("consequence_id", value)
+									handleChangeRiskMonitoringData(
+										"consequence_id",
+										value
+									)
 								}}
 							/>
 						)}
 					/>
 					<FormField
 						control={form.control}
-						name={"incident_location"}
+						name={"safeguard_failure"}
 						render={({ field }) => (
-							<InputController
-								defaultValue={field.value}
-								readOnly={isDetail}
-								label="Incident Location"
-								placeholder="Enter Incident Location"
-								onChange={(e) => {
-									const value = e.target.value
-									handleChange(value, "incident_location")
+							<InputDropdownMultipleController
+								field={{ ...field }}
+								isDisabled={isDetail}
+								isRequired={!isDetail}
+								options={safeguardOptions}
+								// loading={isFetchingCause}
+								label="Safeguard Failure"
+								placeholder="Select Safeguard Failure"
+								onSelect={(selectedList, _selected) => {
+								
+									handleSelectMultiple(
+										"safeguard_failure",
+										selectedList
+									)
 								}}
-							/>
-						)}
-					/>
-					<FormField
-						control={form.control}
-						name={"incident_trigger"}
-						render={({ field }) => (
-							<InputController
-								defaultValue={field.value}
-								readOnly={isDetail}
-								label="Incident Trigger"
-								placeholder="Enter Incident Trigger"
-								onChange={(e) => {
-									const value = e.target.value
-									handleChange(value, "incident_trigger")
+								onRemove={(selectedList, _selected) => {
+								
+									handleSelectMultiple(
+										"safeguard_failure",
+										selectedList
+									)
 								}}
 							/>
 						)}

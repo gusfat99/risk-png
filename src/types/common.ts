@@ -42,6 +42,12 @@ export type SelectDataType = {
 	[x: string]: any
 }
 
+export interface StateOption {
+	readonly value: string
+	readonly label: string
+	[x: string]: any
+}
+
 export type FormRefType = {
 	submit: (e?: React.BaseSyntheticEvent) => Promise<void>
 }

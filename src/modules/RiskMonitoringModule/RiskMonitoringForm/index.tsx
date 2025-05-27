@@ -15,6 +15,7 @@ import React from "react"
 import { useForm } from "react-hook-form"
 import RiskDataBankSection from "./RiskDataBankSection"
 import RiskRankSection from "./RiskRankSection"
+import RiskIncidentSection from "./RiskIncidentSection"
 
 interface IProps {
 	isDetail?: boolean
@@ -43,21 +44,45 @@ const RiskMonitoringForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 		reValidateMode: "onSubmit",
 		shouldFocusError: true,
 		shouldUnregister: true,
-		defaultValues: isEdit && riskMonitoringSelected
-			? {
-					...riskMonitoringSelected,
-					node_id: String(riskMonitoringSelected.node_id),
-					deviation_id: String(riskMonitoringSelected.deviation_id),
-					parameter_id: String(riskMonitoringSelected.parameter_id),
-					risk_bank_id: String(riskMonitoringSelected.risk_bank_id),
-					sp_affected: String(riskMonitoringSelected.sp_affected),
-					sf_affected: String(riskMonitoringSelected.sf_affected),
-					se_affected: String(riskMonitoringSelected.se_affected),
-					srl_affected: String(riskMonitoringSelected.srl_affected),
-					sa_affected: String(riskMonitoringSelected.sa_affected),
-					spn_affected: String(riskMonitoringSelected.spn_affected),
-			  }
-			: initialRiskAnalyst,
+		defaultValues:
+			isEdit && riskMonitoringSelected
+				? {
+						...riskMonitoringSelected,
+						nip: riskMonitoringSelected.nip,
+						name: riskMonitoringSelected.name,
+						evidence: undefined,
+						incident_date: riskMonitoringSelected.incident_date,
+						incident_time: riskMonitoringSelected.incident_time,
+						consequence_id: riskMonitoringSelected.consequence_id,
+						safeguard_failure:
+							riskMonitoringSelected.failed_safeguards.map(
+								(x) => ({
+									label: x.safeguard_title,
+									value: x.id.toString(),
+								})
+							),
+						node_id: String(riskMonitoringSelected.node_id),
+						deviation_id: String(
+							riskMonitoringSelected.deviation_id
+						),
+						parameter_id: String(
+							riskMonitoringSelected.parameter_id
+						),
+						risk_bank_id: String(
+							riskMonitoringSelected.risk_bank_id
+						),
+						sp_affected: String(riskMonitoringSelected.sp_affected),
+						sf_affected: String(riskMonitoringSelected.sf_affected),
+						se_affected: String(riskMonitoringSelected.se_affected),
+						srl_affected: String(
+							riskMonitoringSelected.srl_affected
+						),
+						sa_affected: String(riskMonitoringSelected.sa_affected),
+						spn_affected: String(
+							riskMonitoringSelected.spn_affected
+						),
+				  }
+				: { ...initialRiskAnalyst, evidence: undefined },
 	})
 
 	const handleSubmit = async (values: RiskMonitoringSchemaForm) => {
@@ -99,7 +124,7 @@ const RiskMonitoringForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 			})
 		}
 	}
-	
+
 	return (
 		<Form {...form}>
 			<form
@@ -107,6 +132,11 @@ const RiskMonitoringForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 				className="space-y-4"
 			>
 				<RiskDataBankSection
+					form={form}
+					isEdit={isEdit}
+					isDetail={isDetail}
+				/>
+				<RiskIncidentSection
 					form={form}
 					isEdit={isEdit}
 					isDetail={isDetail}

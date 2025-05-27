@@ -1,10 +1,11 @@
 import {
 	CAUSE_EP,
+	CONSEQUENCE_EP,
 	DEVIATION_EP,
 	NODE_EP,
 	PARAMETER_EP,
-	RISK_ANALYST_EP,
-	RISK_MONITROING_EP
+	RISK_MONITROING_EP,
+	SAFEGUARD_EXIST_EP
 } from "@/constants/endpoints"
 import {
 	deleteData,
@@ -15,17 +16,18 @@ import {
 import { toast } from "@/hooks/use-toast"
 import { commonInitualState } from "@/types/common"
 
+import fetchRiskBankHierarchy from "@/services/fetchRiskBankHierarchy"
 import { Node } from "@/types/node"
-import { Cause, Deviations, Parameter } from "@/types/riskDataBank"
+import { Cause, Consequences, Deviations, Parameter } from "@/types/riskDataBank"
 import {
 	RiskMonitoring,
 	RiskMonitoringSchemaForm,
 	RiskMonitoringSevertyMultipleForm,
 	RiskMonitoringState
 } from "@/types/riskMonitoring"
+import { Safeguard } from "@/types/safeguard"
 import useAuthStore from "./authStore"
 import { createStore, runUpdater } from "./store"
-import fetchRiskBankHierarchy from "@/services/fetchRiskBankHierarchy"
 
 const initialState = {
 	...commonInitualState,
@@ -48,10 +50,17 @@ const initialState = {
 			deviationItems: [],
 			isFetching: false,
 		},
-
 		cause: {
 			causeItems: [],
 			isFetching: false,
+		},
+		consequence: {
+			consequenceItems: [],
+			isFetching: false
+		},
+		safeguard: {
+			safeguardItems: [],
+			isFetching: false
 		},
 	},
 }
@@ -270,6 +279,14 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 							...get().supportData.cause,
 							isFetching: true,
 						},
+						consequence: {
+							...get().supportData.consequence,
+							isFetching: true,
+						},
+						safeguard: {
+							...get().supportData.safeguard,
+							isFetching: true,
+						},
 					}
 				})
 				return new Promise<ResponseApiType<RiskMonitoring>>(
@@ -281,12 +298,15 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 							const {
 								causes,
 								parameters,
+								consequences,
+								safeguards
 							} = await fetchRiskBankHierarchy({
 								deviation_id: data.data?.deviation_id,
 								parameter_id: data.data?.parameter_id,
 								risk_bank_id: data.data?.risk_bank_id,
+								consequence_id: data.data?.consequence_id
 							}, [
-								'parameters', 'causes'
+								'parameters', 'causes', 'consequences', 'safeguards'
 							])
 							//parse data to flat
 							if (data.data) {
@@ -302,6 +322,14 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 										parameter: {
 											parameterItems: parameters || [],
 											isFetching: false,
+										},
+										consequence: {
+											consequenceItems: consequences || [],
+											isFetching: false
+										},
+										safeguard: {
+											safeguardItems: safeguards || [],
+											isFetching: false
 										}
 									},
 								}))
@@ -389,9 +417,15 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 					(resolve, reject) => {
 						const formData = new FormData()
 						Object.entries(payload).forEach(([key, value]) => {
-							formData.append(key, value)
+							if (Array.isArray(value)) {
+								value.forEach((val, index) => {
+									formData.append(`${key}[${index}]`, val.value);
+								})
+							} else {
+								formData.append(key, value)
+							}
 						})
-						postData<RiskMonitoring>(RISK_MONITROING_EP, payload, {
+						postData<RiskMonitoring>(RISK_MONITROING_EP, formData, {
 							headers: {
 								"Content-Type": "multipart/form-data",
 							},
@@ -546,6 +580,14 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 								...prevState.supportData.cause,
 								causeItems: [],
 							},
+							consequence: {
+								...prevState.supportData.consequence,
+								consequenceItems: [],
+							},
+							safeguard: {
+								...prevState.supportData.safeguard,
+								safeguardItems: [],
+							}
 						},
 					}))
 
@@ -591,6 +633,14 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 								...prevState.supportData.cause,
 								isFetching: true,
 							},
+							consequence: {
+								...prevState.supportData.consequence,
+								consequenceItems: [],
+							},
+							safeguard: {
+								...prevState.supportData.safeguard,
+								safeguardItems: [],
+							}
 						},
 					}))
 
@@ -622,6 +672,100 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 									...prevState.supportData,
 									cause: {
 										...prevState.supportData.cause,
+										isFetching: false,
+									},
+								},
+							}))
+						})
+				}
+				if (name === "risk_bank_id") {
+					set((prevState) => ({
+						supportData: {
+							...prevState.supportData,
+							consequence: {
+								...prevState.supportData.consequence,
+								isFetching: true,
+							},
+							safeguard: {
+								...prevState.supportData.safeguard,
+								safeguardItems: [],
+							}
+						},
+					}))
+
+					getDataApi<Consequences[]>(`/${id}${CONSEQUENCE_EP}`)
+						.then((data) => {
+							//parse data to flat
+							if (Array.isArray(data.data)) {
+								set((prevState) => ({
+									supportData: {
+										...prevState.supportData,
+										consequence: {
+											consequenceItems: data.data || [],
+											isFetching: false,
+										},
+									},
+								}))
+							}
+						})
+						.catch((err) => {
+							toast({
+								title: "ERROR",
+								description: err.message,
+								variant: "destructive",
+							})
+						})
+						.finally(() => {
+							set((prevState) => ({
+								supportData: {
+									...prevState.supportData,
+									consequence: {
+										...prevState.supportData.consequence,
+										isFetching: false,
+									},
+								},
+							}))
+						})
+				}
+				if (name === "consequence_id") {
+					set((prevState) => ({
+						supportData: {
+							...prevState.supportData,
+							safeguard: {
+								...prevState.supportData.safeguard,
+								isFetching: true,
+							},
+						},
+					}))
+
+					getDataApi<Safeguard[]>(`/${id}${SAFEGUARD_EXIST_EP}`)
+						.then((data) => {
+							//parse data to flat
+							if (Array.isArray(data.data)) {
+								set((prevState) => ({
+									supportData: {
+										...prevState.supportData,
+										safeguard: {
+											safeguardItems: data.data || [],
+											isFetching: false,
+										},
+									},
+								}))
+							}
+						})
+						.catch((err) => {
+							toast({
+								title: "ERROR",
+								description: err.message,
+								variant: "destructive",
+							})
+						})
+						.finally(() => {
+							set((prevState) => ({
+								supportData: {
+									...prevState.supportData,
+									safeguard: {
+										...prevState.supportData.safeguard,
 										isFetching: false,
 									},
 								},
