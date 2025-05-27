@@ -19,6 +19,7 @@ const ReportRiskMonitoringModule = () => {
 		isFetchingReport,
 		reportRiskMonitoringDetail,
 		pagination_tanstack,
+		isFetchingExportData,
 		meta,
 		actions: {
 			fetchDetailReportRiskMonitoring,
@@ -80,6 +81,7 @@ const ReportRiskMonitoringModule = () => {
 				<ExportExcelButton
 					label="Export Excel"
 					onClick={() => onDownloadExcel()}
+					loading={isFetchingExportData}
 				/>
 			</div>
 			<div className="mt-1">

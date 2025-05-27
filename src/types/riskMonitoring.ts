@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { Node } from "./node"
-import { Cause, Deviations, Parameter } from "./riskDataBank"
+import { Cause, Consequences, Deviations, Parameter } from "./riskDataBank"
 import {
 	RiskMonitoringSchema,
 	RiskMonitoringSeverityMultpleSchema,
@@ -9,6 +9,7 @@ import { CommonState } from "./common"
 import { ResponseApiType } from "@/helpers/ApiHelper"
 import { PaginationState, Updater } from "@tanstack/react-table"
 import { Deviation } from "./deviation"
+import { Safeguard } from "./safeguard"
 
 export type RiskMonitoring = {
 	id: number
@@ -16,10 +17,13 @@ export type RiskMonitoring = {
 	deviation_id: number
 	parameter_id: number
 	parameters: Parameter
+	consequence_id: any
 	risk_bank_id: number
 	incident_name: string
 	incident_location: string
 	incident_trigger: string
+	incident_date: string
+	incident_time: string
 	sp_affected: number
 	se_affected: number
 	sf_affected: number
@@ -29,6 +33,12 @@ export type RiskMonitoring = {
 	nodes: Node
 	deviations: Deviations
 	causes: Cause | null
+	failed_safeguards: Safeguard[]
+	name: string
+	action_taken: string
+	nip: string
+	evidence: string
+	reported_on: string
 }
 
 export type ReportRiskMonitoring = {
@@ -86,11 +96,21 @@ export interface RiskMonitoringState extends CommonState {
 		cause: {
 			causeItems: Cause[]
 			isFetching: boolean
-		}
+		},
+		consequence: {
+			consequenceItems: Consequences[]
+			isFetching: boolean
+		},
+		safeguard: {
+			safeguardItems: Array<{
+				id: any
+				safeguard: string
+			}>
+			isFetching: boolean
+		},
 	}
 	actions: {
 		fetchAllData(): Promise<ResponseApiType<RiskMonitoring[]>>
-
 		fetchSingleData?(id: any): Promise<ResponseApiType<RiskMonitoring>>
 		fetchDetailData?(id: any): Promise<ResponseApiType<RiskMonitoring>>
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>

@@ -55,7 +55,7 @@ const InputFileOriginController: React.FC<InputFileOriginProps> = ({
 						className="text-blue-400 text-sm hover:underline"
 						href={URL.createObjectURL(file)}
 					>
-						Preview Downloaded File
+						Preview File
 					</a>
 				</div>
 			)}

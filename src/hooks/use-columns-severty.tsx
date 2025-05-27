@@ -10,6 +10,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { FormField } from "@/components/ui/form"
+import { EVIDENCE_PATHNAME_STORAGE } from "@/constants"
 import { hazopStatus } from "@/data/enumetions"
 import { fieldsInputSeverity } from "@/data/severity"
 import { useDebounce } from "@/hooks/use-debounce"
@@ -30,7 +31,8 @@ import {
 } from "@/types/riskResponse"
 import { ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
-import { ExternalLink } from "lucide-react"
+import { ExternalLink, FileDown } from "lucide-react"
+import Link from "next/link"
 import React, { useMemo } from "react"
 import { UseFormReturn } from "react-hook-form"
 
@@ -1368,6 +1370,118 @@ export const useColumnsMonitoring = ({
 					<div>{row.getValue("incident_trigger")}</div>
 				),
 			},
+			{
+				id: "incident_date",
+				accessorFn: (row) => row.incident_date,
+				minSize: 250,
+				enableSorting: false,
+				header: ({ column }) => {
+					return (
+						<DataTableColumnHeader
+							column={column}
+							title="Incident Date"
+						/>
+					)
+				},
+				cell: ({ row }) => (
+					<div>
+						{format(row.getValue("incident_date"), "dd/MM/yyyy")}{" "}
+						{row.original.incident_time}
+					</div>
+				),
+			},
+			{
+				id: "name",
+				accessorFn: (row) => row.name,
+				minSize: 250,
+				enableSorting: false,
+				header: ({ column }) => {
+					return (
+						<DataTableColumnHeader
+							column={column}
+							title="Reported By"
+						/>
+					)
+				},
+				cell: ({ row }) => <div>{row.getValue("name")}</div>,
+			},
+			{
+				id: "nip",
+				accessorFn: (row) => row.nip,
+				minSize: 250,
+				enableSorting: false,
+				header: ({ column }) => {
+					return (
+						<DataTableColumnHeader
+							column={column}
+							title="NIP Reported"
+						/>
+					)
+				},
+				cell: ({ row }) => <div>{row.getValue("nip")}</div>,
+			},
+			{
+				id: "reported_on",
+				accessorFn: (row) => row.reported_on,
+				minSize: 250,
+				enableSorting: false,
+				header: ({ column }) => {
+					return (
+						<DataTableColumnHeader
+							column={column}
+							title="Reported On"
+						/>
+					)
+				},
+				cell: ({ row }) => (
+					<div>
+						{format(row.getValue("reported_on"), "dd/MM/yyyy")}
+					</div>
+				),
+			},
+			{
+				id: "action_taken",
+				accessorFn: (row) => row.action_taken,
+				minSize: 250,
+				enableSorting: false,
+				header: ({ column }) => {
+					return (
+						<DataTableColumnHeader
+							column={column}
+							title="Action Taken"
+						/>
+					)
+				},
+				cell: ({ row }) => <div>{row.getValue("action_taken")}</div>,
+			},
+			{
+				id: "evidence",
+				accessorFn: (row) => row.action_taken,
+				minSize: 250,
+				enableSorting: false,
+				header: ({ column }) => {
+					return (
+						<DataTableColumnHeader
+							column={column}
+							title="Evidence"
+						/>
+					)
+				},
+				cell: ({ row }) =>
+					row.original.evidence ? (
+						<Link
+							target="_blank"
+							href={`${EVIDENCE_PATHNAME_STORAGE}/${row.original.evidence}`}
+						>
+							<Button type="button" size={"sm"} variant={"warning"}>
+								<FileDown /> View
+							</Button>
+						</Link>
+					) : (
+						"-" // Menampilkan '-' jika tidak ada dokumen
+					),
+			},
+
 			{
 				id: "sp_affected_monitoring_id",
 				accessorFn: (row) => row.sp_affected,
