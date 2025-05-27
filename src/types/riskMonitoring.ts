@@ -15,7 +15,7 @@ export type RiskMonitoring = {
 	node_id: number
 	deviation_id: number
 	parameter_id: number
-	parameters : Parameter
+	parameters: Parameter
 	risk_bank_id: number
 	incident_name: string
 	incident_location: string
@@ -135,7 +135,7 @@ export interface ReportRiskMonitoringState extends CommonState {
 			nodeId: any
 			deviationId: any
 			riskBankId: any
-			parameterId : any
+			parameterId: any
 		}): Promise<ResponseApiType<DetailReportRiskMonitoring[]>>
 		setPagination?: (updater: Updater<PaginationState>) => void
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>

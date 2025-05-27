@@ -19,6 +19,7 @@ import {
 } from "@/types/riskMonitoring"
 import useAuthStore from "./authStore"
 import { createStore, runUpdater } from "./store"
+import { downloadProxyFile } from "@/services/downloadFile"
 
 const initialState = {
 	...commonInitualState,
@@ -52,7 +53,7 @@ const useReportRiskMonitoringStore = createStore<ReportRiskMonitoringState>(
 								page: get().pagination_tanstack.pageIndex,
 								per_page: get().pagination_tanstack.pageSize,
 								year: year_selected,
-								node_id : get().nodeSelected?.id || undefined
+								node_id: get().nodeSelected?.id || undefined
 							}
 						)
 							.then((data) => {
@@ -107,7 +108,7 @@ const useReportRiskMonitoringStore = createStore<ReportRiskMonitoringState>(
 							node_id: nodeId,
 							deviation_id: deviationId,
 							risk_bank_id: riskBankId,
-							parameter_id : parameterId
+							parameter_id: parameterId
 						}
 					)
 						.then((data) => {
@@ -198,54 +199,31 @@ const useReportRiskMonitoringStore = createStore<ReportRiskMonitoringState>(
 				riskBankId,
 			}) => {
 				const year_selected = useAuthStore.getState().year_selected
-				getDataApi<any>(
-					EXPORT_MONITORING_EP,
-					{
-						year: year_selected,
-						node_id: nodeId,
-						deviation_id: deviationId,
-						risk_bank_id: riskBankId,
-					},
-					undefined,
-					undefined,
-					"blob"
-				)
-					.then((data) => {
-						//parse data to flat
-						// Proses download seperti sebelumnya
-						const blobUrl = window.URL.createObjectURL(
-							new Blob([data as any])
-						)
-						// const contentDisposition =
-						// 	data.headers["Content-Disposition"]
-						// const finalFilename = contentDisposition
-						// 	? extractFilenameFromHeader(contentDisposition) ||
-						// 	  "filename.xlsx"
-						// 	: "filename.xlsx"
-
-						const link = document.createElement("a")
-						link.href = blobUrl
-						link.download = "risk-monitoring.xlsx"
-						document.body.appendChild(link)
-						link.click()
-
-						// Cleanup
-						setTimeout(() => {
-							if (link.parentNode) {
-								link.parentNode.removeChild(link)
-							}
-							window.URL.revokeObjectURL(blobUrl)
-						}, 100)
-						toast({
-							title: "Finished downlaod data",
-							variant: "success",
-						})
+				set({
+					isFetchingExportData: true,
+				})
+				downloadProxyFile(`${EXPORT_MONITORING_EP}`, {
+					year: year_selected,
+					node_id: nodeId,
+					deviation_id: deviationId,
+					risk_bank_id: riskBankId,
+				}).then((blob) => {
+					toast({
+						title: "Success",
+						description: "Successfull download file excel",
+						variant: "success",
 					})
+				})
 					.catch((err) => {
 						toast({
-							title: "ERROR",
+							title: "Filed",
 							description: err.message,
 							variant: "destructive",
+						})
+					})
+					.finally(() => {
+						set({
+							isFetchingExportData: false,
 						})
 					})
 			},
