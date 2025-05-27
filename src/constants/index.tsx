@@ -5,6 +5,7 @@ export const SECRET_KEY = process.env.NEXT_PUBLIC_STORAGE_SECRET || "default_sec
 export const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
 export const HAZOP_PATHNAME_STORAGE = API_URL + "/storage/hazops";
 export const SAFEGUARDS_PATHNAME_STORAGE = API_URL + "/storage/safeguards";
+export const EVIDENCE_PATHNAME_STORAGE = API_URL + "/storage/evidences";
 export const PROFILE_PATHNAME_STORAGE = API_URL + "/storage/profile";
 export const TIME_MINUTES_INACTIVITY_APP = 60; //ON MINUTES
 
