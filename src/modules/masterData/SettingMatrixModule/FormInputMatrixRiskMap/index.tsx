@@ -36,11 +36,10 @@ const FormInputMatrixRiskMap: React.FC<FormInputMatrixRiskMapProps> = ({
 		shouldFocusError: true,
 		shouldUnregister: true,
 		defaultValues: {
-			value: defaultValue?.value || "",
+			value: defaultValue?.value?.toString() || "",
 			color: defaultValue?.color,
 		},
 	})
-
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

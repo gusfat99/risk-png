@@ -45,7 +45,7 @@ const RiskMap = () => {
 	}
 
 	const severityMapGrouped = groupBy(severity_map.item || [], "column_value")
-
+	// console.log("riskMapCellSelected", riskMapCellSelected)
 	return (
 		<div className="rounded-md shadow-lg p-4 space-y-4">
 			<h5 className="text-secondary font-semibold">Risk Map</h5>
