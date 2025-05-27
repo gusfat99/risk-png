@@ -13,7 +13,6 @@ import RiskApetite from "../RiskApetite"
 
 const RiskMap = () => {
 	const {
-		
 		severity_map,
 		likelyhood_frequency,
 		isSubmitMatrixCell,
@@ -46,16 +45,17 @@ const RiskMap = () => {
 	}
 
 	const severityMapGrouped = groupBy(severity_map.item || [], "column_value")
-
+	console.log({riskMapCellSelected})
 	return (
 		<div className="rounded-md shadow-lg p-4 space-y-4">
 			<h5 className="text-secondary font-semibold">Risk Map</h5>
-			{risk_map.item && risk_map.item.length
-				 > 0 && !risk_map.isFetching && (
-				<RiskApetite
-					riskApetiteDefault={risk_map.item[0].risk_apetite?.toString()}
-				/>
-			)}
+			{risk_map.item &&
+				risk_map.item.length > 0 &&
+				!risk_map.isFetching && (
+					<RiskApetite
+						riskApetiteDefault={risk_map.item[0].risk_apetite?.toString()}
+					/>
+				)}
 			{risk_map.isFetching && <RiskApetite.Skeleton />}
 			{severity_map.item &&
 				severity_map.item &&
@@ -77,18 +77,20 @@ const RiskMap = () => {
 				size="md"
 				className="space-y-4"
 			>
-				<FormInputMatrixRiskMap
-					label={riskMapCellSelected?.inputLabel || ""}
-					defaultValue={{
-						value: riskMapCellSelected?.value || "",
-						color: riskMapCellSelected?.color || "",
-					}}
-					onCancel={() => {
-						setRiskMapCellSelected(null)
-					}}
-					onSubmit={handleSubmitCell}
-					isSubmitProcess={isSubmitMatrixCell}
-				/>
+				{riskMapCellSelected && (
+					<FormInputMatrixRiskMap
+						label={riskMapCellSelected?.inputLabel || ""}
+						defaultValue={{
+							value: riskMapCellSelected?.value || "",
+							color: riskMapCellSelected?.color || "",
+						}}
+						onCancel={() => {
+							setRiskMapCellSelected(null)
+						}}
+						onSubmit={handleSubmitCell}
+						isSubmitProcess={isSubmitMatrixCell}
+					/>
+				)}
 			</DialogMain>
 		</div>
 	)

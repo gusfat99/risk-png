@@ -67,7 +67,7 @@ const LikelyhoodFrequency = () => {
 	return (
 		<div className="rounded-md shadow-lg p-4 space-y-4">
 			<h5 className="text-secondary font-semibold">
-				Likelyhood Frequency
+				Likelihood Frequency
 			</h5>
 			{likelyhood_frequency.item && (
 				<LikelyhoodFrequencyTable
@@ -100,7 +100,7 @@ const LikelyhoodFrequency = () => {
 			</div>
 			<DialogMain
 				open={likelyhoodSelected !== null}
-				title="Value Matrix Likelyhood Frequency"
+				title="Value Matrix Likelihood Frequency"
 				onOpenChange={(_) => {
 					setLikelyhoodSelected(null)
 				}}

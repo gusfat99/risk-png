@@ -137,9 +137,9 @@ const RiskRankSection: React.FC<IProps> = ({ isDetail, isEdit, form }) => {
 							field={field}
 							items={likelyhood_options}
 							disabled={isDetail}
-							label={"Likelyhood Frequency Kejadian (L)"}
+							label={"Likelihood Frequency Kejadian (L)"}
 							placeholder={
-								"Enter Likelyhood Frequency Kejadian (L)"
+								"Enter Likelihood Frequency Kejadian (L)"
 							}
 							onChange={(value) => {
 								form.setValue("l_frequency_current", value)

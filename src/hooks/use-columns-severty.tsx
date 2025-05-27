@@ -441,7 +441,7 @@ export const useColumnsRiskAnalyst = ({
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Likelyhood Frequency Kejadian (L)"}
+							title={"Likelihood Frequency Kejadian (L)"}
 						/>
 					)
 				},
