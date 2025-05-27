@@ -115,16 +115,14 @@ const RiskBankModule = () => {
 					}}
 					enableOnHoverIndicator={false}
 				/>
-				<AlertConfirmDialog
-					open={
-						shownAlertDel.shown && shownAlertDel.id ? true : false
-					}
-					title="Are you sure want to delete this data ?"
-					description="deleted data cannot be revert!"
-					onAction={handleDeleteAction}
-					loading={isFetchingDelete}
-				/>
 			</div>
+			<AlertConfirmDialog
+				open={shownAlertDel.shown && shownAlertDel.id ? true : false}
+				title="Are you sure want to delete this data ?"
+				description="deleted data cannot be revert!"
+				onAction={handleDeleteAction}
+				loading={isFetchingDelete}
+			/>
 		</div>
 	)
 }

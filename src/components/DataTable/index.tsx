@@ -142,32 +142,38 @@ const DataTable = <T,>({
 
 	return (
 		<div className="w-full overflow-auto">
-			<div className="relative rounded-md md:max-h-[580px] max-h-[390px] border overflow-auto w-full max-w-[calc(100vw-62px)] md:max-w-[calc(100vw-386px)] overflow-x-auto">
-				<Table
-					className={cn(
-						" table-fixed caption-bottom text-sm",
-						tableClassName
-					)}
-				>
-					<TableHeader>
-						{table.getHeaderGroups().map((headerGroup) => (
-							<TableRow
-								className={cn({
-									"hover:bg-transparent":
-										!enableOnHoverIndicator,
-								})}
-								key={headerGroup.id}
-							>
-								{headerGroup.headers.map((header) => {
-									const meta = header.column.columnDef
-										.meta as ColumnMetaDef
+			<div className="relative rounded-md border overflow-hidden">
+				<div className="md:max-h-[580px] max-h-[390px] overflow-auto max-w-[calc(100vw-62px)] md:max-w-[calc(100vw-386px)] ">
+					<Table
+						className={cn(
+							"table-fixed caption-bottom text-sm w-full border-collapse",
+							tableClassName
+						)}
+					>
+						<TableHeader
+							style={{
+								position: "sticky",
+								top: 0,
+								zIndex: 10,
+							}}
+						>
+							{table.getHeaderGroups().map((headerGroup) => (
+								<TableRow
+									className={cn({
+										"hover:bg-transparent":
+											!enableOnHoverIndicator,
+									})}
+									key={headerGroup.id}
+								>
+									{headerGroup.headers.map((header) => {
+										const meta = header.column.columnDef
+											.meta as ColumnMetaDef
 
-									return (
-										<React.Fragment key={header.id}>
+										return (
 											<TableHead
 												key={header.id}
 												className={cn(
-													"bg-gray-100  text-wrap font-semibold overflow-hidden text-ellipsis whitespace-nowrap",
+													"text-wrap font-semibold overflow-hidden text-ellipsis whitespace-nowrap sticky top-0 z-10 bg-gray-100 [&>tr]:first:shadow-sm",
 													meta?.className
 												)}
 												style={{
@@ -183,86 +189,94 @@ const DataTable = <T,>({
 															header.getContext()
 													  )}
 											</TableHead>
-										</React.Fragment>
-									)
-								})}
-							</TableRow>
-						))}
-					</TableHeader>
-					<TableBody>
-						{loading ? (
-							<TableRow
-								className={cn("md:h-[520px] h-[180px]", {
-									"hover:bg-transparent":
-										!enableOnHoverIndicator,
-								})}
-							>
-								<TableCell
-									colSpan={columns.length}
-									className="h-24 text-center relative"
+										)
+									})}
+								</TableRow>
+							))}
+						</TableHeader>
+						<TableBody>
+							{loading ? (
+								<TableRow
+									className={cn("md:h-[520px] h-[180px]", {
+										"hover:bg-transparent":
+											!enableOnHoverIndicator,
+									})}
 								>
-									{/* <AppLoader /> */}
-									<Spinner className="w-4 h-4" />
-								</TableCell>
-							</TableRow>
-						) : (
-							<>
-								{(table?.getRowModel()?.rows || []).length ? (
-									table?.getRowModel()?.rows.map((row) => (
-										<TableRow
-											key={getRowKey(row)}
-											data-state={
-												row.getIsSelected() &&
-												"selected"
-											}
-											className={cn({
-												"hover:bg-transparent":
-													!enableOnHoverIndicator,
-											})}
-										>
-											{row
-												.getVisibleCells()
-												.map((cell) => (
-													<React.Fragment
-														key={`${getRowKey(
-															row
-														)}_${cell.column.id}`}
-													>
-														{tbodyWithCell ? (
-															<TableCell>
-																{flexRender(
+									<TableCell
+										colSpan={columns.length}
+										className="h-24 text-center relative"
+									>
+										{/* <AppLoader /> */}
+										<Spinner className="w-4 h-4" />
+									</TableCell>
+								</TableRow>
+							) : (
+								<>
+									{(table?.getRowModel()?.rows || [])
+										.length ? (
+										table
+											?.getRowModel()
+											?.rows.map((row) => (
+												<TableRow
+													key={getRowKey(row)}
+													data-state={
+														row.getIsSelected() &&
+														"selected"
+													}
+													className={cn({
+														"hover:bg-transparent":
+															!enableOnHoverIndicator,
+													})}
+												>
+													{row
+														.getVisibleCells()
+														.map((cell) => (
+															<React.Fragment
+																key={`${getRowKey(
+																	row
+																)}_${
 																	cell.column
-																		.columnDef
-																		.cell,
-																	cell.getContext()
+																		.id
+																}`}
+															>
+																{tbodyWithCell ? (
+																	<TableCell>
+																		{flexRender(
+																			cell
+																				.column
+																				.columnDef
+																				.cell,
+																			cell.getContext()
+																		)}
+																	</TableCell>
+																) : (
+																	flexRender(
+																		cell
+																			.column
+																			.columnDef
+																			.cell,
+																		cell.getContext()
+																	)
 																)}
-															</TableCell>
-														) : (
-															flexRender(
-																cell.column
-																	.columnDef
-																	.cell,
-																cell.getContext()
-															)
-														)}
-													</React.Fragment>
-												))}
+															</React.Fragment>
+														))}
+												</TableRow>
+											))
+									) : (
+										<TableRow>
+											<TableCell
+												colSpan={columns.length}
+												className="h-24 text-center"
+											>
+												No results.
+											</TableCell>
 										</TableRow>
-									))
-								) : (
-									<TableRow>
-										<TableCell
-											colSpan={columns.length}
-											className="h-24 text-center"
-										>
-											No results.
-										</TableCell>
-									</TableRow>
-								)}
-							</>
-						)}
-					</TableBody>
-				</Table>
+									)}
+								</>
+							)}
+						</TableBody>
+					</Table>
+				</div>
 			</div>
 			<DataTablePagination
 				table={table}

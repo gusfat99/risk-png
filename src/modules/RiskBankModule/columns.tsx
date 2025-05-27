@@ -29,7 +29,7 @@ export const columnRiskBank = (
 
 		{
 			accessorKey: "parameter",
-			size: 90,
+			size: 60,
 			header: "Parameter",
 			cell: ({ row }) =>
 				row.original.isFirstMain ? (
@@ -44,7 +44,7 @@ export const columnRiskBank = (
 		{
 			accessorKey: "deviation",
 			header: "Deviation",
-			size: 90,
+			size: 80,
 			cell: ({ row }) =>
 				row.original.isFirstMain ? (
 					<TableCell
@@ -58,6 +58,7 @@ export const columnRiskBank = (
 		{
 			accessorKey: "cause",
 			header: "Cause",
+			size: 110,
 			cell: ({ row }) =>
 				row.original.isFirstMain ? (
 					<TableCell
@@ -84,6 +85,7 @@ export const columnRiskBank = (
 		{
 			accessorKey: "safeguard",
 			header: "Safeguards",
+			size: 110,
 			cell: ({ row }) => (
 				<TableCell className="border">
 					{row.original.safeguard || "-"}{" "}
@@ -93,7 +95,7 @@ export const columnRiskBank = (
 		},
 		{
 			accessorKey: "document",
-			size: 120,
+			size: 80,
 			header: () => (
 				<div className="text-center">Safeguards Document</div>
 			),
@@ -126,7 +128,7 @@ export const columnRiskBank = (
 			header: () => {
 				return <div className="text-center">Action</div>
 			},
-			size: 100,
+			size: 40,
 			cell: ({ row }) =>
 				row.original.isFirstMain ? (
 					<TableCell
