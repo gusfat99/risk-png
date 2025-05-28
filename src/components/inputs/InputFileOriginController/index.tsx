@@ -40,7 +40,6 @@ const InputFileOriginController: React.FC<InputFileOriginProps> = ({
 	const resetFile = () => {
 		ref.current?.value && (ref.current.value = "")
 	}
-
 	return (
 		<FormItem>
 			<FormLabel>

@@ -38,7 +38,7 @@ const RiskMonitoringForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 	const splitPathname = pathname.split("/")
 
 	const basePathname = "/".concat(splitPathname[1])
-	console.log({ riskMonitoringSelected })
+
 	const form = useForm<RiskMonitoringSchemaForm>({
 		resolver: zodResolver(RiskMonitoringSchema),
 		progressive: false,
@@ -53,7 +53,7 @@ const RiskMonitoringForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 						nip: riskMonitoringSelected.nip,
 						name: riskMonitoringSelected.name,
 						evidence:
-							`${riskMonitoringSelected.evidence}` as unknown as File,
+							riskMonitoringSelected.evidence,
 						incident_date: riskMonitoringSelected.incident_date,
 						incident_time: riskMonitoringSelected.incident_time,
 						consequence_id: Number(

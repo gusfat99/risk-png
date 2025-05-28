@@ -32,13 +32,19 @@ const RiskMonitoringDetail: React.FC<IProps> = () => {
 			{!isFetching && riskMonitoringSelected && (
 				<RiskIncidentCard
 					data={{
-						deviations: riskMonitoringSelected.deviations,
-						causes: riskMonitoringSelected.causes as any,
+						// deviations: riskMonitoringSelected.deviations,
+						// causes: riskMonitoringSelected.causes as any,
 						incident_location:
 							riskMonitoringSelected.incident_location,
 						incident_name: riskMonitoringSelected.incident_name,
 						incident_trigger:
 							riskMonitoringSelected.incident_trigger,
+						nip: riskMonitoringSelected.nip,
+						name: riskMonitoringSelected.name,
+						evidence: riskMonitoringSelected.evidence,
+						incident_date: riskMonitoringSelected.incident_date,
+						incident_time: riskMonitoringSelected.incident_time,
+						action_taken : riskMonitoringSelected.action_taken
 					}}
 				/>
 			)}

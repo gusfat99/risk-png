@@ -474,7 +474,7 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 				const formData = new FormData()
 				Object.entries(payload).forEach(([key, value]) => {
 					if (Array.isArray(value)) {
-						console.log({ value });
+				
 						value.forEach((val, index) => {
 							formData.append(`${key}[${index}]`, val.value);
 						})

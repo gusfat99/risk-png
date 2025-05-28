@@ -17,7 +17,6 @@ const RiskIncidentSection: React.FC<IProps> = ({ form, isEdit, isDetail }) => {
 	const handleChange = useDebounce((value: any, name: any) => {
 		form.setValue(name, value)
 	})
-
 	return (
 		<div className="border-2 border-gray-200  rounded-lg p-4 space-y-4">
 			<div className="text-center">
