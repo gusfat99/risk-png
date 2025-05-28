@@ -1,8 +1,6 @@
 "use client"
 import DataTable from "@/components/DataTable"
 import DialogMain from "@/components/dialogs/DialogMain"
-import InputSearch from "@/components/inputs/InputSearch"
-import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import Spinner from "@/components/ui/spinner"
 import { useColumnsRiskResponse } from "@/hooks/use-columns-severty"
@@ -16,13 +14,12 @@ import {
 	RiskResponseSevertyExpectMultipleSchemaForm,
 } from "@/types/riskResponse"
 // import { RiskAnalysisSevertyMultipleForm } from "@/schemas/RiskAnalystSchema"
+import { FormRefType } from "@/types/common"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Save } from "lucide-react"
+import { useRouter } from "next/navigation"
 import React, { forwardRef, useCallback, useImperativeHandle } from "react"
 import { useForm } from "react-hook-form"
 import HazopRecomendationsForm from "../HazopRecomendationsForm"
-import { FormRefType } from "@/types/common"
-import { useRouter } from "next/navigation"
 // import Datepicker from "react-tailwindcss-datepicker"
 
 interface IProps {
@@ -45,7 +42,6 @@ const RiskResponseFormMultiple = forwardRef<FormRefType, IProps>(
 			isFetching,
 			riskResponseItems,
 			meta,
-			isSubmit,
 			pagination_tanstack,
 			nodeSelected,
 		} = useRiskResponseStore()

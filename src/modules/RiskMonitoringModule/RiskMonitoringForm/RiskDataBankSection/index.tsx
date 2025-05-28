@@ -49,22 +49,18 @@ const RiskDataBankSection: React.FC<IProps> = ({ form, isEdit, isDetail }) => {
 	}))
 	const consequenceOptions = consequenceItems.map((x) => ({
 		label: x.consequence,
-		value: x.id?.toString(),
+		value: x.id,
 	}))
 	const safeguardOptions = safeguardItems.map((x) => ({
 		label: x.safeguard,
 		value: x.id?.toString(),
 	}))
 
-	const handleChange = useDebounce((value: any, name: any) => {
-		form.setValue(name, value)
-	})
 
 	const handleSelectMultiple = (name: any, values: StateOption[]) => {
 		// const mappingValues = values.map((x) => x.value)
 		form.setValue(name, values)
 	}
-	console.log({ watchIncident: form.watch() })
 	return (
 		<div className="border-2 border-gray-200  rounded-lg p-4 space-y-4">
 			<div className="text-center">
@@ -164,7 +160,7 @@ const RiskDataBankSection: React.FC<IProps> = ({ form, isEdit, isDetail }) => {
 								items={consequenceOptions}
 								placeholder="Select Consequence"
 								onChange={(value) => {
-									form.setValue("consequence_id", value)
+									form.setValue("consequence_id", parseInt(value))
 									handleChangeRiskMonitoringData(
 										"consequence_id",
 										value
@@ -180,7 +176,7 @@ const RiskDataBankSection: React.FC<IProps> = ({ form, isEdit, isDetail }) => {
 							<InputDropdownMultipleController
 								field={{ ...field }}
 								isDisabled={isDetail}
-								isRequired={!isDetail}
+								isRequired={false}
 								options={safeguardOptions}
 								// loading={isFetchingCause}
 								label="Safeguard Failure"

@@ -4,6 +4,7 @@ import { useEffect } from "react"
 import RiskMonitoringForm from "../RiskMonitoringForm"
 import { useParams } from "next/navigation"
 import Spinner from "@/components/ui/spinner"
+import LoadingIndicator from "@/components/LoadingIndicator"
 
 const RiskAnalystUpdate = () => {
 	const params = useParams()
@@ -29,9 +30,7 @@ const RiskAnalystUpdate = () => {
 	return (
 		<div className="w-full">
 			{isFetching && (
-				<div className="flex-1 flex-col flex justify-center items-center">
-					<Spinner className="w-4 h-4" />
-				</div>
+				<LoadingIndicator/>
 			)}
 			{riskMonitoringSelected && !isFetching && (
 				<RiskMonitoringForm isEdit />

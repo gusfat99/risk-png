@@ -1,17 +1,23 @@
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table"
+import { EVIDENCE_PATHNAME_STORAGE } from "@/constants"
 import { getPropByPath } from "@/lib/utils"
 import { Cause, Deviations } from "@/types/riskDataBank"
 import { SquareRadical } from "lucide-react"
+import Link from "next/link"
 import React from "react"
 
 type fileds = {
-	deviations: Deviations
 	incident_location: string
 	incident_name: string
 	incident_trigger: string
-	causes: Cause
+	incident_date: string
+	incident_time: string
+	name: string
+	nip: string
+	action_taken: string
+	evidence: string
 }
 
 interface IProps {
@@ -19,14 +25,6 @@ interface IProps {
 }
 
 const fileds = [
-	{
-		title: "Deviation",
-		field: "deviations.name",
-	},
-	{
-		title: "Cause",
-		field: "causes.cause",
-	},
 	{
 		title: "Incident Name",
 		field: "incident_name",
@@ -38,6 +36,26 @@ const fileds = [
 	{
 		title: "Incident Trigger",
 		field: "incident_trigger",
+	},
+	{
+		title: "Incident Date",
+		field: "incident_date",
+	},
+	{
+		title: "Incident Time",
+		field: "incident_time",
+	},
+	{
+		title: "Reported By",
+		field: "name",
+	},
+	{
+		title: "Reporter's NIP",
+		field: "nip",
+	},
+	{
+		title: "Evidence",
+		field: "evidence",
 	},
 ]
 
@@ -88,13 +106,27 @@ const RiskIncidentCard: NodeDataCardComponent = ({ data }) => {
 				<TableBody>
 					{fileds.map((field) => {
 						const value = getPropByPath<any>(data, field.field)
+
 						return (
 							<TableRow className="border-0" key={field.field}>
 								<TableCell className="text-gray-400 p-1 w-40">
 									{field.title}
 								</TableCell>
 								<TableCell className=" p-1 w-4">:</TableCell>
-								<TableCell className="p-1">{value}</TableCell>
+
+								<TableCell className="p-1">
+									{field.field === "evidence" ? (
+										<Link
+											className="text-blue-500 underline"
+											href={`${EVIDENCE_PATHNAME_STORAGE}/${value}`}
+											target="_blank"
+										>
+											{value}
+										</Link>
+									) : (
+										value
+									)}
+								</TableCell>
 							</TableRow>
 						)
 					})}
