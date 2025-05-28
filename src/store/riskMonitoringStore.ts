@@ -811,7 +811,7 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 					})
 				}
 			},
-			setStatus: async (monitoringId: any, status: "peding" | "verified") => {
+			setStatus: async (monitoringId: any, status: any) => {
 				return new Promise<ResponseApiType<any>>((resolve, reject) => {
 					postData<any>(
 						`${RISK_MONITROING_EP}/${monitoringId}/change-status`,
