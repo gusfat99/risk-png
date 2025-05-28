@@ -474,7 +474,7 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 				const formData = new FormData()
 				Object.entries(payload).forEach(([key, value]) => {
 					if (Array.isArray(value)) {
-				
+
 						value.forEach((val, index) => {
 							formData.append(`${key}[${index}]`, val.value);
 						})
@@ -810,6 +810,67 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 						nodeSelected,
 					})
 				}
+			},
+			setStatus: async (monitoringId: any, status: "peding" | "verified") => {
+				return new Promise<ResponseApiType<any>>((resolve, reject) => {
+					postData<any>(
+						`${RISK_MONITROING_EP}/${monitoringId}/change-status`,
+						{
+							status: status,
+						},
+						{
+							headers: {
+								"Content-Type": "multipart/form-data",
+							},
+						}
+					)
+						.then((data) => {
+							toast({
+								title: "Successfull",
+								description: data.message,
+								variant: "success",
+							})
+							if (data.data) {
+								const riskMonitoringItems = [
+									...get().riskMonitoringItems,
+								]
+								const monitSelected =
+									riskMonitoringItems.findIndex(
+										(item) =>
+											item.id.toString() === monitoringId.toString()
+									)
+								if (monitSelected > -1) {
+									riskMonitoringItems[
+										monitSelected
+									].status =
+										data.data.status
+
+
+
+									set({
+										riskMonitoringItems,
+									})
+								}
+								resolve(data)
+							}
+						})
+						.catch((err) => {
+							reject(err)
+							toast({
+								title: "ERROR",
+								description: err.message,
+								variant: "destructive",
+							})
+						})
+						.finally(() => {
+							set((prev) => ({
+								supportData: {
+									...prev.supportData,
+									isSubmitHazop: false,
+								},
+							}))
+						})
+				})
 			},
 		},
 	})

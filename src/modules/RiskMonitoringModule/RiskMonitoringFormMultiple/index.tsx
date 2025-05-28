@@ -36,7 +36,13 @@ const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 	})
 
 	const {
-		actions: { setPagination, setNodeSelected, updateSavertyMultiple, deleteData },
+		actions: {
+			setPagination,
+			setNodeSelected,
+			updateSavertyMultiple,
+			deleteData,
+			setStatus,
+		},
 		nodeSelected,
 		isFetchingDelete,
 		isFetching,
@@ -99,7 +105,7 @@ const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 	}
 
 	const handleAction = useCallback(
-		(actionName: string, id: any) => {
+		(actionName: string, id: any,  status?: any) => {
 			if (actionName === "update") {
 				router.push(basePathname + "/update/" + id)
 			} else if (actionName === "detail") {
@@ -109,6 +115,8 @@ const RiskMonitoringFormMultiple: React.FC<IProps> = ({ basePathname }) => {
 					id,
 					shown: true,
 				})
+			} else if (actionName === "status" && status) {
+				setStatus(id, status)
 			}
 		},
 		[basePathname]
