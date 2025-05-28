@@ -3,8 +3,10 @@ import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import Spinner from "@/components/ui/spinner"
 import { useToast } from "@/hooks/use-toast"
-import { initialRiskAnalyst } from "@/schemas/RiskAnalystSchema"
-import { RiskMonitoringSchema } from "@/schemas/RiskMonitoringSchema"
+import {
+	initialRiskMonitoring,
+	RiskMonitoringSchema,
+} from "@/schemas/RiskMonitoringSchema"
 import useRiskMonitoringStore from "@/store/riskMonitoringStore"
 import { RiskMonitoringSchemaForm } from "@/types/riskMonitoring"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -14,8 +16,8 @@ import { useParams, usePathname, useRouter } from "next/navigation"
 import React from "react"
 import { useForm } from "react-hook-form"
 import RiskDataBankSection from "./RiskDataBankSection"
-import RiskRankSection from "./RiskRankSection"
 import RiskIncidentSection from "./RiskIncidentSection"
+import RiskRankSection from "./RiskRankSection"
 
 interface IProps {
 	isDetail?: boolean
@@ -36,7 +38,7 @@ const RiskMonitoringForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 	const splitPathname = pathname.split("/")
 
 	const basePathname = "/".concat(splitPathname[1])
-
+	console.log({ riskMonitoringSelected })
 	const form = useForm<RiskMonitoringSchemaForm>({
 		resolver: zodResolver(RiskMonitoringSchema),
 		progressive: false,
@@ -50,14 +52,17 @@ const RiskMonitoringForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 						...riskMonitoringSelected,
 						nip: riskMonitoringSelected.nip,
 						name: riskMonitoringSelected.name,
-						evidence: undefined,
+						evidence:
+							`${riskMonitoringSelected.evidence}` as unknown as File,
 						incident_date: riskMonitoringSelected.incident_date,
 						incident_time: riskMonitoringSelected.incident_time,
-						consequence_id: riskMonitoringSelected.consequence_id,
+						consequence_id: Number(
+							riskMonitoringSelected.consequence_id
+						),
 						safeguard_failure:
 							riskMonitoringSelected.failed_safeguards.map(
 								(x) => ({
-									label: x.safeguard_title,
+									label: x.safeguard,
 									value: x.id.toString(),
 								})
 							),
@@ -82,7 +87,9 @@ const RiskMonitoringForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 							riskMonitoringSelected.spn_affected
 						),
 				  }
-				: { ...initialRiskAnalyst, evidence: undefined },
+				: {
+						...initialRiskMonitoring,
+				  },
 	})
 
 	const handleSubmit = async (values: RiskMonitoringSchemaForm) => {
@@ -95,7 +102,7 @@ const RiskMonitoringForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 						title: result.message ?? "",
 						variant: "success",
 					})
-					form.reset({ ...initialRiskAnalyst })
+					form.reset({ ...initialRiskMonitoring })
 					route.replace(basePathname)
 				} else {
 					throw new Error("Failed")
@@ -108,7 +115,7 @@ const RiskMonitoringForm: React.FC<IProps> = ({ isDetail, isEdit }) => {
 						title: result.message ?? "",
 						variant: "success",
 					})
-					form.reset({ ...initialRiskAnalyst })
+					form.reset({ ...initialRiskMonitoring })
 					route.replace(basePathname)
 				} else {
 					throw new Error("Failed")

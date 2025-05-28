@@ -111,6 +111,7 @@ const HazopRecomendationsForm: React.FC<IProps> = ({
 	}
 
 	const hazopRecomendationsWatch = form.watch("items")
+	
 	return (
 		<Form {...form}>
 			<form

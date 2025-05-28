@@ -47,13 +47,25 @@ const InputFileOriginController: React.FC<InputFileOriginProps> = ({
 				{label}
 				{isRequired && <span className="text-destructive">*</span>}
 			</FormLabel>
-			{isShowPreview && file && (
+			{isShowPreview && file && file instanceof File && (
 				<div className="flex gap-2">
 					<a
 						rel="noopener"
 						target="_blank"
 						className="text-blue-400 text-sm hover:underline"
 						href={URL.createObjectURL(file)}
+					>
+						Preview File
+					</a>
+				</div>
+			)}
+			{isShowPreview && file && typeof file === "string" && (
+				<div className="flex gap-2">
+					<a
+						rel="noopener"
+						target="_blank"
+						className="text-blue-400 text-sm hover:underline"
+						href={file}
 					>
 						Preview File
 					</a>

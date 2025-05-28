@@ -28,6 +28,8 @@ import {
 import { Safeguard } from "@/types/safeguard"
 import useAuthStore from "./authStore"
 import { createStore, runUpdater } from "./store"
+import fetchFileViaProxy from "@/services/fetchFileAsFile"
+import { EVIDENCE_PATHNAME_STORAGE } from "@/constants"
 
 const initialState = {
 	...commonInitualState,
@@ -295,6 +297,19 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 							const data = await getDataApi<RiskMonitoring>(
 								`${RISK_MONITROING_EP}/${id}`
 							)
+							if (data.data?.evidence) {
+
+								fetchFileViaProxy(`${EVIDENCE_PATHNAME_STORAGE}/${data.data?.evidence || ""}`).then(resultFile => {
+									if (data.data)
+										data.data.evidence = resultFile;
+
+								}).catch(err => {
+									if (data.data) {
+										data.data.evidence = "";
+									}
+									console.log({ err })
+								})
+							}
 							const {
 								causes,
 								parameters,
@@ -456,11 +471,22 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 				set({
 					isSubmit: true,
 				})
+				const formData = new FormData()
+				Object.entries(payload).forEach(([key, value]) => {
+					if (Array.isArray(value)) {
+						console.log({ value });
+						value.forEach((val, index) => {
+							formData.append(`${key}[${index}]`, val.value);
+						})
+					} else {
+						formData.append(key, value)
+					}
+				})
 				return new Promise<ResponseApiType<RiskMonitoring>>(
 					(resolve, reject) => {
 						postData<RiskMonitoring>(
 							`${RISK_MONITROING_EP}/${id}`,
-							payload,
+							formData,
 							{
 								headers: {
 									"Content-Type": "multipart/form-data",

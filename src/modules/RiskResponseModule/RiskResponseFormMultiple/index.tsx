@@ -45,7 +45,6 @@ const RiskResponseFormMultiple = forwardRef<FormRefType, IProps>(
 			isFetching,
 			riskResponseItems,
 			meta,
-			isSubmit,
 			pagination_tanstack,
 			nodeSelected,
 		} = useRiskResponseStore()

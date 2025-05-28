@@ -549,7 +549,7 @@ export const useColumnsRiskResponse = ({
 				enableSorting: false,
 			},
 			{
-				id: "id-action",
+				id: "id_action",
 				accessorFn: (row) => row.id,
 				meta: {
 					className: "text-center",
@@ -1319,6 +1319,47 @@ export const useColumnsMonitoring = ({
 				cell: ({ row }) => <div>{row.getValue("cause")}</div>,
 			},
 			{
+				id: "consequence",
+				accessorFn: (row) => row.consequences.consequence || "",
+				header: ({ column }) => {
+					return (
+						<DataTableColumnHeader
+							column={column}
+							title="Consequence"
+						/>
+					)
+				},
+				size: 280,
+				enableSorting: false,
+				cell: ({ row }) => (
+					<div>{row.getValue("consequence")}</div>
+					// <></>
+				),
+			},
+			{
+				id: "failed_safeguards",
+				accessorFn: (row) => row.failed_safeguards,
+				header: ({ column }) => {
+					return (
+						<DataTableColumnHeader
+							column={column}
+							title="Related Safeguard Failure"
+						/>
+					)
+				},
+				size: 280,
+				enableSorting: false,
+				cell: ({ row }) => (
+					<ul className="!list-decimal">
+						{row.original.failed_safeguards.map(
+							(safeguard, key) => (
+								<li key={key}>{safeguard.safeguard}</li>
+							)
+						)}
+					</ul>
+				),
+			},
+			{
 				id: "incident_name",
 				enableSorting: false,
 				minSize: 250,
@@ -1408,7 +1449,7 @@ export const useColumnsMonitoring = ({
 			{
 				id: "nip",
 				accessorFn: (row) => row.nip,
-				minSize: 250,
+				minSize: 120,
 				enableSorting: false,
 				header: ({ column }) => {
 					return (
@@ -1423,7 +1464,7 @@ export const useColumnsMonitoring = ({
 			{
 				id: "reported_on",
 				accessorFn: (row) => row.reported_on,
-				minSize: 250,
+				minSize: 60,
 				enableSorting: false,
 				header: ({ column }) => {
 					return (
@@ -1457,7 +1498,7 @@ export const useColumnsMonitoring = ({
 			{
 				id: "evidence",
 				accessorFn: (row) => row.action_taken,
-				minSize: 250,
+				minSize: 80,
 				enableSorting: false,
 				header: ({ column }) => {
 					return (
@@ -1473,7 +1514,11 @@ export const useColumnsMonitoring = ({
 							target="_blank"
 							href={`${EVIDENCE_PATHNAME_STORAGE}/${row.original.evidence}`}
 						>
-							<Button type="button" size={"sm"} variant={"warning"}>
+							<Button
+								type="button"
+								size={"sm"}
+								variant={"warning"}
+							>
 								<FileDown /> View
 							</Button>
 						</Link>

@@ -33,11 +33,12 @@ export type RiskMonitoring = {
 	nodes: Node
 	deviations: Deviations
 	causes: Cause | null
+	consequences: Consequences
 	failed_safeguards: Safeguard[]
 	name: string
 	action_taken: string
 	nip: string
-	evidence: string
+	evidence: any
 	reported_on: string
 }
 

@@ -1,5 +1,7 @@
 import { z } from "zod"
 import { toValidatedNumber, toValidatedNumberActual } from "./RiskAnalystSchema"
+import { RiskResponseHazopSchemaForm, RiskResponseSevertyExpectSchemaForm } from "@/types/riskResponse"
+import { RiskMonitoringSchemaForm } from "@/types/riskMonitoring"
 
 export const RiskMonitoringSchema = z.object({
 	node_id: z
@@ -15,8 +17,7 @@ export const RiskMonitoringSchema = z.object({
 		.string({ message: "Cause is required" })
 		.min(1, "Cause is required"),
 	consequence_id: z
-		.string({ message: "Consequence is required" })
-		.min(1, "Consequence is required"),
+		.any({ message: "Consequence is required" }),
 	incident_name: z
 		.string({ message: "Incident is required" })
 		.min(1, "Incident is required"),
@@ -46,6 +47,7 @@ export const RiskMonitoringSchema = z.object({
 			.instanceof(File, {
 				message: "Please upload evidence",
 			})
+			.or(z.null())
 			.refine(
 				(file) => {
 					if (!file) {
@@ -60,7 +62,7 @@ export const RiskMonitoringSchema = z.object({
 	safeguard_failure: z.array(z.object({
 		label: z.string(),
 		value : z.any(),
-	})).min(1, "Safeguard Failure min 1 filled"),
+	})).optional(),
 	sp_affected: toValidatedNumber("SP"),
 	sf_affected: toValidatedNumber("SF"),
 	se_affected: toValidatedNumber("SE"),
@@ -83,3 +85,27 @@ export const RiskMonitoringSeveritySchema = z.object({
 export const RiskMonitoringSeverityMultpleSchema = z.object({
 	risks: z.array(RiskMonitoringSeveritySchema)
 })
+
+export const initialRiskMonitoring: RiskMonitoringSchemaForm = {
+	node_id : "",
+	deviation_id: "",
+	parameter_id: "",
+	risk_bank_id: "",
+	consequence_id : "",
+	safeguard_failure: [],
+	nip: "",
+	name: "",
+	incident_name: "",
+	incident_date: "",
+	evidence: null,
+	incident_location : "",
+	incident_time: "",
+	incident_trigger : "",
+	action_taken : "",
+	spn_affected: "",
+	sp_affected: "",
+	sf_affected: "",
+	se_affected: "",
+	sa_affected: "",
+	srl_affected : "",
+}
