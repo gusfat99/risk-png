@@ -1,5 +1,6 @@
 "use client"
 import NodeDataCard from "@/components/cards/NodeDataCard"
+import RiskBankIncidentCard from "@/components/cards/RiskBankIncidentCard"
 import RiskIncidentCard from "@/components/cards/RiskIncidentCard"
 import SeverityAffectedRiskCard from "@/components/cards/SeverityAffectedRiskCard"
 import useRiskMonitoringStore from "@/store/riskMonitoringStore"
@@ -27,6 +28,16 @@ const RiskMonitoringDetail: React.FC<IProps> = () => {
 			{!isFetching && riskMonitoringSelected?.nodes && (
 				<NodeDataCard nodeSelected={riskMonitoringSelected?.nodes} />
 			)}
+			{isFetching && <RiskBankIncidentCard.Skeleton />}
+			{!isFetching && riskMonitoringSelected && (
+				<RiskBankIncidentCard
+					deviation={riskMonitoringSelected?.deviations}
+					parameter={riskMonitoringSelected?.parameters}
+					failed_safeguards={riskMonitoringSelected.failed_safeguards}
+					cause={riskMonitoringSelected.causes}
+					consequence={riskMonitoringSelected.consequences}
+				/>
+			)}
 			{isFetching && <RiskIncidentCard.Skeleton />}
 
 			{!isFetching && riskMonitoringSelected && (
@@ -44,7 +55,7 @@ const RiskMonitoringDetail: React.FC<IProps> = () => {
 						evidence: riskMonitoringSelected.evidence,
 						incident_date: riskMonitoringSelected.incident_date,
 						incident_time: riskMonitoringSelected.incident_time,
-						action_taken : riskMonitoringSelected.action_taken
+						action_taken: riskMonitoringSelected.action_taken,
 					}}
 				/>
 			)}
