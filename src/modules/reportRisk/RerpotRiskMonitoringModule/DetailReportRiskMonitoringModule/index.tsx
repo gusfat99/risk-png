@@ -32,6 +32,7 @@ const ReportRiskMonitoringModule = () => {
 	const deviationId = searchParams.get("deviation")
 	const riskBankId = searchParams.get("risk_bank")
 	const parameterId = searchParams.get("parameter")
+	const consequenceId = searchParams.get("consequence")
 
 	const splitPathname = pathname.split("/")
 	const basePathname = "/".concat(splitPathname[1])
@@ -52,6 +53,8 @@ const ReportRiskMonitoringModule = () => {
 			nodeId,
 			deviationId,
 			riskBankId,
+			parameterId,
+			consequenceId
 		})
 	}
 
@@ -60,7 +63,8 @@ const ReportRiskMonitoringModule = () => {
 			nodeId,
 			deviationId,
 			riskBankId,
-			parameterId
+			parameterId,
+			consequenceId
 		})
 	}, [fetchDetailReportRiskMonitoring, nodeId, deviationId, riskBankId])
 
@@ -74,6 +78,7 @@ const ReportRiskMonitoringModule = () => {
 						incident_count: total,
 						deviation:
 							reportRiskMonitoringDetail[0].deviations.name,
+						
 					}}
 				/>
 			)}

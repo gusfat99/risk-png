@@ -61,6 +61,12 @@ export const columnReportRiskMonitoring = (
 			size: 280,
 		},
 		{
+			accessorKey: "consequene",
+			header: "Consequence",
+			cell: ({ row }) => row.original.consequence,
+			size: 400,
+		},
+		{
 			accessorKey: "incident_count",
 			header: "Incident Count",
 			meta: {
