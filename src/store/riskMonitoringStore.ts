@@ -230,7 +230,10 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 				}))
 				return new Promise<ResponseApiType<Parameter[]>>(
 					(resolve, reject) => {
-						getDataApi<Parameter[]>(PARAMETER_EP)
+						getDataApi<Parameter[]>(PARAMETER_EP, {
+							page: 1,
+							per_page: 1000,
+						})
 							.then((data) => {
 								//parse data to flat
 								if (Array.isArray(data.data)) {
