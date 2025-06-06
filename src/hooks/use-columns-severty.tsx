@@ -163,7 +163,7 @@ export const useColumnsRiskAnalyst = ({
 					<TableRowActions
 						acl={{
 							canEdit: true,
-							canView : true
+							canView: true,
 						}}
 						onAction={(actionName: string) => {
 							onAction && onAction(actionName, row.getValue("id"))
@@ -503,8 +503,7 @@ export const useColumnsRiskAnalyst = ({
 						severty["l_frequency_current"] || 0,
 					]
 					const maxValSeverty = Math.max(...severties)
-					const risk_ranking_current =
-						maxValSeverty * severties[6];
+					const risk_ranking_current = maxValSeverty * severties[6]
 					return (
 						<div
 							className={cn(
@@ -618,7 +617,11 @@ export const useColumnsRiskResponse = ({
 				},
 				size: 180,
 				enableSorting: false,
-				cell: ({ row }) => row.getValue("parameter"),
+				cell: ({ row }) => (
+					<span className="break-words">
+						{row.getValue("parameter")}
+					</span>
+				),
 			},
 			{
 				id: "deviation",
@@ -634,7 +637,11 @@ export const useColumnsRiskResponse = ({
 				},
 				size: 180,
 				enableSorting: false,
-				cell: ({ row }) => row.getValue("deviation"),
+				cell: ({ row }) => (
+					<span className="break-words">
+						{row.getValue("deviation")}
+					</span>
+				),
 			},
 			{
 				id: "cause",
@@ -1123,7 +1130,7 @@ export const useColumnsRiskResponse = ({
 					]
 					const maxValSeverty = Math.max(...severties)
 					const risk_ranking_expected =
-						maxValSeverty * severty["l_frequency_expected"]
+						maxValSeverty * severties[6]
 					return (
 						<div
 							className={cn(
@@ -1216,7 +1223,7 @@ export const useColumnsRiskResponse = ({
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title="Date Finished"
+							title="Date Completed"
 						/>
 					)
 				},
