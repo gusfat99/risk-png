@@ -31,7 +31,7 @@ import {
 } from "@/types/riskResponse"
 import { ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
-import { ExternalLink, FileDown } from "lucide-react"
+import { Edit3, FileDown, LucideEdit } from "lucide-react"
 import Link from "next/link"
 import React, { useMemo } from "react"
 import { UseFormReturn } from "react-hook-form"
@@ -161,6 +161,10 @@ export const useColumnsRiskAnalyst = ({
 				},
 				cell: ({ row }) => (
 					<TableRowActions
+						acl={{
+							canEdit: true,
+							canView : true
+						}}
 						onAction={(actionName: string) => {
 							onAction && onAction(actionName, row.getValue("id"))
 						}}
@@ -176,7 +180,7 @@ export const useColumnsRiskAnalyst = ({
 									)
 							}}
 						>
-							<ExternalLink /> Fill Risk Response
+							<LucideEdit /> Fill Risk Response
 						</DropdownMenuItem>
 					</TableRowActions>
 				),
@@ -184,7 +188,7 @@ export const useColumnsRiskAnalyst = ({
 			{
 				id: "parameter",
 				accessorFn: (row) => row.parameters.name ?? "",
-				size: 120,
+				size: 128,
 				enableSorting: false,
 				header: ({ column }) => {
 					return (
@@ -194,12 +198,16 @@ export const useColumnsRiskAnalyst = ({
 						/>
 					)
 				},
-				cell: ({ row }) => row.getValue("parameter"),
+				cell: ({ row }) => (
+					<span className="break-words">
+						{row.getValue("parameter")}
+					</span>
+				),
 			},
 			{
 				id: "deviation",
 				accessorFn: (row) => row.deviations.name ?? "",
-				size: 120,
+				size: 128,
 				enableSorting: false,
 				header: ({ column }) => {
 					return (
@@ -209,7 +217,11 @@ export const useColumnsRiskAnalyst = ({
 						/>
 					)
 				},
-				cell: ({ row }) => row.getValue("deviation"),
+				cell: ({ row }) => (
+					<span className="break-words">
+						{row.getValue("deviation")}
+					</span>
+				),
 			},
 			{
 				id: "cause",
@@ -492,7 +504,7 @@ export const useColumnsRiskAnalyst = ({
 					]
 					const maxValSeverty = Math.max(...severties)
 					const risk_ranking_current =
-						maxValSeverty * severty["l_frequency_current"]
+						maxValSeverty * severties[6];
 					return (
 						<div
 							className={cn(

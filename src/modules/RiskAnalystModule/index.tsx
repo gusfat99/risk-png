@@ -39,8 +39,10 @@ const RiskAnalystModule = () => {
 		supportData: {
 			node: { nodeItems, isFetching: isFetchingNode },
 		},
+		pagination_tanstack,
 	} = useRiskAnalysStore()
-	const { year_selected } = useAuthStore();
+	const { pageIndex, pageSize } = pagination_tanstack
+	const { year_selected } = useAuthStore()
 	const router = useRouter()
 	const pathname = usePathname()
 	const splitPathname = pathname.split("/")
@@ -69,7 +71,9 @@ const RiskAnalystModule = () => {
 		nodeSelected?.id,
 		nodeItems.length,
 		querySearch,
-		year_selected
+		year_selected,
+		pageIndex,
+		pageSize,
 	])
 
 	return (
