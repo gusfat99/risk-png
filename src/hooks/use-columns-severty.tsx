@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { FormField } from "@/components/ui/form"
 import { EVIDENCE_PATHNAME_STORAGE } from "@/constants"
-import { hazopStatus } from "@/data/enumetions"
+import { hazopStatus, riskMonitoringStatus } from "@/data/enumetions"
 import { fieldsInputSeverity } from "@/data/severity"
 import { useDebounce } from "@/hooks/use-debounce"
 import { cn, riskRankColor } from "@/lib/utils"
@@ -31,7 +31,7 @@ import {
 } from "@/types/riskResponse"
 import { ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
-import { ExternalLink, FileDown } from "lucide-react"
+import { Edit3, FileDown, LucideEdit } from "lucide-react"
 import Link from "next/link"
 import React, { useMemo } from "react"
 import { UseFormReturn } from "react-hook-form"
@@ -161,6 +161,10 @@ export const useColumnsRiskAnalyst = ({
 				},
 				cell: ({ row }) => (
 					<TableRowActions
+						acl={{
+							canEdit: true,
+							canView: true,
+						}}
 						onAction={(actionName: string) => {
 							onAction && onAction(actionName, row.getValue("id"))
 						}}
@@ -176,7 +180,7 @@ export const useColumnsRiskAnalyst = ({
 									)
 							}}
 						>
-							<ExternalLink /> Fill Risk Response
+							<LucideEdit /> Fill Risk Response
 						</DropdownMenuItem>
 					</TableRowActions>
 				),
@@ -184,7 +188,7 @@ export const useColumnsRiskAnalyst = ({
 			{
 				id: "parameter",
 				accessorFn: (row) => row.parameters.name ?? "",
-				size: 120,
+				size: 128,
 				enableSorting: false,
 				header: ({ column }) => {
 					return (
@@ -194,12 +198,16 @@ export const useColumnsRiskAnalyst = ({
 						/>
 					)
 				},
-				cell: ({ row }) => row.getValue("parameter"),
+				cell: ({ row }) => (
+					<span className="break-words">
+						{row.getValue("parameter")}
+					</span>
+				),
 			},
 			{
 				id: "deviation",
 				accessorFn: (row) => row.deviations.name ?? "",
-				size: 120,
+				size: 128,
 				enableSorting: false,
 				header: ({ column }) => {
 					return (
@@ -209,7 +217,11 @@ export const useColumnsRiskAnalyst = ({
 						/>
 					)
 				},
-				cell: ({ row }) => row.getValue("deviation"),
+				cell: ({ row }) => (
+					<span className="break-words">
+						{row.getValue("deviation")}
+					</span>
+				),
 			},
 			{
 				id: "cause",
@@ -491,8 +503,7 @@ export const useColumnsRiskAnalyst = ({
 						severty["l_frequency_current"] || 0,
 					]
 					const maxValSeverty = Math.max(...severties)
-					const risk_ranking_current =
-						maxValSeverty * severty["l_frequency_current"]
+					const risk_ranking_current = maxValSeverty * severties[6]
 					return (
 						<div
 							className={cn(
@@ -606,7 +617,11 @@ export const useColumnsRiskResponse = ({
 				},
 				size: 180,
 				enableSorting: false,
-				cell: ({ row }) => row.getValue("parameter"),
+				cell: ({ row }) => (
+					<span className="break-words">
+						{row.getValue("parameter")}
+					</span>
+				),
 			},
 			{
 				id: "deviation",
@@ -622,7 +637,11 @@ export const useColumnsRiskResponse = ({
 				},
 				size: 180,
 				enableSorting: false,
-				cell: ({ row }) => row.getValue("deviation"),
+				cell: ({ row }) => (
+					<span className="break-words">
+						{row.getValue("deviation")}
+					</span>
+				),
 			},
 			{
 				id: "cause",
@@ -1110,8 +1129,7 @@ export const useColumnsRiskResponse = ({
 						severty["l_frequency_expected"] || 0,
 					]
 					const maxValSeverty = Math.max(...severties)
-					const risk_ranking_expected =
-						maxValSeverty * severty["l_frequency_expected"]
+					const risk_ranking_expected = maxValSeverty * severties[6]
 					return (
 						<div
 							className={cn(
@@ -1204,7 +1222,7 @@ export const useColumnsRiskResponse = ({
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title="Date Finished"
+							title="Date Completed"
 						/>
 					)
 				},
@@ -1290,7 +1308,11 @@ export const useColumnsMonitoring = ({
 						/>
 					)
 				},
-				cell: ({ row }) => row.getValue("parameter"),
+				cell: ({ row }) => (
+					<span className="break-words">
+						{row.getValue("parameter")}
+					</span>
+				),
 			},
 			{
 				id: "deviation",
@@ -1304,7 +1326,11 @@ export const useColumnsMonitoring = ({
 						/>
 					)
 				},
-				cell: ({ row }) => row.getValue("deviation"),
+				cell: ({ row }) => (
+					<span className="break-words">
+						{row.getValue("deviation")}
+					</span>
+				),
 			},
 			{
 				id: "cause",
@@ -1526,7 +1552,74 @@ export const useColumnsMonitoring = ({
 						"-" // Menampilkan '-' jika tidak ada dokumen
 					),
 			},
+			{
+				id: "status",
+				accessorFn: (row) => row.status,
+				size: 160,
+				enableSorting: false,
+				meta: {
+					className: "text-center",
+				},
 
+				header: "Status",
+				cell: ({ row }) => {
+					let status = row.original.status.toLowerCase()
+					const statusRiskMonit = riskMonitoringStatus.find(
+						(x) => x.value === status
+					)
+					status = statusRiskMonit?.label || "-"
+					const textColor = statusRiskMonit?.color || ""
+
+					return (
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button
+									className={cn(textColor, "w-full")}
+									variant="outline"
+								>
+									{statusRiskMonit?.icon && (
+										<statusRiskMonit.icon />
+									)}
+									{status}
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent className="w-52 ">
+								{riskMonitoringStatus.map((status) => (
+									<DropdownMenuItem
+										onClick={() => {
+											onAction &&
+												onAction(
+													"status",
+													row.original.id,
+													status.value as unknown as any
+												)
+										}}
+										className={cn("font-light", {
+											"focus:text-gray-500":
+												status.color ===
+												"text-gray-500",
+											"focus:text-warning-700":
+												status.color ===
+												"text-warning-600",
+											"focus:text-success":
+												status.color === "text-success",
+											"focus:text-secondary":
+												status.color ===
+												"text-secondary",
+										})}
+										key={status.value}
+									>
+										{<status.icon />} {status.label}
+									</DropdownMenuItem>
+								))}
+
+								{/* <DropdownMenuLabel>Change Hazop Status</DropdownMenuLabel> */}
+							</DropdownMenuContent>
+						</DropdownMenu>
+						// <></>
+					)
+				},
+			},
 			{
 				id: "sp_affected_monitoring_id",
 				accessorFn: (row) => row.sp_affected,

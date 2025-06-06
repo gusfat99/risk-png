@@ -21,10 +21,9 @@ import { Node } from "@/types/node"
 import {
 	Hazop,
 	RiskResponse,
-	RiskResponseHazopMultipleSchemaForm,
 	RiskResponseSevertyExpectMultipleSchemaForm,
 	RiskResponseSevertyExpectSchemaForm,
-	RiskResponseState,
+	RiskResponseState
 } from "@/types/riskResponse"
 import { Severity } from "@/types/severity"
 import useAuthStore from "./authStore"

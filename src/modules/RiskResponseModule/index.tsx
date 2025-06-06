@@ -34,10 +34,12 @@ const RiskResponseModule = () => {
 		supportData: {
 			node: { isFetching: isFetchingNode, nodeItems },
 		},
+		pagination_tanstack,
 	} = useRiskResponseStore()
 	const { year_selected } = useAuthStore()
 	const splitPathname = pathname.split("/")
 	const basePathname = "/".concat(splitPathname[1])
+	const { pageSize, pageIndex } = pagination_tanstack
 
 	const nodeOptions = nodeItems.map((node) => ({
 		label: node.node,
@@ -68,6 +70,8 @@ const RiskResponseModule = () => {
 		setHazopByRiskAnalyst,
 		nodeSelected?.id,
 		nodeItems.length,
+		pageSize,
+		pageIndex,
 		querySearch,
 		year_selected,
 	])

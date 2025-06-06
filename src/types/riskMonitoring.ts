@@ -40,6 +40,7 @@ export type RiskMonitoring = {
 	nip: string
 	evidence: any
 	reported_on: string
+	status: "pending" | "verified"
 }
 
 export type ReportRiskMonitoring = {
@@ -49,6 +50,8 @@ export type ReportRiskMonitoring = {
 	parameter_id: any
 	parameter_name: string
 	deviation_name: number
+	consequence: string
+	consequence_id: number
 	risk_bank_id: string
 	cause: string
 	incident_count: number
@@ -131,6 +134,7 @@ export interface RiskMonitoringState extends CommonState {
 			id: any
 		) => void
 		setNodeSelected: (nodeId: number) => void
+		setStatus: (monitoringId: any, status: "pending" | "verified") => Promise<ResponseApiType<any>>
 		updateSavertyMultiple: (
 			nodeId: any,
 			payload: RiskMonitoringSevertyMultipleForm
@@ -157,14 +161,18 @@ export interface ReportRiskMonitoringState extends CommonState {
 			deviationId: any
 			riskBankId: any
 			parameterId: any
+			consequenceId: any
 		}): Promise<ResponseApiType<DetailReportRiskMonitoring[]>>
 		setPagination?: (updater: Updater<PaginationState>) => void
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>
 		setNodeSelected: (nodeId: number) => void
+		
 		downloadFileReportDetail: (params: {
 			nodeId: any
 			deviationId: any
-			riskBankId: any
+			riskBankId: any,
+			parameterId: any
+			consequenceId: any
 		}) => void
 	}
 }

@@ -90,7 +90,8 @@ const useReportRiskMonitoringStore = createStore<ReportRiskMonitoringState>(
 				nodeId,
 				deviationId,
 				riskBankId,
-				parameterId
+				parameterId,
+				consequenceId
 			}) => {
 				const year_selected = useAuthStore.getState().year_selected
 				set({
@@ -108,7 +109,8 @@ const useReportRiskMonitoringStore = createStore<ReportRiskMonitoringState>(
 							node_id: nodeId,
 							deviation_id: deviationId,
 							risk_bank_id: riskBankId,
-							parameter_id: parameterId
+							parameter_id: parameterId,
+							consequence_id: consequenceId,
 						}
 					)
 						.then((data) => {
@@ -197,6 +199,8 @@ const useReportRiskMonitoringStore = createStore<ReportRiskMonitoringState>(
 				nodeId,
 				deviationId,
 				riskBankId,
+				parameterId,
+				consequenceId,
 			}) => {
 				const year_selected = useAuthStore.getState().year_selected
 				set({
@@ -207,6 +211,8 @@ const useReportRiskMonitoringStore = createStore<ReportRiskMonitoringState>(
 					node_id: nodeId,
 					deviation_id: deviationId,
 					risk_bank_id: riskBankId,
+					parameter_id: parameterId,
+					consequence_id: consequenceId,
 				}).then((blob) => {
 					toast({
 						title: "Success",

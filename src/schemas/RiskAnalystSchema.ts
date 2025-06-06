@@ -45,7 +45,7 @@ export const RiskAnalysisSeveritySchema = z.object({
 })
 
 export const RiskAnalysisSeverityMultpleSchema = z.object({
-	risks : z.array(RiskAnalysisSeveritySchema)
+	risks: z.array(RiskAnalysisSeveritySchema)
 })
 
 export function toValidatedNumber(name: string) {
@@ -85,7 +85,7 @@ export function toValidatedNumberActual(name: string) {
 export const initialRiskAnalyst: RiskAnalysisForm = {
 	consequence_id: "",
 	deviation_id: "",
-	parameter_id : "",
+	parameter_id: "",
 	risk_rank: "",
 	srl_current: "",
 	spn_current: "",
@@ -99,5 +99,5 @@ export const initialRiskAnalyst: RiskAnalysisForm = {
 }
 
 export const intitalRiskAnalystSavertyMultiple: RiskAnalysisSevertyMultipleForm = {
-	risks : []
+	risks: []
 }

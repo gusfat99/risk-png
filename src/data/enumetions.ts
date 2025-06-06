@@ -11,25 +11,40 @@ export const hazopStatus: SelectDataType[] = [
       label: "Planned",
       value: "planned",
       color: "text-gray-500",
-      icon : Bookmark
+      icon: Bookmark
    },
    {
       label: "In Progress",
       value: "in_progress",
       color: "text-warning-600",
-      icon : Loader
+      icon: Loader
    },
    {
       label: "Completed",
-      value : "completed",
+      value: "completed",
       color: "text-success",
-      icon : BookCheck
+      icon: BookCheck
    },
    {
       label: "Verified",
-      value : "verified",
+      value: "verified",
       color: "text-secondary",
-      icon : BadgeCheck
+      icon: BadgeCheck
+   },
+]
+   ;
+export const riskMonitoringStatus: SelectDataType[] = [
+   {
+      label: "Pending",
+      value: "pending",
+      color: "text-gray-500",
+      icon: Loader
+   },
+   {
+      label: "Verified",
+      value: "verified",
+      color: "text-secondary",
+      icon: BadgeCheck
    },
 ];
 

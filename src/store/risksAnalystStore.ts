@@ -229,7 +229,10 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 				}))
 				return new Promise<ResponseApiType<Parameter[]>>(
 					(resolve, reject) => {
-						getDataApi<Parameter[]>(PARAMETER_EP)
+						getDataApi<Parameter[]>(PARAMETER_EP, {
+							per_page: 1000,
+							page: 1,
+						})
 							.then((data) => {
 								//parse data to flat
 								if (Array.isArray(data.data)) {

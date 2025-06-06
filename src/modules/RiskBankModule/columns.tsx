@@ -29,15 +29,16 @@ export const columnRiskBank = (
 
 		{
 			accessorKey: "parameter",
-			size: 60,
+			size: 68,
 			header: "Parameter",
 			cell: ({ row }) =>
 				row.original.isFirstMain ? (
 					<TableCell
-						className="border"
+						className="border break-words"
 						rowSpan={row.original.mainRowspan}
 					>
-						{row.original.parameter}
+							{row.original.parameter}
+					
 					</TableCell>
 				) : null,
 		},

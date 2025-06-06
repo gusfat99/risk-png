@@ -1,10 +1,10 @@
 "use client"
 import { RiskAnalystListTableSkeleton } from "@/components/skeletons/RiskAnalystListTableSkeleton"
+import useAuthStore from "@/store/authStore"
 import useRiskMonitoringStore from "@/store/riskMonitoringStore"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect } from "react"
 import RiskMonitoringFormMultiple from "./RiskMonitoringFormMultiple"
-import useAuthStore from "@/store/authStore"
 
 const RiskAnalystModule = () => {
 	const {
@@ -12,13 +12,18 @@ const RiskAnalystModule = () => {
 		isFetching,
 		nodeSelected,
 		supportData: {
-			node: { nodeItems, isFetching: isFetchingNode },
+			node: { nodeItems },
 		},
+		pagination_tanstack
 	} = useRiskMonitoringStore()
 	const { year_selected } = useAuthStore()
 	const router = useRouter()
 	const pathname = usePathname()
 	const splitPathname = pathname.split("/")
+	const {
+		pageSize,
+		pageIndex
+	} = pagination_tanstack;
 
 	const basePathname = "/".concat(splitPathname[1])
 
@@ -32,6 +37,8 @@ const RiskAnalystModule = () => {
 		fetchAllData,
 		nodeItems.length,
 		nodeSelected,
+		pageIndex,
+		pageSize,
 		year_selected,
 	])
 

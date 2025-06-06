@@ -1,10 +1,9 @@
 "use client"
+import LoadingIndicator from "@/components/LoadingIndicator"
 import useRiskMonitoringStore from "@/store/riskMonitoringStore"
+import { useParams } from "next/navigation"
 import { useEffect } from "react"
 import RiskMonitoringForm from "../RiskMonitoringForm"
-import { useParams } from "next/navigation"
-import Spinner from "@/components/ui/spinner"
-import LoadingIndicator from "@/components/LoadingIndicator"
 
 const RiskAnalystUpdate = () => {
 	const params = useParams()

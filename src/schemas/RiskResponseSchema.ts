@@ -53,7 +53,18 @@ export const RiskResponseSevertyExpectSchema = z.object({
 })
 
 export const RiskResponseSevertyExpectMultipleSchema = z.object({
-	risks: z.array(RiskResponseSevertyExpectSchema),
+	risks: z.array(z.object({
+		id: z.string().optional(),
+		sp_expected: toValidatedNumberActual("SP").optional().nullable(),
+		sf_expected: toValidatedNumberActual("SF").optional().nullable(),
+		se_expected: toValidatedNumberActual("SE").optional().nullable(),
+		srl_expected: toValidatedNumberActual("SRL").optional().nullable(),
+		sa_expected: toValidatedNumberActual("SA").optional().nullable(),
+		spn_expected: toValidatedNumberActual("SPN").optional().nullable(),
+		l_frequency_expected: toValidatedNumberActual(
+			"Likelihood Frequency kejadian"
+		).optional().nullable(),
+	})),
 })
 
 export const initialDataSevertyExpect: RiskResponseSevertyExpectSchemaForm = {

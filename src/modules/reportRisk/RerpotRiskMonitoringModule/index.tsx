@@ -42,7 +42,7 @@ const ReportRiskMonitoringModule = () => {
 		(actionName: string, row: ReportRiskMonitoring) => {
 			if (actionName === "detail") {
 				route.push(
-					`${basePathname}/detail?node=${row.node_id}&deviation=${row.deviation_id}&risk_bank=${row.risk_bank_id}&parameter=${row.parameter_id}`
+					`${basePathname}/detail?node=${row.node_id}&deviation=${row.deviation_id}&risk_bank=${row.risk_bank_id}&parameter=${row.parameter_id}&consequence=${row.consequence_id}`
 				)
 			}
 		},
