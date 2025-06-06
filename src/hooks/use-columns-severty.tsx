@@ -1129,8 +1129,7 @@ export const useColumnsRiskResponse = ({
 						severty["l_frequency_expected"] || 0,
 					]
 					const maxValSeverty = Math.max(...severties)
-					const risk_ranking_expected =
-						maxValSeverty * severties[6]
+					const risk_ranking_expected = maxValSeverty * severties[6]
 					return (
 						<div
 							className={cn(
@@ -1309,7 +1308,11 @@ export const useColumnsMonitoring = ({
 						/>
 					)
 				},
-				cell: ({ row }) => row.getValue("parameter"),
+				cell: ({ row }) => (
+					<span className="break-words">
+						{row.getValue("parameter")}
+					</span>
+				),
 			},
 			{
 				id: "deviation",
@@ -1323,7 +1326,11 @@ export const useColumnsMonitoring = ({
 						/>
 					)
 				},
-				cell: ({ row }) => row.getValue("deviation"),
+				cell: ({ row }) => (
+					<span className="break-words">
+						{row.getValue("deviation")}
+					</span>
+				),
 			},
 			{
 				id: "cause",
