@@ -500,10 +500,10 @@ export const useColumnsRiskAnalyst = ({
 						severty["srl_current"] || 0,
 						severty["sa_current"] || 0,
 						severty["spn_current"] || 0,
-						severty["l_frequency_current"] || 0,
-					]
+					];
+					const likelihood = severty["l_frequency_current"] || 0;
 					const maxValSeverty = Math.max(...severties)
-					const risk_ranking_current = maxValSeverty * severties[6]
+					const risk_ranking_current = maxValSeverty * likelihood;
 					return (
 						<div
 							className={cn(
@@ -1126,10 +1126,10 @@ export const useColumnsRiskResponse = ({
 						severty["srl_expected"] || 0,
 						severty["sa_expected"] || 0,
 						severty["spn_expected"] || 0,
-						severty["l_frequency_expected"] || 0,
 					]
+					const likelihood = severty["l_frequency_expected"] || 0;
 					const maxValSeverty = Math.max(...severties)
-					const risk_ranking_expected = maxValSeverty * severties[6]
+					const risk_ranking_expected = maxValSeverty * likelihood
 					return (
 						<div
 							className={cn(

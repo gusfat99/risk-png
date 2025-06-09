@@ -26,6 +26,14 @@ export type RiskAnalysis = {
 	sa_current: any
 	spn_current: any
 	l_frequency_current: any
+	sp_expected: any | null
+	se_expected: any | null
+	sf_expected: any | null
+	srl_expected: any | null
+	sa_expected: any | null
+	spn_expected: any | null
+	l_frequency_expected: any | null
+	risk_ranking_expected: number
 	risk_ranking_current: number
 	remark_analyst: string
 	id: number

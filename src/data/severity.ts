@@ -60,7 +60,7 @@ export const fieldsInputSeverity: fieldInputSeverityType[] = [
 		name_code: "sa",
 	},
 	{
-		label: "Severity to (SPN)",
+		label: "Severity Public to Notification (SPN)",
 		field: "spn_current",
 		field2: "spn_affected",
 		field3: "spn_expected",

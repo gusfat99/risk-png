@@ -7,6 +7,7 @@ import useRiskAnalystStore from "@/store/risksAnalystStore"
 import { useParams } from "next/navigation"
 import React, { useEffect } from "react"
 import RiskResponseSeverityExpectedForm from "../RiskResponseSeverityExpectedForm"
+import useRiskResponseStore from "@/store/riskResponseStore"
 
 const RiskResponseSeverityUpdate = () => {
 	const { nodeId, riskId } = useParams()
@@ -16,6 +17,7 @@ const RiskResponseSeverityUpdate = () => {
 		riskAnalysSelected,
 		isFetching,
 	} = useRiskAnalystStore()
+	useRiskResponseStore();
 
 	useEffect(() => {
 		fetchDetailData && fetchDetailData(nodeId, riskId)
@@ -44,7 +46,7 @@ const RiskResponseSeverityUpdate = () => {
 			)}
 			{isFetching && <LoadingIndicator />}
 			{!isFetching && riskAnalysSelected && (
-				<RiskResponseSeverityExpectedForm />
+				<RiskResponseSeverityExpectedForm isEdit />
 			)}
 		</div>
 	)

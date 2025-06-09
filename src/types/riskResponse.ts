@@ -70,26 +70,6 @@ export type HazopStatus = {
 
 export type HazopStatusValue = "pending" | "in_progress" | "done"
 
-export type RiskAnalystResponse = {
-	id: number
-	node_id: number
-	deviation_id: number
-	risk_bank_id: number
-	consequence_id: number
-	existing_safeguard: string
-	sp_current: number
-	se_current: number
-	sf_current: number
-	srl_current: number
-	sa_current: number
-	spn_current: number
-	l_frequency_current: number
-	risk_ranking_current: number
-	remark_analyst: string
-	deviations: Deviations
-	causes: Cause
-	consequence: Consequences
-}
 
 export interface RiskResponseState extends CommonState {
 	riskResponseItems: RiskResponse[]

@@ -167,7 +167,7 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 				})
 				return new Promise<ResponseApiType<RiskResponse>>(
 					(resolve, reject) => {
-						getDataApi<RiskResponse>(`${RISK_ANALYST_EP}/${id}`)
+						getDataApi<RiskResponse>(`${RISK_RESPONSE_EP}/${id}`)
 							.then((data) => {
 								//parse data to flat
 

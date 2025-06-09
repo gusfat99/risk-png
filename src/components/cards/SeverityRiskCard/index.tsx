@@ -2,6 +2,7 @@
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table"
+import { zeroValueOptionSeverity } from "@/data/severity"
 import { groupBy } from "@/lib/utils"
 import useSettingMatrixStore from "@/store/settingMatrixStore"
 import { RiskAnalysis } from "@/types/riksAnalyst"
@@ -113,6 +114,7 @@ const SeverityRiskCard: SeverityRiskCardComponent = ({ item }) => {
 					{!isFetchingSeverity &&
 						entriesSeverity.map(([columnId, severity]) => {
 							const severtyRow = severity[0].row_severity
+
 							return (
 								<TableRow className="border-0" key={columnId}>
 									<TableCell className="text-gray-400 p-1 w-60">
@@ -122,54 +124,39 @@ const SeverityRiskCard: SeverityRiskCardComponent = ({ item }) => {
 										:
 									</TableCell>
 									<TableCell className=" p-1">
-										{severtyRow
-											?.toLowerCase()
-											?.includes("personel") &&
-											severity.find(
-												(x) =>
-													x.value ===
-													item.sp_current?.toString()
-											)?.label}
-										{severtyRow
-											?.toLowerCase()
-											?.includes("environment") &&
-											severity.find(
-												(x) =>
-													x.value ===
-													item.se_current?.toString()
-											)?.label}
-										{severtyRow
-											?.toLowerCase()
-											?.includes("finance") &&
-											severity.find(
-												(x) =>
-													x.value ===
-													item.sf_current?.toString()
-											)?.label}
-										{severtyRow
-											?.toLowerCase()
-											?.includes("reputation") &&
-											severity.find(
-												(x) =>
-													x.value ===
-													item.srl_current?.toString()
-											)?.label}
-										{severtyRow
-											?.toLowerCase()
-											?.includes("asset") &&
-											severity.find(
-												(x) =>
-													x.value ===
-													item.sa_current?.toString()
-											)?.label}
-										{severtyRow
-											?.toLowerCase()
-											?.includes("notification") &&
-											severity.find(
-												(x) =>
-													x.value ===
-													item.spn_current?.toString()
-											)?.label}
+										{(() => {
+											const mapping: Record<string, any> =
+												{
+													personel: item.sp_current,
+													environment:
+														item.se_current,
+													finance: item.sf_current,
+													reputation:
+														item.srl_current,
+													asset: item.sa_current,
+													notification:
+														item.spn_current,
+												}
+
+											const key = Object.keys(
+												mapping
+											).find((k) =>
+												severtyRow
+													?.toLowerCase()
+													?.includes(k)
+											)
+
+											if (!key) return null
+
+											const value =
+												mapping[key]?.toString()
+
+											return value === "0"
+												? zeroValueOptionSeverity.label
+												: severity.find(
+														(x) => x.value === value
+												  )?.label
+										})()}
 									</TableCell>
 								</TableRow>
 							)
