@@ -4,12 +4,13 @@ import React from "react"
 
 interface IProps extends ButtonProps {
 	size?: "default" | "sm" | "lg" | "icon" | null | undefined
+	title? : string
 }
 
-const RemoveButton: React.FC<IProps> = ({ size = "sm", ...rest }) => {
+const RemoveButton: React.FC<IProps> = ({ size = "sm", title, ...rest }) => {
 	return (
 		<Button size={size} type="button" variant={"ghost"} {...rest}>
-			<Trash2 />
+			<Trash2 /> {title}
 		</Button>
 	)
 }

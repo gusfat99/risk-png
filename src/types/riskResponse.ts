@@ -15,7 +15,7 @@ import { Severity } from "./severity"
 export type HazopStatusDialog = {
 	hazop_id: any | null
 	risk_analyst_id: any | null
-	hazop? : Hazop[]
+	hazop?: Hazop[]
 	open: boolean
 }
 
@@ -30,7 +30,7 @@ export type RiskResponse = {
 	l_frequency_expected: number
 	risk_ranking_expected: number
 	date_finished: string
-	hazop_completed : "pending" | "in_progress" | "done"
+	hazop_completed: "pending" | "in_progress" | "done"
 	node_id: number
 	deviation_id: number
 	risk_bank_id: number
@@ -50,7 +50,7 @@ export type RiskResponse = {
 	causes: Cause
 	consequence: Consequences | null
 	tahun: string
-	hazops : Hazop[]
+	hazops: Hazop[]
 }
 
 
@@ -77,10 +77,14 @@ export interface RiskResponseState extends CommonState {
 	nodeSelected: Node | null
 	riskSeveritySelected: string;
 	hazopItemsSelected: Hazop[] | null
-	severityItems : Severity[] | null
+	severityItems: Severity[] | null
 	isFetchingHazopItems: boolean
 	isFetchingSeverity: boolean
-	isFetchingExportData : boolean
+	isFetchingExportData: boolean
+	hazopDelete: {
+		isFetching: boolean;
+		id: any | null
+	}
 	supportData: {
 		node: {
 			nodeItems: Node[]
@@ -91,7 +95,7 @@ export interface RiskResponseState extends CommonState {
 	actions: {
 		fetchAllData(
 			nodeId: any,
-			isForReport? : boolean
+			isForReport?: boolean
 		): Promise<ResponseApiType<{ risk_items: RiskResponse[] }>>
 		fetchSingleData?(id: any): Promise<ResponseApiType<RiskResponse>>
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>
@@ -110,6 +114,14 @@ export interface RiskResponseState extends CommonState {
 			nodeId: any,
 			riskId: any,
 			payload: FormData
+		): Promise<ResponseApiType<any>>
+		deleteHazop?(
+			params : {
+					nodeId: any;
+					riskId: any;
+					hazopId: any;
+					id: any
+				}
 		): Promise<ResponseApiType<any>>
 		setHazopStatus?(prams: {
 			nodeId: any
@@ -137,7 +149,7 @@ export interface RiskResponseState extends CommonState {
 		setPagination?: (updater: Updater<PaginationState>) => void
 		setNodeSelected: (nodeId: number) => void
 		setQuerySearch?: (serachValue: string) => void
-		exportExcel: (nodeId : any) => void
+		exportExcel: (nodeId: any) => void
 		setRiskSeveritySelected
 		: (severity: string) => void
 	}
