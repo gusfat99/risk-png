@@ -1,4 +1,4 @@
-import { FormControl, FormDescription } from "@/components/ui/form"
+import { FormDescription } from "@/components/ui/form"
 import { Label } from "@/components/ui/label"
 import {
 	Select,
@@ -20,8 +20,9 @@ interface FormInputSelectProps extends SelectProps {
 	placeholder: string
 	items: SelectDataType[]
 	loading?: boolean
-   isRequired?: boolean
-   className? : string
+	isRequired?: boolean
+	className?: string
+	itemClassName?: string
 }
 
 const InputSelect: React.FC<FormInputSelectProps> = ({
@@ -30,8 +31,9 @@ const InputSelect: React.FC<FormInputSelectProps> = ({
 	placeholder,
 	items,
 	description,
-   loading,
-   className,
+	loading,
+	className,
+	itemClassName,
 	...restProps
 }) => {
 	return (
@@ -50,7 +52,11 @@ const InputSelect: React.FC<FormInputSelectProps> = ({
 
 						<SelectContent>
 							{items.map((item, key) => (
-								<SelectItem key={key} value={item.value}>
+								<SelectItem
+									className={cn(itemClassName)}
+									key={key}
+									value={item.value}
+								>
 									{item.label}
 								</SelectItem>
 							))}

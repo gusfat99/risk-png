@@ -1,7 +1,7 @@
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table"
-import { Cause, Consequences, Deviations } from "@/types/riskDataBank"
+import { Cause, Consequences, Deviations, Parameter } from "@/types/riskDataBank"
 import { Safeguard } from "@/types/safeguard"
 import { SquareKanban } from "lucide-react"
 import React from "react"
@@ -15,6 +15,7 @@ interface IProps {
 	cause: Cause | null
 	deviation: Deviations | null
 	consequence: Consequences | null
+	parameter: Parameter
 	existing_safeguard: string[]
 }
 
@@ -30,6 +31,15 @@ const RiskBankCardSkeleton = () => {
 			</div>
 			<Table className="mt-2">
 				<TableBody>
+					<TableRow className="border-0">
+						<TableCell className="text-gray-400 p-1">
+							Paramter
+						</TableCell>
+						<TableCell className=" p-1">:</TableCell>
+						<TableCell className="p-1">
+							<Skeleton className="w-full" />
+						</TableCell>
+					</TableRow>
 					<TableRow className="border-0">
 						<TableCell className="text-gray-400 p-1">
 							Deviation
@@ -80,6 +90,7 @@ const RiskBankCard: RiskBankCardComponent = ({
 	cause,
 	deviation,
 	consequence,
+	parameter,
 	existing_safeguard,
 }) => {
 	return (
@@ -93,6 +104,13 @@ const RiskBankCard: RiskBankCardComponent = ({
 			</div>
 			<Table className="mt-2">
 				<TableBody>
+					<TableRow className="border-0">
+						<TableCell className="text-gray-400 p-1">
+							Parameter
+						</TableCell>
+						<TableCell className=" p-1">:</TableCell>
+						<TableCell className="p-1">{parameter?.name}</TableCell>
+					</TableRow>
 					<TableRow className="border-0">
 						<TableCell className="text-gray-400 p-1">
 							Deviation

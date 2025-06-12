@@ -34,6 +34,7 @@ const RiskAnalystDetail: React.FC<IProps> = () => {
 					existing_safeguard={
 						riskAnalysSelected.existing_safeguard || []
 					}
+					parameter={riskAnalysSelected.parameters}
 					consequence={riskAnalysSelected.consequence}
 					deviation={riskAnalysSelected.deviations}
 				/>
