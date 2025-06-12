@@ -9,6 +9,7 @@ type fileds = {
 	deviation: string
 	cause: string
 	incident_count: number
+	parameter : string
 }
 
 type Rows = {
@@ -25,6 +26,10 @@ const IncidentDataCard: React.FC<IProps> = ({ data }) => {
 		{
 			title: "Node",
 			field: "node",
+		},
+		{
+			title: "Parameter",
+			field: "parameter",
 		},
 		{
 			title: "Deviation",
