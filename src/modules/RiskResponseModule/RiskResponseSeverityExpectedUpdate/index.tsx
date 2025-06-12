@@ -32,6 +32,7 @@ const RiskResponseSeverityUpdate = () => {
 			{isFetching && <RiskBankCard.Skeleton />}
 			{!isFetching && riskAnalysSelected && (
 				<RiskBankCard
+					parameter={riskAnalysSelected.parameters}
 					cause={riskAnalysSelected.causes}
 					existing_safeguard={
 						riskAnalysSelected.existing_safeguard || []
