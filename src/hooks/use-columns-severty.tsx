@@ -392,7 +392,7 @@ export const useColumnsRiskResponse = ({
 					<TableRowActions
 						acl={{
 							canEdit: true,
-							canView: false,
+							canView: true,
 							canDelete: false,
 						}}
 						onAction={(actionName: string) => {

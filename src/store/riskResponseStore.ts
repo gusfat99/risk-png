@@ -164,16 +164,14 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 					}
 				)
 			},
-			fetchSingleData: async (id: any) => {
+			fetchSingleData: async (nodeId: any, riskId: any) => {
 				set({
 					isFetching: true,
 				})
 				return new Promise<ResponseApiType<RiskResponse>>(
 					(resolve, reject) => {
-						getDataApi<RiskResponse>(`${RISK_RESPONSE_EP}/${id}`)
+						getDataApi<RiskResponse>(`${RISK_ANALYST_EP}/${nodeId}/${riskId}`)
 							.then((data) => {
-								//parse data to flat
-
 								if (data.data) {
 									set({
 										riskResponseSelected: data.data,

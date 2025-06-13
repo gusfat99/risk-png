@@ -97,7 +97,7 @@ export interface RiskResponseState extends CommonState {
 			nodeId: any,
 			isForReport?: boolean
 		): Promise<ResponseApiType<{ risk_items: RiskResponse[] }>>
-		fetchSingleData?(id: any): Promise<ResponseApiType<RiskResponse>>
+		fetchSingleData?(nodeId : any, riskId: any): Promise<ResponseApiType<RiskResponse>>
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>
 		fetchSeverity(): Promise<ResponseApiType<Severity[]>>
 		fetchHazopByRiskAnalyst?(

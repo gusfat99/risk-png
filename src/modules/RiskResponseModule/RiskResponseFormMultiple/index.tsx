@@ -105,6 +105,11 @@ const RiskResponseFormMultiple = forwardRef<FormRefType, IProps>(
 						`${basePathname}/update/${nodeSelected?.id}/${row.id}`
 					)
 				}
+				if (actionName === "detail") {
+					router.push(
+						`${basePathname}/detail/${nodeSelected?.id}/${row.id}`
+					)
+				}
 			},
 			[nodeSelected?.id]
 		)

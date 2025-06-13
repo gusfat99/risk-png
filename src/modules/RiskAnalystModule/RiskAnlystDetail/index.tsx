@@ -21,6 +21,18 @@ const RiskAnalystDetail: React.FC<IProps> = () => {
 		fetchDetailData && fetchDetailData(nodeId, riskId)
 	}, [nodeId, riskId])
 
+	const riskRankItem = {
+		sp: riskAnalysSelected?.sp_current || "",
+		se: riskAnalysSelected?.se_current || "",
+		srl: riskAnalysSelected?.srl_current || "",
+		spn: riskAnalysSelected?.spn_current || "",
+		sf: riskAnalysSelected?.sf_current || "",
+		sa: riskAnalysSelected?.sa_current || "",
+		risk_ranking: riskAnalysSelected?.risk_ranking_current || "",
+		l_frequency: riskAnalysSelected?.l_frequency_current || "",
+		remark: riskAnalysSelected?.remark_analyst || "",
+	}
+
 	return (
 		<div className="space-y-4">
 			{isFetching && <NodeDataCard.Skeleton />}
@@ -41,7 +53,7 @@ const RiskAnalystDetail: React.FC<IProps> = () => {
 			)}
 			{isFetching && <SeverityRiskCard.Skeleton />}
 			{!isFetching && riskAnalysSelected && (
-				<SeverityRiskCard item={riskAnalysSelected} />
+				<SeverityRiskCard item={riskRankItem} />
 			)}
 		</div>
 	)

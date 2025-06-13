@@ -10,14 +10,25 @@ import { SquareKanban } from "lucide-react"
 import React from "react"
 
 interface IProps {
-	item: RiskAnalysis
+	item: {
+		sp: any
+		se: any
+		sf: any
+		srl: any
+		sa: any
+		spn: any
+		l_frequency: any
+		risk_ranking: any
+		remark: string
+	}
+	title?: string
 }
 
-const HeadTitle = () => (
+const HeadTitle = ({ title = "Initial Risk Ranking" }: { title?: string }) => (
 	<div className="space-y-2">
 		<div className="flex flex-row gap-2">
 			<SquareKanban className="text-secondary" />
-			<h4 className="text-secondary">Initial Risk Ranking</h4>
+			<h4 className="text-secondary">{title}</h4>
 		</div>
 		<Separator className="h-[2px] border-gray-200" />
 	</div>
@@ -47,7 +58,7 @@ const SeverityRiskCardSkeleton = () => {
 			<Table>
 				<TableBody>
 					<TableRow className="border-0">
-						<TableCell className="text-gray-400  w-60 p-1">
+						<TableCell className="text-gray-400 w-60 p-1">
 							Likelihood Frequency (L)
 						</TableCell>
 						<TableCell className="w-4 p-1">:</TableCell>
@@ -83,7 +94,7 @@ interface SeverityRiskCardComponent extends React.FC<IProps> {
 	Skeleton: typeof SeverityRiskCardSkeleton
 }
 
-const SeverityRiskCard: SeverityRiskCardComponent = ({ item }) => {
+const SeverityRiskCard: SeverityRiskCardComponent = ({ item, title }) => {
 	const {
 		severity_map_options,
 		severity_map: { isFetching: isFetchingSeverity },
@@ -94,7 +105,7 @@ const SeverityRiskCard: SeverityRiskCardComponent = ({ item }) => {
 
 	return (
 		<div className="border-2 border-gray-200 rounded-lg py-4 px-6">
-			<HeadTitle />
+			<HeadTitle title={title} />
 			<Table className="mt-2">
 				<TableBody>
 					{isFetchingSeverity &&
@@ -127,15 +138,12 @@ const SeverityRiskCard: SeverityRiskCardComponent = ({ item }) => {
 										{(() => {
 											const mapping: Record<string, any> =
 												{
-													personel: item.sp_current,
-													environment:
-														item.se_current,
-													finance: item.sf_current,
-													reputation:
-														item.srl_current,
-													asset: item.sa_current,
-													notification:
-														item.spn_current,
+													personel: item.sp,
+													environment: item.se,
+													finance: item.sf,
+													reputation: item.srl,
+													asset: item.sa,
+													notification: item.spn,
 												}
 
 											const key = Object.keys(
@@ -153,9 +161,9 @@ const SeverityRiskCard: SeverityRiskCardComponent = ({ item }) => {
 
 											return value === "0"
 												? zeroValueOptionSeverity.label
-												: severity.find(
+												: (severity.find(
 														(x) => x.value === value
-												  )?.label
+												  )?.label || "No Selected")
 										})()}
 									</TableCell>
 								</TableRow>
@@ -172,7 +180,7 @@ const SeverityRiskCard: SeverityRiskCardComponent = ({ item }) => {
 						</TableCell>
 						<TableCell className="w-4 p-1">:</TableCell>
 						<TableCell className=" p-1">
-							{item.l_frequency_current}
+							{item.l_frequency}
 						</TableCell>
 					</TableRow>
 					<TableRow className="border-0">
@@ -181,7 +189,7 @@ const SeverityRiskCard: SeverityRiskCardComponent = ({ item }) => {
 						</TableCell>
 						<TableCell className="w-4 p-1">:</TableCell>
 						<TableCell className=" p-1">
-							{item.risk_ranking_current}
+							{item.risk_ranking}
 						</TableCell>
 					</TableRow>
 					<TableRow className="border-0">
@@ -189,9 +197,7 @@ const SeverityRiskCard: SeverityRiskCardComponent = ({ item }) => {
 							Notes Special Condition/Remarks
 						</TableCell>
 						<TableCell className="w-4 p-1">:</TableCell>
-						<TableCell className="p-1">
-							{item.remark_analyst}
-						</TableCell>
+						<TableCell className="p-1">{item.remark}</TableCell>
 					</TableRow>
 				</TableBody>
 			</Table>
