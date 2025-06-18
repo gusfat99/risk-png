@@ -110,37 +110,37 @@ const RiskBankIncidentCard: RiskBankIncidentCardComponent = ({
 			<Table className="mt-2">
 				<TableBody>
 					<TableRow className="border-0">
-						<TableCell className="text-gray-400 p-1">
+						<TableCell className="text-gray-400 p-1  w-40">
 							Parameter
 						</TableCell>
-						<TableCell className=" p-1">:</TableCell>
+						<TableCell className=" p-1 w-4">:</TableCell>
 						<TableCell className="p-1">{parameter?.name}</TableCell>
 					</TableRow>
 					<TableRow className="border-0">
-						<TableCell className="text-gray-400 p-1">
+						<TableCell className="text-gray-400 p-1  w-40">
 							Deviation
 						</TableCell>
-						<TableCell className=" p-1">:</TableCell>
+						<TableCell className=" p-1 w-4">:</TableCell>
 						<TableCell className="p-1">{deviation?.name}</TableCell>
 					</TableRow>
 					<TableRow className="border-0">
-						<TableCell className="text-gray-400 p-1">
+						<TableCell className="text-gray-400 p-1  w-40">
 							Cause
 						</TableCell>
-						<TableCell className=" p-1">:</TableCell>
+						<TableCell className=" p-1 w-4">:</TableCell>
 						<TableCell className="p-1">{cause?.cause}</TableCell>
 					</TableRow>
 					<TableRow className="border-0">
-						<TableCell className="text-gray-400 p-1">
+						<TableCell className="text-gray-400 p-1  w-40">
 							Consequence
 						</TableCell>
-						<TableCell className=" p-1">:</TableCell>
+						<TableCell className=" p-1 w-4">:</TableCell>
 						<TableCell className="p-1">
 							{consequence?.consequence}
 						</TableCell>
 					</TableRow>
 					<TableRow className="border-0">
-						<TableCell className="text-gray-400 p-1">
+						<TableCell className="text-gray-400 p-1  w-40">
 							Related Safeguard Failure
 						</TableCell>
 						<TableCell className=" p-1">:</TableCell>
