@@ -34,7 +34,10 @@ const usePermissionAccessUser = (): {
 		flatMenus.find((x) => {
 			const pathNameSplited = pathname.split("/")
 			if (pathNameSplited.length > 2) {
-				return pathname.includes(x.path)
+				return (
+					pathNameSplited[1].replace(/\//g, "") ===
+					x.path.replace(/\//g, "")
+				)
 			} else {
 				return pathname === x.path
 			}
@@ -59,7 +62,6 @@ const usePermissionAccessUser = (): {
 		}
 	}
 	// canAccessCurrentPath is true if the user has permission to access the current path or page
-	console.log({ permissionAccessUser })
 	const result = {
 		canAccessCurrentPath,
 		canCreate: permissionAccessUser.includes("create"),
