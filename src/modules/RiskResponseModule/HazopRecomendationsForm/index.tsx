@@ -11,10 +11,12 @@ import useRiskResponseStore from "@/store/riskResponseStore"
 import { RiskResponseHazopMultipleSchemaForm } from "@/types/riskResponse"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Save } from "lucide-react"
-import React from "react"
+import React, { useState } from "react"
 import { useFieldArray, useForm } from "react-hook-form"
 import { parseViewToPayload } from "../parsingRiskResponse"
 import { useToast } from "@/hooks/use-toast"
+import RemoveButton from "@/components/buttons/RemoveButton"
+import AlertConfirmDialog from "@/components/AlertConfirmDialog"
 
 interface IProps {
 	params: {
@@ -30,11 +32,17 @@ const HazopRecomendationsForm: React.FC<IProps> = ({
 }) => {
 	const { toast } = useToast()
 	const {
-		actions: { createHazop, updateHazop },
+		actions: { createHazop, updateHazop, deleteHazop },
 		nodeSelected,
 		hazopItemsSelected,
+		hazopDelete: { id, isFetching: isFetchingDelete },
 		supportData: { isSubmitHazop },
 	} = useRiskResponseStore()
+	const [shownAlertDel, setShownAlertDel] = useState<{
+		shown: boolean
+		id: any | null
+		index: any | null
+	}>({ shown: false, id: null, index: null })
 	const form = useForm<RiskResponseHazopMultipleSchemaForm>({
 		resolver: zodResolver(RiskResponseHazopMultipleSchema),
 		progressive: false,
@@ -60,7 +68,7 @@ const HazopRecomendationsForm: React.FC<IProps> = ({
 		name: "items",
 		keyName: "idx",
 	})
-	const { append } = fieldArray
+	const { append, remove } = fieldArray
 
 	const handleChange = useDebounce((value: any, name: any) => {
 		form.setValue(name, value)
@@ -73,6 +81,59 @@ const HazopRecomendationsForm: React.FC<IProps> = ({
 			due_date: "",
 			document_report: null as unknown as File | null,
 		})
+	}
+
+	// const handleDeleteHazopAction = () => {
+	// 	deleteHazop({
+	// 		nodeId,
+	// 		riskId,
+	// 		hazopId
+	// 	})
+	// }
+
+	const onClickDeleteHazop = (
+		params: {
+			hazop_recom: string
+			responsibility: string
+			due_date: string
+			document_report: File | null
+			id?: string | undefined
+		},
+		index: any
+	) => {
+		setShownAlertDel({
+			shown: true,
+			id: params.id,
+			index,
+		})
+	}
+
+	const handleRemoveHazop = () => {
+		if (shownAlertDel.shown && !shownAlertDel.id) {
+			remove(shownAlertDel.index)
+			setShownAlertDel({
+				shown: false,
+				id: null,
+				index: null,
+			})
+		} else if (shownAlertDel.shown && shownAlertDel.id) {
+			deleteHazop &&
+				deleteHazop({
+					hazopId: shownAlertDel.id || "",
+					riskId: risk_analyst_id || "",
+					nodeId: nodeSelected?.id || "",
+					id: shownAlertDel.id,
+				}).then((result) => {
+					if (result) {
+						remove(shownAlertDel.index)
+						setShownAlertDel({
+							shown: false,
+							id: null,
+							index: null,
+						})
+					}
+				})
+		}
 	}
 
 	const handleSubmit = async (data: RiskResponseHazopMultipleSchemaForm) => {
@@ -111,7 +172,7 @@ const HazopRecomendationsForm: React.FC<IProps> = ({
 	}
 
 	const hazopRecomendationsWatch = form.watch("items")
-	
+
 	return (
 		<Form {...form}>
 			<form
@@ -119,102 +180,129 @@ const HazopRecomendationsForm: React.FC<IProps> = ({
 				onSubmit={form.handleSubmit(handleSubmit)}
 			>
 				<Card className="md:max-h-[620px]  max-h-[410px] overflow-y-auto">
-					<CardContent className="!p-2 grid grid-cols-2 md:grid-cols-5 gap-4">
+					<CardContent className="!p-2">
 						{(hazopRecomendationsWatch || []).map(
 							(hazop, index) => {
 								return (
-									<React.Fragment key={index}>
-										<div className="col-span-2">
+									<div
+										key={index}
+										className="border-b mb-2 border-gray-300"
+									>
+										<div
+											className="grid grid-cols-2 md:grid-cols-5 gap-4 items-center"
+											key={index}
+										>
+											<div className="col-span-2">
+												<FormField
+													control={form.control}
+													name={`items.${index}.id`}
+													render={({ field }) => (
+														<input
+															type="hidden"
+															value={field.value}
+														/>
+													)}
+												/>
+												<FormField
+													control={form.control}
+													name={`items.${index}.hazop_recom`}
+													render={({ field }) => (
+														<InputController
+															className="col-span-2"
+															label="Hazop Recomendation"
+															placeholder="Enter Hazop Recomendation"
+															onChange={(e) => {
+																handleChange(
+																	e.target
+																		.value,
+																	`items.${index}.hazop_recom`
+																)
+															}}
+															defaultValue={
+																field.value
+															}
+														/>
+													)}
+												/>
+											</div>
 											<FormField
 												control={form.control}
-												name={`items.${index}.id`}
+												name={`items.${index}.responsibility`}
 												render={({ field }) => (
-													<input
-														type="hidden"
-														value={field.value}
+													<InputController
+														label="Responsibility"
+														placeholder="Enter Responsibility"
+														defaultValue={
+															field.value
+														}
+														onChange={(e) => {
+															handleChange(
+																e.target.value,
+																`items.${index}.responsibility`
+															)
+														}}
 													/>
 												)}
 											/>
 											<FormField
 												control={form.control}
-												name={`items.${index}.hazop_recom`}
+												name={`items.${index}.due_date`}
 												render={({ field }) => (
 													<InputController
-														className="col-span-2"
-														label="Hazop Recomendation"
-														placeholder="Enter Hazop Recomendation"
-														onChange={(e) => {
-															handleChange(
-																e.target.value,
-																`items.${index}.hazop_recom`
-															)
-														}}
+														label="Due Date"
+														type="date"
 														defaultValue={
 															field.value
 														}
+														placeholder="Enter Due Date"
+														onChange={(e) => {
+															handleChange(
+																e.target.value,
+																`items.${index}.due_date`
+															)
+														}}
+													/>
+												)}
+											/>
+											<FormField
+												control={form.control}
+												name={`items.${index}.document_report`}
+												render={({ field }) => (
+													<InputFileOriginController
+														label="Document Report"
+														description="Only xlsx, pdf, doc files, Max. File size: 5 Mb"
+														placeholder="Document Report"
+														accept=".pdf, .xls, .xlsx, .doc, .docx"
+														file={field.value}
+														isShowPreview={true}
+														onChange={(e) => {
+															if (
+																e.target.files
+															) {
+																handleChange(
+																	e.target
+																		.files[0],
+																	`items.${index}.document_report`
+																)
+															}
+														}}
 													/>
 												)}
 											/>
 										</div>
-										<FormField
-											control={form.control}
-											name={`items.${index}.responsibility`}
-											render={({ field }) => (
-												<InputController
-													label="Responsibility"
-													placeholder="Enter Responsibility"
-													defaultValue={field.value}
-													onChange={(e) => {
-														handleChange(
-															e.target.value,
-															`items.${index}.responsibility`
-														)
-													}}
-												/>
-											)}
-										/>
-										<FormField
-											control={form.control}
-											name={`items.${index}.due_date`}
-											render={({ field }) => (
-												<InputController
-													label="Due Date"
-													type="date"
-													defaultValue={field.value}
-													placeholder="Enter Due Date"
-													onChange={(e) => {
-														handleChange(
-															e.target.value,
-															`items.${index}.due_date`
-														)
-													}}
-												/>
-											)}
-										/>
-										<FormField
-											control={form.control}
-											name={`items.${index}.document_report`}
-											render={({ field }) => (
-												<InputFileOriginController
-													label="Document Report"
-													description="Only xlsx, pdf, doc files, Max. File size: 5 Mb"
-													placeholder="Document Report"
-													accept=".pdf, .xls, .xlsx, .doc, .docx"
-													file={field.value}
-													isShowPreview={true}
-													onChange={(e) => {
-														if (e.target.files) {
-															handleChange(
-																e.target
-																	.files[0],
-																`items.${index}.document_report`
-															)
-														}
-													}}
-												/>
-											)}
-										/>
-									</React.Fragment>
+										<div className="w-10 self-end">
+											<RemoveButton
+												onClick={() =>
+													onClickDeleteHazop(
+														hazop,
+														index
+													)
+												}
+												title="Delete"
+												type="button"
+											/>
+										</div>
+									</div>
 								)
 							}
 						)}
@@ -240,6 +328,13 @@ const HazopRecomendationsForm: React.FC<IProps> = ({
 					</Button>
 				</div>
 			</form>
+			<AlertConfirmDialog
+				open={shownAlertDel.shown ? true : false}
+				title="Are you sure want to delete data hazop ?"
+				description="deleted data cannot be revert!"
+				onAction={handleRemoveHazop}
+				loading={isFetchingDelete}
+			/>
 		</Form>
 	)
 }

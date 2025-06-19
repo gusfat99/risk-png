@@ -40,6 +40,10 @@ const initialState = {
 	isFetchingSeverity: false,
 	isFetchingExportData: false,
 	riskSeveritySelected: "risk_ranking_current",
+	hazopDelete: {
+		isFetching: false,
+		id: null
+	},
 	supportData: {
 		node: {
 			isFetching: false,
@@ -160,17 +164,14 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 					}
 				)
 			},
-
-			fetchSingleData: async (id: any) => {
+			fetchSingleData: async (nodeId: any, riskId: any) => {
 				set({
 					isFetching: true,
 				})
 				return new Promise<ResponseApiType<RiskResponse>>(
 					(resolve, reject) => {
-						getDataApi<RiskResponse>(`${RISK_ANALYST_EP}/${id}`)
+						getDataApi<RiskResponse>(`${RISK_ANALYST_EP}/${nodeId}/${riskId}`)
 							.then((data) => {
-								//parse data to flat
-
 								if (data.data) {
 									set({
 										riskResponseSelected: data.data,
@@ -468,6 +469,53 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 							}))
 						})
 				})
+			},
+			deleteHazop: async (
+				{
+					nodeId,
+					riskId,
+					hazopId,
+					id
+				}: {
+					nodeId: any;
+					riskId: any;
+					hazopId: any;
+					id: any
+				}
+			) => {
+				set(() => ({
+					hazopDelete: {
+						isFetching: true,
+						id
+					}
+				}))
+
+				return new Promise<ResponseApiType<any>>(
+					(resolve, reject) => {
+						deleteData<any>(
+							`${RISK_RESPONSE_EP}/node/${nodeId}/${riskId}/delete-hazop/${hazopId}`,
+						)
+							.then((data) => {
+								resolve(data)
+							})
+							.catch((err) => {
+								reject(err)
+								toast({
+									title: "ERROR",
+									description: err.message,
+									variant: "destructive",
+								})
+							})
+							.finally(() => {
+								set(() => ({
+									hazopDelete: {
+										isFetching: false,
+										id: null
+									}
+								}))
+							})
+					}
+				)
 			},
 			updateSavertyExpectMultiple: async (
 				nodeId: any,

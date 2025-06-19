@@ -75,6 +75,8 @@ export type DetailReportRiskMonitoring = {
 	nodes: Node
 	deviations: Deviation
 	causes: Cause
+	paramter_id : any
+	parameters: Parameter
 }
 
 export interface RiskMonitoringState extends CommonState {

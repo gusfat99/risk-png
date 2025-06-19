@@ -8,6 +8,7 @@ import React from "react"
 export type filedsNodeType = {
 	title: string
 	field: keyof Node
+	group: number
 }
 
 interface IProps {
@@ -18,30 +19,37 @@ const filedsNode: filedsNodeType[] = [
 	{
 		title: "Node",
 		field: "node",
+		group: 1,
 	},
 	{
 		title: "Node Description",
 		field: "node_description",
+		group: 1,
 	},
 	{
 		title: "Node Location",
 		field: "node_location",
+		group: 1,
 	},
 	{
 		title: "Drawing Reference",
 		field: "drawing_reference",
+		group: 1,
 	},
 	{
 		title: "Inlet Pressure",
 		field: "inlet_pressure",
+		group: 2,
 	},
 	{
 		title: "Outlet Pressure",
 		field: "outlet_pressure",
+		group: 2,
 	},
 	{
 		title: "Remaks",
 		field: "remark_node",
+		group: 2,
 	},
 ]
 
@@ -55,22 +63,54 @@ const NodeDataCardSkeleton = () => {
 				</div>
 				<Separator className="h-[2px] border-gray-200" />
 			</div>
-			<Table className="mt-2">
-				<TableBody>
-					{filedsNode.map((fieldNode) => (
-						<TableRow className="border-0" key={fieldNode.field}>
-							<TableCell className=" p-1 w-40 ">
-								{fieldNode.title}
-							</TableCell>
+			<div className="grid grid-cols-2 gap-1">
+				<Table className="mt-2">
+					<TableBody>
+						{filedsNode
+							.filter((field) => field.group === 1)
+							.map((fieldNode) => (
+								<TableRow
+									className="border-0"
+									key={fieldNode.field}
+								>
+									<TableCell className=" p-1 w-40 ">
+										{fieldNode.title}
+									</TableCell>
 
-							<TableCell className=" p-1 w-4">:</TableCell>
-							<TableCell className="p-1">
-								<Skeleton className="w-full h-6" />
-							</TableCell>
-						</TableRow>
-					))}
-				</TableBody>
-			</Table>
+									<TableCell className=" p-1 w-4">
+										:
+									</TableCell>
+									<TableCell className="p-1">
+										<Skeleton className="w-full h-6" />
+									</TableCell>
+								</TableRow>
+							))}
+					</TableBody>
+				</Table>
+				<Table className="mt-2">
+					<TableBody>
+						{filedsNode
+							.filter((field) => field.group === 2)
+							.map((fieldNode) => (
+								<TableRow
+									className="border-0"
+									key={fieldNode.field}
+								>
+									<TableCell className=" p-1 w-40 ">
+										{fieldNode.title}
+									</TableCell>
+
+									<TableCell className=" p-1 w-4">
+										:
+									</TableCell>
+									<TableCell className="p-1">
+										<Skeleton className="w-full h-6" />
+									</TableCell>
+								</TableRow>
+							))}
+					</TableBody>
+				</Table>
+			</div>
 		</div>
 	)
 }
@@ -89,9 +129,11 @@ const NodeDataCard: NodeDataCardComponent = ({ nodeSelected }) => {
 				</div>
 				<Separator className="h-[2px] border-gray-200" />
 			</div>
+			<div className="grid grid-cols-2 gap-1" >
+
 			<Table className="mt-2">
 				<TableBody>
-					{filedsNode.map((fieldNode) => (
+					{filedsNode.filter(field => field.group === 1).map((fieldNode) => (
 						<TableRow className="border-0" key={fieldNode.field}>
 							<TableCell className="text-gray-400 w-40 p-1">
 								{fieldNode.title}
@@ -104,6 +146,22 @@ const NodeDataCard: NodeDataCardComponent = ({ nodeSelected }) => {
 					))}
 				</TableBody>
 			</Table>
+			<Table className="mt-2">
+				<TableBody>
+					{filedsNode.filter(field => field.group === 2).map((fieldNode) => (
+						<TableRow className="border-0" key={fieldNode.field}>
+							<TableCell className="text-gray-400 w-40 p-1">
+								{fieldNode.title}
+							</TableCell>
+							<TableCell className=" p-1">:</TableCell>
+							<TableCell className="p-1">
+								{nodeSelected?.[fieldNode.field]}
+							</TableCell>
+						</TableRow>
+					))}
+				</TableBody>
+			</Table>
+			</div>
 		</div>
 	)
 }

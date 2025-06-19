@@ -5,6 +5,7 @@ import TableRowActions from "@/components/TableRowActions"
 import { Button } from "@/components/ui/button"
 import { API_URL, SAFEGUARDS_PATHNAME_STORAGE } from "@/constants"
 import { Node } from "@/types/node"
+import { Parameter } from "@/types/riskDataBank"
 import { Safeguard } from "@/types/safeguard"
 import { ColumnDef } from "@tanstack/react-table"
 import { Download } from "lucide-react"
@@ -148,11 +149,63 @@ export const columnNode = (
 					/>
 				)
 			},
-			size : 380,
+			size: 380,
 			enableSorting: false,
 			cell: ({ row }) => {
 				return row.getValue("remark_node")
 			},
+		},
+	]
+
+	return column
+}
+
+export const columnParamter = (
+	onAction: (actionName: string, item : Parameter) => void
+): ColumnDef<Parameter>[] => {
+	const column: ColumnDef<Parameter>[] = [
+		{
+			header: "No",
+			cell: ({ row, table }) => {
+				const { pageIndex, pageSize } = table.getState().pagination
+
+				return (pageIndex - 1) * pageSize + row.index + 1
+			},
+			size: 60,
+		},
+		{
+			id: "id",
+			accessorFn: (row) => row.id,
+			enableSorting: false,
+			header: () => {
+				return <div className="flex justify-start">Action</div>
+			},
+			cell: ({ row }) => (
+				<TableRowActions
+					acl={{
+						canDelete: false,
+						canEdit : true
+					}}
+					onAction={(actionName: string) => {
+						onAction(actionName, row.original)
+					}}
+				/>
+			),
+		},
+		{
+			id: "name",
+			accessorFn: (row) => row.name,
+
+			header: ({ column }) => {
+				return (
+					<DataTableColumnHeader
+						column={column}
+						title="Parameter Name"
+					/>
+				)
+			},
+			cell: ({ row }) => row.getValue("name"),
+			enableSorting: false,
 		},
 	]
 
@@ -171,7 +224,7 @@ export const columnSafeguard = (
 				return (pageIndex - 1) * pageSize + row.index + 1
 			},
 
-			size : 40,
+			size: 40,
 		},
 		{
 			id: "id",
@@ -187,7 +240,7 @@ export const columnSafeguard = (
 					}}
 				/>
 			),
-			size : 60,
+			size: 60,
 		},
 		{
 			id: "safeguard",
@@ -206,7 +259,7 @@ export const columnSafeguard = (
 
 		{
 			id: "safeguard_title",
-			enableSorting : false,
+			enableSorting: false,
 			accessorFn: (row) => `${row.safeguard_title}`,
 			header: ({ column }) => {
 				return (
@@ -223,26 +276,24 @@ export const columnSafeguard = (
 			id: "file_path",
 			size: 120,
 			meta: {
-				className : "text-center"
+				className: "text-center",
 			},
-			
+
 			accessorFn: (row) => row.file_path,
 			header: "Document",
 			cell: ({ row }) => (
-				<div className="text-center w-full"> 
-				<Link
-					download={true}
-					target="_blank"
-					href={`${SAFEGUARDS_PATHNAME_STORAGE}/${row.getValue(
-						"file_path"
-					)}`}
-					
-				>
-					<Button size={"sm"} variant={"link"}>
-						<Download /> Download
-					</Button>
-				</Link>
-
+				<div className="text-center w-full">
+					<Link
+						download={true}
+						target="_blank"
+						href={`${SAFEGUARDS_PATHNAME_STORAGE}/${row.getValue(
+							"file_path"
+						)}`}
+					>
+						<Button size={"sm"} variant={"link"}>
+							<Download /> Download
+						</Button>
+					</Link>
 				</div>
 			),
 		},

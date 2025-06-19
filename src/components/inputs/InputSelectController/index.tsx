@@ -24,6 +24,7 @@ interface FormSelectInputProps extends SelectProps {
 	description?: string
 	labelClassName?: string
 	className?: string
+	itemClassName?: string
 	placeholder: string
 	items: SelectDataType[]
 	field?: any
@@ -46,6 +47,7 @@ function InputSelectController(props: FormSelectInputProps) {
 		disabled,
 		labelClassName,
 		className,
+		itemClassName = "",
 		...restProps
 	} = props
 
@@ -62,19 +64,30 @@ function InputSelectController(props: FormSelectInputProps) {
 				<>
 					<Select
 						defaultValue={field.value}
-						onValueChange={(val) => typeof val !== "undefined" &&  val !== null && onChange(val)}
+						onValueChange={(val) =>
+							typeof val !== "undefined" &&
+							val !== null &&
+							onChange(val)
+						}
 						value={field.value}
 						disabled={disabled}
 						{...restProps}
 					>
 						<FormControl>
-							<SelectTrigger>
+							<SelectTrigger className="!text-sm">
 								<SelectValue placeholder={placeholder} />
 							</SelectTrigger>
 						</FormControl>
-						<SelectContent  className=" max-w-sm sm:max-w-[520px]  mr-5 text-wrap" >
+						<SelectContent className="max-w-sm sm:max-w-[520px] mr-5 text-wrap">
 							{items.map((item, key) => (
-								<SelectItem className="max-w-screen-sm  sm:max-w-[520px] text-wrap"  key={key} value={item.value}>
+								<SelectItem
+									className={cn(
+										"max-w-screen-sm sm:max-w-[520px] text-wrap",
+										itemClassName
+									)}
+									key={key}
+									value={item.value}
+								>
 									{item.label}
 								</SelectItem>
 							))}

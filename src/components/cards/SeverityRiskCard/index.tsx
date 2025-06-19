@@ -2,6 +2,7 @@
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table"
+import { zeroValueOptionSeverity } from "@/data/severity"
 import { groupBy } from "@/lib/utils"
 import useSettingMatrixStore from "@/store/settingMatrixStore"
 import { RiskAnalysis } from "@/types/riksAnalyst"
@@ -9,14 +10,25 @@ import { SquareKanban } from "lucide-react"
 import React from "react"
 
 interface IProps {
-	item: RiskAnalysis
+	item: {
+		sp: any
+		se: any
+		sf: any
+		srl: any
+		sa: any
+		spn: any
+		l_frequency: any
+		risk_ranking: any
+		remark: string
+	}
+	title?: string
 }
 
-const HeadTitle = () => (
+const HeadTitle = ({ title = "Initial Risk Ranking" }: { title?: string }) => (
 	<div className="space-y-2">
 		<div className="flex flex-row gap-2">
 			<SquareKanban className="text-secondary" />
-			<h4 className="text-secondary">Initial Risk Ranking</h4>
+			<h4 className="text-secondary">{title}</h4>
 		</div>
 		<Separator className="h-[2px] border-gray-200" />
 	</div>
@@ -46,7 +58,7 @@ const SeverityRiskCardSkeleton = () => {
 			<Table>
 				<TableBody>
 					<TableRow className="border-0">
-						<TableCell className="text-gray-400  w-60 p-1">
+						<TableCell className="text-gray-400 w-60 p-1">
 							Likelihood Frequency (L)
 						</TableCell>
 						<TableCell className="w-4 p-1">:</TableCell>
@@ -82,7 +94,7 @@ interface SeverityRiskCardComponent extends React.FC<IProps> {
 	Skeleton: typeof SeverityRiskCardSkeleton
 }
 
-const SeverityRiskCard: SeverityRiskCardComponent = ({ item }) => {
+const SeverityRiskCard: SeverityRiskCardComponent = ({ item, title }) => {
 	const {
 		severity_map_options,
 		severity_map: { isFetching: isFetchingSeverity },
@@ -93,7 +105,7 @@ const SeverityRiskCard: SeverityRiskCardComponent = ({ item }) => {
 
 	return (
 		<div className="border-2 border-gray-200 rounded-lg py-4 px-6">
-			<HeadTitle />
+			<HeadTitle title={title} />
 			<Table className="mt-2">
 				<TableBody>
 					{isFetchingSeverity &&
@@ -113,6 +125,7 @@ const SeverityRiskCard: SeverityRiskCardComponent = ({ item }) => {
 					{!isFetchingSeverity &&
 						entriesSeverity.map(([columnId, severity]) => {
 							const severtyRow = severity[0].row_severity
+
 							return (
 								<TableRow className="border-0" key={columnId}>
 									<TableCell className="text-gray-400 p-1 w-60">
@@ -122,54 +135,36 @@ const SeverityRiskCard: SeverityRiskCardComponent = ({ item }) => {
 										:
 									</TableCell>
 									<TableCell className=" p-1">
-										{severtyRow
-											?.toLowerCase()
-											?.includes("personel") &&
-											severity.find(
-												(x) =>
-													x.value ===
-													item.sp_current?.toString()
-											)?.label}
-										{severtyRow
-											?.toLowerCase()
-											?.includes("environment") &&
-											severity.find(
-												(x) =>
-													x.value ===
-													item.se_current?.toString()
-											)?.label}
-										{severtyRow
-											?.toLowerCase()
-											?.includes("finance") &&
-											severity.find(
-												(x) =>
-													x.value ===
-													item.sf_current?.toString()
-											)?.label}
-										{severtyRow
-											?.toLowerCase()
-											?.includes("reputation") &&
-											severity.find(
-												(x) =>
-													x.value ===
-													item.srl_current?.toString()
-											)?.label}
-										{severtyRow
-											?.toLowerCase()
-											?.includes("asset") &&
-											severity.find(
-												(x) =>
-													x.value ===
-													item.sa_current?.toString()
-											)?.label}
-										{severtyRow
-											?.toLowerCase()
-											?.includes("notification") &&
-											severity.find(
-												(x) =>
-													x.value ===
-													item.spn_current?.toString()
-											)?.label}
+										{(() => {
+											const mapping: Record<string, any> =
+												{
+													personel: item.sp,
+													environment: item.se,
+													finance: item.sf,
+													reputation: item.srl,
+													asset: item.sa,
+													notification: item.spn,
+												}
+
+											const key = Object.keys(
+												mapping
+											).find((k) =>
+												severtyRow
+													?.toLowerCase()
+													?.includes(k)
+											)
+
+											if (!key) return null
+
+											const value =
+												mapping[key]?.toString()
+
+											return value === "0"
+												? zeroValueOptionSeverity.label
+												: (severity.find(
+														(x) => x.value === value
+												  )?.label || "No Selected")
+										})()}
 									</TableCell>
 								</TableRow>
 							)
@@ -185,7 +180,7 @@ const SeverityRiskCard: SeverityRiskCardComponent = ({ item }) => {
 						</TableCell>
 						<TableCell className="w-4 p-1">:</TableCell>
 						<TableCell className=" p-1">
-							{item.l_frequency_current}
+							{item.l_frequency}
 						</TableCell>
 					</TableRow>
 					<TableRow className="border-0">
@@ -194,7 +189,7 @@ const SeverityRiskCard: SeverityRiskCardComponent = ({ item }) => {
 						</TableCell>
 						<TableCell className="w-4 p-1">:</TableCell>
 						<TableCell className=" p-1">
-							{item.risk_ranking_current}
+							{item.risk_ranking}
 						</TableCell>
 					</TableRow>
 					<TableRow className="border-0">
@@ -202,9 +197,7 @@ const SeverityRiskCard: SeverityRiskCardComponent = ({ item }) => {
 							Notes Special Condition/Remarks
 						</TableCell>
 						<TableCell className="w-4 p-1">:</TableCell>
-						<TableCell className="p-1">
-							{item.remark_analyst}
-						</TableCell>
+						<TableCell className="p-1">{item.remark}</TableCell>
 					</TableRow>
 				</TableBody>
 			</Table>

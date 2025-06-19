@@ -1,6 +1,9 @@
 import DataTableColumnHeader from "@/components/DataTable/DataTableColumnHeader"
+import {
+	CellInputReadOnly,
+	MemoizedCellInput,
+} from "@/components/inputs/InputCellTableDt"
 import InputController from "@/components/inputs/InputController"
-import InputSelectController from "@/components/inputs/InputSelectController"
 import TableRowActions from "@/components/TableRowActions"
 import { Button } from "@/components/ui/button"
 import {
@@ -12,11 +15,7 @@ import {
 import { FormField } from "@/components/ui/form"
 import { EVIDENCE_PATHNAME_STORAGE } from "@/constants"
 import { hazopStatus, riskMonitoringStatus } from "@/data/enumetions"
-import { fieldsInputSeverity } from "@/data/severity"
-import { useDebounce } from "@/hooks/use-debounce"
 import { cn, riskRankColor } from "@/lib/utils"
-import useSettingMatrixStore from "@/store/settingMatrixStore"
-import { SelectDataType } from "@/types/common"
 import {
 	RiskAnalysis,
 	RiskAnalysisSevertyMultipleForm,
@@ -31,7 +30,7 @@ import {
 } from "@/types/riskResponse"
 import { ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
-import { Edit3, FileDown, LucideEdit } from "lucide-react"
+import { FileDown, LucideEdit } from "lucide-react"
 import Link from "next/link"
 import React, { useMemo } from "react"
 import { UseFormReturn } from "react-hook-form"
@@ -51,85 +50,6 @@ export interface UseColumnsRiskMonitoringProps extends UseColumnsProps {
 export interface UseColumnsRiskResponseProps extends UseColumnsProps {
 	form: UseFormReturn<RiskResponseSevertyExpectMultipleSchemaForm>
 }
-
-const CellInput = ({
-	row,
-	form,
-	name,
-	name_code,
-}: {
-	row: any
-	form: any
-	name: any
-	name_code: any
-}) => {
-	const rowId = row.index
-	const { likelyhood_options, severity_map_options } = useSettingMatrixStore()
-
-	const debouncedUpdate = useDebounce((key: any, value: any) => {
-		form.setValue(key, value)
-	}, 100)
-
-	const fieldSeverity = fieldsInputSeverity.find(
-		(field) => field.name_code === name_code
-	)
-
-	let items: SelectDataType[] = [
-		{
-			label: "(0) not taken into considered",
-			value: 0,
-		},
-		...severity_map_options.map((x) => ({
-			...x,
-			value: parseInt(x.value),
-		})),
-	]
-
-	if (fieldSeverity) {
-		items = items
-			.filter(
-				(item) =>
-					item.saverity_row_id?.toString() ===
-						fieldSeverity.col_id?.toString() || item.value === 0
-			)
-			.map((x) => ({
-				...x,
-				value: parseInt(x.value),
-			}))
-	}
-	if (name.includes("l_frequency")) {
-		items = likelyhood_options.map((x) => ({
-			...x,
-			value: parseInt(x.value),
-		}))
-	}
-
-	return (
-		<FormField
-			control={form.control}
-			name={`risks.${rowId}.${name}`}
-			render={({ field }) => (
-				<InputSelectController
-					field={field}
-					defaultValue={field.value}
-					placeholder="Select SP"
-					items={items}
-					onChange={(value) => {
-						debouncedUpdate(
-							`risks.${rowId}.${name}`,
-							parseInt(value) as any
-						)
-					}}
-				/>
-			)}
-		/>
-	)
-}
-
-const MemoizedCellInput = React.memo(
-	CellInput,
-	(prev, next) => prev.row.id === next.row.id
-)
 
 export const useColumnsRiskAnalyst = ({
 	onAction,
@@ -260,7 +180,7 @@ export const useColumnsRiskAnalyst = ({
 						/>
 					)
 				},
-				size: 280,
+				size: 520,
 				enableSorting: false,
 				cell: ({ row }) => (
 					<ul className="!list-decimal">
@@ -273,23 +193,24 @@ export const useColumnsRiskAnalyst = ({
 				),
 			},
 			{
-				id: "sp_current_risk_analyst_id",
+				id: "severity_current",
 				accessorFn: (row) => row.id,
 				enableSorting: false,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Severity to Personel (SP)"}
+							title={"Severity (Current)"}
 						/>
 					)
 				},
 				meta: {
 					className: "text-center",
 				},
+				size: 600,
 				cell: ({ row }) => {
 					return (
-						<React.Fragment>
+						<>
 							<FormField
 								control={form.control}
 								name={`risks.${row.index}.risk_analyst_id`}
@@ -298,153 +219,51 @@ export const useColumnsRiskAnalyst = ({
 										{...field}
 										type="hidden"
 										placeholder="Enter SP"
+										className="!mt-0"
 										readOnly
 										hidden
 									/>
 								)}
 							/>
-							<MemoizedCellInput
-								name_code={"sp"}
-								row={row}
-								form={form}
-								name="sp_current"
-							/>
-						</React.Fragment>
-					)
-				},
-			},
-			{
-				id: "se_current_risk_analyst_id",
-				accessorFn: (row) => row.id,
-				header: ({ column }) => {
-					return (
-						<DataTableColumnHeader
-							column={column}
-							title={"Severity to Environment (SE)"}
-						/>
-					)
-				},
-				meta: {
-					className: "text-center",
-				},
-				size: 180,
-				enableSorting: false,
-				cell: ({ row }) => {
-					return (
-						<MemoizedCellInput
-							name_code={"se"}
-							row={row}
-							form={form}
-							name="se_current"
-						/>
-					)
-				},
-			},
-			{
-				id: "sf_current_risk_analyst_id",
-				accessorFn: (row) => row.id,
-				header: ({ column }) => {
-					return (
-						<DataTableColumnHeader
-							column={column}
-							title={"Severity to Finance (SF)"}
-						/>
-					)
-				},
-				meta: {
-					className: "text-center",
-				},
-				size: 180,
-				enableSorting: false,
-				cell: ({ row }) => {
-					return (
-						<MemoizedCellInput
-							name_code={"sf"}
-							row={row}
-							form={form}
-							name="sf_current"
-						/>
-					)
-				},
-			},
-			{
-				id: "srl_current_risk_analyst_id",
-				accessorFn: (row) => row.id,
-				header: ({ column }) => {
-					return (
-						<DataTableColumnHeader
-							column={column}
-							title={"Severity to Reputation & Ilegal (SRL)"}
-						/>
-					)
-				},
-				meta: {
-					className: "text-center",
-				},
-				cell: ({ row }) => {
-					return (
-						<MemoizedCellInput
-							name_code={"srl"}
-							row={row}
-							form={form}
-							name="srl_current"
-						/>
-					)
-				},
-				size: 180,
-				enableSorting: false,
-			},
-			{
-				id: "sa_current_risk_analyst_id",
-				accessorFn: (row) => row.id,
-				header: ({ column }) => {
-					return (
-						<DataTableColumnHeader
-							column={column}
-							title={"Severity to Asset (SA)"}
-						/>
-					)
-				},
-				meta: {
-					className: "text-center",
-				},
-				size: 180,
-				enableSorting: false,
-				cell: ({ row }) => {
-					return (
-						<MemoizedCellInput
-							name_code={"sa"}
-							row={row}
-							form={form}
-							name="sa_current"
-						/>
-					)
-				},
-			},
-			{
-				id: "spn_current_risk_analyst_id",
-				accessorFn: (row) => row.id,
-				header: ({ column }) => {
-					return (
-						<DataTableColumnHeader
-							column={column}
-							title={"Severity to Public Notification (SPN)"}
-						/>
-					)
-				},
-				meta: {
-					className: "text-center",
-				},
-				size: 180,
-				enableSorting: false,
-				cell: ({ row }) => {
-					return (
-						<MemoizedCellInput
-							name_code={"spn"}
-							row={row}
-							form={form}
-							name="spn_current"
-						/>
+							<div className="grid grid-cols-2 gap-2">
+								<MemoizedCellInput
+									name_code={"sp"}
+									row={row}
+									form={form}
+									name="sp_current"
+								/>
+								<MemoizedCellInput
+									name_code={"se"}
+									row={row}
+									form={form}
+									name="se_current"
+								/>
+								<MemoizedCellInput
+									name_code={"sf"}
+									row={row}
+									form={form}
+									name="sf_current"
+								/>
+								<MemoizedCellInput
+									name_code={"srl"}
+									row={row}
+									form={form}
+									name="srl_current"
+								/>
+								<MemoizedCellInput
+									name_code={"sa"}
+									row={row}
+									form={form}
+									name="sa_current"
+								/>
+								<MemoizedCellInput
+									name_code={"spn"}
+									row={row}
+									form={form}
+									name="spn_current"
+								/>
+							</div>
+						</>
 					)
 				},
 			},
@@ -500,10 +319,10 @@ export const useColumnsRiskAnalyst = ({
 						severty["srl_current"] || 0,
 						severty["sa_current"] || 0,
 						severty["spn_current"] || 0,
-						severty["l_frequency_current"] || 0,
 					]
+					const likelihood = severty["l_frequency_current"] || 0
 					const maxValSeverty = Math.max(...severties)
-					const risk_ranking_current = maxValSeverty * severties[6]
+					const risk_ranking_current = maxValSeverty * likelihood
 					return (
 						<div
 							className={cn(
@@ -626,7 +445,6 @@ export const useColumnsRiskResponse = ({
 			{
 				id: "deviation",
 				accessorFn: (row) => row.deviations.name ?? "",
-
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
@@ -668,10 +486,7 @@ export const useColumnsRiskResponse = ({
 				},
 				size: 280,
 				enableSorting: false,
-				cell: ({ row }) => (
-					<div>{row.getValue("consequence")}</div>
-					// <></>
-				),
+				cell: ({ row }) => <div>{row.getValue("consequence")}</div>,
 			},
 			{
 				id: "existing_safeguard",
@@ -684,157 +499,65 @@ export const useColumnsRiskResponse = ({
 						/>
 					)
 				},
+				size: 600,
+				enableSorting: false,
 				cell: ({ row }) => (
 					<div>{row.original.existing_safeguard.join(", ")}</div>
 				),
 			},
+
 			{
-				id: "sp_current",
-				accessorFn: (row) => row.sp_current,
-				header: ({ column }) => {
-					return (
-						<DataTableColumnHeader
-							column={column}
-							title={"Severity to Personel (SP) Current"}
-						/>
-					)
-				},
+				id: "severity_current",
+				accessorFn: (row) => row.id,
 				enableSorting: false,
-				meta: {
-					className: "text-center",
-				},
-				cell: ({ row }) => {
-					return (
-						<div className="text-center">
-							{" "}
-							{row.getValue("sp_current")}
-						</div>
-					)
-				},
-			},
-			{
-				id: "se_current",
-				accessorFn: (row) => row.se_current,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Severity to Environment (SE) Current"}
+							title={"Severity (Current)"}
 						/>
 					)
 				},
 				meta: {
 					className: "text-center",
 				},
-				size: 180,
-				enableSorting: false,
+				size: 600,
 				cell: ({ row }) => {
 					return (
-						<div className="text-center">
-							{" "}
-							{row.getValue("se_current")}
-						</div>
-					)
-				},
-			},
-			{
-				id: "sf_current",
-				accessorFn: (row) => row.sf_current,
-				header: ({ column }) => {
-					return (
-						<DataTableColumnHeader
-							column={column}
-							title={"Severity to Finance (SF) Current"}
-						/>
-					)
-				},
-				meta: {
-					className: "text-center",
-				},
-				size: 180,
-				enableSorting: false,
-				cell: ({ row }) => {
-					return (
-						<div className="text-center">
-							{row.getValue("sf_current")}
-						</div>
-					)
-				},
-			},
-			{
-				id: "srl_current",
-				accessorFn: (row) => row.srl_current,
-				header: ({ column }) => {
-					return (
-						<DataTableColumnHeader
-							column={column}
-							title={
-								"Severity to Reputation & Ilegal (SRL) Current"
-							}
-						/>
-					)
-				},
-				meta: {
-					className: "text-center",
-				},
-				size: 180,
-				enableSorting: false,
-				cell: ({ row }) => {
-					return (
-						<div className="text-center">
-							{row.getValue("srl_current")}
-						</div>
-					)
-				},
-			},
-			{
-				id: "sa_current",
-				accessorFn: (row) => row.sa_current,
-				size: 180,
-				enableSorting: false,
-				header: ({ column }) => {
-					return (
-						<DataTableColumnHeader
-							column={column}
-							title={"Severity to Asset (SA) Current"}
-						/>
-					)
-				},
-				meta: {
-					className: "text-center",
-				},
-				cell: ({ row }) => {
-					return (
-						<div className="text-center">
-							{" "}
-							{row.getValue("sa_current")}
-						</div>
-					)
-				},
-			},
-			{
-				id: "spn_current",
-				accessorFn: (row) => row.spn_current,
-				size: 180,
-				enableSorting: false,
-				header: ({ column }) => {
-					return (
-						<DataTableColumnHeader
-							column={column}
-							title={
-								"Severity to Public Notification (SPN) Current"
-							}
-						/>
-					)
-				},
-				meta: {
-					className: "text-center",
-				},
-				cell: ({ row }) => {
-					return (
-						<div className="text-center">
-							{row.getValue("spn_current")}
-						</div>
+						<>
+							<div className="grid grid-cols-2 gap-2">
+								<CellInputReadOnly
+									name_code={"sp"}
+									value={row.original.sp_current}
+									name="sp_current"
+								/>
+								<CellInputReadOnly
+									name_code={"se"}
+									value={row.original.se_current}
+									name="se_current"
+								/>
+								<CellInputReadOnly
+									name_code={"sf"}
+									value={row.original.sf_current}
+									name="sf_current"
+								/>
+								<CellInputReadOnly
+									name_code={"srl"}
+									value={row.original.srl_current}
+									name="srl_current"
+								/>
+								<CellInputReadOnly
+									name_code={"sa"}
+									value={row.original.sa_current}
+									name="sa_current"
+								/>
+								<CellInputReadOnly
+									name_code={"spn"}
+									value={row.original.spn_current}
+									name="spn_current"
+								/>
+							</div>
+						</>
 					)
 				},
 			},
@@ -894,15 +617,15 @@ export const useColumnsRiskResponse = ({
 				},
 			},
 			{
-				id: "sp_expect_risk_analyst_id",
-				size: 180,
+				id: "severity_expected",
+				size: 600,
 				enableSorting: false,
 				accessorFn: (row) => row.id,
 				header: ({ column }) => {
 					return (
 						<DataTableColumnHeader
 							column={column}
-							title={"Severity to Personel (SP) Expected"}
+							title={"Severity (Expected)"}
 						/>
 					)
 				},
@@ -925,152 +648,45 @@ export const useColumnsRiskResponse = ({
 									/>
 								)}
 							/>
-							<MemoizedCellInput
-								name_code={"sp"}
-								row={row}
-								form={form}
-								name="sp_expected"
-							/>
+							<div className="grid grid-cols-2 gap-2">
+								<MemoizedCellInput
+									name_code={"sp"}
+									row={row}
+									form={form}
+									name="sp_expected"
+								/>
+								<MemoizedCellInput
+									name_code={"se"}
+									row={row}
+									form={form}
+									name="se_expected"
+								/>
+								<MemoizedCellInput
+									name_code={"sf"}
+									row={row}
+									form={form}
+									name="sf_expected"
+								/>
+								<MemoizedCellInput
+									name_code={"srl"}
+									row={row}
+									form={form}
+									name="srl_expected"
+								/>
+								<MemoizedCellInput
+									name_code={"sa"}
+									row={row}
+									form={form}
+									name="sa_expected"
+								/>
+								<MemoizedCellInput
+									name_code={"spn"}
+									row={row}
+									form={form}
+									name="spn_expected"
+								/>
+							</div>
 						</React.Fragment>
-					)
-				},
-			},
-			{
-				id: "se_expect_risk_analyst_id",
-				accessorFn: (row) => row.id,
-				size: 180,
-				enableSorting: false,
-				header: ({ column }) => {
-					return (
-						<DataTableColumnHeader
-							column={column}
-							title={"Severity to Environment (SE) Expected"}
-						/>
-					)
-				},
-				meta: {
-					className: "text-center",
-				},
-				cell: ({ row }) => {
-					return (
-						<MemoizedCellInput
-							name_code={"se"}
-							row={row}
-							form={form}
-							name="se_expected"
-						/>
-					)
-				},
-			},
-			{
-				id: "sf_expect_risk_analyst_id",
-				accessorFn: (row) => row.id,
-				size: 180,
-				enableSorting: false,
-				header: ({ column }) => {
-					return (
-						<DataTableColumnHeader
-							column={column}
-							title={"Severity to Finance (SF) Expected"}
-						/>
-					)
-				},
-				meta: {
-					className: "text-center",
-				},
-				cell: ({ row }) => {
-					return (
-						<MemoizedCellInput
-							name_code={"sf"}
-							row={row}
-							form={form}
-							name="sf_expected"
-						/>
-					)
-				},
-			},
-			{
-				id: "srl_expect_risk_analyst_id",
-				size: 180,
-				enableSorting: false,
-				accessorFn: (row) => row.id,
-				header: ({ column }) => {
-					return (
-						<DataTableColumnHeader
-							column={column}
-							title={
-								"Severity to Reputation & Ilegal (SRL) Expected"
-							}
-						/>
-					)
-				},
-				meta: {
-					className: "text-center",
-				},
-				cell: ({ row }) => {
-					return (
-						<MemoizedCellInput
-							name_code={"srl"}
-							row={row}
-							form={form}
-							name="srl_expected"
-						/>
-					)
-				},
-			},
-			{
-				id: "sa_expect_risk_analyst_id",
-				accessorFn: (row) => row.id,
-				size: 180,
-				enableSorting: false,
-				header: ({ column }) => {
-					return (
-						<DataTableColumnHeader
-							column={column}
-							title={"Severity to Asset (SA) Expected"}
-						/>
-					)
-				},
-				meta: {
-					className: "text-center",
-				},
-				cell: ({ row }) => {
-					return (
-						<MemoizedCellInput
-							name_code={"sa"}
-							row={row}
-							form={form}
-							name="sa_expected"
-						/>
-					)
-				},
-			},
-			{
-				id: "spn_expect_risk_analyst_id",
-				accessorFn: (row) => row.id,
-				size: 180,
-				enableSorting: false,
-				header: ({ column }) => {
-					return (
-						<DataTableColumnHeader
-							column={column}
-							title={
-								"Severity to Public Notification (SPN) Expected"
-							}
-						/>
-					)
-				},
-				meta: {
-					className: "text-center",
-				},
-				cell: ({ row }) => {
-					return (
-						<MemoizedCellInput
-							name_code={"spn"}
-							row={row}
-							form={form}
-							name="spn_expected"
-						/>
 					)
 				},
 			},
@@ -1126,10 +742,10 @@ export const useColumnsRiskResponse = ({
 						severty["srl_expected"] || 0,
 						severty["sa_expected"] || 0,
 						severty["spn_expected"] || 0,
-						severty["l_frequency_expected"] || 0,
 					]
+					const likelihood = severty["l_frequency_expected"] || 0
 					const maxValSeverty = Math.max(...severties)
-					const risk_ranking_expected = maxValSeverty * severties[6]
+					const risk_ranking_expected = maxValSeverty * likelihood
 					return (
 						<div
 							className={cn(
@@ -1160,12 +776,7 @@ export const useColumnsRiskResponse = ({
 					)
 					hazop_status = hazop?.label || "-"
 					const textColor = hazop?.color || ""
-					// if (hazop_status?.toLowerCase() === "done") {
-					// 	textColor = "text-success"
-					// } else if (hazop_status?.toLowerCase() === "on progress") {
-					// 	textColor = "text-warning-700"
-					// }
-
+					
 					return (
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
@@ -1405,7 +1016,6 @@ export const useColumnsMonitoring = ({
 			},
 			{
 				id: "incident_location",
-
 				enableSorting: false,
 				accessorFn: (row) => row.incident_location,
 				header: ({ column }) => {
@@ -1560,7 +1170,6 @@ export const useColumnsMonitoring = ({
 				meta: {
 					className: "text-center",
 				},
-
 				header: "Status",
 				cell: ({ row }) => {
 					let status = row.original.status.toLowerCase()
@@ -1621,7 +1230,7 @@ export const useColumnsMonitoring = ({
 				},
 			},
 			{
-				id: "sp_affected_monitoring_id",
+				id: "severity_affected",
 				accessorFn: (row) => row.sp_affected,
 				header: ({ column }) => {
 					return (
@@ -1634,13 +1243,10 @@ export const useColumnsMonitoring = ({
 				meta: {
 					className: "text-center",
 				},
-				// meta: {
-				// 	className : "max-w-[130px]",
-				// },
+			
 				enableSorting: false,
 				enableResizing: false,
-				// size: 180,
-				size: 180,
+				size: 600,
 				cell: ({ row }) => {
 					return (
 						<React.Fragment>
@@ -1657,140 +1263,48 @@ export const useColumnsMonitoring = ({
 									/>
 								)}
 							/>
-							<MemoizedCellInput
-								name_code={"sp"}
-								row={row}
-								form={form}
-								name="sp_affected"
-							/>
+							<div className="grid grid-cols-2 gap-2">
+								<MemoizedCellInput
+									name_code={"sp"}
+									row={row}
+									form={form}
+									name="sp_affected"
+								/>
+								<MemoizedCellInput
+									name_code={"se"}
+									row={row}
+									form={form}
+									name="se_affected"
+								/>
+								<MemoizedCellInput
+									name_code={"sf"}
+									row={row}
+									form={form}
+									name="sf_affected"
+								/>
+								<MemoizedCellInput
+									name_code={"srl"}
+									row={row}
+									form={form}
+									name="srl_affected"
+								/>
+								<MemoizedCellInput
+									name_code={"sa"}
+									row={row}
+									form={form}
+									name="sa_affected"
+								/>
+								<MemoizedCellInput
+									name_code={"spn"}
+									row={row}
+									form={form}
+									name="spn_affected"
+								/>
+							</div>
 						</React.Fragment>
 					)
 				},
-			},
-			{
-				id: "se_affected_monitoring_id",
-				accessorFn: (row) => row.id,
-				enableSorting: false,
-				header: ({ column }) => {
-					return (
-						<DataTableColumnHeader
-							column={column}
-							title={"Severity to Environment (SE) Affected"}
-						/>
-					)
-				},
-				meta: {
-					className: "text-center",
-				},
-				size: 180,
-				cell: ({ row }) => {
-					return (
-						<MemoizedCellInput
-							name_code={"se"}
-							row={row}
-							form={form}
-							name="se_affected"
-						/>
-					)
-				},
-			},
-			{
-				id: "sf_affected_monitoring_id",
-				accessorFn: (row) => row.id,
-				enableSorting: false,
-				header: ({ column }) => {
-					return (
-						<DataTableColumnHeader
-							column={column}
-							title={"Severity to Finance (SF) Affected"}
-						/>
-					)
-				},
-				meta: {
-					className: "text-center",
-				},
-				size: 180,
-				cell: ({ row }) => {
-					return (
-						<MemoizedCellInput
-							name_code={"sf"}
-							row={row}
-							form={form}
-							name="sf_affected"
-						/>
-					)
-				},
-			},
-			{
-				id: "srl_affected_monitoring_id",
-				accessorFn: (row) => row.id,
-				enableSorting: false,
-				size: 180,
-				header: ({ column }) => {
-					return (
-						<DataTableColumnHeader
-							column={column}
-							title={
-								"Severity to Reputation & Ilegal (SRL) Affected"
-							}
-						/>
-					)
-				},
-				cell: ({ row }) => {
-					return (
-						<MemoizedCellInput
-							name_code={"srl"}
-							row={row}
-							form={form}
-							name="srl_affected"
-						/>
-					)
-				},
-			},
-			{
-				id: "sa_affected_monitoring_id",
-				accessorFn: (row) => row.id,
-				enableSorting: false,
-				header: ({ column }) => {
-					return (
-						<DataTableColumnHeader
-							column={column}
-							title={"Severity to Asset (SA) Affected"}
-						/>
-					)
-				},
-				meta: {
-					className: "text-center",
-				},
-				size: 180,
-				cell: ({ row }) => {
-					return (
-						<MemoizedCellInput
-							name_code={"sa"}
-							row={row}
-							form={form}
-							name="sa_affected"
-						/>
-					)
-				},
-			},
-			{
-				id: "spn_affected_monitoring_id",
-				accessorFn: (row) => row.id,
-				enableSorting: false,
-				header: "Severity to Public Notification (SPN) Affected",
-				size: 180,
-				cell: ({ row }) => {
-					return (
-						<MemoizedCellInput
-							name_code={"spn"}
-							row={row}
-							form={form}
-							name="spn_affected"
-						/>
-					)
-				},
-			},
+			}
 		]
 		return cols
 	}, [form, onAction])

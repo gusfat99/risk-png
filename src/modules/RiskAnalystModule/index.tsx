@@ -102,10 +102,9 @@ const RiskAnalystModule = () => {
 							onChange={(e) =>
 								handleSearch(e.target.value, "filter")
 							}
-							// className="max-w-sm"
 						/>
 						<Link href={basePathname + "/add"}>
-							<AddButton label="Add Risk Analysis" />
+							<AddButton label="Add Risk Analyst" />
 						</Link>
 					</div>
 					<Button

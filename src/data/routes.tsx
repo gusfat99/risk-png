@@ -84,6 +84,10 @@ const routes: {
 					url: "/data-master-node-data",
 				},
 				{
+					title: "Parameter",
+					url: "/data-master-parameter",
+				},
+				{
 					title: "Safeguards Data",
 					url: "/data-master-safeguards",
 				},

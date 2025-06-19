@@ -1,5 +1,6 @@
 "use client"
 import ActionSave from "@/components/ActionSave"
+import InputController from "@/components/inputs/InputController"
 import InputSelectController from "@/components/inputs/InputSelectController"
 import { Form, FormField } from "@/components/ui/form"
 import { Separator } from "@/components/ui/separator"
@@ -10,6 +11,7 @@ import {
 	RiskResponseSevertyExpectSchema,
 } from "@/schemas/RiskResponseSchema"
 import useRiskResponseStore from "@/store/riskResponseStore"
+import useRiskAnalystStore from "@/store/risksAnalystStore"
 import useSettingMatrixStore from "@/store/settingMatrixStore"
 import { SelectDataType } from "@/types/common"
 import { RiskResponseSevertyExpectSchemaForm } from "@/types/riskResponse"
@@ -24,6 +26,7 @@ interface IProps {
 
 const RiskResponseSeverityExpectedForm: React.FC<IProps> = ({ isEdit }) => {
 	const { severity_map_options, likelyhood_options } = useSettingMatrixStore()
+
 	const params = useParams()
 	const router = useRouter()
 	const pathname = usePathname()
@@ -35,7 +38,7 @@ const RiskResponseSeverityExpectedForm: React.FC<IProps> = ({ isEdit }) => {
 		isSubmit,
 		actions: { updateSavertyExpect },
 	} = useRiskResponseStore()
-
+	const { riskAnalysSelected } = useRiskAnalystStore()
 	const form = useForm<RiskResponseSevertyExpectSchemaForm>({
 		resolver: zodResolver(RiskResponseSevertyExpectSchema),
 		progressive: false,
@@ -43,7 +46,19 @@ const RiskResponseSeverityExpectedForm: React.FC<IProps> = ({ isEdit }) => {
 		reValidateMode: "onSubmit",
 		shouldFocusError: true,
 		shouldUnregister: true,
-		defaultValues: initialDataSevertyExpect,
+		defaultValues:
+			riskAnalysSelected && isEdit
+				? {
+						l_frequency_expected:
+							riskAnalysSelected.l_frequency_expected,
+						sa_expected: riskAnalysSelected.sa_expected,
+						srl_expected: riskAnalysSelected.srl_expected,
+						spn_expected: riskAnalysSelected.spn_expected,
+						sp_expected: riskAnalysSelected.sp_expected,
+						se_expected: riskAnalysSelected.se_expected,
+						sf_expected: riskAnalysSelected.sf_expected,
+				  }
+				: initialDataSevertyExpect,
 	})
 
 	const handleSubmit = async (
@@ -83,6 +98,27 @@ const RiskResponseSeverityExpectedForm: React.FC<IProps> = ({ isEdit }) => {
 		}
 	}
 
+	const valuesRank = [
+		Number(form.watch("sa_expected")),
+		Number(form.watch("se_expected")),
+		Number(form.watch("spn_expected")),
+		Number(form.watch("sp_expected")),
+		Number(form.watch("srl_expected")),
+		Number(form.watch("l_frequency_expected")),
+	]
+
+	// Konversi semua nilai ke number
+	const valuesRankCopy = [...valuesRank]
+	valuesRankCopy.splice(valuesRank.length - 1, 1) //remove l_frequency_current
+
+	// Cari nilai tertinggi
+	const maxValue = Math.max(...valuesRankCopy)
+	// Kalikan dengan l_frequency_current
+	const riskRankValue =
+		(maxValue * Number(form.getValues("l_frequency_expected"))) || 0
+
+	
+
 	return (
 		<div className="border-2 border-gray-200  rounded-lg p-4 space-y-4">
 			<div className="text-center">
@@ -100,14 +136,16 @@ const RiskResponseSeverityExpectedForm: React.FC<IProps> = ({ isEdit }) => {
 								.map((fieldInput, index) => {
 									const opts: SelectDataType[] = [
 										zeroValueOptionSeverity,
-										...severity_map_options.filter(
-											(x) =>
-												x.saverity_row_id?.toString() ===
-												fieldInput.col_id?.toString()
-										).map((x) => ({
-											...x,
-											value: parseInt(x.value),
-										})),
+										...severity_map_options
+											.filter(
+												(x) =>
+													x.saverity_row_id?.toString() ===
+													fieldInput.col_id?.toString()
+											)
+											.map((x) => ({
+												...x,
+												value: parseInt(x.value),
+											})),
 									]
 									return (
 										<FormField
@@ -143,14 +181,16 @@ const RiskResponseSeverityExpectedForm: React.FC<IProps> = ({ isEdit }) => {
 								.map((fieldInput, key) => {
 									const opts: SelectDataType[] = [
 										zeroValueOptionSeverity,
-										...severity_map_options.filter(
-											(x) =>
-												x.saverity_row_id?.toString() ===
-												fieldInput.col_id?.toString()
-										).map((x) => ({
-											...x,
-											value: parseInt(x.value),
-										})),
+										...severity_map_options
+											.filter(
+												(x) =>
+													x.saverity_row_id?.toString() ===
+													fieldInput.col_id?.toString()
+											)
+											.map((x) => ({
+												...x,
+												value: parseInt(x.value),
+											})),
 									]
 									return (
 										<FormField
@@ -185,30 +225,41 @@ const RiskResponseSeverityExpectedForm: React.FC<IProps> = ({ isEdit }) => {
 						hidden={false}
 						className="h-[2px] border border-gray-200"
 					/>
-
-					<FormField
-						control={form.control}
-						name={"l_frequency_expected"}
-						render={({ field }) => (
-							<InputSelectController
-								field={field}
-								items={likelyhood_options.map((x) => ({
-									...x,
-									value: parseInt(x.value),
-								}))}
-								// disabled={isDetail}
-								label={
-									"Likelihood Frequency Kejadian (L) Expected"
-								}
-								placeholder={
-									"Enter Likelihood Frequency Kejadian (L) Expected"
-								}
-								onChange={(value) => {
-									form.setValue("l_frequency_expected", parseInt(value))
-								}}
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<FormField
+							control={form.control}
+							name={"l_frequency_expected"}
+							render={({ field }) => (
+								<InputSelectController
+									field={field}
+									items={likelyhood_options.map((x) => ({
+										...x,
+										value: parseInt(x.value),
+									}))}
+									// disabled={isDetail}
+									label={
+										"Likelihood Frequency Kejadian (L) Expected"
+									}
+									placeholder={
+										"Enter Likelihood Frequency Kejadian (L) Expected"
+									}
+									onChange={(value) => {
+										form.setValue(
+											"l_frequency_expected",
+											parseInt(value)
+										)
+									}}
+								/>
+							)}
+						/>
+						
+							<InputController
+								value={riskRankValue}
+								label="Risk Rank Exprected"
+								readOnly
+								placeholder={"Risk Rank"}
 							/>
-						)}
-					/>
+					</div>
 					<ActionSave isSubmit={isSubmit} />
 				</form>
 			</Form>
