@@ -53,7 +53,6 @@ const RiskBankModule = () => {
 		id: any,
 		item?: RiskBankFlatByConsequence
 	) => {
-		console.log({ action })
 		if (action === "update") {
 			router.push(basePathname + "/update/" + id)
 		} else if (action === "detail") {

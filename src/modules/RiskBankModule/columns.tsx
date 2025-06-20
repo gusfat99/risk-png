@@ -172,7 +172,6 @@ export const columnRiskBankFlatByConsequences = (
 					</TableCell>
 				) : null,
 		},
-
 		{
 			accessorKey: "parameter",
 			size: 68,
@@ -228,7 +227,6 @@ export const columnRiskBankFlatByConsequences = (
 					</TableCell>
 				) : null,
 		},
-
 		{
 			accessorKey: "document",
 			size: 80,
@@ -239,7 +237,6 @@ export const columnRiskBankFlatByConsequences = (
 						size={"sm"}
 						variant={"warning"}
 						onClick={() => {
-							console.log("clicked")
 							onAction(
 								"view_safeguards",
 								row.original.id,
@@ -290,10 +287,9 @@ export const columnSafeguard = () => {
 			accessorKey: "safeguard",
 			header: "Safeguard Name",
 		},
-
 		{
-			accessorKey: "safeguard",
-			header: "Safeguard",
+			accessorKey: "safeguard_doc",
+			header: "Safeguard Doc.",
 			cell: (row: Safeguard) => (
 				<div className="max-w-[300px] truncate">
 					<Link
