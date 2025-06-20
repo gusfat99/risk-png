@@ -237,32 +237,32 @@ const useReportRiskMonitoringStore = createStore<ReportRiskMonitoringState>(
 							isFetchingExportData: false,
 						})
 					})
-				downloadProxyFile(`${EXPORT_MONITORING_EP}`, {
-					year: year_selected,
-					node_id: nodeId,
-					deviation_id: deviationId,
-					risk_bank_id: riskBankId,
-					parameter_id: parameterId,
-					consequence_id: consequenceId,
-				}).then((blob) => {
-					toast({
-						title: "Success",
-						description: "Successfull download file excel",
-						variant: "success",
-					})
-				})
-					.catch((err) => {
-						toast({
-							title: "Filed",
-							description: err.message,
-							variant: "destructive",
-						})
-					})
-					.finally(() => {
-						set({
-							isFetchingExportData: false,
-						})
-					})
+				// downloadProxyFile(`${EXPORT_MONITORING_EP}`, {
+				// 	year: year_selected,
+				// 	node_id: nodeId,
+				// 	deviation_id: deviationId,
+				// 	risk_bank_id: riskBankId,
+				// 	parameter_id: parameterId,
+				// 	consequence_id: consequenceId,
+				// }).then((blob) => {
+				// 	toast({
+				// 		title: "Success",
+				// 		description: "Successfull download file excel",
+				// 		variant: "success",
+				// 	})
+				// })
+				// 	.catch((err) => {
+				// 		toast({
+				// 			title: "Filed",
+				// 			description: err.message,
+				// 			variant: "destructive",
+				// 		})
+				// 	})
+				// 	.finally(() => {
+				// 		set({
+				// 			isFetchingExportData: false,
+				// 		})
+				// 	})
 			},
 			setPagination: (updater) =>
 				set((state) => ({
