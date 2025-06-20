@@ -2,17 +2,16 @@
 import ExportExcelButton from "@/components/buttons/ExportExcelButton"
 import DataTable from "@/components/DataTable"
 import InputSearch from "@/components/inputs/InputSearch"
-import { useToast } from "@/hooks/use-toast"
-import { columnRiskBank } from "@/modules/RiskBankModule/columns"
+import { columnRiskBank, columnRiskBankFlatByConsequences } from "@/modules/RiskBankModule/columns"
 import useAuthStore from "@/store/authStore"
 import useRiskDataBankStore from "@/store/riskDataBankStore"
-import { RiskBankFlat } from "@/types/riskDataBank"
-import { usePathname, useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { RiskBankFlat, RiskBankFlatByConsequence } from "@/types/riskDataBank"
+import { useEffect } from "react"
 
 const ReportRiskBankDataModule = () => {
 	const {
 		riskDataBankFlat,
+		riskDataBankFlatByConsequences,
 		actions: { fetchAllData, setPagination, exportExcel },
 		isFetching,
 		isFetchingExportData,
@@ -43,9 +42,9 @@ const ReportRiskBankDataModule = () => {
 				/>
 			</div>
 			<div className="mt-4">
-				<DataTable<RiskBankFlat>
-					columns={columnRiskBank(() => {}, true)}
-					data={riskDataBankFlat}
+				<DataTable<RiskBankFlatByConsequence>
+					columns={columnRiskBankFlatByConsequences(() => {}, true)}
+					data={riskDataBankFlatByConsequences}
 					loading={isFetching}
 					rowCount={total}
 					manualPagination={true}

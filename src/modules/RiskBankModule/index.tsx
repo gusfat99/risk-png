@@ -3,20 +3,23 @@ import AlertConfirmDialog from "@/components/AlertConfirmDialog"
 import DataTable from "@/components/DataTable"
 import InputSearch from "@/components/inputs/InputSearch"
 import { Button } from "@/components/ui/button"
+import { useDebounce } from "@/hooks/use-debounce"
 import { useToast } from "@/hooks/use-toast"
+import useAuthStore from "@/store/authStore"
 import useRiskDataBankStore from "@/store/riskDataBankStore"
-import { RiskBankFlat } from "@/types/riskDataBank"
+import { RiskBankFlatByConsequence } from "@/types/riskDataBank"
 import { Plus } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { columnRiskBank } from "./columns"
-import { useDebounce } from "@/hooks/use-debounce"
-import useAuthStore from "@/store/authStore"
+import { columnRiskBankFlatByConsequences, columnSafeguard } from "./columns"
+import { Safeguard } from "@/types/safeguard"
+import DialogMain from "@/components/dialogs/DialogMain"
+import GeneralTable from "@/components/tables/GeneralTable"
 
 const RiskBankModule = () => {
 	const {
-		riskDataBankFlat,
+		riskDataBankFlatByConsequences,
 		isFetchingDelete,
 		actions: { fetchAllData, setPagination, deleteData, setQuerySearch },
 		isFetching,
@@ -30,6 +33,13 @@ const RiskBankModule = () => {
 		id: null,
 		shown: false,
 	})
+	const [showSafeguards, setShowSafeguars] = useState<{
+		show: boolean
+		item: Safeguard[] | null
+	}>({
+		item: null,
+		show: false,
+	})
 	const { toast } = useToast()
 	const total = meta?.total || 0
 	const router = useRouter()
@@ -38,7 +48,12 @@ const RiskBankModule = () => {
 
 	const basePathname = "/".concat(splitPathname[1])
 
-	const handleActionTable = (action: string, id: any) => {
+	const handleActionTable = (
+		action: string,
+		id: any,
+		item?: RiskBankFlatByConsequence
+	) => {
+		console.log({ action })
 		if (action === "update") {
 			router.push(basePathname + "/update/" + id)
 		} else if (action === "detail") {
@@ -49,6 +64,19 @@ const RiskBankModule = () => {
 				id,
 				shown: true,
 			})
+		} else if (action === "view_safeguards") {
+			if (item) {
+				const safeguards = item.safeguards
+				setShowSafeguars({
+					item: safeguards,
+					show: true,
+				})
+			} else {
+				toast({
+					variant: "default",
+					title: "No Safeguard Selected",
+				})
+			}
 		}
 	}
 
@@ -101,9 +129,11 @@ const RiskBankModule = () => {
 				</Link>
 			</div>
 			<div className="mt-4">
-				<DataTable<RiskBankFlat>
-					columns={columnRiskBank(handleActionTable)}
-					data={riskDataBankFlat}
+				<DataTable<RiskBankFlatByConsequence>
+					columns={columnRiskBankFlatByConsequences(
+						handleActionTable
+					)}
+					data={riskDataBankFlatByConsequences}
 					loading={isFetching}
 					rowCount={total}
 					manualPagination={true}
@@ -123,6 +153,22 @@ const RiskBankModule = () => {
 				onAction={handleDeleteAction}
 				loading={isFetchingDelete}
 			/>
+			<DialogMain
+				open={showSafeguards.show}
+				onOpenChange={(value) => {
+					setShowSafeguars((prev) => ({
+						...prev,
+						show: value,
+					}))
+				}}
+				title="Safeguards Data"
+				size="2xl"
+			>
+				<GeneralTable
+					columns={columnSafeguard()}
+					data={showSafeguards.item || []}
+				/>
+			</DialogMain>
 		</div>
 	)
 }

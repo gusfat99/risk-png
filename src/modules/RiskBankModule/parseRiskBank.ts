@@ -1,5 +1,5 @@
 import { RiskBankSchema } from "@/schemas/RiskBankSchema"
-import { RiskBank, RiskBankFlat } from "@/types/riskDataBank"
+import { RiskBank, RiskBankFlat, RiskBankFlatByConsequence } from "@/types/riskDataBank"
 import { z } from "zod"
 
 export const parseRiskBanktoView = (data: RiskBank) => {
@@ -53,30 +53,30 @@ export const parseRiskBankToPayload = (
 		)
 		formData.append(`consequences[${idx}][id]`, consequence.id || "")
 
-		;(consequence.safeguards || []).forEach((safeguard, idxSafeguard) => {
-			const indexSafeguard = `consequences[${idx}][safeguards][${idxSafeguard}]`
-			//check jika safeguard isinya berupa id maka payload yg di kirim safeguard_id saja
-			if (regex.test(safeguard.safeguard || "")) {
-				formData.append(
-					`${indexSafeguard}[safeguard_id]`,
-					String(safeguard.safeguard ?? "")
-				)
-			} else {
-				formData.append(
-					`${indexSafeguard}[safeguard]`,
-					String(safeguard.safeguard ?? "")
-				)
-				formData.append(
-					`${indexSafeguard}[safeguard_title]`,
-					String(safeguard.safeguard ?? "")
-				)
+			; (consequence.safeguards || []).forEach((safeguard, idxSafeguard) => {
+				const indexSafeguard = `consequences[${idx}][safeguards][${idxSafeguard}]`
+				//check jika safeguard isinya berupa id maka payload yg di kirim safeguard_id saja
+				if (regex.test(safeguard.safeguard || "")) {
+					formData.append(
+						`${indexSafeguard}[safeguard_id]`,
+						String(safeguard.safeguard ?? "")
+					)
+				} else {
+					formData.append(
+						`${indexSafeguard}[safeguard]`,
+						String(safeguard.safeguard ?? "")
+					)
+					formData.append(
+						`${indexSafeguard}[safeguard_title]`,
+						String(safeguard.safeguard ?? "")
+					)
 
-				formData.append(
-					`${indexSafeguard}[file_path]`,
-					safeguard.file_path ? safeguard.file_path : ""
-				)
-			}
-		})
+					formData.append(
+						`${indexSafeguard}[file_path]`,
+						safeguard.file_path ? safeguard.file_path : ""
+					)
+				}
+			})
 	})
 	return formData
 }
@@ -171,3 +171,48 @@ export const parseRiskBankToFlatted = (datas: RiskBank[]): RiskBankFlat[] => {
 	)
 	return flattenedData
 }
+
+export const parseRiskBankToFlattedByConsequences = (datas: RiskBank[]): RiskBankFlatByConsequence[] => {
+	let no = 0;
+	const flattenedData: RiskBankFlatByConsequence[] = (datas || []).flatMap(
+		(mainEntry, mainIndex) => {
+			const consequences = mainEntry.consequences || [];
+			no++;
+
+			// Increment number only for the first main entry
+			const currentNo = no;
+
+			return consequences.map((consequence, consIndex) => {
+				const safeguards = consequence.safeguards || [];
+
+				// Join all safeguards information if needed
+				// const safeguardText = safeguards.map(sg => sg.safeguard).join('; ');
+				// const safeguardLinks = safeguards.map(sg => sg.file_path).join('; ');
+
+				return {
+					// Main Data
+					id: mainEntry.id,
+					no: currentNo,
+					uniqueKey: `${mainEntry.id}_${consequence.id}`,
+					parameter: mainEntry.parameter_deviations[0]?.parameter?.name || '',
+					cause: mainEntry.cause,
+					deviation_id: mainEntry.deviation_id,
+					deviations: mainEntry.deviations,
+					deviation: mainEntry.deviations.name || mainEntry.deviations.deviation || "",
+
+					// Consequence Data
+					consequences: [consequence], // Masukkan sebagai array untuk kompatibilitas
+					consequence: consequence.consequence,
+
+					safeguards: safeguards,
+					// Metadata for Rowspan
+					mainRowspan: consequences.length,
+					consequenceRowspan: 1,
+					isFirstMain: consIndex === 0,
+					isFirstConsequence: true,
+				};
+			});
+		}
+	);
+	return flattenedData;
+};
