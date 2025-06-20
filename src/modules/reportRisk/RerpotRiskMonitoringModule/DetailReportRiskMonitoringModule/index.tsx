@@ -78,7 +78,7 @@ const ReportRiskMonitoringModule = () => {
 						incident_count: total,
 						deviation:
 							reportRiskMonitoringDetail[0].deviations.name,
-						parameter : reportRiskMonitoringDetail[0].parameters.name
+						parameter: reportRiskMonitoringDetail[0].parameters.name,
 						
 					}}
 				/>

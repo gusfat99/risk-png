@@ -138,7 +138,7 @@ const NodeDataCard: NodeDataCardComponent = ({ nodeSelected }) => {
 							<TableCell className="text-gray-400 w-40 p-1">
 								{fieldNode.title}
 							</TableCell>
-							<TableCell className=" p-1">:</TableCell>
+							<TableCell className=" p-1 w-2">:</TableCell>
 							<TableCell className="p-1">
 								{nodeSelected?.[fieldNode.field]}
 							</TableCell>

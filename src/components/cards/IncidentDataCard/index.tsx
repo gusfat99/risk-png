@@ -58,10 +58,10 @@ const IncidentDataCard: React.FC<IProps> = ({ data }) => {
 				<TableBody>
 					{fileds.map((field) => (
 						<TableRow className="border-0" key={field.field}>
-							<TableCell className="text-gray-400 p-1">
+							<TableCell className="text-gray-400 p-1 w-40">
 								{field.title}
 							</TableCell>
-							<TableCell className=" p-1">:</TableCell>
+							<TableCell className=" p-1 w-2">:</TableCell>
 							<TableCell className="p-1">
 								{data?.[field.field]}
 							</TableCell>
