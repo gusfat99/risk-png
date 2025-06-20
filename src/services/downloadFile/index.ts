@@ -19,9 +19,10 @@ export const downloadProxyFile = async (
 ): Promise<Blob> => {
 	return new Promise<Blob>(async (resolve, reject) => {
 		try {
+			const parameters = sanitizeQueryParams(params);
+		
 			const response = await axiosInterceptor.get(
-				`?url=${API_URL}/api${url}${
-					params ? sanitizeQueryParams(params) : ""
+				`?url=${API_URL}/api${url}${params ? parameters : ""
 				}`,
 				{
 					responseType: "blob",
@@ -31,17 +32,16 @@ export const downloadProxyFile = async (
 
 			// Dapatkan nama file dari header
 			const contentDisposition = response.headers["content-disposition"]
-
 			let filename = options.defaultFilename || "filename"
-
+			
 			if (contentDisposition) {
 				const filenameMatch =
-					contentDisposition.match(/filename="?(.+)"?/)
+				contentDisposition.match(/filename="?(.+)"?/)
 				if (filenameMatch && filenameMatch[1]) {
 					filename = filenameMatch[1]
 				}
 			}
-
+			
 			const blob = new Blob([response.data])
 
 			resolve(blob)

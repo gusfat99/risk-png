@@ -278,7 +278,7 @@ export const getDataBlob = <T = Blob>(
 			headers,
 			responseType: 'blob', // Ini yang membedakan, responseType di-set ke 'blob'
 		 })
-		 .then((data) => {
+		  .then((data) => {
 			if (isRequestSuccessful(data.status)) {
 			  return resolve({
 				 data: data.data,
