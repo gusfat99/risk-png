@@ -16,10 +16,10 @@ import { Save } from "lucide-react"
 import { usePathname } from "next/navigation"
 
 interface ConfigMenuFormProps {
-	isEdit: boolean
+	isEdit?: boolean
 }
 
-const ConfigMenuForm: React.FC<ConfigMenuFormProps> = ({ isEdit }) => {
+const ConfigMenuForm: React.FC<ConfigMenuFormProps> = ({ isEdit = false }) => {
 	const pathname = usePathname()
 	const splitPathname = pathname.split("/")
 

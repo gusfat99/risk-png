@@ -1,9 +1,8 @@
-import SettingProfileModule from '@/modules/SettingProfileModule';
-import React from 'react'
+import ConfifMenuAdd from '@/modules/configuration/ConfigMenuModule/ConfigMenuAdd';
 
  const Page = () => {
   return (
-    <SettingProfileModule/>
+    <ConfifMenuAdd/>
   )
 }
 
