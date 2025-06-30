@@ -1,6 +1,6 @@
 import { ResponseApiType } from "@/helpers/ApiHelper"
 import { CommonState } from "./common"
-import { Safeguard } from "./safeguard"
+import { Safeguard } from "@/types/safeguard"
 import { PaginationState, Updater } from "@tanstack/react-table"
 import { z } from "zod"
 import { RiskBankSchema } from "@/schemas/RiskBankSchema"
@@ -66,10 +66,28 @@ export interface RiskBankFlat {
 	isFirstMain: boolean
 	isFirstConsequence: boolean
 }
+export interface RiskBankFlatByConsequence {
+    id: number
+    no: number
+    uniqueKey: string
+    deviation_id: number
+    parameter: string
+    cause: string
+    deviations: Deviations
+    deviation: string
+    mainRowspan: number
+    consequenceRowspan: number
+    consequence: string  // Langsung string, tidak perlu array consequences
+    safeguards: Safeguard[]
+    isFirstMain: boolean
+    isFirstConsequence: boolean
+
+}
 
 export interface RiskDataBankState extends CommonState {
 	riskDataBankItems: RiskBank[]
 	riskDataBankFlat: RiskBankFlat[]
+	riskDataBankFlatByConsequences: RiskBankFlatByConsequence[]
 	riskDataBankSelected: RiskBank | null
 	supportData: {
 		isFetchingSupportData: boolean

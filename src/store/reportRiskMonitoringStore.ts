@@ -6,6 +6,7 @@ import {
 } from "@/constants/endpoints"
 import {
 	getDataApi,
+	getDataBlob,
 	ResponseApiType
 } from "@/helpers/ApiHelper"
 import { toast } from "@/hooks/use-toast"
@@ -206,32 +207,62 @@ const useReportRiskMonitoringStore = createStore<ReportRiskMonitoringState>(
 				set({
 					isFetchingExportData: true,
 				})
-				downloadProxyFile(`${EXPORT_MONITORING_EP}`, {
+				getDataBlob(`${EXPORT_MONITORING_EP}`, {
 					year: year_selected,
 					node_id: nodeId,
 					deviation_id: deviationId,
 					risk_bank_id: riskBankId,
 					parameter_id: parameterId,
 					consequence_id: consequenceId,
-				}).then((blob) => {
+				}).then(blob => {
+					if (blob.data) {
+						const blobUrl = window.URL.createObjectURL(blob.data)
+						const link = document.createElement("a")
+						link.href = blobUrl
+						link.setAttribute("download", "Risk Monitoring Report.xlsx");
+						document.body.appendChild(link)
+						link.click()
+						link.parentNode?.removeChild(link)
+						window.URL.revokeObjectURL(blobUrl)
+					}
+				}).catch((err) => {
 					toast({
-						title: "Success",
-						description: "Successfull download file excel",
-						variant: "success",
+						title: "Filed",
+						description: err.message,
+						variant: "destructive",
 					})
 				})
-					.catch((err) => {
-						toast({
-							title: "Filed",
-							description: err.message,
-							variant: "destructive",
-						})
-					})
 					.finally(() => {
 						set({
 							isFetchingExportData: false,
 						})
 					})
+				// downloadProxyFile(`${EXPORT_MONITORING_EP}`, {
+				// 	year: year_selected,
+				// 	node_id: nodeId,
+				// 	deviation_id: deviationId,
+				// 	risk_bank_id: riskBankId,
+				// 	parameter_id: parameterId,
+				// 	consequence_id: consequenceId,
+				// }).then((blob) => {
+				// 	toast({
+				// 		title: "Success",
+				// 		description: "Successfull download file excel",
+				// 		variant: "success",
+				// 	})
+				// })
+				// 	.catch((err) => {
+				// 		toast({
+				// 			title: "Filed",
+				// 			description: err.message,
+				// 			variant: "destructive",
+				// 		})
+				// 	})
+				// 	.finally(() => {
+				// 		set({
+				// 			isFetchingExportData: false,
+				// 		})
+				// 	})
 			},
 			setPagination: (updater) =>
 				set((state) => ({

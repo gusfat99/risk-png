@@ -14,6 +14,7 @@ import {
 import { toast } from "@/hooks/use-toast"
 import {
 	parseRiskBankToFlatted,
+	parseRiskBankToFlattedByConsequences,
 	parseRiskBankToPayload,
 } from "@/modules/RiskBankModule/parseRiskBank"
 import { downloadProxyFile } from "@/services/downloadFile"
@@ -33,6 +34,7 @@ const initialState = {
 	...commonInitualState,
 	riskDataBankItems: [],
 	riskDataBankFlat: [],
+	riskDataBankFlatByConsequences : [],
 	supportData: {
 		isFetchingSupportData: false,
 		parameterItems: [],
@@ -65,11 +67,11 @@ const useRiskDataBankStore = createStore<RiskDataBankState>(
 
 								if (Array.isArray(data.data)) {
 									const flattenedData =
-										parseRiskBankToFlatted(data.data || [])
+										parseRiskBankToFlattedByConsequences(data.data || [])
 
 									set({
 										riskDataBankItems: data.data || [],
-										riskDataBankFlat: flattenedData,
+										riskDataBankFlatByConsequences: flattenedData,
 										meta: data?.meta,
 									})
 									resolve(data)

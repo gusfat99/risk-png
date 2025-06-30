@@ -43,8 +43,6 @@ const RiskMonitoringDetail: React.FC<IProps> = () => {
 			{!isFetching && riskMonitoringSelected && (
 				<RiskIncidentCard
 					data={{
-						// deviations: riskMonitoringSelected.deviations,
-						// causes: riskMonitoringSelected.causes as any,
 						incident_location:
 							riskMonitoringSelected.incident_location,
 						incident_name: riskMonitoringSelected.incident_name,

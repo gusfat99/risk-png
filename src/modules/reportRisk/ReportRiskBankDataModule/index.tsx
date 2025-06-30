@@ -1,18 +1,23 @@
 "use client"
 import ExportExcelButton from "@/components/buttons/ExportExcelButton"
 import DataTable from "@/components/DataTable"
+import DialogMain from "@/components/dialogs/DialogMain"
 import InputSearch from "@/components/inputs/InputSearch"
-import { useToast } from "@/hooks/use-toast"
-import { columnRiskBank } from "@/modules/RiskBankModule/columns"
+import GeneralTable from "@/components/tables/GeneralTable"
+import { toast } from "@/hooks/use-toast"
+import {
+	columnRiskBankFlatByConsequences,
+	columnSafeguard,
+} from "@/modules/RiskBankModule/columns"
 import useAuthStore from "@/store/authStore"
 import useRiskDataBankStore from "@/store/riskDataBankStore"
-import { RiskBankFlat } from "@/types/riskDataBank"
-import { usePathname, useRouter } from "next/navigation"
+import { RiskBankFlatByConsequence } from "@/types/riskDataBank"
+import { Safeguard } from "@/types/safeguard"
 import { useEffect, useState } from "react"
 
 const ReportRiskBankDataModule = () => {
 	const {
-		riskDataBankFlat,
+		riskDataBankFlatByConsequences,
 		actions: { fetchAllData, setPagination, exportExcel },
 		isFetching,
 		isFetchingExportData,
@@ -22,6 +27,35 @@ const ReportRiskBankDataModule = () => {
 	const { pageIndex, pageSize } = pagination_tanstack
 	const total = meta?.total || 0
 	const { year_selected } = useAuthStore()
+	const [showSafeguards, setShowSafeguars] = useState<{
+		show: boolean
+		item: Safeguard[] | null
+	}>({
+		item: null,
+		show: false,
+	})
+
+	const handleAction = (
+		actionName: string,
+		_: any,
+		item?: RiskBankFlatByConsequence
+	) => {
+		if (actionName === "view_safeguards") {
+			if (item) {
+				const safeguards = item.safeguards
+				setShowSafeguars({
+					item: safeguards,
+					show: true,
+				})
+			} else {
+				toast({
+					variant: "default",
+					title: "No Safeguard Selected",
+				})
+			}
+		}
+	}
+
 	useEffect(() => {
 		fetchAllData()
 	}, [fetchAllData, pageIndex, pageSize, year_selected])
@@ -43,9 +77,9 @@ const ReportRiskBankDataModule = () => {
 				/>
 			</div>
 			<div className="mt-4">
-				<DataTable<RiskBankFlat>
-					columns={columnRiskBank(() => {}, true)}
-					data={riskDataBankFlat}
+				<DataTable<RiskBankFlatByConsequence>
+					columns={columnRiskBankFlatByConsequences(handleAction, true)}
+					data={riskDataBankFlatByConsequences}
 					loading={isFetching}
 					rowCount={total}
 					manualPagination={true}
@@ -57,6 +91,22 @@ const ReportRiskBankDataModule = () => {
 					}}
 				/>
 			</div>
+			<DialogMain
+				open={showSafeguards.show}
+				onOpenChange={(value) => {
+					setShowSafeguars((prev) => ({
+						...prev,
+						show: value,
+					}))
+				}}
+				title="Safeguards Data"
+				size="2xl"
+			>
+				<GeneralTable
+					columns={columnSafeguard()}
+					data={showSafeguards.item || []}
+				/>
+			</DialogMain>
 		</div>
 	)
 }
