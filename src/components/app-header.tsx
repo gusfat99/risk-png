@@ -34,53 +34,58 @@ const AppHeader = () => {
 	const { user, year_selected, setYear } = useAuthStore()
 
 	const handleChangeYear = (value: string) => {
-		setYear(value);
+		setYear(value)
 	}
 
 	return (
 		<header className="flex h-16 shrink-0 items-center justify-between gap-2">
 			<div className="flex flex-col">
 				{isFetchingMenu ? (
-					<Skeleton className="h-8 w-60 md:w-96 mb-2" />) : (
-						<Title className="mb-2">{subtitle}</Title>
+					<Skeleton className="h-8 w-60 md:w-96 mb-2" />
+				) : (
+					<Title className="mb-2">{subtitle}</Title>
 				)}
 				<div className="flex items-center gap-2">
 					<SidebarTrigger className="-ml-1" />
 					<Separator orientation="vertical" className="mr-2 h-4" />
-					<Breadcrumb>
-						<BreadcrumbList>
-							{(breadcrumbs || []).map((breadcumb, idx) => {
-								return idx === breadcrumbs.length - 1 ? (
-									<BreadcrumbItem key={idx}>
-										<BreadcrumbPage className="text-warning-foreground">
-											{breadcumb.title}
-										</BreadcrumbPage>
-									</BreadcrumbItem>
-								) : (
-									<React.Fragment key={idx}>
-										<BreadcrumbItem className="hidden md:block">
-											<Link
-												className={cn(
-													"transition-colors hover:text-foreground"
-												)}
-												href={breadcumb.path}
-											>
+					{isFetchingMenu ? (
+						<Skeleton className="h-6 w-48" />
+					) : (
+						<Breadcrumb>
+							<BreadcrumbList>
+								{(breadcrumbs || []).map((breadcumb, idx) => {
+									return idx === breadcrumbs.length - 1 ? (
+										<BreadcrumbItem key={idx}>
+											<BreadcrumbPage className="text-warning-foreground">
 												{breadcumb.title}
-											</Link>
+											</BreadcrumbPage>
 										</BreadcrumbItem>
-										<BreadcrumbSeparator className="hidden md:block" />
-									</React.Fragment>
-								)
-							})}
-						</BreadcrumbList>
-					</Breadcrumb>
+									) : (
+										<React.Fragment key={idx}>
+											<BreadcrumbItem className="hidden md:block">
+												<Link
+													className={cn(
+														"transition-colors hover:text-foreground"
+													)}
+													href={breadcumb.path}
+												>
+													{breadcumb.title}
+												</Link>
+											</BreadcrumbItem>
+											<BreadcrumbSeparator className="hidden md:block" />
+										</React.Fragment>
+									)
+								})}
+							</BreadcrumbList>
+						</Breadcrumb>
+					)}
 				</div>
 			</div>
 			<div className="flex gap-2">
 				<button className="bg-primary-100 w-10 rounded-md p-2">
 					<Image src={Bell} width={82} height={82} alt="bell-notif" />
 				</button>
-				<Select  onValueChange={handleChangeYear} value={year_selected}>
+				<Select onValueChange={handleChangeYear} value={year_selected}>
 					<SelectTrigger className="w-[98px]">
 						<SelectValue placeholder="Tahun" />
 					</SelectTrigger>
@@ -103,7 +108,13 @@ const AppHeader = () => {
 					</div>
 					<div className=" overflow-hidden rounded-full max-h-[38px]">
 						<Image
-							src={user?.profile_picture ? PROFILE_PATHNAME_STORAGE+"/"+user.profile_picture : AvatarDummy}
+							src={
+								user?.profile_picture
+									? PROFILE_PATHNAME_STORAGE +
+									  "/" +
+									  user.profile_picture
+									: AvatarDummy
+							}
 							alt="avatar-pertamina-gas"
 							className="overflow-hidden"
 							width={38}

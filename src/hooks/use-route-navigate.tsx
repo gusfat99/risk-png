@@ -90,7 +90,7 @@ export const useRouteNavigate = () => {
 			})
 		}
 		return availableRoute
-	}, [pathname])
+	}, [pathname, menus])
 
 	const pathNameArr = pathname.split("/")
 
