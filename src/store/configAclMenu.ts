@@ -1,18 +1,21 @@
 import { MENU_EP, ROLE_PERMISSION_EP } from "@/constants/endpoints"
 import {
    getDataApi,
+   patchData,
    postData,
    ResponseApiType
 } from "@/helpers/ApiHelper"
 import { toast } from "@/hooks/use-toast"
 import { commonInitualState } from "@/types/common"
-import { ConfigAclMenuState, Menu, MenuForm, Role, RoleAclMenuForm } from "@/types/configAclMenu"
+import { ConfigAclMenuState, Menu, MenuForm, Role, RoleAclMenuForm, RoleDetails } from "@/types/configAclMenu"
 import { createStore, runUpdater } from "./store"
 
 const initialState = {
    ...commonInitualState,
    menuItems: [],
    rolePermissionItems: [],
+   rolePermissionDetails: null,
+   menuItem: null,
 }
 
 const useConfigAclMenu = createStore<ConfigAclMenuState>("acl-menu", (set, get) => ({
@@ -52,18 +55,19 @@ const useConfigAclMenu = createStore<ConfigAclMenuState>("acl-menu", (set, get) 
       },
       fetchMenuDetail: async (id) => {
          set({
-            isFetching: true,
+            isFetchingMenu: true,
          })
          return new Promise<ResponseApiType<Menu>>((resolve, reject) => {
             getDataApi<Menu>(MENU_EP + "/" + id)
                .then((data) => {
                   getDataApi<Menu[]>(MENU_EP, {
                      per_page: 1000
-                  }).then(resMenu => {
+                  }).then(result => {
+
                      set({
-                        menuItems: resMenu.data || [],
-                        meta: data?.meta,
-                        isFetching : false
+                        isFetchingMenu: false,
+                        menuItems: result.data || [],
+                        menuItem: data.data || null
                      })
                   }).catch(err => {
                      toast({
@@ -72,8 +76,8 @@ const useConfigAclMenu = createStore<ConfigAclMenuState>("acl-menu", (set, get) 
                         description: err.message
                      })
                      set({
-                        isFetching : false
-                      })
+                        isFetchingMenu: false
+                     })
                   })
 
                   resolve(data)
@@ -89,7 +93,7 @@ const useConfigAclMenu = createStore<ConfigAclMenuState>("acl-menu", (set, get) 
                })
                .finally(() => {
                   set({
-                     isFetching: false,
+                     isFetchingMenu: false,
                   })
                })
          })
@@ -122,6 +126,37 @@ const useConfigAclMenu = createStore<ConfigAclMenuState>("acl-menu", (set, get) 
                .finally(() => {
                   set({
                      isFetching: false,
+                  })
+               })
+         })
+      },
+      fetchRolePermissonDetail: async (id?: any) => {
+         set({
+            isFetchingRolePermissionDetails: true,
+         })
+         return new Promise<ResponseApiType<RoleDetails>>((resolve, reject) => {
+            getDataApi<RoleDetails>(ROLE_PERMISSION_EP + "/" + id)
+               .then((data) => {
+                  if (data.data) {
+                     data.data.assigned_menus = data.data.assigned_menus.filter(menu => menu.type !== 'group')
+                  }
+                  set({
+                     rolePermissionDetails: data.data || null,
+                     meta: data?.meta,
+                  })
+                  resolve(data)
+               })
+               .catch((err) => {
+                  toast({
+                     title: "ERROR",
+                     description: err.message,
+                     variant: "destructive",
+                  })
+                  reject(err)
+               })
+               .finally(() => {
+                  set({
+                     isFetchingRolePermissionDetails: false,
                   })
                })
          })
@@ -178,7 +213,7 @@ const useConfigAclMenu = createStore<ConfigAclMenuState>("acl-menu", (set, get) 
             isSubmit: true,
          })
          return new Promise<ResponseApiType<Role>>((resolve, reject) => {
-            postData<Role>(ROLE_PERMISSION_EP + "/" + id, payload)
+            patchData<Role>(ROLE_PERMISSION_EP + "/" + id, payload)
                .then((data) => {
 
                   resolve(data)

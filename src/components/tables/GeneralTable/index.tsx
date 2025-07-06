@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils"
 interface ColumnDef<T> {
 	accessorKey: keyof T | string
 	header: string
-	cell?: (row: T) => React.ReactNode
+	cell?: (row: T, index: number) => React.ReactNode
 	className?: string
 }
 
@@ -40,7 +40,12 @@ export default function GeneralTable<T>({
 							{columns.map((column) => (
 								<TableHead
 									key={column.accessorKey as string}
-									className={column.className}
+									className={cn(	"text-wrap font-semibold overflow-hidden text-ellipsis whitespace-nowrap sticky top-0 z-1 bg-gray-100 [&>tr]:first:shadow-sm",column.className)}
+									style={{
+										position: "sticky",
+										top: 0,
+										zIndex: 10,
+									}}
 								>
 									{column.header}
 								</TableHead>
@@ -65,7 +70,7 @@ export default function GeneralTable<T>({
 											className={column.className}
 										>
 											{column.cell
-												? column.cell(row)
+												? column.cell(row, rowIndex)
 												: (row[
 														column.accessorKey as keyof T
 												  ] as React.ReactNode)}

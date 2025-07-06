@@ -26,9 +26,10 @@ import { Separator } from "./ui/separator"
 import { SidebarTrigger } from "./ui/sidebar"
 import Title from "./ui/title"
 import { PROFILE_PATHNAME_STORAGE } from "@/constants"
+import { Skeleton } from "./ui/skeleton"
 
 const AppHeader = () => {
-	const { subtitle } = useRouteGetTitle()
+	const { subtitle, isFetchingMenu } = useRouteGetTitle()
 	const { breadcrumbs } = useRouteNavigate()
 	const { user, year_selected, setYear } = useAuthStore()
 
@@ -39,7 +40,10 @@ const AppHeader = () => {
 	return (
 		<header className="flex h-16 shrink-0 items-center justify-between gap-2">
 			<div className="flex flex-col">
-				<Title>{subtitle}</Title>
+				{isFetchingMenu ? (
+					<Skeleton className="h-8 w-60 md:w-96 mb-2" />) : (
+						<Title className="mb-2">{subtitle}</Title>
+				)}
 				<div className="flex items-center gap-2">
 					<SidebarTrigger className="-ml-1" />
 					<Separator orientation="vertical" className="mr-2 h-4" />

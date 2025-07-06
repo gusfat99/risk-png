@@ -210,6 +210,32 @@ export const putData = <T>(
 	})
 }
 
+export const patchData = <T>(
+	ep: string,
+	payload: object,
+	config?: AxiosRequestConfig<any>
+): Promise<ResponseApiType<T>> => {
+	return new Promise((resolve, reject) => {
+		axiosInterceptor
+			.patch<ResponseApiType<T>>(ep, sanitizeData(payload), config)
+			.then((data) => {
+				return handleApiResponse<T>(data, resolve, reject)
+			})
+			.catch((err: AxiosError<ResponseApiType<null>>) => {
+				// console.log(err.status)
+				if (err.status === 401 || err.status === 404) {
+					return  resolve(err.response as unknown as any)
+				}
+				const errorResponse: ResponseApiType<null> | undefined =
+					err.response?.data
+				return reject(
+					errorResponse ?? { message: err.message || "Unknown error" }
+				)
+			})
+		return Promise.resolve()
+	})
+}
+
 export const deleteData = <T>(
 	ep: string,
 ): Promise<ResponseApiType<T>> => {

@@ -8,6 +8,7 @@ import { useMemo } from "react"
 export const useRouteGetTitle = () => {
 	const pathname = usePathname()
 	const { menus } = useAuthStore()
+	
 
 	const route = useMemo(() => {
 		let routeAvailable = menus.find((x) => {
@@ -27,7 +28,7 @@ export const useRouteGetTitle = () => {
 			})
 		}
 		return routeAvailable
-	}, [pathname])
+	}, [pathname, menus])
 
 	let title = route?.name ?? ""
 	let subtitle = route?.name ?? ""
@@ -59,6 +60,7 @@ export const useRouteGetTitle = () => {
 		}
 	}
 	return {
+		isFetchingMenu : menus.length === 0,
 		icon: route?.icon,
 		title,
 		subtitle,

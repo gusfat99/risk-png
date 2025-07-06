@@ -49,12 +49,20 @@ export const RoleAclMenuSchema = z.object({
          message: "Role Name is required",
       })
       .min(1, { message: "Role Name is required" }),
-   menus_ids: z.array(z.object({
-      permissions: z.object({
-         menu_id: z.string().min(1, { message: "Please select menu" }),
-         actions: z.array(z.string()).optional(),
+
+   permissions: z.array(
+      z.object({
+         menu_id: z.number({
+            message: "Menu ID is required",
+         }),
+         read: z.boolean().optional(),
+         create: z.boolean().optional(),
+         edit: z.boolean().optional(),
+         delete: z.boolean().optional(),
+         detail: z.boolean().optional(),
+         list: z.boolean().optional(),
       })
-   })),
+   )
 })
 
 
@@ -66,4 +74,19 @@ export const defaultValueMenu: MenuForm = {
    icon: "",
    parent_id: "",
    path: ""
+}
+
+export const defaultValueRoleAclMenu = {
+   name: "",
+   permissions: [
+      {
+         menu_id: 0,
+         read: false,
+         create: false,
+         edit: false,
+         delete: false,
+         detail: false,
+         list: false,
+      },
+   ],
 }

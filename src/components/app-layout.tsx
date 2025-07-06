@@ -5,6 +5,7 @@ import { SidebarInset } from "@/components/ui/sidebar"
 import { useRouteGetTitle } from "@/hooks/use-route-navigate"
 import React from "react"
 import LucideIcon from "./LucideIcon"
+import { Skeleton } from "./ui/skeleton"
 
 interface IProps {
 	children: React.ReactNode
@@ -16,6 +17,7 @@ export default function AppLayout({ children }: IProps) {
 		icon,
 		subtitle,
 		title,
+		isFetchingMenu,
 	} = useRouteGetTitle()
 
 	return (
@@ -39,15 +41,18 @@ export default function AppLayout({ children }: IProps) {
 											className="!size-6"
 										/>
 									)}{" "}
-									<span className="ml-2">{title}</span>
+									{isFetchingMenu ? (
+										<Skeleton className="h-6 w-40 ml-2" />
+									) : (
+										<span className="ml-2">{title}</span>
+									)}
 								</div>
 							)}
 							<div className="flex flex-shrink-0">
 								<div className="flex flex-col gap-4 p-4 shadow-lg rounded-lg mt-3 w-full max-w-full overflow-hidden">
 									{lengthPathname > 2 && (
 										<div
-											className="rounded-md bg-primary p-4 flex w-full
-									 text-white mt-2 "
+											className="rounded-md bg-primary p-4 flex w-full text-white mt-2 "
 										>
 											{icon && (
 												<LucideIcon
@@ -55,9 +60,13 @@ export default function AppLayout({ children }: IProps) {
 													className="!size-6"
 												/>
 											)}{" "}
-											<span className="ml-2">
-												{title}
-											</span>
+											{isFetchingMenu ? (
+												<Skeleton className="h-6 w-40 ml-2" />
+											) : (
+												<span className="ml-2">
+													{title}
+												</span>
+											)}
 										</div>
 									)}
 									{children}

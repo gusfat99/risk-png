@@ -26,14 +26,35 @@ export type Role = {
    name: string;
 }
 
+export type AssignedMenuUser = {
+   "id": any
+   "name": string
+   "type": "item" | "group"
+   "permissions": Array<"create" |
+      "edit" |
+      "delete" |
+      "detail" |
+      "list">
+}
+
+export type RoleDetails = {
+   role: Role;
+   assigned_menus: AssignedMenuUser[];
+}
+
 export interface ConfigAclMenuState extends CommonState {
    menuItems: Menu[]
+   menuItem: Menu | null
    rolePermissionItems: Role[]
+   rolePermissionDetails: RoleDetails | null
+   isFetchingRolePermissionDetails?: boolean
+   isFetchingMenu?: boolean
    actions: {
       fetchMenu(params?: {
          per_page: number
       }): Promise<ResponseApiType<Menu[]>>
-      fetchMenuDetail?(menuId : any): Promise<ResponseApiType<Menu>>
+      fetchMenuDetail?(menuId: any): Promise<ResponseApiType<Menu>>
+      fetchRolePermissonDetail?(id: any): Promise<ResponseApiType<RoleDetails>>
       fetchRole(): Promise<ResponseApiType<Role[]>>
       createMenu?(payload: MenuForm): Promise<ResponseApiType<Menu>>
       createRolePemissions?(payload: RoleAclMenuForm): Promise<ResponseApiType<Role>>
@@ -47,5 +68,14 @@ export interface ConfigAclMenuState extends CommonState {
    }
 }
 
+export type RoleAclMenuPayload = {
+   name : string;
+   permissions: {
+      menu_id: any;
+      actions: Array<"create" | "edit" | "delete" | "detail" | "list">;
+   }[];
+}
+
 export type MenuForm = z.infer<typeof MenuSchema>
 export type RoleAclMenuForm = z.infer<typeof RoleAclMenuSchema>
+
