@@ -71,7 +71,7 @@ const ConfigMenuForm: React.FC<ConfigMenuFormProps> = ({ isEdit = false }) => {
 
 	const menuOptions = menuItems.map((x) => ({
 		label: x.name,
-		value: x.id,
+		value: x.id?.toString() || "",
 	}))
 
 	const handleSubmit = async (values: MenuForm) => {
@@ -120,9 +120,7 @@ const ConfigMenuForm: React.FC<ConfigMenuFormProps> = ({ isEdit = false }) => {
 			})
 		}
 	}
-	console.log("form values", form.getValues(), {
-		error: form.formState.errors,
-	})
+	
 	return (
 		<Form {...form}>
 			<form
@@ -211,6 +209,7 @@ const ConfigMenuForm: React.FC<ConfigMenuFormProps> = ({ isEdit = false }) => {
 								loading={isFetching}
 								items={menuOptions}
 								onChange={(value) => {
+									console.log("selected parent id", value)
 									form.setValue("parent_id", value)
 								}}
 								description="Please select when menu is children of parent menu"

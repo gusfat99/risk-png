@@ -14,7 +14,7 @@ import { columnMenu } from "../columns"
 
 const ConfigMenuModule = () => {
 	const {
-		actions: { fetchMenu, setQuerySearchMenu, setPagination },
+		actions: { fetchMenu, setQuerySearchMenu, setPagination, deleteMenu },
 		isFetching,
 		isFetchingDelete,
 		menuItems,
@@ -58,18 +58,18 @@ const ConfigMenuModule = () => {
 				shown: false,
 			})
 		} else if (confirmType === "confirm") {
-			// shownAlertDel.id &&
-			// 	deleteData &&
-			// 	deleteData(shownAlertDel.id).then((result) => {
-			// 		setShownAlertDel({
-			// 			id: null,
-			// 			shown: false,
-			// 		})
-			// 		toast({
-			// 			title: result.message,
-			// 			variant: "success",
-			// 		})
-			// 	})
+			shownAlertDel.id &&
+				deleteMenu &&
+				deleteMenu(shownAlertDel.id).then((result) => {
+					setShownAlertDel({
+						id: null,
+						shown: false,
+					})
+					toast({
+						title: result.message,
+						variant: "success",
+					})
+				})
 		}
 	}
 

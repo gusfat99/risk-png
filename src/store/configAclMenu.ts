@@ -1,5 +1,6 @@
 import { MENU_EP, ROLE_PERMISSION_EP } from "@/constants/endpoints"
 import {
+   deleteData,
    getDataApi,
    patchData,
    postData,
@@ -31,7 +32,7 @@ const useConfigAclMenu = createStore<ConfigAclMenuState>("acl-menu", (set, get) 
          })
          return new Promise<ResponseApiType<Menu[]>>((resolve, reject) => {
             getDataApi<Menu[]>(MENU_EP, {
-               page: get().pagination_tanstack.pageIndex,
+               page: params?.per_page && params?.per_page >= 1000 ? 1 : get().pagination_tanstack.pageIndex,
                per_page: params?.per_page ? params.per_page : get().pagination_tanstack.pageSize,
                search: get().querySearch || undefined
             })
@@ -259,54 +260,60 @@ const useConfigAclMenu = createStore<ConfigAclMenuState>("acl-menu", (set, get) 
                })
          })
       },
-      // deleteData: async (id) => {
-      // 	set({
-      // 		isFetchingDelete : true
-      // 	})
-      // 	return new Promise<ResponseApiType<null>>((resolve, reject) => {
-      // 		deleteData<null>(NODE_EP + "/" + id)
-      // 			.then((data) => {
-      // 				const filterData = get().nodeItems.filter(
-      // 					(x) => x.id?.toString() !== id.toString()
-      // 				)
-      // 				set({
-      // 					nodeItems: filterData,
-      // 				})
-      // 				resolve(data)
-      // 			})
-      // 			.catch((err) => {
-      // 				toast({
-      // 					title: "ERROR",
-      // 					description: err.message,
-      // 					variant: "destructive",
-      // 				})
-      // 				reject(err)
-      // 			})
-      // 			.finally(() => {
-      // 				set({
-      // 					isFetchingDelete : false
-      // 				})
-      // 			})
-      // 	})
-      // },
-      // setPagination: (updater) =>
-      // 	set((state) => ({
-      // 		pagination_tanstack: runUpdater(
-      // 			updater,
-      // 			state.pagination_tanstack
-      // 		),
-      // 	})),
+      deleteMenu: async (id) => {
+         set({
+            isFetchingDelete: true
+         })
+         return new Promise<ResponseApiType<null>>((resolve, reject) => {
+            deleteData<null>(MENU_EP + "/" + id)
+               .then((data) => {
+                  const filterData = get().menuItems.filter(
+                     (x) => x.id?.toString() !== id.toString()
+                  )
+                  set({
+                     menuItems: filterData,
+                  })
+                  resolve(data)
+               })
+               .catch((err) => {
+                  toast({
+                     title: "ERROR",
+                     description: err.message,
+                     variant: "destructive",
+                  })
+                  reject(err)
+               })
+               .finally(() => {
+                  set({
+                     isFetchingDelete: false
+                  })
+               })
+         })
+      },
+      setPagination: (updater, type: "role" | "menu") => {
+         if (type === "role") {
+            set((state) => ({
+               pagination_role_tanstack: runUpdater(
+                  updater,
+                  state.pagination_role_tanstack
+               ),
+            }))
+
+         } else if (type === "menu") {
+            set((state) => ({
+               pagination_tanstack: runUpdater(
+                  updater,
+                  state.pagination_tanstack
+               ),
+            }))
+
+         }
+      },
       setQuerySearch: (value: string) =>
          set(() => ({
             querySearch: value,
          })),
-      setPagination: (updater, type: "role" | "menu") =>
-         set((state) => ({
-            pagination_tanstack: runUpdater(
-               updater,
-               state.pagination_tanstack
-            ),
-         })),
+
       // setPagination : ()
    },
 }))
