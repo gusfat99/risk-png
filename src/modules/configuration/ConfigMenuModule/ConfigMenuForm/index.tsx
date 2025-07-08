@@ -13,7 +13,8 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import Spinner from "@/components/ui/spinner"
 import { Save } from "lucide-react"
-import { usePathname } from "next/navigation"
+import { useParams, usePathname, useRouter } from "next/navigation"
+import { useToast } from "@/hooks/use-toast"
 
 interface ConfigMenuFormProps {
 	isEdit?: boolean
@@ -21,10 +22,21 @@ interface ConfigMenuFormProps {
 
 const ConfigMenuForm: React.FC<ConfigMenuFormProps> = ({ isEdit = false }) => {
 	const pathname = usePathname()
+	const params = useParams<{ id: any }>()
+	const route = useRouter();
 	const splitPathname = pathname.split("/")
+	const { toast } = useToast()
 
 	const basePathname = "/".concat(splitPathname[1])
-	const { menuItems, isFetching, isSubmit } = useConfigAclMenu()
+	const {
+		menuItems,
+		isFetching,
+		isSubmit,
+		menuItem,
+
+		actions: { createMenu, updateMenu },
+	} = useConfigAclMenu()
+
 	const form = useForm<MenuForm>({
 		resolver: zodResolver(MenuSchema),
 		progressive: false,
@@ -32,7 +44,29 @@ const ConfigMenuForm: React.FC<ConfigMenuFormProps> = ({ isEdit = false }) => {
 		reValidateMode: "onSubmit",
 		shouldFocusError: true,
 		shouldUnregister: true,
-		defaultValues: defaultValueMenu,
+		defaultValues:
+			isEdit && params.id && menuItem
+				? {
+						...menuItem,
+						icon: menuItem.icon ?? undefined,
+						parent_id:
+							menuItem.parent_id !== null &&
+							menuItem.parent_id !== undefined
+								? String(menuItem.parent_id)
+								: undefined,
+						available_actions: Array.isArray(
+							menuItem.available_actions
+						)
+							? (menuItem.available_actions as any[])
+									.map((a) =>
+										typeof a === "string"
+											? a
+											: a?.action ?? undefined
+									)
+									.filter(Boolean)
+							: undefined,
+				  }
+				: defaultValueMenu,
 	})
 
 	const menuOptions = menuItems.map((x) => ({
@@ -42,44 +76,53 @@ const ConfigMenuForm: React.FC<ConfigMenuFormProps> = ({ isEdit = false }) => {
 
 	const handleSubmit = async (values: MenuForm) => {
 		try {
-			// if (createData && !params?.id && !isEdit) {
-			//   const formDataPayload = parseRiskBankToPayload(values)
-			//   const result = await createData(formDataPayload)
-			//   if (result) {
-			//     toast({
-			//       title: result.message ?? "",
-			//       variant: "success",
-			//     })
-			//     form.reset({ ...initialRiskBank })
-			//     route.replace(basePathname)
-			//   } else {
-			//     throw new Error("Failed")
-			//   }
-			// } else if (updateData && params.id && isEdit) {
-			//   // const formDataPayload = parseRiskBankToPayload(values)
-			//   const result = await updateData(params?.id, values)
-			//   if (result) {
-			//     toast({
-			//       title: result.message ?? "",
-			//       variant: "success",
-			//     })
-			//     form.reset({ ...initialRiskBank })
-			//     route.replace(basePathname)
-			//   } else {
-			//     throw new Error("Failed")
-			//   }
-			// }
+			if (createMenu && !params?.id && !isEdit) {
+				const formDataPayload = {
+					...values,
+					parent_id: values.parent_id ? values.parent_id : undefined,
+				}
+
+				const result = await createMenu(formDataPayload)
+				if (result) {
+					toast({
+						title: result.message ?? "",
+						variant: "success",
+					})
+					form.reset({ ...defaultValueMenu })
+					route.replace(basePathname)
+					// window.location.replace(basePathname)
+				} else {
+					throw new Error("Failed to create menu")
+				}
+			} else if (updateMenu && params.id && isEdit) {
+				const formDataPayload = {
+					...values,
+					parent_id: values.parent_id ? values.parent_id : undefined,
+				}
+				const result = await updateMenu(params?.id, formDataPayload)
+				if (result) {
+					toast({
+						title: result.message ?? "",
+						variant: "success",
+					})
+					form.reset({ ...defaultValueMenu })
+					route.replace(basePathname)
+				} else {
+					throw new Error("Failed to update menu")
+				}
+			}
 		} catch (error: any) {
-			// console.log({ error })
-			// toast({
-			//   title: error?.message
-			//     ? error.message
-			//     : "An unexpected error occurred",
-			//   variant: "destructive",
-			// })
+			toast({
+				title: error?.message
+					? error.message
+					: "An unexpected error occurred",
+				variant: "destructive",
+			})
 		}
 	}
-
+	console.log("form values", form.getValues(), {
+		error: form.formState.errors,
+	})
 	return (
 		<Form {...form}>
 			<form
@@ -108,9 +151,7 @@ const ConfigMenuForm: React.FC<ConfigMenuFormProps> = ({ isEdit = false }) => {
 							<InputSelectController
 								field={field}
 								label="Menu Type"
-								// disabled={isDetail}
 								placeholder="Select Menu Type"
-								// loading={isFetchingSupportData}
 								items={typeMenuOptions}
 								onChange={(value) => {
 									form.setValue("type", value)
@@ -134,7 +175,7 @@ const ConfigMenuForm: React.FC<ConfigMenuFormProps> = ({ isEdit = false }) => {
 					/>
 				</div>
 				<div className="space-y-4">
-					<div className="flex flex-row gap-2 items-end">
+					<div className="flex flex-row gap-2 items-center">
 						<FormField
 							control={form.control}
 							name={`icon`}
@@ -166,7 +207,6 @@ const ConfigMenuForm: React.FC<ConfigMenuFormProps> = ({ isEdit = false }) => {
 								field={field}
 								label="Parent Menu"
 								isRequired={false}
-								// disabled={isDetail}
 								placeholder="Select Parent Menu"
 								loading={isFetching}
 								items={menuOptions}
@@ -184,6 +224,7 @@ const ConfigMenuForm: React.FC<ConfigMenuFormProps> = ({ isEdit = false }) => {
 							<InputController
 								label="Order Number"
 								type="number"
+								defaultValue={field.value}
 								placeholder="Enter Order Number Menu"
 								onChange={(e) => {
 									form.setValue(

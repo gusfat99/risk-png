@@ -41,7 +41,6 @@ const ConfigMenuModule = () => {
 	})
 
 	const handleActionTable = (actionName: string, id: any) => {
-	
 		if (actionName === "update") {
 			router.push(`${basePathname}/update/${id}`)
 		} else if (actionName === "delete") {
@@ -98,7 +97,13 @@ const ConfigMenuModule = () => {
 					loading={isFetching}
 					rowCount={total}
 					manualPagination={true}
-					onPaginationChange={setPagination}
+					onPaginationChange={(updater) => {
+						setPagination &&
+							setPagination(
+								updater,
+								"menu" // specify type for pagination
+							)
+					}}
 					pagination={pagination_tanstack}
 				/>
 				<AlertConfirmDialog

@@ -49,6 +49,7 @@ export interface ConfigAclMenuState extends CommonState {
    rolePermissionDetails: RoleDetails | null
    isFetchingRolePermissionDetails?: boolean
    isFetchingMenu?: boolean
+   pagination_role_tanstack: PaginationState,
    actions: {
       fetchMenu(params?: {
          per_page: number
@@ -64,12 +65,12 @@ export interface ConfigAclMenuState extends CommonState {
       deleteRolePermissions?(id: any): Promise<ResponseApiType<any>>
       setQuerySearchMenu?: (value: string) => void
       setQuerySearchRole?: (value: string) => void
-      setPagination?: (updater: Updater<PaginationState>) => void;
+      setPagination?: (updater: Updater<PaginationState>, type: "role" | "menu") => void;
    }
 }
 
 export type RoleAclMenuPayload = {
-   name : string;
+   name: string;
    permissions: {
       menu_id: any;
       actions: Array<"create" | "edit" | "delete" | "detail" | "list">;

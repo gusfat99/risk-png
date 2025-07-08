@@ -5,28 +5,27 @@ import { useParams } from "next/navigation"
 import { useEffect } from "react"
 import ConfigMenuForm from "../ConfigMenuForm"
 
-const ConfifMenuUpdate = () => {
+const ConfigMenuUpdate = () => {
 	const params = useParams()
 	const {
 		isFetching,
-		actions: { fetchMenu },
+		menuItem,
+		actions: {  fetchMenuDetail },
 	} = useConfigAclMenu()
 
 	useEffect(() => {
 		if (params.id) {
-			// fetchSingleData && fetchSingleData(params.id)
+			fetchMenuDetail && fetchMenuDetail(params.id);
 		}
-		fetchMenu({
-			per_page: 1000,
-		})
-	}, [params.id, fetchMenu])
+		
+	}, [params.id, fetchMenuDetail])
 
 	return (
 		<div className="w-full h-fit">
 			{isFetching && <LoadingIndicator />}
-			{!isFetching && <ConfigMenuForm isEdit />}
+			{!isFetching && menuItem && <ConfigMenuForm isEdit />}
 		</div>
 	)
 }
 
-export default ConfifMenuUpdate
+export default ConfigMenuUpdate

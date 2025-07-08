@@ -1,14 +1,17 @@
 import InputController from "@/components/inputs/InputController"
 import GeneralTable from "@/components/tables/GeneralTable"
+import { Button } from "@/components/ui/button"
 import { Form, FormField } from "@/components/ui/form"
+import Spinner from "@/components/ui/spinner"
+import { useToast } from "@/hooks/use-toast"
 import {
-	defaultValueMenu,
 	defaultValueRoleAclMenu,
-	RoleAclMenuSchema,
+	RoleAclMenuSchema
 } from "@/schemas/ConfAclMenu"
 import useConfigAclMenu from "@/store/configAclMenu"
 import { AssignedMenuUser, RoleAclMenuForm } from "@/types/configAclMenu"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Save } from "lucide-react"
 import { useParams, usePathname, useRouter } from "next/navigation"
 import React from "react"
 import { useForm } from "react-hook-form"
@@ -17,11 +20,6 @@ import {
 	parseRoleAclMenuToView,
 	parseRoleAclToPayload,
 } from "../parseRoleAclToView"
-import { Button } from "@/components/ui/button"
-import Spinner from "@/components/ui/spinner"
-import { Save } from "lucide-react"
-import { parse } from "path"
-import { useToast } from "@/hooks/use-toast"
 
 interface ConfigRoleAccessMenuForm {
 	isEdit?: boolean
@@ -94,7 +92,7 @@ const ConfigRoleAccessMenuForm: React.FC<ConfigRoleAccessMenuForm> = ({
 						variant: "success",
 					})
 					// form.reset({ ...defaultValueRoleAclMenu })
-					// route.replace(basePathname)
+					route.replace(basePathname)
 				} else {
 					throw new Error("Failed")
 				}

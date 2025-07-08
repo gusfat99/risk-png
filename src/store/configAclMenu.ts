@@ -16,6 +16,10 @@ const initialState = {
    rolePermissionItems: [],
    rolePermissionDetails: null,
    menuItem: null,
+   pagination_role_tanstack: {
+      pageSize: 10,
+      pageIndex: 1,
+   }
 }
 
 const useConfigAclMenu = createStore<ConfigAclMenuState>("acl-menu", (set, get) => ({
@@ -104,8 +108,8 @@ const useConfigAclMenu = createStore<ConfigAclMenuState>("acl-menu", (set, get) 
          })
          return new Promise<ResponseApiType<Role[]>>((resolve, reject) => {
             getDataApi<Role[]>(ROLE_PERMISSION_EP, {
-               page: get().pagination_tanstack.pageIndex,
-               per_page: get().pagination_tanstack.pageSize,
+               page: get().pagination_role_tanstack.pageIndex,
+               per_page: get().pagination_role_tanstack.pageSize,
                search: get().querySearch || undefined
             })
                .then((data) => {
@@ -193,7 +197,7 @@ const useConfigAclMenu = createStore<ConfigAclMenuState>("acl-menu", (set, get) 
             isSubmit: true,
          })
          return new Promise<ResponseApiType<Menu>>((resolve, reject) => {
-            postData<Menu>(`${MENU_EP}/${id}`, payload)
+            patchData<Menu>(`${MENU_EP}/${id}`, payload)
                .then((data) => {
 
                   resolve(data)
@@ -296,7 +300,7 @@ const useConfigAclMenu = createStore<ConfigAclMenuState>("acl-menu", (set, get) 
          set(() => ({
             querySearch: value,
          })),
-      setPagination: (updater) =>
+      setPagination: (updater, type: "role" | "menu") =>
          set((state) => ({
             pagination_tanstack: runUpdater(
                updater,

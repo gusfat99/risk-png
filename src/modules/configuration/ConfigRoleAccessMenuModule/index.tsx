@@ -19,9 +19,9 @@ const ConfigRoleAccessMenuModule = () => {
 		isFetchingDelete,
 		rolePermissionItems: roleItems,
 		meta,
-		pagination_tanstack,
+		pagination_role_tanstack,
 	} = useConfigAclMenu()
-	const { pageIndex, pageSize } = pagination_tanstack
+	const { pageIndex, pageSize } = pagination_role_tanstack;
 	const pathname = usePathname()
 	const splitPathname = pathname.split("/")
 	const { toast } = useToast()
@@ -41,7 +41,6 @@ const ConfigRoleAccessMenuModule = () => {
 	})
 
 	const handleActionTable = (actionName: string, id: any) => {
-	
 		if (actionName === "update") {
 			router.push(`${basePathname}/update/${id}`)
 		} else if (actionName === "delete") {
@@ -85,8 +84,14 @@ const ConfigRoleAccessMenuModule = () => {
 					loading={isFetching}
 					rowCount={total}
 					manualPagination={true}
-					onPaginationChange={setPagination}
-					pagination={pagination_tanstack}
+					onPaginationChange={(updater) => {
+						setPagination &&
+							setPagination(
+								updater,
+								"role" // specify type for pagination
+							)
+					}}
+					pagination={pagination_role_tanstack}
 				/>
 				<AlertConfirmDialog
 					open={
