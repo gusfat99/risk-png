@@ -87,7 +87,7 @@ export const useColumnsAcl = ({
 									{...field}
 									value={field.value ? "true" : "false"}
 									onCheckedChange={(checked) => {
-										// console.log("checked", checked)
+										console.log("checked", checked)
 										field.onChange(checked)
 									}}
 									checked={field.value ? true : false}

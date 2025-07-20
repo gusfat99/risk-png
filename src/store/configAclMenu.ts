@@ -233,7 +233,7 @@ const useConfigAclMenu = createStore<ConfigAclMenuState>("acl-menu", (set, get) 
                })
          })
       },
-      createRolePemissionsRolePemissions: async (payload: RoleAclMenuForm) => {
+      createRolePemissions: async (payload: RoleAclMenuForm) => {
          set({
             isSubmit: true,
          })

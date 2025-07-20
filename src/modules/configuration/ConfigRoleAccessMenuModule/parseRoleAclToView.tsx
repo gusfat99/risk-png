@@ -1,6 +1,6 @@
 import { RoleAclMenuSchema } from "@/schemas/ConfAclMenu"
 import {
-	RoleAclMenuForm,
+	Menu,
 	RoleAclMenuPayload,
 	RoleDetails,
 } from "@/types/configAclMenu"
@@ -42,6 +42,17 @@ export const parseRoleAclToPayload = (
 			].filter(Boolean) as Array<
 				"create" | "edit" | "delete" | "detail" | "list"
 			>,
+		})),
+	}
+}
+
+export const defaultValueRoleAclMenu = (
+	menuItems: Menu[]
+): z.infer<typeof RoleAclMenuSchema> => {
+	return {
+		name: "",
+		permissions: menuItems.filter(x => x.type === "item").map((x) => ({
+			menu_id: x.id,
 		})),
 	}
 }

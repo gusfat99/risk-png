@@ -43,6 +43,20 @@ export const MenuSchema = z.object({
       }
    });
 
+export const PermissonsSchema = z.array(
+   z.object({
+      menu_id: z.number({
+         message: "Menu ID is required",
+      }),
+      read: z.boolean().optional(),
+      create: z.boolean().optional(),
+      edit: z.boolean().optional(),
+      delete: z.boolean().optional(),
+      detail: z.boolean().optional(),
+      list: z.boolean().optional(),
+   })
+)
+
 export const RoleAclMenuSchema = z.object({
    name: z
       .string({
@@ -50,19 +64,7 @@ export const RoleAclMenuSchema = z.object({
       })
       .min(1, { message: "Role Name is required" }),
 
-   permissions: z.array(
-      z.object({
-         menu_id: z.number({
-            message: "Menu ID is required",
-         }),
-         read: z.boolean().optional(),
-         create: z.boolean().optional(),
-         edit: z.boolean().optional(),
-         delete: z.boolean().optional(),
-         detail: z.boolean().optional(),
-         list: z.boolean().optional(),
-      })
-   )
+   permissions: PermissonsSchema
 })
 
 

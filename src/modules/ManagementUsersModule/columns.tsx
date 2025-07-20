@@ -3,6 +3,7 @@ import TableRowActions from "@/components/TableRowActions"
 import { Badge } from "@/components/ui/badge"
 import { User } from "@/types/user"
 import { ColumnDef } from "@tanstack/react-table"
+import Link from "next/link"
 // import { Badge } from "lucide-react"
 
 export const columnsManagementUser = (
@@ -67,8 +68,11 @@ export const columnsManagementUser = (
 				return <DataTableColumnHeader column={column} title="Role" />
 			},
 			cell: ({ row }) => (
-				<div className="text-center" >
+				<div className="text-center">
+
+				<Link  href={`/configuration-role-access-menu/update/${row.original.roles[0].id}`} >
 					<Badge variant={"secondary"} >{ row.getValue('role')}</Badge>
+				</Link>
 				</div>
 			),
 		},

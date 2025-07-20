@@ -4,10 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Form, FormField } from "@/components/ui/form"
 import Spinner from "@/components/ui/spinner"
 import { useToast } from "@/hooks/use-toast"
-import {
-	defaultValueRoleAclMenu,
-	RoleAclMenuSchema
-} from "@/schemas/ConfAclMenu"
+import { RoleAclMenuSchema } from "@/schemas/ConfAclMenu"
 import useConfigAclMenu from "@/store/configAclMenu"
 import { AssignedMenuUser, RoleAclMenuForm } from "@/types/configAclMenu"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -17,6 +14,7 @@ import React from "react"
 import { useForm } from "react-hook-form"
 import { useColumnsAcl } from "../../useColumnsAcl"
 import {
+	defaultValueRoleAclMenu,
 	parseRoleAclMenuToView,
 	parseRoleAclToPayload,
 } from "../parseRoleAclToView"
@@ -54,7 +52,7 @@ const ConfigRoleAccessMenuForm: React.FC<ConfigRoleAccessMenuForm> = ({
 		defaultValues:
 			isEdit && rolePermissionDetails
 				? parseRoleAclMenuToView(rolePermissionDetails)
-				: defaultValueRoleAclMenu,
+				: defaultValueRoleAclMenu(menuItems),
 	})
 
 	const { column } = useColumnsAcl({
@@ -62,26 +60,31 @@ const ConfigRoleAccessMenuForm: React.FC<ConfigRoleAccessMenuForm> = ({
 		form,
 	})
 
-	const menuOptions = menuItems.map((x) => ({
-		label: x.name,
-		value: x.id,
-	}))
+	const menus: AssignedMenuUser[] = menuItems
+		.filter((x) => x.type === "item")
+		.map((x) => ({
+			permissions: [],
+			name: x.name,
+			type: "item",
+			id: x.id,
+		}))
 
 	const handleSubmit = async (values: RoleAclMenuForm) => {
 		try {
+			console.log({ values })
 			if (createRolePemissions && !params?.id && !isEdit) {
-				// const formDataPayload = parseRoleAclToPayload(values)
-				//   const result = await createRolePemissions(formDataPayload)
-				//   if (result) {
-				//     toast({
-				//       title: result.message ?? "",
-				//       variant: "success",
-				//     })
-				//     form.reset({ ...initialRiskBank })
-				//     route.replace(basePathname)
-				//   } else {
-				//     throw new Error("Failed")
-				//   }
+				const formDataPayload = parseRoleAclToPayload(values)
+				const result = await createRolePemissions(formDataPayload)
+				if (result) {
+					toast({
+						title: result.message ?? "",
+						variant: "success",
+					})
+					form.reset({ ...defaultValueRoleAclMenu(menuItems) })
+					route.replace(basePathname)
+				} else {
+					throw new Error("Failed")
+				}
 			} else if (updateRolePemissions && params.id && isEdit) {
 				// const formDataPayload = parseRiskBankToPayload(values)
 				const payload = parseRoleAclToPayload(values)
@@ -106,6 +109,11 @@ const ConfigRoleAccessMenuForm: React.FC<ConfigRoleAccessMenuForm> = ({
 			})
 		}
 	}
+
+	console.log({
+		errors: form.formState.errors,
+		menus: form.watch("permissions"),
+	})
 
 	return (
 		<Form {...form}>
@@ -132,12 +140,16 @@ const ConfigRoleAccessMenuForm: React.FC<ConfigRoleAccessMenuForm> = ({
 						</Button>
 					</div>
 
-					{rolePermissionDetails && (
-						<GeneralTable<AssignedMenuUser>
-							columns={column}
-							data={rolePermissionDetails?.assigned_menus || []}
-						/>
-					)}
+					{/* {rolePermissionDetails && ( */}
+					<GeneralTable<AssignedMenuUser>
+						columns={column}
+						data={
+							isEdit && rolePermissionDetails
+								? rolePermissionDetails?.assigned_menus || []
+								: menus
+						}
+					/>
+					{/* // )} */}
 				</div>
 			</form>
 		</Form>
