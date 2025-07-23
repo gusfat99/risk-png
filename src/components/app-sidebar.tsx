@@ -22,7 +22,7 @@ import useAuthStore from "@/store/authStore"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	const { menus } = useAuthStore()
-	
+	// console.log({menus})
 	return (
 		<Sidebar variant="inset" {...props}>
 			<>

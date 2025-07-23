@@ -16,7 +16,7 @@ import {
 	SidebarMenuSubButton,
 	SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
-import { cn } from "@/lib/utils"
+import { cn, filterAvailableMenus } from "@/lib/utils"
 import { MenuPermission } from "@/types/auth"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -24,21 +24,22 @@ import LucideIcon from "./LucideIcon"
 
 export function NavMain({ items }: { items: MenuPermission[] }) {
 	const pathname = usePathname()
-	// const params = useLOC();
+
+	const availbleMenusByPermissons = filterAvailableMenus(items)
 
 	return (
 		<SidebarGroup className="backdrop-filter backdrop-blur-sm bg-opacity-20 bg-white rounded-xl">
 			<SidebarMenu>
-				{items.map((item) => {
+				{availbleMenusByPermissons.map((item) => {
 					return (
 						<Collapsible
-							key={item.name}
+							key={item?.name}
 							asChild
-							defaultOpen={pathname.includes(item.path)}
+							defaultOpen={pathname.includes(item?.path || "")}
 							className="group/collapsible"
 						>
 							<SidebarMenuItem>
-								{item.children?.length ? (
+								{item?.children?.length ? (
 									<>
 										<CollapsibleTrigger
 											className="focus:active:shadow-md focus:active:text-primary hover:text-primary group-data-[state=open]/collapsible:focus:hover:text-primary active:focus:shadow-neutral-500 h-12 text-primary-100"
@@ -103,22 +104,22 @@ export function NavMain({ items }: { items: MenuPermission[] }) {
 											{
 												"text-primary":
 													pathname.includes(
-														item.path
+														item?.path || ""
 													),
 												"bg-white": pathname.includes(
-													item.path
+													item?.path || ""
 												),
 											}
 										)}
 										asChild
-										tooltip={item.name}
+										tooltip={item?.name}
 									>
-										<Link href={item.path}>
+										<Link href={item?.path || "#"}>
 											<LucideIcon
-												iconName={item.icon}
+												iconName={item?.icon}
 												className="!size-6 mr-2"
 											/>
-											<span>{item.name}</span>
+											<span>{item?.name}</span>
 										</Link>
 									</SidebarMenuButton>
 								)}

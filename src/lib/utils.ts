@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import CryptoJS from "crypto-js"
 import { SECRET_KEY } from "@/constants"
+import { MenuPermission } from "@/types/auth"
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
@@ -95,14 +96,14 @@ export function riskRankColor(n: number) {
 	return n < 5
 		? "text-blue-500"
 		: n <= 10
-		? "text-green-500"
-		: n <= 15
-		? "text-yellow-500"
-		: n <= 20
-		? "text-orange-500"
-		: n <= 25
-		? "text-red-500"
-		: "text-gray-500" // fallback
+			? "text-green-500"
+			: n <= 15
+				? "text-yellow-500"
+				: n <= 20
+					? "text-orange-500"
+					: n <= 25
+						? "text-red-500"
+						: "text-gray-500" // fallback
 }
 
 
@@ -114,4 +115,34 @@ export const decrypt = (data: string) => {
 	const bytes = CryptoJS.AES.decrypt(data, SECRET_KEY)
 	const decryptedData = bytes.toString(CryptoJS.enc.Utf8)
 	return JSON.parse(decryptedData)
+}
+
+export const filterAvailableMenus = (items: MenuPermission[]) => {
+	return items
+		.map((item) => {
+			// Filter children jika ada
+			let filteredChildren: MenuPermission[] = []
+			if (item.children && item.children.length > 0) {
+				filteredChildren = item.children.filter(
+					(child) =>
+						Array.isArray(child.permissions) &&
+						child.permissions.includes("list")
+				)
+			}
+
+			// Cek parent sendiri
+			const hasListPermission =
+				Array.isArray(item.permissions) &&
+				item.permissions.includes("list")
+
+			// Return item baru hanya jika parent atau child ada yang lolos
+			if (hasListPermission || filteredChildren.length > 0) {
+				return {
+					...item,
+					children: filteredChildren,
+				}
+			}
+			return null
+		})
+		.filter(Boolean) // buang null
 }
