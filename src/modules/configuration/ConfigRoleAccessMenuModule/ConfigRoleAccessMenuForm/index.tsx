@@ -1,4 +1,5 @@
 import InputController from "@/components/inputs/InputController"
+import LoadingIndicator from "@/components/LoadingIndicator"
 import GeneralTable from "@/components/tables/GeneralTable"
 import { Button } from "@/components/ui/button"
 import { Form, FormField } from "@/components/ui/form"
@@ -6,7 +7,11 @@ import Spinner from "@/components/ui/spinner"
 import { useToast } from "@/hooks/use-toast"
 import { RoleAclMenuSchema } from "@/schemas/ConfAclMenu"
 import useConfigAclMenu from "@/store/configAclMenu"
-import { AssignedMenuUser, RoleAclMenuForm } from "@/types/configAclMenu"
+import {
+	AssignedMenuUser,
+	RoleAclMenuForm,
+	RoleDetails
+} from "@/types/configAclMenu"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Save } from "lucide-react"
 import { useParams, usePathname, useRouter } from "next/navigation"
@@ -23,6 +28,35 @@ interface ConfigRoleAccessMenuForm {
 	isEdit?: boolean
 }
 
+export const comparingMenus = ({
+	isEdit,
+	menus,
+	rolePermissionDetails,
+}: {
+	isEdit?: boolean
+	menus: AssignedMenuUser[]
+	rolePermissionDetails: RoleDetails | null
+}) => {
+	const menusData = [...menus]
+	if (isEdit && rolePermissionDetails) {
+		const combined: AssignedMenuUser[] = [
+			...menus,
+			...(rolePermissionDetails?.assigned_menus || []),
+		]
+		// Buat map pakai id sebagai key
+		const map = new Map<any, AssignedMenuUser>()
+		combined.forEach((item) => {
+			map.set(item.id, item)
+		})
+
+		const unionMenu = Array.from(map.values())
+	
+		return unionMenu
+	} else {
+		return menusData
+	}
+}
+
 const ConfigRoleAccessMenuForm: React.FC<ConfigRoleAccessMenuForm> = ({
 	isEdit = false,
 }) => {
@@ -35,30 +69,12 @@ const ConfigRoleAccessMenuForm: React.FC<ConfigRoleAccessMenuForm> = ({
 	const basePathname = "/".concat(splitPathname[1])
 	const {
 		menuItems,
-		isFetching,
+		isFetchingMenu,
 		rolePermissionDetails,
 		isFetchingRolePermissionDetails,
 		isSubmit,
 		actions: { createRolePemissions, updateRolePemissions },
 	} = useConfigAclMenu()
-
-	const form = useForm<RoleAclMenuForm>({
-		resolver: zodResolver(RoleAclMenuSchema),
-		progressive: false,
-		mode: "onSubmit",
-		reValidateMode: "onSubmit",
-		shouldFocusError: true,
-		shouldUnregister: true,
-		defaultValues:
-			isEdit && rolePermissionDetails
-				? parseRoleAclMenuToView(rolePermissionDetails)
-				: defaultValueRoleAclMenu(menuItems),
-	})
-
-	const { column } = useColumnsAcl({
-		onAction: () => {},
-		form,
-	})
 
 	const menus: AssignedMenuUser[] = menuItems
 		.filter((x) => x.type === "item")
@@ -69,9 +85,26 @@ const ConfigRoleAccessMenuForm: React.FC<ConfigRoleAccessMenuForm> = ({
 			id: x.id,
 		}))
 
+	const form = useForm<RoleAclMenuForm>({
+		resolver: zodResolver(RoleAclMenuSchema),
+		progressive: false,
+		mode: "onSubmit",
+		reValidateMode: "onSubmit",
+		shouldFocusError: true,
+		shouldUnregister: true,
+		defaultValues:
+			isEdit && rolePermissionDetails
+				? parseRoleAclMenuToView(rolePermissionDetails, menus)
+				: defaultValueRoleAclMenu(menuItems),
+	})
+
+	const { column } = useColumnsAcl({
+		onAction: () => {},
+		form,
+	})
+
 	const handleSubmit = async (values: RoleAclMenuForm) => {
 		try {
-			console.log({ values })
 			if (createRolePemissions && !params?.id && !isEdit) {
 				const formDataPayload = parseRoleAclToPayload(values)
 				const result = await createRolePemissions(formDataPayload)
@@ -110,10 +143,14 @@ const ConfigRoleAccessMenuForm: React.FC<ConfigRoleAccessMenuForm> = ({
 		}
 	}
 
-	console.log({
-		errors: form.formState.errors,
-		menus: form.watch("permissions"),
+	const compareMenusData = comparingMenus({
+		isEdit,
+		menus,
+		rolePermissionDetails,
 	})
+
+	const isLoadingMenus =
+		isFetchingMenu || (isEdit && isFetchingRolePermissionDetails)
 
 	return (
 		<Form {...form}>
@@ -140,16 +177,14 @@ const ConfigRoleAccessMenuForm: React.FC<ConfigRoleAccessMenuForm> = ({
 						</Button>
 					</div>
 
-					{/* {rolePermissionDetails && ( */}
-					<GeneralTable<AssignedMenuUser>
-						columns={column}
-						data={
-							isEdit && rolePermissionDetails
-								? rolePermissionDetails?.assigned_menus || []
-								: menus
-						}
-					/>
-					{/* // )} */}
+					{isLoadingMenus ? (
+						<LoadingIndicator />
+					) : (
+						<GeneralTable<AssignedMenuUser>
+							columns={column}
+							data={compareMenusData}
+						/>
+					)}
 				</div>
 			</form>
 		</Form>

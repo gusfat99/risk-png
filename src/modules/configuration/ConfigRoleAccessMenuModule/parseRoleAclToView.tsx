@@ -1,17 +1,27 @@
 import { RoleAclMenuSchema } from "@/schemas/ConfAclMenu"
 import {
+	AssignedMenuUser,
 	Menu,
 	RoleAclMenuPayload,
 	RoleDetails,
 } from "@/types/configAclMenu"
 import { z } from "zod"
+import { comparingMenus } from "./ConfigRoleAccessMenuForm"
 
 export const parseRoleAclMenuToView = (
-	roleAclMenuDetail: RoleDetails
+	roleAclMenuDetail: RoleDetails,
+	menuItems: AssignedMenuUser[]
 ): z.infer<typeof RoleAclMenuSchema> => {
+	
+	const assignedMenus = comparingMenus({
+		isEdit: true,
+		menus: menuItems,
+		rolePermissionDetails: roleAclMenuDetail,
+	})
+
 	return {
 		name: roleAclMenuDetail.role.name,
-		permissions: roleAclMenuDetail.assigned_menus
+		permissions: assignedMenus
 			.filter((menu) => menu.type !== "group")
 			.map((menu) => {
 				return {
@@ -51,8 +61,10 @@ export const defaultValueRoleAclMenu = (
 ): z.infer<typeof RoleAclMenuSchema> => {
 	return {
 		name: "",
-		permissions: menuItems.filter(x => x.type === "item").map((x) => ({
-			menu_id: x.id,
-		})),
+		permissions: menuItems
+			.filter((x) => x.type === "item")
+			.map((x) => ({
+				menu_id: x.id,
+			})),
 	}
 }
