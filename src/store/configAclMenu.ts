@@ -215,12 +215,37 @@ const useConfigAclMenu = createStore<ConfigAclMenuState>("acl-menu", (set, get) 
       },
       updateRolePemissions: async (id: any, payload: RoleAclMenuForm) => {
          set({
-            isSubmit: true,
+            isFetchingDelete: true,
          })
          return new Promise<ResponseApiType<Role>>((resolve, reject) => {
             patchData<Role>(ROLE_PERMISSION_EP + "/" + id, payload)
                .then((data) => {
 
+                  resolve(data)
+               })
+               .catch((err) => {
+                  reject(err)
+               })
+               .finally(() => {
+                  set({
+                     isFetchingDelete: false,
+                  })
+               })
+         })
+      },
+      deleteRolePermissions: async (id: any) => {
+         set({
+            isSubmit: true,
+         })
+         return new Promise<ResponseApiType<Role>>((resolve, reject) => {
+            deleteData<Role>(ROLE_PERMISSION_EP + "/" + id)
+               .then((data) => {
+                  const filterData = get().rolePermissionItems.filter(
+                     (x) => x.id?.toString() !== id.toString()
+                  )
+                  set({
+                     rolePermissionItems: filterData,
+                  });
                   resolve(data)
                })
                .catch((err) => {

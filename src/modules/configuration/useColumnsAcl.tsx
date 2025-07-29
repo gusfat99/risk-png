@@ -3,17 +3,18 @@ import InputCheckboxController from "@/components/inputs/InputCheckboxController
 import InputController from "@/components/inputs/InputController"
 import { FormField } from "@/components/ui/form"
 import { AssignedMenuUser, RoleAclMenuForm } from "@/types/configAclMenu"
-import { ColumnDef } from "@tanstack/react-table"
 import { useMemo } from "react"
 import { UseFormReturn } from "react-hook-form"
 
 export interface UseColumnsRiskAnalystProps {
 	onAction?: (actionName: string, value: any, value2?: any) => void
 	form: UseFormReturn<RoleAclMenuForm>
+	readOnly? : boolean
 }
 export const useColumnsAcl = ({
 	onAction,
 	form,
+	readOnly
 }: UseColumnsRiskAnalystProps) => {
 	const column = useMemo(() => {
 		const cols = [
@@ -36,6 +37,7 @@ export const useColumnsAcl = ({
 									{...field}
 									type="hidden"
 									placeholder="Enter"
+									readOnly={readOnly}
 								/>
 							)}
 						/>
@@ -65,6 +67,7 @@ export const useColumnsAcl = ({
 										field.onChange(checked)
 									}}
 									checked={field.value ? true : false}
+									disabled={readOnly}
 								/>
 							)}
 						/>
@@ -91,6 +94,7 @@ export const useColumnsAcl = ({
 										field.onChange(checked)
 									}}
 									checked={field.value ? true : false}
+									disabled={readOnly}
 								/>
 							)}
 						/>
@@ -118,6 +122,7 @@ export const useColumnsAcl = ({
 										field.onChange(checked)
 									}}
 									checked={field.value ? true : false}
+									disabled={readOnly}
 								/>
 							)}
 						/>
@@ -145,6 +150,7 @@ export const useColumnsAcl = ({
 										field.onChange(checked)
 									}}
 									checked={field.value ? true : false}
+									disabled={readOnly}
 								/>
 							)}
 						/>
@@ -171,6 +177,7 @@ export const useColumnsAcl = ({
 										field.onChange(checked)
 									}}
 									checked={field.value ? true : false}
+									disabled={readOnly}
 								/>
 							)}
 						/>

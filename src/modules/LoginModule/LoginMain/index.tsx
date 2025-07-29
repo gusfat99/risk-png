@@ -26,7 +26,7 @@ const LoginMain = () => {
 
 	const route = useRouter()
 	const { loading, login } = useAuthStore()
-
+	
 	const form = useForm<z.infer<typeof AuthSchema>>({
 		resolver: zodResolver(AuthSchema),
 		progressive: false,

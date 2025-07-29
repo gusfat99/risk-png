@@ -10,7 +10,7 @@ import useConfigAclMenu from "@/store/configAclMenu"
 import {
 	AssignedMenuUser,
 	RoleAclMenuForm,
-	RoleDetails
+	RoleDetails,
 } from "@/types/configAclMenu"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Save } from "lucide-react"
@@ -26,6 +26,7 @@ import {
 
 interface ConfigRoleAccessMenuForm {
 	isEdit?: boolean
+	isDetail?: boolean
 }
 
 export const comparingMenus = ({
@@ -50,7 +51,7 @@ export const comparingMenus = ({
 		})
 
 		const unionMenu = Array.from(map.values())
-	
+
 		return unionMenu
 	} else {
 		return menusData
@@ -59,6 +60,7 @@ export const comparingMenus = ({
 
 const ConfigRoleAccessMenuForm: React.FC<ConfigRoleAccessMenuForm> = ({
 	isEdit = false,
+	isDetail = false,
 }) => {
 	const params = useParams<{ id: any }>()
 	const pathname = usePathname()
@@ -93,7 +95,7 @@ const ConfigRoleAccessMenuForm: React.FC<ConfigRoleAccessMenuForm> = ({
 		shouldFocusError: true,
 		shouldUnregister: true,
 		defaultValues:
-			isEdit && rolePermissionDetails
+			(isEdit || isDetail) && rolePermissionDetails
 				? parseRoleAclMenuToView(rolePermissionDetails, menus)
 				: defaultValueRoleAclMenu(menuItems),
 	})
@@ -101,6 +103,7 @@ const ConfigRoleAccessMenuForm: React.FC<ConfigRoleAccessMenuForm> = ({
 	const { column } = useColumnsAcl({
 		onAction: () => {},
 		form,
+		readOnly: isDetail,
 	})
 
 	const handleSubmit = async (values: RoleAclMenuForm) => {
@@ -163,6 +166,7 @@ const ConfigRoleAccessMenuForm: React.FC<ConfigRoleAccessMenuForm> = ({
 							<InputController
 								{...field}
 								label="Role Name"
+								readOnly={isDetail}
 								placeholder="Enter Role Name"
 								onChange={(e) => {
 									form.setValue("name", e.target.value)
@@ -170,12 +174,14 @@ const ConfigRoleAccessMenuForm: React.FC<ConfigRoleAccessMenuForm> = ({
 							/>
 						)}
 					/>
-					<div className="flex items-center justify-end space-x-2">
-						<Button disabled={isSubmit} variant={"secondary"}>
-							{isSubmit && <Spinner className="w-4 h-4" />}
-							<Save /> Save Changes
-						</Button>
-					</div>
+					{!isDetail && (
+						<div className="flex items-center justify-end space-x-2">
+							<Button disabled={isSubmit} variant={"secondary"}>
+								{isSubmit && <Spinner className="w-4 h-4" />}
+								<Save /> Save Changes
+							</Button>
+						</div>
+					)}
 
 					{isLoadingMenus ? (
 						<LoadingIndicator />

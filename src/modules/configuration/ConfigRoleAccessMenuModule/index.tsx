@@ -14,14 +14,19 @@ import { columnRole } from "../columns"
 
 const ConfigRoleAccessMenuModule = () => {
 	const {
-		actions: { fetchRole, setQuerySearchMenu, setPagination },
+		actions: {
+			fetchRole,
+			setQuerySearchMenu,
+			setPagination,
+			deleteRolePermissions,
+		},
 		isFetching,
 		isFetchingDelete,
 		rolePermissionItems: roleItems,
 		meta,
 		pagination_role_tanstack,
 	} = useConfigAclMenu()
-	const { pageIndex, pageSize } = pagination_role_tanstack;
+	const { pageIndex, pageSize } = pagination_role_tanstack
 	const pathname = usePathname()
 	const splitPathname = pathname.split("/")
 	const { toast } = useToast()
@@ -48,6 +53,8 @@ const ConfigRoleAccessMenuModule = () => {
 				id: id,
 				shown: true,
 			})
+		} else if (actionName === "detail") {
+			router.push(`${basePathname}/detail/${id}`)
 		}
 	}
 
@@ -57,6 +64,14 @@ const ConfigRoleAccessMenuModule = () => {
 				id: null,
 				shown: false,
 			})
+		} else if (confirmType === "confirm") {
+			deleteRolePermissions &&
+				deleteRolePermissions(shownAlertDel.id).then(() => {
+					setShownAlertDel({
+						id: null,
+						shown: false,
+					})
+				})
 		}
 	}
 
