@@ -4,6 +4,7 @@ import {
 	DEVIATION_EP,
 	NODE_EP,
 	PARAMETER_EP,
+	REPORT_RISK_ANALYST_EP,
 	RISK_ANALYST_EP,
 	SAFEGUARD_EXIST_EP,
 } from "@/constants/endpoints"
@@ -19,6 +20,7 @@ import {
 	RiskAnalysis,
 	RiskAnalysisForm,
 	RiskAnalysisSevertyMultipleForm,
+	RiskAnalysReport,
 	RiskAnalystState,
 } from "@/types/riksAnalyst"
 
@@ -32,6 +34,7 @@ import useAuthStore from "./authStore"
 const initialState = {
 	...commonInitualState,
 	riskAnalysItems: [],
+	riskAnalystReportItems : [],
 	riskAnalysSelected: null,
 	nodeSelected: null,
 	supportData: {
@@ -94,6 +97,53 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 							} else {
 								set({
 									riskAnalysItems: [],
+									meta: data?.meta,
+								})
+							}
+							resolve(data)
+						})
+						.catch((err) => {
+							toast({
+								title: "ERROR",
+								description: err.message,
+								variant: "destructive",
+							})
+							reject(err)
+						})
+						.finally(() => {
+							set({
+								isFetching: false,
+							})
+						})
+				})
+			},
+			fetchReport: async (nodeId: any) => {
+				const year_selected = useAuthStore.getState().year_selected
+				set({
+					isFetching: true,
+				})
+				return new Promise<
+					ResponseApiType<RiskAnalysReport[]>
+				>((resolve, reject) => {
+					getDataApi<RiskAnalysReport[]>(
+						`${REPORT_RISK_ANALYST_EP}`,
+						{
+							page: get().pagination_tanstack.pageIndex,
+							per_page: get().pagination_tanstack.pageSize,
+							year: year_selected,
+							node_id : nodeId,
+							search: get().querySearch || undefined
+						}
+					)
+						.then((data) => {
+							if (data.data) {
+								set({
+									riskAnalystReportItems : data.data,
+									meta: data?.meta,
+								})
+							} else {
+								set({
+									riskAnalystReportItems: [],
 									meta: data?.meta,
 								})
 							}

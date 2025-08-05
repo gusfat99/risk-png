@@ -43,10 +43,23 @@ export type RiskAnalysis = {
 	causes: Cause
 }
 
+export type RiskAnalysReport = {
+	risk_analyst_id: number;
+	node: string;
+	parameter_name: string;
+	deviation_name: string;
+	cause_name: string;
+	consequence_name: string;
+	existing_safeguard: string[];
+	risk_ranking_current: number;
+};
+
+
 export interface RiskAnalystState extends CommonState {
 	riskAnalysItems: RiskAnalysis[]
 	riskAnalysSelected: RiskAnalysis | null
 	nodeSelected: Node | null
+	riskAnalystReportItems : RiskAnalysReport[]
 	supportData: {
 		node: {
 			nodeItems: Node[]
@@ -77,22 +90,25 @@ export interface RiskAnalystState extends CommonState {
 		fetchAllData(
 			nodeId: any
 		): Promise<ResponseApiType<{ risk_analyst: RiskAnalysis[] }>>
-		fetchSingleData?(nodeId : any, id: any): Promise<ResponseApiType<RiskAnalysis>>
-		fetchDetailData?(nodeId : any, id: any): Promise<ResponseApiType<RiskAnalysis>>
+		fetchReport?(
+			nodeId: any
+		): Promise<ResponseApiType<RiskAnalysReport[]>>
+		fetchSingleData?(nodeId: any, id: any): Promise<ResponseApiType<RiskAnalysis>>
+		fetchDetailData?(nodeId: any, id: any): Promise<ResponseApiType<RiskAnalysis>>
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>
 		fetchParameterData?(): Promise<ResponseApiType<Parameter[]>>
 		fetchDeviationData?(): Promise<ResponseApiType<Deviations[]>>
 		createData?(
 			payload: RiskAnalysisForm,
 			nodeId: any
-		): Promise<ResponseApiType<{risk_analyst : RiskAnalysis}>>
+		): Promise<ResponseApiType<{ risk_analyst: RiskAnalysis }>>
 		updateData?(
 			id: any,
 			nodeId: any,
 			paylaod: any
-		): Promise<ResponseApiType<{risk_analyst :RiskAnalysis}>>
+		): Promise<ResponseApiType<{ risk_analyst: RiskAnalysis }>>
 		updateSavertyMultiple?(
-			nodeId : any,
+			nodeId: any,
 			payload: RiskAnalysisSevertyMultipleForm
 		): Promise<ResponseApiType<RiskAnalysis[]>>
 		deleteData?(id: any): Promise<ResponseApiType<any>>

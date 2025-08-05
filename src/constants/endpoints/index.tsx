@@ -8,6 +8,7 @@ export const RISK_ANALYST_EP = "/risk-analyst/node";
 export const RISK_RESPONSE_EP = "/risk-response";
 export const RISK_MONITROING_EP = "/monitoring-data";
 export const REPORT_RISK_RESPONSE_EP = "/report/report-by-severity";
+export const REPORT_RISK_ANALYST_EP = "/report/report-risk-analyst";
 export const REPORT_RISK_MONITROING_EP = "/report/report-monitoring";
 export const DETAIL_REPORT_RISK_MONITROING_EP = "/report/detail-report-monitoring";
 export const DEVIATION_EP = "/deviations";

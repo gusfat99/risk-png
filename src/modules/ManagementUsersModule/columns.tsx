@@ -12,7 +12,7 @@ export const columnsManagementUser = (
 	const column: ColumnDef<User>[] = [
 		{
 			header: "No",
-			size : 40,
+			size: 40,
 			cell: ({ row, table }) => {
 				const { pageIndex, pageSize } = table.getState().pagination
 				return (pageIndex - 1) * pageSize + row.index + 1
@@ -32,16 +32,16 @@ export const columnsManagementUser = (
 					acl={{
 						canDelete: true,
 						canEdit: true,
-						canView : false
+						canView: false,
 					}}
 				/>
 			),
-			size : 60,
+			size: 60,
 		},
 		{
 			id: "name",
 			accessorFn: (row) => row.name,
-			enableSorting : false,
+			enableSorting: false,
 			header: ({ column }) => {
 				return <DataTableColumnHeader column={column} title="Name" />
 			},
@@ -50,7 +50,7 @@ export const columnsManagementUser = (
 
 		{
 			id: "email",
-			enableSorting : false,
+			enableSorting: false,
 			accessorFn: (row) => `${row.email}`,
 			header: ({ column }) => {
 				return <DataTableColumnHeader column={column} title="Email" />
@@ -61,7 +61,7 @@ export const columnsManagementUser = (
 			id: "role",
 			enableSorting: false,
 			meta: {
-				className : 'text-center'
+				className: "text-center",
 			},
 			accessorFn: (row) => row.role,
 			header: ({ column }) => {
@@ -69,14 +69,20 @@ export const columnsManagementUser = (
 			},
 			cell: ({ row }) => (
 				<div className="text-center">
-
-				<Link  href={`/configuration-role-access-menu/update/${row.original.roles[0].id}`} >
-					<Badge variant={"secondary"} >{ row.getValue('role')}</Badge>
-				</Link>
+					{row.original.roles?.length <= 0 ? (
+						"-"
+					) : (
+						<Link
+							href={`/configuration-role-access-menu/update/${row.original.roles[0]?.id}`}
+						>
+							<Badge variant={"secondary"}>
+								{row.getValue("role")}
+							</Badge>
+						</Link>
+					)}
 				</div>
 			),
 		},
-		
 	]
 
 	return column
