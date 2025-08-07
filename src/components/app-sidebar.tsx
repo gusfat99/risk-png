@@ -3,7 +3,7 @@
 import * as React from "react"
 
 import BgCity from "@/assets/images/background-city.png"
-import LogoMainWhite from "@/assets/images/logomain-white.svg"
+import LogoMain from "@/assets/images/logomain.png"
 import { NavMain } from "@/components/nav-main"
 // import { NavSocond } from "@/components/nav-user"
 import {
@@ -42,15 +42,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 								size="lg"
 								asChild
 							>
-								<div className="w-full h-[68px] ">
+								<div className="w-full h-[60px] ">
 									<Image
-										src={LogoMainWhite}
+										src={LogoMain}
 										alt={
 											process.env.NEXT_PUBLIC_APP_NAME ||
 											"MAIN LOGO"
 										}
-										width={157}
-										height={58}
+										width={150}
+										height={60}
 										className="h-full m-auto"
 										draggable={false}
 									/>

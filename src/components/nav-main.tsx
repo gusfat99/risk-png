@@ -42,7 +42,7 @@ export function NavMain({ items }: { items: MenuPermission[] }) {
 								{item?.children?.length ? (
 									<>
 										<CollapsibleTrigger
-											className="focus:active:shadow-md focus:active:text-primary hover:text-primary group-data-[state=open]/collapsible:focus:hover:text-primary active:focus:shadow-neutral-500 h-12 text-primary-100"
+											className="focus:active:shadow-md focus:active:text-sidebar-primary  hover:text-sidebar-primary group-data-[state=open]/collapsible:focus:hover:text-sidebar-primary active:focus:shadow-neutral-500 h-12 text-sidebar-foreground"
 											asChild
 										>
 											<SidebarMenuButton
@@ -66,7 +66,7 @@ export function NavMain({ items }: { items: MenuPermission[] }) {
 															<SidebarMenuSubButton
 																asChild
 																className={cn(
-																	"hover:text-primary h-12 text-primary-100 active:text-primary-100",
+																	"hover:text-primary h-12 text-sidebar-foreground active:text-primary-100",
 																	{
 																		"text-primary":
 																			pathname.includes(
@@ -100,7 +100,7 @@ export function NavMain({ items }: { items: MenuPermission[] }) {
 								) : (
 									<SidebarMenuButton
 										className={cn(
-											"h-12 hover:text-primary active:shadow-md active:text-primary text-primary-100 active:shadow-neutral-500",
+											"h-12 hover:text-primary active:shadow-md active:text-primary text-sidebar-foregroundactive:shadow-neutral-500",
 											{
 												"text-primary":
 													pathname.includes(
