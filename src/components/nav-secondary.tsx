@@ -46,7 +46,7 @@ export function NavSecondary({ items }: { items: MenuPermission[] }) {
 							<SidebarMenuButton
 								size="lg"
 								className={cn(
-									"data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:text-primary text-primary-100 !gap-4"
+									"data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:text-primary text-sidebar-foreground !gap-4"
 								)}
 								onClick={() => {
 									setIsOpenDialog(true)
@@ -63,7 +63,7 @@ export function NavSecondary({ items }: { items: MenuPermission[] }) {
 							<SidebarMenuButton
 								size="lg"
 								className={cn(
-									"data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground text-primary-100 hover:text-primary !gap-4",
+									"data-[state=open]:bg-sidebar-foreground data-[state=open]:text-text-sidebar-foreground text-sidebar-foreground hover:text-primary !gap-4",
 									{
 										"text-primary": pathname.includes(
 											route.path
