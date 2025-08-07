@@ -1,6 +1,7 @@
 import { ResponseApiType } from "@/helpers/ApiHelper"
-import { CommonState } from "./common"
 import { PaginationState, Updater } from "@tanstack/react-table"
+import { CommonState } from "./common"
+import { Node } from "./node"
 
 export interface Safeguard {
 	id: number
@@ -11,6 +12,14 @@ export interface Safeguard {
 	file_path: any
 }
 
+export interface SafeguardReport {
+	risk_analyst_id: 13;
+	safeguard: string;
+	safeguard_title: string;
+	file_path: string;
+	node: string;
+}
+
 export interface SafeguardPayload {
 	safeguard: string
 	safeguard_title: string
@@ -19,10 +28,14 @@ export interface SafeguardPayload {
 
 export interface SafeguardState extends CommonState {
 	safeguardItems: Safeguard[]
+	safeguardReportItems: SafeguardReport[]
 	safeguardSelected: Safeguard | null
+	nodeSelected: Node | null
 	actions: {
 		fetchAllData(): Promise<ResponseApiType<Safeguard[]>>
-		fetchSingleData?(safeguardId : any): Promise<ResponseApiType<Safeguard>>
+		fetchReportSafeguardRegistered(): Promise<ResponseApiType<SafeguardReport[]>>
+		fetchSingleData?(safeguardId: any): Promise<ResponseApiType<Safeguard>>
+		fetchNodeData?(): Promise<ResponseApiType<Node[]>>
 		createData?(
 			paylaod: SafeguardPayload
 		): Promise<ResponseApiType<Safeguard>>
@@ -31,5 +44,13 @@ export interface SafeguardState extends CommonState {
 		// setPagination?: OnChangeFn<PaginationState>,
 		setPagination?: (updater: Updater<PaginationState>) => void
 		setQuerySearch?: (value: string) => void
+		setNodeSelected?: (value: any) => void
+		exportExcel?(): void
+	}
+	supportData: {
+		node: {
+			nodeItems: Node[]
+			isFetching: boolean
+		}
 	}
 }

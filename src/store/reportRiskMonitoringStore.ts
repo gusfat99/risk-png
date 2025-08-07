@@ -20,7 +20,6 @@ import {
 } from "@/types/riskMonitoring"
 import useAuthStore from "./authStore"
 import { createStore, runUpdater } from "./store"
-import { downloadProxyFile } from "@/services/downloadFile"
 
 const initialState = {
 	...commonInitualState,

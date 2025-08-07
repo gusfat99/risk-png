@@ -1,9 +1,8 @@
-import React from 'react'
+import ReportSafeguardRegusterModule from "@/modules/reportRisk/ReportSafeguardRegisterModule"
+import React from "react"
 
 const Page = () => {
-  return (
-    <div>Page</div>
-  )
+	return <ReportSafeguardRegusterModule />
 }
 
 export default Page

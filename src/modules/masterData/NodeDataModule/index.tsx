@@ -13,18 +13,26 @@ import AlertConfirmDialog from "@/components/AlertConfirmDialog"
 import { useToast } from "@/hooks/use-toast"
 import { useDebounce } from "@/hooks/use-debounce"
 import useAuthStore from "@/store/authStore"
+import ExportExcelButton from "@/components/buttons/ExportExcelButton"
 
 const NodeDataModule = () => {
 	const {
 		nodeItems,
 		querySearch,
 		isFetchingDelete,
-		actions: { fetchAllData, setPagination, deleteData, setQuerySearch },
+		isFetchingExportData,
+		actions: {
+			fetchAllData,
+			setPagination,
+			deleteData,
+			setQuerySearch,
+			exportExcel,
+		},
 		isFetching,
 		meta,
 		pagination_tanstack,
 	} = useNodeStore()
-	const {year_selected} = useAuthStore();
+	const { year_selected } = useAuthStore()
 	const { pageIndex, pageSize } = pagination_tanstack
 	const [shownAlertDel, setShownAlertDel] = useState({
 		id: null,
@@ -48,11 +56,11 @@ const NodeDataModule = () => {
 		}
 	}
 
-		const handleSearch = useDebounce((value : string) => {setQuerySearch && setQuerySearch(value)})
-	
+	const handleSearch = useDebounce((value: string) => {
+		setQuerySearch && setQuerySearch(value)
+	})
 
 	const handleDeleteAction = (confirmType: string) => {
-	
 		if (confirmType === "deny") {
 			setShownAlertDel({
 				id: null,
@@ -81,12 +89,22 @@ const NodeDataModule = () => {
 	return (
 		<div className="w-full">
 			<div className="flex flex-row justify-between items-end">
-				<InputSearch
-					label="Filter Data"
-					isRequired={false}
-					placeholder="Search..."
-					onChange={(e)=>handleSearch(e.target.value, 'filter')}
-				/>
+				<div className="flex flex-row items-end space-x-2">
+					<InputSearch
+						label="Filter Data"
+						isRequired={false}
+						placeholder="Search..."
+						onChange={(e) => handleSearch(e.target.value, "filter")}
+					/>
+					<ExportExcelButton
+						label="Export Excel"
+						loading={isFetchingExportData}
+						onClick={() => {
+							// nodeSelected && exportExcel(nodeSelected.id)
+							exportExcel && exportExcel()
+						}}
+					/>
+				</div>
 				<Link href={"/data-master-node-data/add"}>
 					<Button variant="success">
 						<Plus /> Add Node

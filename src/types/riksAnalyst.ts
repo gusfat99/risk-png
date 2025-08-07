@@ -119,6 +119,7 @@ export interface RiskAnalystState extends CommonState {
 			name: keyof z.infer<typeof RiskAnalysisSchema>,
 			id: any
 		) => void
+		exportExcel?: (nodeId: any) => void
 	}
 }
 

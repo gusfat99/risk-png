@@ -2,6 +2,7 @@ import {
 	CAUSE_EP,
 	CONSEQUENCE_EP,
 	DEVIATION_EP,
+	EXPORT_RISK_ANALYST_EP,
 	NODE_EP,
 	PARAMETER_EP,
 	REPORT_RISK_ANALYST_EP,
@@ -30,11 +31,12 @@ import { Safeguard } from "@/types/safeguard"
 import { createStore, runUpdater } from "./store"
 import fetchRiskBankHierarchy from "@/services/fetchRiskBankHierarchy"
 import useAuthStore from "./authStore"
+import { downloadProxyFile } from "@/services/downloadFile"
 
 const initialState = {
 	...commonInitualState,
 	riskAnalysItems: [],
-	riskAnalystReportItems : [],
+	riskAnalystReportItems: [],
 	riskAnalysSelected: null,
 	nodeSelected: null,
 	supportData: {
@@ -131,14 +133,14 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 							page: get().pagination_tanstack.pageIndex,
 							per_page: get().pagination_tanstack.pageSize,
 							year: year_selected,
-							node_id : nodeId,
+							node_id: nodeId,
 							search: get().querySearch || undefined
 						}
 					)
 						.then((data) => {
 							if (data.data) {
 								set({
-									riskAnalystReportItems : data.data,
+									riskAnalystReportItems: data.data,
 									meta: data?.meta,
 								})
 							} else {
@@ -847,6 +849,36 @@ const useRiskAnalystStore = createStore<RiskAnalystState>(
 						})
 				}
 			},
+
+			exportExcel: async (nodeId: any) => {
+				set({
+					isFetchingExportData: true,
+				})
+				const year_selected = useAuthStore.getState().year_selected
+				downloadProxyFile(`${EXPORT_RISK_ANALYST_EP}`, {
+					year: year_selected,
+					node_id: nodeId,
+				})
+					.then((blob) => {
+						toast({
+							title: "Success",
+							description: "Successfully downloaded file excel",
+							variant: "success",
+						})
+					})
+					.catch((err) => {
+						toast({
+							title: "Failed",
+							description: err.message,
+							variant: "destructive",
+						})
+					})
+					.finally(() => {
+						set({
+							isFetchingExportData: false,
+						})
+					})
+			}
 		},
 	})
 )

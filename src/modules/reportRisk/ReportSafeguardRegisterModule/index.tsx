@@ -1,47 +1,37 @@
 "use client"
 import ExportExcelButton from "@/components/buttons/ExportExcelButton"
-import NodeDataCard from "@/components/cards/NodeDataCard"
 import DataTable from "@/components/DataTable"
+import InputSearch from "@/components/inputs/InputSearch"
 import InputSelect from "@/components/inputs/InputSelect"
 import useAuthStore from "@/store/authStore"
-import useRiskResponseStore from "@/store/riskResponseStore"
-import { SelectDataType } from "@/types/common"
-import { HazopStatusDialog, RiskResponse } from "@/types/riskResponse"
+import useSafeguardStore from "@/store/safeguradStore"
+import { RiskResponse } from "@/types/riskResponse"
+import { SafeguardReport } from "@/types/safeguard"
 import { usePathname } from "next/navigation"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect } from "react"
 import { useColumnsReportSafeguardRegister } from "./columns"
 
 const ReportSafeguardRegusterModule = () => {
 	const pathname = usePathname()
-	const [hazopOpen, setHazopOpen] = useState<HazopStatusDialog>({
-		hazop_id: null,
-		risk_analyst_id: null,
-		open: false,
-	})
+
 	const {
-		nodeSelected,
 		isFetching,
-		isFetchingSeverity,
-		riskSeveritySelected,
 		isFetchingExportData,
+		nodeSelected,
 		actions: {
-			setNodeSelected,
-			fetchNodeData,
-			fetchAllData,
-			setHazopByRiskAnalyst,
 			setPagination,
-			fetchSeverity,
-			setRiskSeveritySelected,
-			exportExcel,
+			fetchNodeData,
+			fetchReportSafeguardRegistered,
+			setNodeSelected,
+			exportExcel
 		},
 		pagination_tanstack,
-		riskResponseItems,
-		severityItems,
+		safeguardReportItems,
 		supportData: {
 			node: { isFetching: isFetchingNode, nodeItems },
 		},
 		meta,
-	} = useRiskResponseStore()
+	} = useSafeguardStore()
 	const { year_selected } = useAuthStore()
 	const total = meta?.total || 0
 	const splitPathname = pathname.split("/")
@@ -54,63 +44,40 @@ const ReportSafeguardRegusterModule = () => {
 
 	useEffect(() => {
 		if (nodeItems.length === 0) {
-			fetchNodeData()
+			fetchNodeData && fetchNodeData()
 		}
-		if (severityItems?.length === 0) {
-			fetchSeverity()
-		}
-		if (nodeSelected?.id) {
-			fetchAllData(nodeSelected.id, true) //true for report endpoint
-		}
-		return () => {
-			setHazopByRiskAnalyst && setHazopByRiskAnalyst(null)
-		}
+
+		fetchReportSafeguardRegistered && fetchReportSafeguardRegistered()
 	}, [
 		fetchNodeData,
-		fetchAllData,
-		fetchSeverity,
-		setHazopByRiskAnalyst,
-		nodeSelected?.id,
+		fetchReportSafeguardRegistered,
 		nodeItems.length,
-		year_selected
+		year_selected,
+		nodeSelected
 	])
-
-	// let severityOptions: SelectDataType[] = severityItems?.map(x => ({
-	// 	label : x.label
-	// }))
-	const severityOptions: SelectDataType[] = (severityItems || []).map(
-		(x) => ({
-			label: x.label,
-			value: x.key,
-		})
-	)
 
 	const { column } = useColumnsReportSafeguardRegister({
 		onAction: (actionName, row) => {
 			handleAction(actionName, row)
 		},
-		riskSeveritySelected,
-		severityOptions,
 	})
 
 	const handleAction = useCallback(
-		(actionName: string, row: RiskResponse) => {
-			if (actionName === "hazop") {
-				setHazopOpen((prev) => ({
-					...prev,
-					hazop_id: row.id,
-					risk_analyst_id: row.id,
-					open: true,
-					hazop: row.hazops,
-				}))
-			}
-		},
+		(actionName: string, row: RiskResponse) => {},
 		[]
 	)
 
 	return (
 		<div className="w-full space-y-4">
-			<div className="flex flex-row justify-between items-end w-full">
+			<div className="grid grid-cols-6 gap-2 items-end">
+				<InputSearch
+					label="Filter Data"
+					isRequired={false}
+					placeholder="Search..."
+					onChange={(e) => {
+						// handleSearch(e.target.value, "filter")
+					}}
+				/>
 				<InputSelect
 					label="Node"
 					placeholder="Select Node"
@@ -119,47 +86,31 @@ const ReportSafeguardRegusterModule = () => {
 					className="w-full"
 					value={nodeSelected?.id?.toString() ?? ""}
 					onValueChange={(value) => {
-						setNodeSelected(parseInt(value))
+						setNodeSelected && setNodeSelected(parseInt(value))
 					}}
 				/>
-			</div>
-			{nodeSelected && <NodeDataCard nodeSelected={nodeSelected} />}
-
-			{/* {isFetching && <RiskAnalystListTableSkeleton />} */}
-			{nodeSelected && (
-				<>
-					<div className="flex flex-row gap-4 items-end">
-						<InputSelect
-							label="Select severity"
-							placeholder="select severity"
-							items={severityOptions}
-							loading={isFetchingNode}
-							className="w-full md:w-5/12"
-							value={riskSeveritySelected}
-							onValueChange={(value) => {
-								setRiskSeveritySelected(value)
-							}}
-						/>
-						<ExportExcelButton
-							label="Export Excel"
-							loading={isFetchingExportData}
-							onClick={() => {
-								exportExcel(nodeSelected.id)
-							}}
-						/>
-					</div>
-					<DataTable<RiskResponse>
-						columns={column}
-						data={riskResponseItems}
-						loading={isFetching}
-						rowCount={total}
-						manualPagination={true}
-						onPaginationChange={setPagination}
-						pagination={pagination_tanstack}
+				<div>
+					<ExportExcelButton
+						label="Export Excel"
+						loading={isFetchingExportData}
+						onClick={() => {
+							// exportExcel(nodeSelected.id)
+							exportExcel && exportExcel()
+						}}
 					/>
-				</>
+				</div>
+			</div>
+			{nodeSelected && (
+				<DataTable<SafeguardReport>
+					columns={column}
+					data={safeguardReportItems}
+					loading={isFetching}
+					rowCount={total}
+					manualPagination={true}
+					onPaginationChange={setPagination}
+					pagination={pagination_tanstack}
+				/>
 			)}
-			
 		</div>
 	)
 }

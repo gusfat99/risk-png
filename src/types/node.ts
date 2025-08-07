@@ -37,6 +37,7 @@ export interface NodeState extends CommonState {
 		// setPagination?: OnChangeFn<PaginationState>,
 		setPagination?: (updater: Updater<PaginationState>) => void;
 		setQuerySearch?: (value: string) => void;
+		exportExcel? (): void
 	}
 }
 

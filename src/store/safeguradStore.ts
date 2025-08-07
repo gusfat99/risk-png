@@ -1,4 +1,4 @@
-import { SAFEGUARD_EP } from "@/constants/endpoints"
+import { EXPORT_SAFEGUARD_EP, NODE_EP, REPORT_SAFEGUARD_EP, SAFEGUARD_EP } from "@/constants/endpoints"
 import {
 	deleteData,
 	getDataApi,
@@ -8,14 +8,26 @@ import {
 import { toast } from "@/hooks/use-toast"
 import { SafeguardSchema } from "@/schemas/SafeguardSchema"
 import { commonInitualState } from "@/types/common"
-import { Safeguard, SafeguardState } from "@/types/safeguard"
+import { Safeguard, SafeguardReport, SafeguardState } from "@/types/safeguard"
+import type { Node } from "@/types/node"
 import { z } from "zod"
 import { createStore, runUpdater } from "./store"
+import useAuthStore from "./authStore"
+import { downloadProxyFile } from "@/services/downloadFile"
 
 const initialState = {
 	...commonInitualState,
+	isFetchingExportData: false,
+	nodeSelected: null,
 	safeguardItems: [],
 	safeguardSelected: null,
+	safeguardReportItems: [],
+	supportData: {
+		node: {
+			nodeItems: [],
+			isFetching: false
+		}
+	}
 }
 
 const useSafeguardStore = createStore<SafeguardState>(
@@ -32,11 +44,45 @@ const useSafeguardStore = createStore<SafeguardState>(
 						getDataApi<Safeguard[]>(SAFEGUARD_EP, {
 							page: get().pagination_tanstack.pageIndex,
 							per_page: get().pagination_tanstack.pageSize,
-							search : get().querySearch || undefined
+							search: get().querySearch || undefined
 						})
 							.then((data) => {
 								set({
 									safeguardItems: data.data || [],
+									meta: data?.meta,
+								})
+								resolve(data)
+							})
+							.catch((err) => {
+								toast({
+									title: "ERROR",
+									description: err.message,
+									variant: "destructive",
+								})
+								reject(err)
+							})
+							.finally(() => {
+								set({
+									isFetching: false,
+								})
+							})
+					}
+				)
+			},
+			fetchReportSafeguardRegistered: async () => {
+				set({
+					isFetching: true,
+				})
+				return new Promise<ResponseApiType<SafeguardReport[]>>(
+					(resolve, reject) => {
+						getDataApi<SafeguardReport[]>(REPORT_SAFEGUARD_EP, {
+							page: get().pagination_tanstack.pageIndex,
+							per_page: get().pagination_tanstack.pageSize,
+							search: get().querySearch || undefined
+						})
+							.then((data) => {
+								set({
+									safeguardReportItems: data.data || [],
 									meta: data?.meta,
 								})
 								resolve(data)
@@ -82,6 +128,59 @@ const useSafeguardStore = createStore<SafeguardState>(
 								set({
 									isFetching: false,
 								})
+							})
+					}
+				)
+			},
+			fetchNodeData: async () => {
+				set((prev) => ({
+					supportData: {
+						...prev.supportData,
+						node: {
+							...prev.supportData.node,
+							isFetching: true,
+						},
+					},
+				}))
+				return new Promise<ResponseApiType<Node[]>>(
+					(resolve, reject) => {
+						getDataApi<Node[]>(NODE_EP, {
+							page: 1,
+							per_page: 1000,
+						})
+							.then((data) => {
+								//parse data to flat
+								if (Array.isArray(data.data)) {
+									set((state) => ({
+										supportData: {
+											...state.supportData,
+											node: {
+												nodeItems: data.data || [],
+												isFetching: false,
+											},
+										},
+									}))
+									resolve(data)
+								}
+							})
+							.catch((err) => {
+								toast({
+									title: "ERROR",
+									description: err.message,
+									variant: "destructive",
+								})
+								reject(err)
+							})
+							.finally(() => {
+								set((prev) => ({
+									supportData: {
+										...prev.supportData,
+										node: {
+											...prev.supportData.node,
+											isFetching: false,
+										},
+									},
+								}))
 							})
 					}
 				)
@@ -165,7 +264,7 @@ const useSafeguardStore = createStore<SafeguardState>(
 			},
 			deleteData: async (id) => {
 				set({
-					isFetchingDelete : true
+					isFetchingDelete: true
 				})
 				return new Promise<ResponseApiType<null>>((resolve, reject) => {
 					deleteData<null>(SAFEGUARD_EP + "/" + id)
@@ -188,7 +287,7 @@ const useSafeguardStore = createStore<SafeguardState>(
 						})
 						.finally(() => {
 							set({
-								isFetchingDelete : false
+								isFetchingDelete: false
 							})
 						})
 				})
@@ -204,6 +303,45 @@ const useSafeguardStore = createStore<SafeguardState>(
 				set(() => ({
 					querySearch: value,
 				})),
+			setNodeSelected: (nodeId: any) => {
+				const nodeItems = get().supportData.node.nodeItems
+				const nodeSelected = nodeItems.find(
+					(node) => node.id === nodeId
+				)
+				if (nodeSelected) {
+					set({
+						nodeSelected,
+					})
+				}
+			},
+			exportExcel: () => {
+				set({
+					isFetchingExportData: true,
+				})
+				const year_selected = useAuthStore.getState().year_selected
+				downloadProxyFile(`${EXPORT_SAFEGUARD_EP}`, {
+					year: year_selected,
+				})
+					.then((blob) => {
+						toast({
+							title: "Success",
+							description: "Successfully downloaded file excel",
+							variant: "success",
+						})
+					})
+					.catch((err) => {
+						toast({
+							title: "Failed",
+							description: err.message,
+							variant: "destructive",
+						})
+					})
+					.finally(() => {
+						set({
+							isFetchingExportData: false,
+						})
+					})
+			},
 			// setPagination : ()
 		},
 	})

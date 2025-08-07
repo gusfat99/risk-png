@@ -1,4 +1,4 @@
-import { NODE_EP } from "@/constants/endpoints"
+import { EXPORT_NODE_EP, NODE_EP } from "@/constants/endpoints"
 import {
 	deleteData,
 	getDataApi,
@@ -7,15 +7,18 @@ import {
 } from "@/helpers/ApiHelper"
 import { toast } from "@/hooks/use-toast"
 import { NodeSchema } from "@/schemas/NodeSchema"
+import { downloadProxyFile } from "@/services/downloadFile"
 import { commonInitualState } from "@/types/common"
 import { Node, NodeState } from "@/types/node"
 import { z } from "zod"
+import useAuthStore from "./authStore"
 import { createStore, runUpdater } from "./store"
 
 const initialState = {
 	...commonInitualState,
 	nodeItems: [],
 	nodeSelected: null,
+	isFetchingExportData : false
 }
 
 const useNodeStore = createStore<NodeState>("node-data", (set, get) => ({
@@ -29,7 +32,7 @@ const useNodeStore = createStore<NodeState>("node-data", (set, get) => ({
 				getDataApi<Node[]>(NODE_EP, {
 					page: get().pagination_tanstack.pageIndex,
 					per_page: get().pagination_tanstack.pageSize,
-					search : get().querySearch || undefined
+					search: get().querySearch || undefined
 				})
 					.then((data) => {
 						set({
@@ -137,7 +140,7 @@ const useNodeStore = createStore<NodeState>("node-data", (set, get) => ({
 		},
 		deleteData: async (id) => {
 			set({
-				isFetchingDelete : true
+				isFetchingDelete: true
 			})
 			return new Promise<ResponseApiType<null>>((resolve, reject) => {
 				deleteData<null>(NODE_EP + "/" + id)
@@ -160,7 +163,7 @@ const useNodeStore = createStore<NodeState>("node-data", (set, get) => ({
 					})
 					.finally(() => {
 						set({
-							isFetchingDelete : false
+							isFetchingDelete: false
 						})
 					})
 			})
@@ -176,6 +179,34 @@ const useNodeStore = createStore<NodeState>("node-data", (set, get) => ({
 			set(() => ({
 				querySearch: value,
 			})),
+		exportExcel() {
+			set({
+				isFetchingExportData: true,
+			})
+			const year_selected = useAuthStore.getState().year_selected
+			downloadProxyFile(`${EXPORT_NODE_EP}`, {
+				year: year_selected,
+			})
+				.then((blob) => {
+					toast({
+						title: "Success",
+						description: "Successfull download file excel",
+						variant: "success",
+					})
+				})
+				.catch((err) => {
+					toast({
+						title: "Filed",
+						description: err.message,
+						variant: "destructive",
+					})
+				})
+				.finally(() => {
+					set({
+						isFetchingExportData: false,
+					})
+				})
+		},
 		// setPagination : ()
 	},
 }))

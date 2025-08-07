@@ -25,10 +25,10 @@ const ReportRiskAnalystModule = () => {
 			fetchNodeData,
 			fetchReport,
 			setPagination,
-			
+			exportExcel,
 		},
 		pagination_tanstack,
-		
+
 		riskAnalystReportItems,
 		supportData: {
 			node: { isFetching: isFetchingNode, nodeItems },
@@ -49,11 +49,10 @@ const ReportRiskAnalystModule = () => {
 		if (nodeItems.length === 0) {
 			fetchNodeData()
 		}
-		
+
 		if (nodeSelected?.id) {
 			fetchReport && fetchReport(nodeSelected.id) //true for report endpoint
 		}
-		
 	}, [
 		fetchNodeData,
 		fetchReport,
@@ -62,18 +61,14 @@ const ReportRiskAnalystModule = () => {
 		year_selected,
 	])
 
-
 	const { column } = useColumnsReportRiskAnalystModule({
 		onAction: (actionName, row) => {
 			handleAction(actionName, row)
 		},
-
 	})
 
 	const handleAction = useCallback(
-		(actionName: string, row: RiskResponse) => {
-			
-		},
+		(actionName: string, row: RiskResponse) => {},
 		[]
 	)
 
@@ -99,13 +94,15 @@ const ReportRiskAnalystModule = () => {
 						setNodeSelected(parseInt(value))
 					}}
 				/>
-				<div >
+				<div>
 					<ExportExcelButton
 						label="Export Excel"
-                  loading={isFetchingExportData}
-                  disabled={!nodeSelected?.id}
+						loading={isFetchingExportData}
+						disabled={!nodeSelected?.id}
 						onClick={() => {
-							// nodeSelected && exportExcel(nodeSelected.id)
+							nodeSelected &&
+								exportExcel &&
+								exportExcel(nodeSelected.id)
 						}}
 					/>
 				</div>
