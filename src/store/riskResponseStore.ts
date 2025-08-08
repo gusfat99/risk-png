@@ -1,7 +1,9 @@
 import { HAZOP_PATHNAME_STORAGE } from "@/constants"
 import {
+	EXPORT_HAZOP_RESPONSE_EP,
 	EXPORT_RISK_SEVERITY_EP,
 	NODE_EP,
+	REPORT_RISK_HAZOP_RESPONSE_EP,
 	REPORT_RISK_RESPONSE_EP,
 	RISK_ANALYST_EP,
 	RISK_RESPONSE_EP,
@@ -20,6 +22,7 @@ import { commonInitualState } from "@/types/common"
 import { Node } from "@/types/node"
 import {
 	Hazop,
+	HazopReport,
 	RiskResponse,
 	RiskResponseSevertyExpectMultipleSchemaForm,
 	RiskResponseSevertyExpectSchemaForm,
@@ -33,6 +36,7 @@ const initialState = {
 	...commonInitualState,
 	severityItems: [],
 	riskResponseItems: [],
+	hazopResponseReportItems: [],
 	riskResponseSelected: null,
 	nodeSelected: null,
 	hazopItemsSelected: null,
@@ -92,6 +96,55 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 							} else {
 								set({
 									riskResponseItems: [],
+									meta: data?.meta,
+								})
+							}
+						})
+						.catch((err) => {
+							toast({
+								title: "ERROR",
+								description: err.message,
+								variant: "destructive",
+							})
+							reject(err)
+						})
+						.finally(() => {
+							set({
+								isFetching: false,
+							})
+						})
+				})
+			},
+			fetchHazopResponseReport: async (nodeId: any) => {
+				const year_selected = useAuthStore.getState().year_selected
+				set({
+					isFetching: true,
+				})
+				return new Promise<
+					ResponseApiType<HazopReport[]>
+				>((resolve, reject) => {
+					const EP = `${REPORT_RISK_HAZOP_RESPONSE_EP}`;
+					getDataApi<HazopReport[]>(
+						`${EP}`,
+						{
+							page: get().pagination_tanstack.pageIndex,
+							per_page: get().pagination_tanstack.pageSize,
+							year: year_selected,
+							search: get().querySearch || undefined,
+							node_id: nodeId,
+						}
+					)
+						.then((data) => {
+							if (data.data) {
+								set({
+									hazopResponseReportItems:
+										data.data || [],
+									meta: data?.meta,
+								})
+								resolve(data)
+							} else {
+								set({
+									hazopResponseReportItems: [],
 									meta: data?.meta,
 								})
 							}
@@ -256,6 +309,7 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 					}
 				)
 			},
+
 			fetchSeverity: async () => {
 				set({
 					isFetchingSeverity: true,
@@ -674,6 +728,33 @@ const useRiskResponseStore = createStore<RiskResponseState>(
 						})
 					})
 			},
+			exportHazopResponseReport: async (nodeId: any) => {
+				set({
+					isFetchingExportData: true,
+				})
+				downloadProxyFile(`${EXPORT_HAZOP_RESPONSE_EP}`, {
+					node_id: nodeId,
+				})
+					.then((blob) => {
+						toast({
+							title: "Success",
+							description: "Successfull download file excel",
+							variant: "success",
+						})
+					})
+					.catch((err) => {
+						toast({
+							title: "Filed",
+							description: err.message,
+							variant: "destructive",
+						})
+					})
+					.finally(() => {
+						set({
+							isFetchingExportData: false,
+						})
+					})
+			}
 		},
 	})
 )

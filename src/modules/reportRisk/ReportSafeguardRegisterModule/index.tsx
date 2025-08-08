@@ -53,7 +53,9 @@ const ReportSafeguardRegusterModule = () => {
 		fetchReportSafeguardRegistered,
 		nodeItems.length,
 		year_selected,
-		nodeSelected
+		nodeSelected,
+		pagination_tanstack.pageIndex,
+		pagination_tanstack.pageSize,
 	])
 
 	const { column } = useColumnsReportSafeguardRegister({

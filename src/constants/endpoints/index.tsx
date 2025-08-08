@@ -9,6 +9,7 @@ export const RISK_RESPONSE_EP = "/risk-response";
 export const RISK_MONITROING_EP = "/monitoring-data";
 export const REPORT_SAFEGUARD_EP = "/report/report-safeguard-register";
 export const REPORT_RISK_RESPONSE_EP = "/report/report-by-severity";
+export const REPORT_RISK_HAZOP_RESPONSE_EP = "/report/report-hazop-response";
 export const REPORT_RISK_ANALYST_EP = "/report/report-risk-analyst";
 export const REPORT_RISK_MONITROING_EP = "/report/report-monitoring";
 export const DETAIL_REPORT_RISK_MONITROING_EP = "/report/detail-report-monitoring";

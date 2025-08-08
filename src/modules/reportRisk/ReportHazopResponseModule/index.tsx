@@ -5,36 +5,32 @@ import InputSearch from "@/components/inputs/InputSearch"
 import InputSelect from "@/components/inputs/InputSelect"
 import useAuthStore from "@/store/authStore"
 import useRiskResponseStore from "@/store/riskResponseStore"
-import { SelectDataType } from "@/types/common"
-import { RiskResponse } from "@/types/riskResponse"
+import { HazopReport, RiskResponse } from "@/types/riskResponse"
 import { usePathname } from "next/navigation"
 import { useCallback, useEffect } from "react"
-import { useColumnsReportRiskAnalystModule } from "./columns"
-import { RiskAnalysReport } from "@/types/riksAnalyst"
-import useRiskAnalystStore from "@/store/risksAnalystStore"
+import { useColumnsReportHazopResponseModule } from "./columns"
 
-const ReportRiskAnalystModule = () => {
+const ReportHazopResponseModule = () => {
 	const pathname = usePathname()
 
 	const {
 		nodeSelected,
 		isFetching,
 		isFetchingExportData,
-		actions: {
-			setNodeSelected,
-			fetchNodeData,
-			fetchReport,
-			setPagination,
-			exportExcel,
-		},
+		hazopResponseReportItems,
 		pagination_tanstack,
-
-		riskAnalystReportItems,
+		actions: {
+			fetchNodeData,
+			fetchHazopResponseReport,
+			setNodeSelected,
+			setPagination,
+			exportHazopResponseReport,
+		},
 		supportData: {
 			node: { isFetching: isFetchingNode, nodeItems },
 		},
 		meta,
-	} = useRiskAnalystStore()
+	} = useRiskResponseStore()
 	const { year_selected } = useAuthStore()
 	const total = meta?.total || 0
 	const splitPathname = pathname.split("/")
@@ -51,22 +47,21 @@ const ReportRiskAnalystModule = () => {
 		}
 
 		if (nodeSelected?.id) {
-			fetchReport && fetchReport(nodeSelected.id) //true for report endpoint
+			fetchHazopResponseReport &&
+				fetchHazopResponseReport(nodeSelected.id) //true for report endpoint
 		}
 	}, [
+		fetchHazopResponseReport,
 		fetchNodeData,
-		fetchReport,
 		nodeSelected?.id,
 		nodeItems.length,
-		year_selected,
-		pagination_tanstack.pageIndex,
+      year_selected,
+      pagination_tanstack.pageIndex,
       pagination_tanstack.pageSize,
 	])
 
-	const { column } = useColumnsReportRiskAnalystModule({
-		onAction: (actionName, row) => {
-			handleAction(actionName, row)
-		},
+	const { column } = useColumnsReportHazopResponseModule({
+		onAction: (actionName, row) => {},
 	})
 
 	const handleAction = useCallback(
@@ -103,8 +98,8 @@ const ReportRiskAnalystModule = () => {
 						disabled={!nodeSelected?.id}
 						onClick={() => {
 							nodeSelected &&
-								exportExcel &&
-								exportExcel(nodeSelected.id)
+								exportHazopResponseReport &&
+								exportHazopResponseReport(nodeSelected.id)
 						}}
 					/>
 				</div>
@@ -114,9 +109,9 @@ const ReportRiskAnalystModule = () => {
 			{/* {isFetching && <RiskAnalystListTableSkeleton />} */}
 			{nodeSelected && (
 				<>
-					<DataTable<RiskAnalysReport>
+					<DataTable<HazopReport>
 						columns={column}
-						data={riskAnalystReportItems}
+						data={hazopResponseReportItems}
 						loading={isFetching}
 						rowCount={total}
 						manualPagination={true}
@@ -129,4 +124,4 @@ const ReportRiskAnalystModule = () => {
 	)
 }
 
-export default ReportRiskAnalystModule
+export default ReportHazopResponseModule

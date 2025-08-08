@@ -2,6 +2,7 @@ import {
 	CAUSE_EP,
 	CONSEQUENCE_EP,
 	DEVIATION_EP,
+	EXPORT_HAZOP_RESPONSE_EP,
 	NODE_EP,
 	PARAMETER_EP,
 	RISK_MONITROING_EP,
@@ -30,6 +31,7 @@ import useAuthStore from "./authStore"
 import { createStore, runUpdater } from "./store"
 import fetchFileViaProxy from "@/services/fetchFileAsFile"
 import { EVIDENCE_PATHNAME_STORAGE } from "@/constants"
+import { downloadProxyFile } from "@/services/downloadFile"
 
 const initialState = {
 	...commonInitualState,
@@ -38,6 +40,7 @@ const initialState = {
 	isFetchingReport: false,
 	reportRiskMonitoring: [],
 	reportRiskMonitoringDetail: [],
+	hazopResponseReportItems: [],
 	nodeSelected: null,
 	supportData: {
 		node: {
@@ -875,6 +878,7 @@ const useRiskMonitoringStore = createStore<RiskMonitoringState>(
 						})
 				})
 			},
+		
 		},
 	})
 )

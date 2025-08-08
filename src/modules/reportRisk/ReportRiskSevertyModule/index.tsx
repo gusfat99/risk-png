@@ -23,7 +23,6 @@ const RiskReportSeverityModule = () => {
 	const {
 		nodeSelected,
 		isFetching,
-		isFetchingSeverity,
 		riskSeveritySelected,
 		isFetchingExportData,
 		actions: {
@@ -74,7 +73,9 @@ const RiskReportSeverityModule = () => {
 		setHazopByRiskAnalyst,
 		nodeSelected?.id,
 		nodeItems.length,
-		year_selected
+		year_selected,
+		pagination_tanstack.pageIndex,
+		pagination_tanstack.pageSize,
 	])
 
 	// let severityOptions: SelectDataType[] = severityItems?.map(x => ({
