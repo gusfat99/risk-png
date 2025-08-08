@@ -10,6 +10,7 @@ import { ResponseApiType } from "@/helpers/ApiHelper"
 import { PaginationState, Updater } from "@tanstack/react-table"
 import { Deviation } from "./deviation"
 import { Safeguard } from "./safeguard"
+import { HazopReport } from "./riskResponse"
 
 export type RiskMonitoring = {
 	id: number
@@ -117,6 +118,7 @@ export interface RiskMonitoringState extends CommonState {
 	}
 	actions: {
 		fetchAllData(): Promise<ResponseApiType<RiskMonitoring[]>>
+		fetchHazopResponseReport?(): Promise<ResponseApiType<HazopReport[]>>
 		fetchSingleData?(id: any): Promise<ResponseApiType<RiskMonitoring>>
 		fetchDetailData?(id: any): Promise<ResponseApiType<RiskMonitoring>>
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>

@@ -54,7 +54,14 @@ const ReportRiskMonitoringModule = () => {
 			fetchNodeData()
 		}
 		fetchReportRiskMonitoring()
-	}, [fetchReportRiskMonitoring, fetchNodeData, nodeSelected, year_selected])
+	}, [
+		fetchReportRiskMonitoring,
+		fetchNodeData,
+		nodeSelected,
+		year_selected,
+		pagination_tanstack.pageIndex,
+		pagination_tanstack.pageSize,
+	])
 
 	return (
 		<div className="w-full">

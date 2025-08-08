@@ -19,6 +19,17 @@ export type HazopStatusDialog = {
 	open: boolean
 }
 
+export type HazopReport = {
+	"hazop_id": any
+	"hazop_recom": string,
+	"node": string,
+	"parameter_name": string,
+	"deviation_name": string,
+	"cause_name": string,
+	"consequence_name": string,
+	"existing_safeguard": string[]
+}
+
 export type RiskResponse = {
 	id: number
 	sp_expected: number
@@ -80,6 +91,7 @@ export interface RiskResponseState extends CommonState {
 	severityItems: Severity[] | null
 	isFetchingHazopItems: boolean
 	isFetchingSeverity: boolean
+	hazopResponseReportItems: HazopReport[]
 	isFetchingExportData: boolean
 	hazopDelete: {
 		isFetching: boolean;
@@ -97,7 +109,8 @@ export interface RiskResponseState extends CommonState {
 			nodeId: any,
 			isForReport?: boolean
 		): Promise<ResponseApiType<{ risk_items: RiskResponse[] }>>
-		fetchSingleData?(nodeId : any, riskId: any): Promise<ResponseApiType<RiskResponse>>
+		fetchHazopResponseReport?(nodeId : any): Promise<ResponseApiType<HazopReport[]>>
+		fetchSingleData?(nodeId: any, riskId: any): Promise<ResponseApiType<RiskResponse>>
 		fetchNodeData(): Promise<ResponseApiType<Node[]>>
 		fetchSeverity(): Promise<ResponseApiType<Severity[]>>
 		fetchHazopByRiskAnalyst?(
@@ -116,12 +129,12 @@ export interface RiskResponseState extends CommonState {
 			payload: FormData
 		): Promise<ResponseApiType<any>>
 		deleteHazop?(
-			params : {
-					nodeId: any;
-					riskId: any;
-					hazopId: any;
-					id: any
-				}
+			params: {
+				nodeId: any;
+				riskId: any;
+				hazopId: any;
+				id: any
+			}
 		): Promise<ResponseApiType<any>>
 		setHazopStatus?(prams: {
 			nodeId: any
@@ -152,6 +165,7 @@ export interface RiskResponseState extends CommonState {
 		exportExcel: (nodeId: any) => void
 		setRiskSeveritySelected
 		: (severity: string) => void
+		exportHazopResponseReport?(nodeId: any): void
 	}
 }
 
